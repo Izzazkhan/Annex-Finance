@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
-function MainLayout({ children }) {
-  const [isOpen, setIsOpen] = useState(false);
+function MainLayout({ children, mainClassName }) {
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="flex bg-black relative">
+    <div className="flex bg-black">
       <Sidebar isOpen={isOpen} onClose={() => setIsOpen(false)} />
       {isOpen && (
         <div
@@ -14,9 +14,9 @@ function MainLayout({ children }) {
           onClick={() => setIsOpen(false)}
         />
       )}
-      <div className="w-full sm:px-2 lg:px-8 py-6">
+      <div className="w-full px-2 lg:px-8 py-6">
         <Header onOpen={() => setIsOpen((bool) => !bool)} />
-        <main className="min-h-screen">{children}</main>
+        <main className={`${mainClassName}`}>{children}</main>
       </div>
     </div>
   );

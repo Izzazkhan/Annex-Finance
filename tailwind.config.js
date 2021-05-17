@@ -1,7 +1,4 @@
-const plugin = require('tailwindcss/plugin');
-
 module.exports = {
-  mode: 'jit',
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -28,6 +25,22 @@ module.exports = {
         primaryDark: '#C97629',
         fadeBlack: '#101016',
         secondary: '#5F5F5F',
+        gray: '#717579',
+        darkGray: '#343434',
+        blueGray: '#242424',
+        red: '#fd5353',
+        darkRed: '#FF0000',
+        green: '#3ab67a',
+        lightGreen: '#4FD000',
+        lightGreen2: '#219653',
+        lightBlue: '#021E3D',
+        lighterBlue: '#413FBB',
+        midBlue: '#413FBB',
+        blue: '#03254C',
+        darkBlue: '#140E38',
+        darkBlue2: '#091B2E',
+        darkerBlue: '#101016',
+        fadeBlue: '#071625',
       },
       fontSize: {
         24: '24px',
@@ -37,6 +50,7 @@ module.exports = {
       },
       opacity: {},
       spacing: {
+        13: '3.25rem',
         17: '4.25rem',
         18: '4.5rem',
         19: '4.75rem',
@@ -45,6 +59,8 @@ module.exports = {
         24: '6rem',
         26: '6.5rem',
         36: '9rem',
+        92: '23rem',
+        100: '25rem',
         200: '50rem',
         240: '60rem',
         280: '70rem',
@@ -52,6 +68,20 @@ module.exports = {
         320: '80rem',
         360: '90rem',
         400: '100rem',
+        '50px': '50px',
+        '58px': '58px',
+        '150px': '150px',
+        '26px': '26px',
+        '22px': '22px',
+        '118px': '118px',
+      },
+      maxWidth: {
+        650: '650px',
+        350: '350px',
+      },
+      maxHeight: { 55: '55px' },
+      borderWidth: {
+        6: '6px',
       },
       screens: {},
       lineHeight: {

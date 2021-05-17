@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTable } from 'react-table';
 
-import makeData from '../../utils/makeData';
-
 const Styles = styled.div`
+  width: 100%;
+  overflow: auto;
   table {
+    width: 100%;
     background-color: #000;
     color: #fff;
     border-spacing: 0;
@@ -32,7 +33,7 @@ const Styles = styled.div`
   }
 `;
 
-function Table({ columns, data }) {
+function Table({ columns, data, onRowClick }) {
   // Use the state and functions returned from useTable to build your UI
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
@@ -75,7 +76,7 @@ function Table({ columns, data }) {
   );
 }
 
-function App({ columns, data }) {
+function App({ columns, data, onRowClick }) {
   const defaultColumns = React.useMemo(
     () => [
       {
@@ -95,11 +96,9 @@ function App({ columns, data }) {
     [],
   );
 
-  const defaultData = React.useMemo(() => makeData(10), []);
-
   return (
     <Styles>
-      <Table columns={columns || defaultColumns} data={data || defaultData} />
+      <Table columns={columns} data={data} onRowClick={onRowClick} />
     </Styles>
   );
 }
