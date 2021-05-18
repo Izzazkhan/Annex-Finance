@@ -25,6 +25,7 @@ module.exports = {
         primaryDark: '#C97629',
         fadeBlack: '#101016',
         secondary: '#5F5F5F',
+        lightGray: '#2E2E2E',
         gray: '#717579',
         darkGray: '#343434',
         blueGray: '#242424',
@@ -51,6 +52,7 @@ module.exports = {
       opacity: {},
       spacing: {
         13: '3.25rem',
+        15: '3.75rem',
         17: '4.25rem',
         18: '4.5rem',
         19: '4.75rem',
@@ -59,6 +61,7 @@ module.exports = {
         24: '6rem',
         26: '6.5rem',
         36: '9rem',
+        68: '17rem',
         92: '23rem',
         100: '25rem',
         200: '50rem',
