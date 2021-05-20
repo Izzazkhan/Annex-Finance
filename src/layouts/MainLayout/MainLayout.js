@@ -3,7 +3,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import { useWindowSize } from '../../hooks/useWindowSize';
 
-function MainLayout({ children, mainClassName }) {
+function MainLayout({ children, mainClassName, title }) {
   const [isOpen, setIsOpen] = useState(true);
 
   const { width } = useWindowSize() || {};
@@ -22,8 +22,12 @@ function MainLayout({ children, mainClassName }) {
           onClick={() => setIsOpen(false)}
         />
       )}
-      <div className={`w-full h-full pr-2 lg:pr-8 py-6 ${width > 1023 && isOpen ? 'pl-68' : ''}`}>
-        <Header onOpen={() => setIsOpen((bool) => !bool)} />
+      <div
+        className={`w-full h-full pr-6 py-6 my-contents transition-all ease-in-out ${
+          isOpen ? 'open' : 'pl-6'
+        }`}
+      >
+        <Header onOpen={() => setIsOpen((bool) => !bool)} title={title} />
         <main className={`${mainClassName}`}>{children}</main>
       </div>
     </div>

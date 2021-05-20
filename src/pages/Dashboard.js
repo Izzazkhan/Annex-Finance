@@ -66,6 +66,17 @@ function Dashboard() {
     () => [
       ...baseColumns,
       {
+        Header: 'Collateral',
+        accessor: 'Collateral',
+      },
+    ],
+    [],
+  );
+
+  const AllBorrowColumns = React.useMemo(
+    () => [
+      ...baseColumns,
+      {
         Header: 'Liquidity',
         accessor: 'Liquidity',
       },
@@ -123,6 +134,33 @@ function Dashboard() {
         $0 BTCB
       </div>
     ),
+    Collateral: (
+      <div className="cursor-pointer text-primary h-8" onClick={() => setBorrowRepayOpen(true)}>
+        $219,810,692.94
+      </div>
+    ),
+  };
+
+  const borrowItem2 = {
+    Asset: (
+      <div
+        className="flex items-center space-x-2 cursor-pointer"
+        onClick={() => setBorrowRepayOpen(true)}
+      >
+        <img className="w-6" src={bitcoin} alt="logoMini" />
+        <div className="">BTCB</div>
+      </div>
+    ),
+    Apy: (
+      <div className="cursor-pointer text-red h-8" onClick={() => setBorrowRepayOpen(true)}>
+        4.61%
+      </div>
+    ),
+    Wallet: (
+      <div className="cursor-pointer text-green h-8" onClick={() => setBorrowRepayOpen(true)}>
+        $0 BTCB
+      </div>
+    ),
     Liquidity: (
       <div className="cursor-pointer text-primary h-8" onClick={() => setBorrowRepayOpen(true)}>
         $219,810,692.94
@@ -131,7 +169,7 @@ function Dashboard() {
   };
 
   const borrowData = React.useMemo(() => fillArray(borrowItem, 1), []);
-  const allBorrowMarketData = React.useMemo(() => fillArray(borrowItem, 5), []);
+  const allBorrowMarketData = React.useMemo(() => fillArray(borrowItem2, 5), []);
 
   return (
     <Layout>
@@ -175,8 +213,8 @@ function Dashboard() {
         >
           <MiniLogo size="sm" />
           <p className="text-black flex-grow">
-            This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any warranties,
-            including that Akropolis is error-free or secure. Use it at your own risk.
+            This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
+            warranties, including that Akropolis is error-free or secure. Use it at your own risk.
           </p>
           <div className="cursor-pointer" onClick={() => setDisplayWarning(false)}>
             <img src={close} alt="close" />
@@ -185,7 +223,7 @@ function Dashboard() {
       )}
       <div className="text-white mt-10">
         <div className="px-6 lg:px-0 mb-17">
-          <div className="text-primary text-5xl font-normal">$65,123</div>
+          <div className="text-primary text-5xl">$65,123</div>
           <div className="mt-1 text-lg">Available Credit</div>
           <div className="flex items-center w-full mt-4">
             <div className="opacity-70 whitespace-nowrap mr-2 text-lg">Borrow Limit</div>
@@ -195,8 +233,13 @@ function Dashboard() {
           </div>
         </div>
         <div className="bg-fadeBlack flex flex-col lg:flex-row justify-between lg:space-x-4 p-6">
-          <div className="grid grid-cols-2 gap-9 w-full">
-            <SummaryCard name="ANN Balance" title="198.54789 ANN" icon={ANNBalance} status="green" />
+          <div className="grid grid-cols-2 gap-6 w-full">
+            <SummaryCard
+              name="ANN Balance"
+              title="198.54789 ANN"
+              icon={ANNBalance}
+              status="green"
+            />
             <SummaryCard name="Daily Earning" title="$159890" icon={DailyEarning} status="green" />
             <SummaryCard name="ANN Rewards" title="$65,123" icon={ANNRewards} status="red" />
             <SummaryCard name="Annual Earning" title="$650,123" icon={AnnualEarning} status="red" />
@@ -230,7 +273,7 @@ function Dashboard() {
                 />
                 <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 justify-center">
                   <div className="text-primary text-2xl">$0</div>
-                  <div className="text-lg md:text-sm text-center mt-4 md:mt-8">
+                  <div className="text-lg text-center mt-4 md:mt-6">
                     Estimated Daily <br /> Earnings
                   </div>
                 </div>
@@ -263,7 +306,7 @@ function Dashboard() {
           <DataTable title="Borrow" columns={borrowColumns} data={borrowData} />
           <DataTable
             title="All Borrow Markets"
-            columns={borrowColumns}
+            columns={AllBorrowColumns}
             data={allBorrowMarketData}
           />
         </div>
@@ -275,8 +318,12 @@ function Dashboard() {
             <Select />
             <div className="flex space-x-4text-2xl text-white">
               <div className="ml-4">Overview</div>
-              <div className="ml-4">ANN <img src={plusButonIcon} alt="plusButonIcon" className="ml-2 inline" /></div>
-              <div className="ml-4">aSXP <img src={plusButonIcon} alt="plusButonIcon" className="ml-2 inline" /></div>
+              <div className="ml-4">
+                ANN <img src={plusButonIcon} alt="plusButonIcon" className="ml-2 inline" />
+              </div>
+              <div className="ml-4">
+                aSXP <img src={plusButonIcon} alt="plusButonIcon" className="ml-2 inline" />
+              </div>
               <div className="ml-4">To MetaMask</div>
             </div>
           </div>

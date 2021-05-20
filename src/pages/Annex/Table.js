@@ -38,6 +38,10 @@ const Styles = styled.div`
       }
     }
 
+    th {
+      font-size: 1.12rem;
+    }
+
     th,
     td {
       margin: 0;
@@ -56,15 +60,18 @@ function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter
   const count = preFilteredRows.length;
 
   return (
-    <input
-      className="border border-solid border-gray bg-transparent
-                           rounded-md mt-1 w-full focus:outline-none font-bold px-3 py-2 text-white"
-      value={filterValue || ''}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-      }}
-      placeholder="Search"
-    />
+    <div className="relative">
+      <input
+        className="border border-solid border-gray bg-transparent h-15
+                           rounded-4xl mt-1 w-96 focus:outline-none font-bold px-3 py-2 text-white"
+        value={filterValue || ''}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+        }}
+        placeholder="Search here"
+      />
+      <img src={search} alt="" className="w-5 absolute top-6 right-8" />
+    </div>
   );
 }
 
@@ -269,7 +276,7 @@ function Table({ columns, data, renderRowSubComponent }) {
                 disabled={!canNextPage}
               >
                 <div className="flex space-x-2">
-                  <div className="">Next</div>
+                  <div className="text-18">Next</div>
                   <img src={rightArrow} alt="" />
                 </div>
               </button>
