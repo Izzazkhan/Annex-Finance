@@ -36,18 +36,10 @@ const Styles = styled.div`
       }
     }
 
-    th {
-      padding: 1rem !important;
-      font-size: 1.12rem;
-    }
-
-    td {
-      padding: 0.8rem 2rem 0.8rem 0;
-    }
-
     th,
     td {
       margin: 0;
+      padding: 0.5rem 2rem 0.5rem 0;
       text-align: center;
 
       :last-child {
@@ -172,24 +164,26 @@ function Table({ columns, data, onRowClick }) {
                       key={column.Header}
                     >
                       {column.render('Header')}
-                      <span>
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <img
-                              className="inline relative left-1"
-                              src={sortDown}
-                              alt="sort down"
-                            />
+                      {index !== 0 && index !== 6 && (
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <img
+                                className="inline relative left-1"
+                                src={sortDown}
+                                alt="sort down"
+                              />
+                            ) : (
+                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                            )
                           ) : (
-                            <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                          )
-                        ) : (
-                          <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                            <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                            <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                          </div>
-                        )}
-                      </span>
+                            <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                            </div>
+                          )}
+                        </span>
+                      )}
                     </th>
                   );
                 })}
@@ -264,7 +258,7 @@ function Table({ columns, data, onRowClick }) {
                 disabled={!canNextPage}
               >
                 <div className="flex space-x-2">
-                  <div className="text-18">Next</div>
+                  <div className="">Next</div>
                   <img src={rightArrow} alt="" />
                 </div>
               </button>

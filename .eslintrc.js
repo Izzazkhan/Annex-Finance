@@ -11,6 +11,11 @@ module.exports = {
     react: {
       version: 'detect', // Automatically detect the react version
     },
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    },
   },
   env: {
     browser: true, // Enables browser globals like window and document
@@ -21,11 +26,9 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:jsx-a11y/recommended',
-    'plugin:prettier/recommended',
     // Make this the last element so prettier config overrides other formatting rules
   ],
   rules: {
-    'prettier/prettier': ['error', {}, { usePrettierrc: true }], // Use our .prettierrc file as source
     'react/react-in-jsx-scope': 'off',
     'max-len': [2, { code: 110, tabWidth: 2, ignoreUrls: true }],
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],

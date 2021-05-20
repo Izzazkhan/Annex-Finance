@@ -4,26 +4,27 @@ import coins from '../../assets/icons/coins.svg';
 import MiniLogo from '../../components/UI/MiniLogo';
 import { useQuery } from '../../hooks/useQuery';
 import ConnectWalletModal from './ConnectWalletModal';
-import WalletModal from './WalletModal';
+import {useActiveWeb3React} from "../../hooks";
+import {shortenAddress} from "../../utils/address";
+import commaNumber from "comma-number";
+import {getBigNumber} from "../../utilities/common";
+import BigNumber from "bignumber.js";
+import {nFormatter} from "../../utils/data";
 
-function Navigation({ wrapperClassName, isOpen }) {
-  const [parsedQuery, query, setQuery] = useQuery();
-  const { walletConnected } = parsedQuery || {};
+const format = commaNumber.bindWith(',', '.');
+
+function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }) {
+  const { account } = useActiveWeb3React();
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
-  const [walletOpen, setWalletOpen] = useState(false);
 
   const ConnectWallet = () => (
     <button
       className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white"
       onClick={() => {
-        if (walletConnected) {
-          setWalletOpen(true);
-        } else {
           setConnectWalletsOpen(true);
-        }
       }}
     >
-      {walletConnected ? '0x7a...66dc' : 'wallet not connected'}
+      {account ? shortenAddress(account) : 'Connect wallet'}
     </button>
   );
 
@@ -34,24 +35,27 @@ function Navigation({ wrapperClassName, isOpen }) {
         onSetOpen={() => setConnectWalletsOpen(true)}
         onCloseModal={() => setConnectWalletsOpen(false)}
       />
-      <WalletModal
-        open={walletOpen}
-        onSetOpen={() => setWalletOpen(true)}
-        onCloseModal={() => setWalletOpen(false)}
-      />
       {!isOpen && (
         <ul className="hidden lg:flex justify-between items-center w-full max-w-650 ml-auto">
           <li className="flex items-center space-x-2">
             <img src={people} alt="people" />
             <div className="">
-              <div className="text-2xl text-white text-left">2865</div>
-              <div className="text-secondary text-sm">Total VAI Minted</div>
+              <div className="text-2xl text-white text-left">
+                {format(
+                    getBigNumber(totalXaiMinted)
+                        .dp(0, 1)
+                        .toString(10)
+                )}</div>
+              <div className="text-secondary text-sm">Total XAI Minted</div>
             </div>
           </li>
           <li className="flex items-center space-x-2">
             <img src={coins} alt="coins" />
             <div className="">
-              <div className="text-2xl text-white text-left">$25.45M</div>
+              <div className="text-2xl text-white text-left">${nFormatter(
+                  new BigNumber(totalLiquidity).dp(2, 1).toString(10),
+                  2
+              )}</div>
               <div className="text-secondary text-sm">Total Value Locked</div>
             </div>
           </li>
@@ -67,14 +71,22 @@ function Navigation({ wrapperClassName, isOpen }) {
         <li className="flex items-center space-x-2">
           <img className="w-8" src={people} alt="people" />
           <div className="">
-            <div className="text-lg text-white text-center">2865</div>
+            <div className="text-lg text-white text-center">
+              {format(
+                  getBigNumber(totalXaiMinted)
+                      .dp(0, 1)
+                      .toString(10)
+              )}</div>
             <div className="text-secondary text-xs">Total VAI Minted</div>
           </div>
         </li>
         <li className="flex items-center space-x-2">
           <img className="w-8" src={coins} alt="coins" />
           <div className="">
-            <div className="text-lg text-white text-center">$25.45M</div>
+            <div className="text-lg text-white text-center">${nFormatter(
+                new BigNumber(totalLiquidity).dp(2, 1).toString(10),
+                2
+            )}</div>
             <div className="text-secondary text-xs">Total Value Locked</div>
           </div>
         </li>

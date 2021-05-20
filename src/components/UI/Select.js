@@ -2,30 +2,37 @@
 import React, { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import MiniLogo from './MiniLogo';
+import usdc from '../../assets/images/coins/usdc.png';
+import styled from "styled-components";
 
-const people = [
-  { name: 'Wade Cooper', logo: <MiniLogo size="sm" /> },
-  { name: 'Arlene Mccoy', logo: <MiniLogo size="sm" /> },
-  { name: 'Devon Webb', logo: <MiniLogo size="sm" /> },
-  { name: 'Tom Cook', logo: <MiniLogo size="sm" /> },
-  { name: 'Tanya Fox', logo: <MiniLogo size="sm" /> },
-  { name: 'Hellen Schmidt', logo: <MiniLogo size="sm" /> },
+const ListboxOptions = styled(Listbox.Options)`
+  border-radius: 24px;
+  
+`
+
+const defaultOptions = [
+  { name: 'usdc', logo: <img alt={'usdc'} src={usdc} style={{ width: 32, height: 32}} /> },
 ];
 
 export default function Select({
   type = 'primary',
-  options = people,
+  options = defaultOptions,
   width = 'w-56',
   label,
   labelClassName,
   logoClassName,
+  onChange
 }) {
   const [selected, setSelected] = useState(options[0]);
 
   return (
     <div className={width}>
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={selected} onChange={(val) => {
+        setSelected(val);
+        if(onChange) {
+          onChange(val)
+        }
+      }}>
         {({ open }) => (
           <>
             <div className="relative z-10">
@@ -41,10 +48,10 @@ export default function Select({
                    ? 'border-gray rounded-md py-2'
                    : type === 'mini'
                    ? 'border-none shadow-none'
-                   : 'bg-primary rounded-4xl'
+                   : 'bg-primary rounded-4xl py-1.5'
                }`}
               >
-                <div className="flex items-center space-x-4 py-0.5">
+                <div className="flex items-center space-x-4 py-2">
                   {selected?.logo && (
                     <div className={logoClassName ? logoClassName : ''}>{selected?.logo}</div>
                   )}
@@ -53,12 +60,10 @@ export default function Select({
                     <span
                       className={`block truncate ${
                         type === 'primary'
-                          ? 'text-primary text-24 font-bold'
+                          ? 'text-primary font-bold'
                           : type === 'basic'
-                          ? 'text-white text-18'
-                          : type === 'primaryBlack'
-                          ? 'text-xs pb-2'
-                          : ''
+                          ? 'text-white'
+                          : type === 'mini'
                       }`}
                     >
                       {selected.name}
@@ -81,14 +86,14 @@ export default function Select({
               <Transition
                 show={open}
                 as={Fragment}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
+                leave="transform transition ease-in duration-200"
+                leaveFrom="opacity-100 scale-100 "
+                leaveTo="opacity-0 scale-95 "
               >
-                <Listbox.Options
+                <ListboxOptions
                   static
-                  className="absolute w-full py-1 mt-1 overflow-auto text-base text-white bg-fadeBlack
-                   rounded-b-md shadow-lg max-h-28 ring-1 ring-black ring-opacity-5
+                  className="absolute w-full py-1 mt-1 overflow-auto text-base text-white bg-fadeBlack rounded-xl
+                   rounded-b-md shadow-lg max-h-58 ring-1 ring-black ring-opacity-5
                    border border-solid border-gray focus:outline-none sm:text-sm"
                 >
                   {options.map((option, optionIdx) => (
@@ -106,9 +111,7 @@ export default function Select({
                             <div className={logoClassName ? logoClassName : ''}>{option?.logo}</div>
                           )}
                           <span
-                            className={`${
-                              selected ? 'font-medium' : 'font-normal'
-                            } block truncate text-24`}
+                            className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}
                           >
                             {option.name}
                           </span>
@@ -116,7 +119,7 @@ export default function Select({
                       )}
                     </Listbox.Option>
                   ))}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </>

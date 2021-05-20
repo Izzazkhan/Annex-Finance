@@ -10,7 +10,7 @@ function Trade() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [parsedQuery, query, setQuery] = useQuery();
-  const { tab } = parsedQuery;
+  const { tab = 'swap' } = parsedQuery;
 
   const buttons = [
     { key: 1, title: 'Swap', tab: 'swap' },
@@ -18,18 +18,18 @@ function Trade() {
   ];
 
   return (
-    <Layout mainClassName="py-10" title={tab === 'swap' ? 'SWAP' : 'LIQUIDITY'}>
+    <Layout mainClassName="py-10 min-h-screen">
       <SettingsModal open={settingsOpen} onCloseModal={() => setSettingsOpen(false)} />
       <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
-      <div className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl">
-        <div className="flex space-x-4 mt-14">
+      <div className="bg-fadeBlack w-full flex flex-col justify-center items-center">
+        <div className="flex space-x-4 mt-10">
           {buttons?.map((b) => (
             <button
               key={b.key}
-              className={`focus:outline-none py-2 px-12 rounded-3xl text-xl 2xl:text-24 ${
+              className={`focus:outline-none py-2 px-12 rounded-3xl text-xl ${
                 b.tab === tab
                   ? 'text-black font-bold bgPrimaryGradient'
-                  : 'text-white bg-black border border-solid border-gray'
+                  : 'text-white bg-transparent border border-solid border-gray'
               }`}
               onClick={() => setQuery({ tab: b.tab })}
             >

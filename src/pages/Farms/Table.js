@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import {
@@ -35,25 +34,10 @@ const Styles = styled.div`
       }
     }
 
-    @media (min-width: 1024px) {
-      thead > tr > *:first-child {
-        padding-left: 0 !important;
-        padding-right: 90px !important;
-      }
-    }
-
-    th {
-      font-size: 1.12rem;
-    }
-
-    td {
-      font-size: 1rem;
-    }
-
     th,
     td {
       margin: 0;
-      padding: 1rem 2rem 1rem 1rem;
+      padding: 0.5rem 2rem 0.5rem 1rem;
       text-align: center;
 
       :last-child {
@@ -70,8 +54,7 @@ function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter
   return (
     <input
       className="border border-solid border-gray bg-transparent
-                           rounded-md mt-1 w-56 sm:w-96 focus:outline-none font-bold px-3 text-white"
-      style={{ height: '2.5625rem' }}
+                           rounded-md mt-1 w-full focus:outline-none font-bold px-3 py-2 text-white"
       value={filterValue || ''}
       onChange={(e) => {
         setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
@@ -162,10 +145,10 @@ function Table({ columns, data, renderRowSubComponent }) {
   // Render the UI for your table
   return (
     <div className="relative">
-      <div className="absolute -top-9 right-60 sm:right-100 pr-8">
+      <div className="absolute -top-8 right-60 pr-8">
         <Select type="basic" options={sortOptions} />
       </div>
-      <div className="bg-fadeBlack p-6 mt-16">
+      <div className="bg-fadeBlack p-6 mt-10">
         <table {...getTableProps()}>
           <thead>
             {[headerGroups[1]].map((headerGroup) => (
@@ -179,25 +162,27 @@ function Table({ columns, data, renderRowSubComponent }) {
                       key={column.Header}
                     >
                       {column.render('Header')}
-                      <span>
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <img
-                              className="inline relative left-1"
-                              src={sortDown}
-                              alt="sort down"
-                            />
+                      {index !== 0 && (
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <img
+                                className="inline relative left-1"
+                                src={sortDown}
+                                alt="sort down"
+                              />
+                            ) : (
+                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                            )
                           ) : (
-                            <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                          )
-                        ) : (
-                          <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                            <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                            <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                          </div>
-                        )}
-                      </span>
-                      <div className="absolute -top-10 right-6">
+                            <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                            </div>
+                          )}
+                        </span>
+                      )}
+                      <div className="absolute -top-8 right-6">
                         {column.canFilter ? column.render('Filter') : null}
                       </div>
                     </th>

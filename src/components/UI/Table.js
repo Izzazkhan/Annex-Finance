@@ -24,11 +24,19 @@ const Styles = styled.div`
     th,
     td {
       margin: 0;
-      padding: 0.5rem 2rem;
+        text-align: right;
+
+        :first-child {
+            text-align: left;
+        }
 
       :last-child {
         border-right: 0;
       }
+    }
+      
+    th {
+        padding: 0.5rem 2rem;
     }
   }
 `;
@@ -64,7 +72,7 @@ function Table({ columns, data, onRowClick }) {
                 return (
                   // eslint-disable-next-line react/jsx-key
                   <td {...cell.getCellProps()}>
-                    <div className="text-center">{cell.render('Cell')}</div>
+                    <div>{cell.render('Cell')}</div>
                   </td>
                 );
               })}

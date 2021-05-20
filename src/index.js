@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
+import Providers from './providers'
 import Routes from './routes/index';
 import './assets/styles/fontStyles.css';
 import './assets/styles/utilityStyles.css';
 import './assets/styles/tailwind.css';
 
 ReactDOM.render(
-  <Router>
+  <Providers>
     <Routes />
-  </Router>,
+  </Providers>,
   document.getElementById('root'),
 );
 

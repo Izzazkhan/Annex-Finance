@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import {
   useTable,
@@ -21,7 +21,7 @@ const Styles = styled.div`
   width: 100%;
   overflow: auto;
   background-color: #101016;
-  margin-top: 25px;
+  margin-top: 40px;
   table {
     width: 100%;
     background-color: #000;
@@ -36,10 +36,6 @@ const Styles = styled.div`
           border-bottom: 0;
         }
       }
-    }
-
-    th {
-      font-size: 1.12rem;
     }
 
     th,
@@ -62,15 +58,15 @@ function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter
   return (
     <div className="relative">
       <input
-        className="border border-solid border-gray bg-transparent h-15
-                           rounded-4xl mt-1 w-96 focus:outline-none font-bold px-3 py-2 text-white"
+        className="border border-solid border-gray bg-transparent
+                           rounded-3xl mt-1 w-full focus:outline-none font-bold px-3 py-2 text-white"
         value={filterValue || ''}
         onChange={(e) => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
-        placeholder="Search here"
+        placeholder="Search"
       />
-      <img src={search} alt="" className="w-5 absolute top-6 right-8" />
+      <img className="w-4 absolute top-4 right-6" src={search} alt="search" />
     </div>
   );
 }
@@ -156,11 +152,11 @@ function Table({ columns, data, renderRowSubComponent }) {
   // Render the UI for your table
   return (
     <div className="relative w-full">
-      <div className="absolute top-4 right-0 sm:right-6 pr-0 sm:pr-4">
+      <div className="absolute top-4 right-6 pr-0 sm:pr-4">
         <Select
           type="primaryBlack"
           label="Filter Period"
-          labelClassName="text-lg font-bold"
+          labelClassName="font-bold"
           options={filterPeriodOptions}
           width="w-72"
         />
@@ -179,7 +175,7 @@ function Table({ columns, data, renderRowSubComponent }) {
                       key={column.Header}
                     >
                       {column.render('Header')}
-                      {index !== 6 && (
+                      {index !== 0 && index !== 6 && (
                         <span>
                           {column.isSorted ? (
                             column.isSortedDesc ? (
@@ -199,7 +195,7 @@ function Table({ columns, data, renderRowSubComponent }) {
                           )}
                         </span>
                       )}
-                      <div className="absolute top-3 left-0 sm:left-6">
+                      <div className="absolute top-7 sm:top-4 left-2 sm:left-6">
                         {column.canFilter ? column.render('Filter') : null}
                       </div>
                     </th>
@@ -276,7 +272,7 @@ function Table({ columns, data, renderRowSubComponent }) {
                 disabled={!canNextPage}
               >
                 <div className="flex space-x-2">
-                  <div className="text-18">Next</div>
+                  <div className="">Next</div>
                   <img src={rightArrow} alt="" />
                 </div>
               </button>
