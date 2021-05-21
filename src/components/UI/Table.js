@@ -25,6 +25,7 @@ const Styles = styled.div`
     td {
       margin: 0;
         text-align: right;
+        padding: 0;
 
         :first-child {
             text-align: left;

@@ -511,8 +511,9 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                         placeholder="0"
                     />
 
-                    <div className="justify-self-end cursor-pointer" onClick={() => handleMaxAmount()}>
-                        SAFE <br /> MAX
+                    <div className=" flex justify-self-end items-center cursor-pointer"
+                         onClick={() => handleMaxAmount()}>
+                        MAX
                     </div>
                 </div>
             ) : (

@@ -18,3 +18,13 @@ export function shortenAddress(address, chars = 4) {
 	}
 	return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
 }
+
+export function showTokenOnExplorer(address) {
+	const prefix = process.env.REACT_APP_ENV === 'dev' ? "testnet." : "";
+
+	const url = `https://${prefix}bscscan.com/token/${address}`
+
+	window.open(url, "_blank");
+
+	return url;
+}

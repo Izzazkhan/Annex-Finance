@@ -437,7 +437,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                           <div
                               className="justify-self-end cursor-pointer"
                               onClick={() => handleMaxAmountRepay()}>
-                              MAX
+                              SAFE <br /> MAX
                           </div>
                       </div>
                   ) : (
@@ -477,7 +477,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                   <div
                       className="justify-self-end cursor-pointer"
                       onClick={() => handleMaxAmount()}>
-                        MAX
+                          SAFE <br /> MAX
                   </div>
               </div>
           )}

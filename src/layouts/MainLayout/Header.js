@@ -148,7 +148,7 @@ function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
         .toString(10);
 
     // minted xai amount
-    let xaiMinted = await methods.call(appContract.methods.mintedVAIs, [
+    let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
       accountAddress
     ]);
     xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
@@ -157,7 +157,7 @@ function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
     let xaiAPY;
     if (settings.dailyAnnex && xaiVaultStaked) {
       let annexXAIVaultRate = await methods.call(
-          appContract.methods.venusVAIVaultRate,
+          appContract.methods.annexXAIVaultRate,
           []
       );
       annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
