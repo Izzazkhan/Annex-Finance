@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Modal from '../UI/Modal';
 import NumberFormat from 'react-number-format'
 import coinImg from '../../assets/images/coins/ann.png';
-import available from '../../assets/images/coins/xai.svg';
+import available from '../../assets/images/coins/XAI.png';
 import BigNumber from "bignumber.js";
 import {getBigNumber} from "../../utilities/common";
 import {bindActionCreators} from "redux";
@@ -18,9 +18,10 @@ import {sendSupply} from "../../utilities/BnbContract";
 import commaNumber from "comma-number";
 import primaryBigArrow from "../../assets/icons/primaryBigArrow.svg";
 import styled from "styled-components";
+import Loading from "../UI/Loading";
 
 const StyledNumberFormat = styled(NumberFormat)`
-    width: 65%;
+    width: 95%;
     margin-left: 17.5%;
     border: none;
     height: 100%;
@@ -224,12 +225,14 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             appContract.methods.treasuryPercent,
             []
         );
-        setWithdrawAmount(new BigNumber(treasuryPercent).times(100).div(1e18));
+        setWithdrawFeePercent(new BigNumber(treasuryPercent).times(100).div(1e18));
     };
 
     useEffect(() => {
-        getFeePercent();
-    }, []);
+        if(account) {
+            getFeePercent();
+        }
+    }, [account]);
 
 
     const updateWithdrawInfo = useCallback(async () => {
@@ -380,19 +383,23 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         <div className="text-white">
             {getBigNumber(record.annSupplyApy)
                 .dp(2, 1)
-                .toString(10)}
-            %
+                .isGreaterThan(100000000)
+                ? "Infinity"
+                    : getBigNumber(record.annSupplyApy)
+                        .dp(2, 1)
+                        .toString(10) + "%"}
+
         </div>
       </div>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <img className="w-6 h-6" src={available} alt="XAI" />
-          <div className="text-white">Available ANN Limit</div>
+          <div className="text-white">Available XAI Limit</div>
         </div>
         <div className="text-white">
             {getBigNumber(settings.mintableXai)
                 .dp(2, 1)
-                .toString(10)}{' '} ANN</div>
+                .toString(10)}{' '} XAI</div>
       </div>
     </div>
   );
@@ -429,10 +436,10 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         <div className="flex justify-between items-center">
             <div className="text-white text-lg">Borrow Limit Used</div>
             {withdrawAmount.isZero() || withdrawAmount.isNaN() ? (
-                <span>{borrowPercent.dp(2, 1).toString(10)}%</span>
+                <span>{withdrawBorrowPercent.dp(2, 1).toString(10)}%</span>
             ) : (
                 <div className="flex">
-                    <div className="">{borrowPercent.dp(2, 1).toString(10)}%</div>
+                    <div className="">{withdrawBorrowPercent.dp(2, 1).toString(10)}%</div>
                     <div className="text-primary">
                         <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                     </div>
@@ -450,28 +457,28 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           >
               <div className="text-white text-lg">Borrow Limit</div>
               {amount.isZero() || amount.isNaN() ? (
-                  <span>${format(borrowLimit.dp(2, 1).toString(10))}</span>
+                  <span>${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</span>
               ) : (
                   <div className="flex">
-                      <div className="">${format(borrowLimit.dp(2, 1).toString(10))}</div>
+                      <div className="">${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</div>
                       <div className="text-primary">
                           <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                       </div>
-                      <div className="">${format(newBorrowLimit.dp(2, 1).toString(10))}</div>
+                      <div className="">${format(withdrawNewBorrowLimit.dp(2, 1).toString(10))}</div>
                   </div>
               )}
           </div>
           <div className="flex justify-between items-center">
               <div className="text-white text-lg">Borrow Limit Used</div>
               {amount.isZero() || amount.isNaN() ? (
-                  <span>{borrowPercent.dp(2, 1).toString(10)}%</span>
+                  <span>{withdrawBorrowPercent.dp(2, 1).toString(10)}%</span>
               ) : (
                   <div className="flex">
-                      <div className="">{borrowPercent.dp(2, 1).toString(10)}%</div>
+                      <div className="">{withdrawBorrowPercent.dp(2, 1).toString(10)}%</div>
                       <div className="text-primary">
                           <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                       </div>
-                      <div className="">{newBorrowPercent.dp(2, 1).toString(10)}%</div>
+                      <div className="">{withdrawNewBorrowPercent.dp(2, 1).toString(10)}%</div>
                   </div>
               )}
           </div>
@@ -480,11 +487,11 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
 
   const title = (
     <div
-      className="flex justify-center items-center space-x-2 py-4 mx-14
+      className="flex justify-center items-center space-x-2 pt-6 pb-6 mx-14
                     border-b border-solid border-black"
     >
       <img className="w-8" src={record?.img} alt={record?.name} />
-      <div>{record?.name}</div>
+      <div className={'font-bold text-xl'}>{record?.name}</div>
     </div>
   );
 
@@ -521,7 +528,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                     <div className="flex justify-center pb-4">
                         <img className="w-14" src={record.img} alt={record.name} />
                     </div>
-                    <p className="center warning-label">
+                    <p className="center warning-label text-center">
                         To Supply {record.name} to the Annex Protocol, you need to approve
                         it first.
                     </p>
@@ -540,8 +547,14 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                     setWithdrawAmount(new BigNumber(value));
                 }}
                 isAllowed={({ value }) => {
-                    return new BigNumber(value || 0).isLessThanOrEqualTo(
-                        record.walletBalance
+                    const temp = new BigNumber(value || 0);
+                    const { totalBorrowLimit } = settings;
+                    const { tokenPrice, collateralFactor } = record;
+                    return (
+                        temp.isLessThanOrEqualTo(record.supplyBalance) &&
+                        getBigNumber(totalBorrowLimit).isGreaterThanOrEqualTo(
+                            temp.times(tokenPrice).times(collateralFactor)
+                        )
                     );
                 }}
                 thousandSeparator
@@ -553,30 +566,30 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                   SAFE <br /> MAX
               </div>
           </div>
-          <p className="text-center mt-6">
+          <p className="text-center mt-6 text-center">
             Your available withdraw amount = Total Supply Amount - ANN Mint Amount - Borrowed Amount
           </p>
         </div>
       )}
-      <div className="flex mt-16">
+      <div className="flex mt-16 bg-black rounded-md">
         <button
-          className={`py-4 px-10 w-full focus:outline-none ${
-            currentTab === 'supply' ? 'bg-primary' : 'bg-black'
+          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+            currentTab === 'supply' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('supply')}
         >
           Supply
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none ${
-            currentTab === 'withdraw' ? 'bg-primary' : 'bg-black'
+          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+            currentTab === 'withdraw' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('withdraw')}
         >
           Withdraw
         </button>
       </div>
-      <div className="bg-black w-full mt-10 p-6">
+      <div className="bg-black w-full mt-10 p-6 rounded-lg">
         <PrimaryList />
         {currentTab === 'withdraw' ? (
           <>
@@ -593,7 +606,8 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           {currentTab === 'withdraw' ? (
               <div className="flex justify-center mt-16">
               <button
-                  className="bg-primary py-2 rounded px-32 text-black"
+                  className="h-12 bg-primaryLight py-2 rounded px-32 text-black
+                  flex items-center justify-center transition-all disabled:opacity-50"
                   disabled={
                       isWithdrawLoading ||
                       withdrawAmount.isNaN() ||
@@ -603,7 +617,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                   }
                   onClick={handleWithdraw}
               >
-                  {isLoading ? "Loading..." : "Withdraw"}
+                  {isWithdrawLoading && <Loading size={'18px'} margin={'8px'}/>} Withdraw
               </button>
               </div>
           ) : (
@@ -614,12 +628,14 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                           onClick={() => {
                               onApprove();
                           }}
-                          className="bg-primary py-2 rounded px-32 text-black">
-                          {isLoading ? "Loading..." : "Enable"}
+                          className="h-12 bg-primaryLight py-2 rounded px-32 text-black
+                          flex items-center justify-center transition-all disabled:opacity-50">
+                          {isLoading && <Loading size={'18px'} margin={'8px'}/>} Enable
                       </button>
                   ) : (
                       <button
-                          className="bg-primary py-2 rounded px-32 text-black"
+                          className="h-12 bg-primaryLight py-2 rounded px-32 text-black
+                          flex items-center justify-center transition-all disabled:opacity-50"
                           disabled={
                               isLoading ||
                               amount.isNaN() ||
@@ -628,7 +644,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                           }
                           onClick={handleSupply}
                       >
-                          {isLoading ? "Loading..." : "Supply"}
+                          {isLoading && <Loading size={'18px'} margin={'8px'}/>} Supply
                       </button>
                   )}
               </div>

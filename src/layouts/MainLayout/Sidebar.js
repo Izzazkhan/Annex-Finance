@@ -116,7 +116,7 @@ function Sidebar({ isOpen, onClose }) {
   return (
       <>
         <Wrapper
-            className={`bg-fadeBlack pt-6 px-2 fixed h-full overflow-auto flex flex-col
+            className={`bg-sidebar pt-6 px-2 fixed h-full overflow-auto flex flex-col
                    transform ease-in-out transition-all duration-300 z-30 
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >

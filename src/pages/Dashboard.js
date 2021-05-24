@@ -133,6 +133,9 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
 
   const addXAIApy = useCallback(
       async apy => {
+        if(!account) {
+          return;
+        }
         const vaultContract = getXaiVaultContract();
         const { 0: staked } = await methods.call(vaultContract.methods.userInfo, [
           account
@@ -361,7 +364,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
 
 
 
-  const [displayWarning, setDisplayWarning] = useState(true);
+  const [displayWarning, setDisplayWarning] = useState(Boolean(!localStorage.getItem("betaWarning")));
   const [supplyWithdrawOpen, setSupplyWithdrawOpen] = useState(false);
   const [borrowRepayOpen, setBorrowRepayOpen] = useState(false);
   const [balanceOpen, setBalanceOpen] = useState(false);
@@ -421,6 +424,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   );
 
   const handleSupplyClickRow = row => {
+    console.log(row);
     setSupplyRecord(row);
     setSupplyWithdrawOpen(true);
   };
@@ -446,10 +450,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
 
   const supplyData = React.useMemo(() => {
     return suppliedAssets.map(asset => {
+      const apy = withANN
+          ? asset.supplyApy.plus(asset.annSupplyApy)
+          : asset.supplyApy
       return {
         Asset: (
             <div
-                className="h-13 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+                className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
                 onClick={() => handleSupplyClickRow(asset)}
             >
               <img className="w-6" src={asset.img} alt={asset.name} />
@@ -459,21 +466,20 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Apy: (
-            <div className="h-13 font-medium cursor-pointer text-green w-full flex items-center px-8 py-3 justify-between"
+            <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
                  onClick={() => handleSupplyClickRow(asset)}
             >
-              <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'}/>
-              {new BigNumber(settings.withANN
-                      ? asset.supplyApy.plus(asset.annSupplyApy)
-                      : asset.supplyApy).isGreaterThan(100000000)
-                      ? 'Infinity'
-                      : `${(settings.withANN
-                      ? asset.supplyApy.plus(asset.annSupplyApy)
-                      : asset.supplyApy).dp(2, 1).toString(10)}%`}
+              <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'}/>
+
+              <div className="w-20 ml-2 md:ml-3">
+                {new BigNumber(apy).isGreaterThan(100000000)
+                        ? 'Infinity'
+                        : `${(apy).dp(2, 1).toString(10)}%`}
+              </div>
             </div>
         ),
         Wallet: (
-            <div className="h-13 font-medium cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
                  onClick={() => handleSupplyClickRow(asset)}
             >
               ${format(
@@ -485,7 +491,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Collateral: +asset.collateralFactor ? (
-            <div className="h-13 font-medium cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+            <div className="h-13 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
               <Switch
                   wrapperClassName="pt-1 pb-0"
                   value={asset.collateral}
@@ -500,10 +506,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
 
   const allMarketData = React.useMemo(() => {
     return nonSuppliedAssets.map(asset => {
+      const apy = withANN
+          ? asset.supplyApy.plus(asset.annSupplyApy)
+          : asset.supplyApy
       return {
         Asset: (
             <div
-                className="h-13 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+                className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
                 onClick={() => handleSupplyClickRow(asset)}
             >
               <img className="w-6" src={asset.img} alt={asset.name} />
@@ -513,21 +522,20 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Apy: (
-            <div className="h-13 font-medium cursor-pointer text-green w-full flex items-center px-8 py-3 justify-between"
+            <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
                  onClick={() => handleSupplyClickRow(asset)}
             >
-              <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'}/>
-              {new BigNumber(settings.withANN
-                  ? asset.supplyApy.plus(asset.annSupplyApy)
-                  : asset.supplyApy).isGreaterThan(100000000)
-                  ? 'Infinity'
-                  : `${(settings.withANN
-                      ? asset.supplyApy.plus(asset.annSupplyApy)
-                      : asset.supplyApy).dp(2, 1).toString(10)}%`}
+              <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'}/>
+
+              <div className="w-20 ml-2 md:ml-3">
+                {new BigNumber(apy).isGreaterThan(100000000)
+                    ? 'Infinity'
+                    : `${(apy).dp(2, 1).toString(10)}%`}
+              </div>
             </div>
         ),
         Wallet: (
-            <div className="h-13 font-medium cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
                  onClick={() => handleSupplyClickRow(asset)}
             >
               {format(
@@ -538,7 +546,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Collateral: +asset.collateralFactor ? (
-            <div className="h-13 font-medium cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+            <div className="h-13 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
               <Switch
                   wrapperClassName="pt-1 pb-0"
                   value={asset.collateral}
@@ -574,7 +582,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       return {
         Asset: (
             <div
-                className="h-13 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+                className="h-20 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
                 onClick={() => handleBorrowClickRow(asset)}
             >
               <img className="w-6" src={asset.img} alt={asset.symbol} />
@@ -582,24 +590,35 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Apy: (
-            <div className={`h-13 font-medium cursor-pointer justify-between w-full flex items-center px-8 py-3 text-${withANN ? 'green' : 'red'}`} onClick={() => handleBorrowClickRow(asset)}>
+            <div className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${withANN ? 'green' : 'red'}`} onClick={() => handleBorrowClickRow(asset)}>
               {withANN ? (
-                  <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'}/>
+                  <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'}/>
               ) : (
-                  <img src={arrowDown} style={{ marginLeft: 40 }} alt={'down'}/>
+                  <img src={arrowDown} style={{ marginLeft: 40 }} alt={'down'} className={'h-3 md:h-4'}/>
               )}
-              {new BigNumber(apy).isGreaterThan(100000000)
-                  ? 'Infinity'
-                  : `${apy.dp(2, 1).toString(10)}%`}
+              <div className="w-20 ml-2 md:ml-3">
+                {new BigNumber(apy).isGreaterThan(100000000)
+                    ? 'Infinity'
+                    : `${apy.dp(2, 1).toString(10)}%`}
+              </div>
             </div>
         ),
         Wallet: (
-            <div className="h-13 font-medium cursor-pointer justify-end w-full flex items-center px-8 py-3 text-green" onClick={() => handleBorrowClickRow(asset)}>
-              {format(asset.borrowBalance.dp(4, 1).toString(10))} {asset.symbol}
+            <div className="h-20 font-bold cursor-pointer w-full px-8 py-6 text-green flex flex-col items-end justify-center" onClick={() => handleBorrowClickRow(asset)}>
+
+              ${format(
+                  asset.borrowBalance
+                      .times(asset.tokenPrice)
+                      .dp(2, 1)
+                      .toString(10)
+              )}
+              <div className="text-white text-right font-normal">
+                {format(asset.borrowBalance.dp(4, 1).toString(10))} {asset.asymbol}
+              </div>
             </div>
         ),
         percentOfLimit: (
-            <div className="h-13 font-medium cursor-pointer justify-end w-full flex items-center px-8 py-3 text-primary" onClick={() => handleBorrowClickRow(asset)}>
+            <div className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-primary" onClick={() => handleBorrowClickRow(asset)}>
               {asset.percentOfLimit}%
             </div>
         ),
@@ -616,7 +635,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       return {
         Asset: (
             <div
-                className="h-13 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+                className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
                 onClick={() => handleBorrowClickRow(asset)}
             >
               <img className="w-6" src={asset.img} alt={asset.symbol} />
@@ -625,7 +644,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         ),
         Apy: (
             <div
-                className={`h-13 font-medium cursor-pointer justify-between w-full flex items-center px-8 py-3 text-${
+                className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
                     !withANN
                         ? 'red'
                         : getBigNumber(asset.annBorrowApy)
@@ -635,28 +654,38 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                         : 'green'
                 }`}
                 onClick={() => handleBorrowClickRow(asset)}>
-              {!withANN || !(getBigNumber(asset.annBorrowApy)
-                  .minus(asset.borrowApy)
-                  .isNegative()) ? (
-                  <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'}/>
-              ) : (
-                  <img src={arrowDown} style={{ marginLeft: 40 }} alt={'down'}/>
-              )}
-              {new BigNumber(apy.absoluteValue()).isGreaterThan(100000000)
-                  ? 'Infinity'
-                  : `${apy
-                      .absoluteValue()
-                      .dp(2, 1)
-                      .toString(10)}%`}
+              {
+                !withANN
+                    ? (
+                        <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'}/>
+                    )
+                    : getBigNumber(asset.annBorrowApy)
+                        .minus(asset.borrowApy)
+                        .isNegative()
+                    ? (
+                        <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'}/>
+                    )
+                    : (
+                        <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'}/>
+                    )
+              }
+              <div className="w-20 ml-2 md:ml-3">
+                {new BigNumber(apy.absoluteValue()).isGreaterThan(100000000)
+                    ? 'Infinity'
+                    : `${apy
+                        .absoluteValue()
+                        .dp(2, 1)
+                        .toString(10)}%`}
+              </div>
             </div>
         ),
         Wallet: (
-            <div className="h-13 font-medium cursor-pointer justify-end text-green w-full flex items-center px-8 py-3" onClick={() => handleBorrowClickRow(asset)}>
+            <div className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-8 py-3" onClick={() => handleBorrowClickRow(asset)}>
               {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
             </div>
         ),
         Liquidity: (
-            <div className="h-13 font-medium cursor-pointer justify-end text-primary w-full flex items-center px-8 py-3" onClick={() => handleBorrowClickRow(asset)}>
+            <div className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-8 py-3" onClick={() => handleBorrowClickRow(asset)}>
               ${format(asset.liquidity.dp(2, 1).toString(10))}
             </div>
         ),
@@ -693,6 +722,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       const info = settings.markets.find(
           item => item?.underlyingSymbol?.toLowerCase() === currentAsset
       );
+      console.log(info);
       setMarketInfo(info || {});
     }
   }, [settings.markets, currentAsset]);
@@ -814,7 +844,10 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
             warranties, including that Akropolis is error-free or secure. Use it at your own risk.
           </p>
-          <div className="cursor-pointer" onClick={() => setDisplayWarning(false)}>
+          <div className="cursor-pointer" onClick={() => {
+            localStorage.setItem("betaWarning", "true");
+            setDisplayWarning(false)
+          }}>
             <img src={close} alt="close" />
           </div>
         </div>
@@ -830,7 +863,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           </div>
         </div>
         <div className="bg-fadeBlack flex flex-col lg:flex-row justify-between lg:space-x-4 p-6 rounded-lg">
-          <div className="grid grid-cols-2 gap-9 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-9 w-full mb-6 md:mb-0">
             <SummaryCard
               name="ANN Balance"
               title={`${format(getBigNumber(annBalance).dp(2, 1).toString(10))} ANN`}
@@ -857,7 +890,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                 noData={!account || wrongNetwork}
                 status="red" />
           </div>
-          <div className="bg-black flex justify-between w-full p-6 mt-0">
+          <div className="bg-black flex justify-between w-full p-6 mt-0 rounded-lg">
             <div className="">
               <div className="">
                 <div className="text-lg font-bold">Supply Balance</div>
@@ -893,7 +926,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                   </div>
                 </div>
               </div>
-              <Switch value={withANN} onChange={() => setWithANN(!withANN)} />
+              <Switch value={withANN} onChange={() => setWithANN(oldVal => !oldVal)} />
               <div className="flex">
                 <img src={fire} alt="" />
                 <div className="ml-2 text-lg">APY with ANN</div>
@@ -914,8 +947,8 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start mt-5">
-        <div className="fadeBlack w-full rounded-lg overflow-hidden">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-stretch mt-5">
+        <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
           {(suppliedAssets.length === 0 && nonSuppliedAssets.length === 0) && (
               <DataTable title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6"/>} columns={supplyColumns} data={loadingData}/>
           )}
@@ -926,7 +959,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
               <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
           )}
         </div>
-        <div className="fadeBlack w-full rounded-lg overflow-hidden">
+        <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
           {(borrowedAssets.length === 0 && nonBorrowedAssets.length === 0) && (
               <DataTable title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6"/>} columns={supplyColumns} data={loadingData}/>
           )}
@@ -944,8 +977,8 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         </div>
       </div>
       <div className="bg-fadeBlack py-4 px-6 mt-5 rounded-lg">
-        <div className="text-white text-2xl ml-2">Marketcap</div>
-        <div className="bg-black md:p-6 mt-4">
+        <div className="text-white text-2xl ml-2">APY History</div>
+        <div className="bg-black py-6 md:p-6 mt-4 rounded-xl">
           <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row items-center justify-between">
             <Select
                 options={options}
@@ -996,9 +1029,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
               <div className="text-primary text-md sm:text-lg font-bold">{!account || wrongNetwork
                   ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
                   : `${currentAPY}%`}</div>
-              <div className="text-sm sm:text-md">{(settings.marketType || 'supply') === 'supply'
-                  ? 'Supply APY'
-                  : 'Borrow APY'}</div>
+              <div className="text-sm sm:text-md">Supply APY & Borrow APY</div>
               <div className="text-sm sm:text-md">APY</div>
             </div>
           </div>
@@ -1041,13 +1072,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                 <div className=""># of Suppliers</div>
                 <div className="font-medium text-lg">{!account || wrongNetwork
                     ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    :  marketInfo?.supplierCount ? format(marketInfo?.supplierCount) : "-"}</div>
+                    :  Number(marketInfo?.supplierCount) >= 0 ? format(marketInfo?.supplierCount) : "-"}</div>
               </div>
               <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
                 <div className=""># of Borrowers</div>
                 <div className="font-medium text-lg">{!account || wrongNetwork
                     ? (<div className="animate-pulse w-12 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : marketInfo?.borrowerCount ? format(marketInfo?.borrowerCount) : "-"}</div>
+                    : Number(marketInfo?.borrowerCount) >= 0 ? format(marketInfo?.borrowerCount) : "-"}</div>
               </div>
               <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
                 <div className="">Reserves</div>
@@ -1116,8 +1147,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                       ? (<div className="animate-pulse w-36 h-6 bg-lightGray rounded-lg inline-block"/>)
                       : marketInfo.exchangeRate ? (
                           <>
-                            1 <span className="text-red">{marketInfo.underlyingSymbol || '-'}</span> =
-                            {!account || wrongNetwork
+                            1 <span className="text-red">{marketInfo.underlyingSymbol || '-'}</span> =  {!account || wrongNetwork
                               ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
                               : new BigNumber(1)
                                 .div(

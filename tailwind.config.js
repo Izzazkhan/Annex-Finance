@@ -22,6 +22,7 @@ module.exports = {
       },
       colors: {
         primary: '#FF9800',
+        primaryLight: '#FFAB2D',
         primaryDark: '#C97629',
         fadeBlack: '#101016',
         secondary: '#5F5F5F',
@@ -42,6 +43,8 @@ module.exports = {
         darkBlue2: '#091B2E',
         darkerBlue: '#101016',
         fadeBlue: '#071625',
+        black: '#0A0A0E',
+        sidebar: "#13131B"
       },
       fontSize: {
         24: '24px',
@@ -96,7 +99,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      opacity: ['disabled'],
+    },
   },
   plugins: [],
 };

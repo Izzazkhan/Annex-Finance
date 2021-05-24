@@ -83,6 +83,7 @@ function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
 
   const getMarkets = async () => {
     const res = await promisify(getGovernanceAnnex, {});
+    console.log(res);
     if (!res.status) {
       return;
     }
@@ -213,8 +214,8 @@ function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
         atokenAddress: constants.CONTRACT_ABEP_ADDRESS[item.id].address,
         supplyApy: new BigNumber(market.supplyApy || 0),
         borrowApy: new BigNumber(market.borrowApy || 0),
-        annSupplyApy: new BigNumber(market.supplyVenusApy || 0),
-        annBorrowApy: new BigNumber(market.borrowVenusApy || 0),
+        annSupplyApy: new BigNumber(market.supplyAnnexApy || 0),
+        annBorrowApy: new BigNumber(market.borrowAnnexApy || 0),
         collateralFactor: new BigNumber(market.collateralFactor || 0).div(1e18),
         tokenPrice: new BigNumber(market.tokenPrice || 0),
         liquidity: new BigNumber(market.liquidity || 0),

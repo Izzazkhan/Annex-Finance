@@ -21,7 +21,7 @@ function Trade() {
     <Layout mainClassName="py-10 min-h-screen">
       <SettingsModal open={settingsOpen} onCloseModal={() => setSettingsOpen(false)} />
       <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
-      <div className="bg-fadeBlack w-full flex flex-col justify-center items-center">
+      <div className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-2xl">
         <div className="flex space-x-4 mt-10">
           {buttons?.map((b) => (
             <button

@@ -7,7 +7,7 @@ const Styles = styled.div`
   overflow: auto;
   table {
     width: 100%;
-    background-color: #000;
+    background-color: #0A0A0E;
     color: #fff;
     border-spacing: 0;
     border: 1px solid #2b2b2b;

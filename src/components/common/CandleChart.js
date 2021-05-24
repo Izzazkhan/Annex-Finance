@@ -124,8 +124,8 @@ const CustomShapeBarChart = ({rawData}) => {
           <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
           <Area
             dataKey="borrowApy"
-            fill="url(#colorPv)"
-            stroke={'#2ca02c'}
+            fill="url(#colorUv)"
+            stroke={'#d62728'}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % 2]} />
@@ -133,8 +133,8 @@ const CustomShapeBarChart = ({rawData}) => {
           </Area>
           <Area
             dataKey="supplyApy"
-            fill="url(#colorUv)"
-            stroke={'#d62728'}
+            fill="url(#colorPv)"
+            stroke={'#2ca02c'}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % 2]} />

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Modal from '../UI/Modal';
 import coinImg from '../../assets/images/coins/ann.png';
-import available from '../../assets/images/coins/xai.svg';
+import available from '../../assets/images/coins/XAI.png';
 import BigNumber from "bignumber.js";
 import {getBigNumber} from "../../utilities/common";
 import {accountActionCreators, connectAccount} from "../../core";
@@ -13,16 +13,17 @@ import styled from "styled-components";
 import NumberFormat from "react-number-format";
 import commaNumber from "comma-number";
 import primaryBigArrow from "../../assets/icons/primaryBigArrow.svg";
+import Loading from "../UI/Loading";
 
 const StyledNumberFormat = styled(NumberFormat)`
-    width: 65%;
+    width: 95%;
     margin-left: 17.5%;
     border: none;
     height: 100%;
     font-size: 40px;
     text-align: center;
     background: transparent;
-    color: #FF9800;
+    color: #FFAB2D;
     
     &:focus {
         outline: none;
@@ -331,18 +332,22 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         <div className="text-white">
             {getBigNumber(asset.annBorrowApy)
                 .dp(2, 1)
-                .toString(10)}
-            %</div>
+                .isGreaterThan(100000000)
+                ? "Infinity"
+                : getBigNumber(asset.annBorrowApy)
+                .dp(2, 1)
+                .toString(10) + "%"}
+        </div>
       </div>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <img className="w-6 h-6" src={available} alt="XAI" />
-          <div className="text-white">Replay ANN Balance</div>
+          <div className="text-white">Repay XAI Balance</div>
         </div>
         <div className="text-white">
             {getBigNumber(settings.xaiMinted)
                 .dp(2, 1)
-                .toString(10)}{' '} ANN
+                .toString(10)}{' '} XAI
         </div>
       </div>
         {!new BigNumber(asset.borrowCaps || 0).isZero() && (
@@ -367,16 +372,29 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         <div className="text-white">Borrow Balance</div>
           {(currentTab === 'repayBorrow' && (amountRepay.isZero() || amountRepay.isNaN()))
           || (amount.isZero() || amount.isNaN()) ? (
-              <span>${borrowBalance.dp(2, 1).toString(10)}</span>
+              <span>${(
+                  currentTab === 'repayBorrow'
+                      ? borrowBalanceRepay
+                      : borrowBalance).dp(2, 1).toString(10)}</span>
           ) : (
               <div className="flex">
                   <div className="text-white">
-                      ${borrowBalance.dp(2, 1).toString(10)}
+                      ${(currentTab === 'repayBorrow'
+                      ? borrowBalanceRepay
+                      : borrowBalance).dp(2, 1).toString(10)}
                   </div>
                   <div className="text-primary">
                       <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                   </div>
-                  <div className="text-white">${newBorrowBalance.dp(2, 1).toString(10)}</div>
+                  <div className="text-white">
+                      ${
+                      (currentTab === 'repayBorrow'
+                      ? newBorrowBalanceRepay
+                      : newBorrowBalance)
+                          .dp(2, 1)
+                          .toString(10)
+                  }
+                  </div>
               </div>
           )}
       </div>
@@ -384,17 +402,23 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         <div className="text-white">Borrow Limit Used</div>
           {(currentTab === 'repayBorrow' && (amountRepay.isZero() || amountRepay.isNaN()))
           || (amount.isZero() || amount.isNaN()) ? (
-              <span>{borrowPercent.dp(2, 1).toString(10)}%</span>
+              <span>{(currentTab === 'repayBorrow'
+                      ? borrowPercentRepay
+                      : borrowPercent).dp(2, 1).toString(10)}%</span>
           ) : (
               <div className="flex">
                   <div className="text-white">
-                      {borrowPercent.dp(2, 1).toString(10)}%
+                      {(currentTab === 'repayBorrow'
+                      ? borrowPercentRepay
+                      : borrowPercent).dp(2, 1).toString(10)}%
                   </div>
                   <div className="text-primary">
                       <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                   </div>
                   <div className="text-white">
-                      {newBorrowPercent.dp(2, 1).toString(10)}%
+                      {(currentTab === 'repayBorrow'
+                          ? newBorrowPercentRepay
+                          : newBorrowPercent).dp(2, 1).toString(10)}%
                   </div>
               </div>
           )}
@@ -404,11 +428,11 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
 
   const title = (
     <div
-      className="flex justify-center items-center space-x-2 py-4 mx-14
+      className="flex justify-center items-center space-x-2 pt-6 pb-6 mx-14
                     border-b border-solid border-black"
     >
       <img className="w-8" src={asset.img} alt={asset.name} />
-      <div>{asset.name}</div>
+      <div className={'font-bold text-xl'}>{asset.name}</div>
     </div>
   );
   const content = (
@@ -445,7 +469,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                           <div className="flex justify-center pb-4">
                               <img className="w-14" src={asset.img} alt={asset.name} />
                           </div>
-                          <p className="center warning-label">
+                          <p className="center warning-label text-center">
                               To Repay {asset.name} to the Annex Protocol, you need to approve
                               it first.
                           </p>
@@ -482,33 +506,33 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
               </div>
           )}
       </div>
-      <div className="flex mt-16">
+      <div className="flex mt-16 bg-black rounded-md">
         <button
-          className={`py-4 px-10 w-full focus:outline-none ${
-            currentTab === 'borrow' ? 'bg-primary' : 'bg-black'
+          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+            currentTab === 'borrow' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('borrow')}
         >
           Borrow
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none ${
-            currentTab === 'repayBorrow' ? 'bg-primary' : 'bg-black'
+          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+            currentTab === 'repayBorrow' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('repayBorrow')}
         >
           Repay Borrow
         </button>
       </div>
-      <div className="bg-black w-full mt-10 p-6">
+      <div className="bg-black w-full mt-10 p-6 rounded-lg">
         <PrimaryList />
-        {currentTab === 'borrow' && (
+        {currentTab === 'borrow' || (currentTab === 'repayBorrow' && isEnabledRepay) ? (
           <>
             <div className="mx-auto w-full max-w-md border-b border-solid border-darkerBlue mt-10" />
             <SecondaryList />
           </>
-        )}
-        <div className="flex justify-center mt-16">
+        ) : null}
+        <div className="flex justify-center">
             {currentTab === 'repayBorrow' ? (
                 <div className="flex justify-center mt-16">
                     {!isEnabledRepay && asset.id !== 'bnb' ? (
@@ -517,12 +541,15 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                             onClick={() => {
                                 onApprove();
                             }}
-                            className="bg-primary py-2 rounded px-32 text-black">
-                            {isLoadingRepay ? "Loading..." : "Enable"}
+                            className="bg-primaryLight py-2 rounded px-32 transition-all disabled:opacity-50
+                            h-12 text-black flex items-center justify-center">
+                            {isLoadingRepay && <Loading size={'18px'} margin={'8px'}/>} Enable
                         </button>
                     ) : (
                         <button
-                            className="bg-primary py-2 rounded px-32 text-black"
+                            className="bg-primaryLight py-2 rounded px-32 transition-all
+                            h-12 text-black disabled:opacity-50
+                            flex items-center justify-center"
                             disabled={
                                 isLoadingRepay ||
                                 amountRepay.isZero() ||
@@ -533,7 +560,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                             }
                             onClick={handleRepayBorrow}
                         >
-                            {isLoadingRepay ? "Loading..." : "Repay Borrow"}
+                            {isLoadingRepay && <Loading size={'18px'} margin={'8px'}/>} Repay Borrow
                         </button>
                     )}
 
@@ -541,7 +568,8 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
             ) : (
                 <div className="flex justify-center mt-16">
                     <button
-                        className="bg-primary py-2 rounded px-32 text-black"
+                        className="bg-primaryLight py-2 rounded px-32 transition-all disabled:opacity-50
+                        h-12 text-black flex items-center justify-center"
                         disabled={
                             isLoading ||
                             amount.isZero() ||
@@ -553,7 +581,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                         }
                         onClick={handleBorrow}
                     >
-                        {isLoading ? "Loading..." : "Borrow"}
+                        {isLoading && <Loading size={'18px'} margin={'8px'}/>} Borrow
                     </button>
                 </div>
             )}
