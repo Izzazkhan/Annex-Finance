@@ -18,6 +18,7 @@ import Loading from "../UI/Loading";
 const StyledNumberFormat = styled(NumberFormat)`
     width: 95%;
     margin-left: 17.5%;
+    margin-right: 5%;
     border: none;
     height: 100%;
     font-size: 40px;
@@ -164,7 +165,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
         const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
         const tokenPrice = getBigNumber(asset.tokenPrice);
-        if (amount.isZero() || amount.isNaN()) {
+        if (amountRepay.isZero() || amountRepay.isNaN()) {
             setBorrowBalanceRepay(totalBorrowBalance);
             if (totalBorrowLimit.isZero()) {
                 setBorrowPercentRepay(new BigNumber(0));
@@ -176,7 +177,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                 );
             }
         } else {
-            const temp = totalBorrowBalance.minus(amount.times(tokenPrice));
+            const temp = totalBorrowBalance.minus(amountRepay.times(tokenPrice));
             setBorrowBalanceRepay(totalBorrowBalance);
             setNewBorrowBalanceRepay(temp);
             if (totalBorrowLimit.isZero()) {
@@ -187,7 +188,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                 setNewBorrowPercentRepay(temp.div(totalBorrowLimit).times(100));
             }
         }
-    }, [account, amount, asset]);
+    }, [account, amountRepay, asset]);
 
 
     useEffect(() => {
@@ -241,62 +242,67 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                     symbol: asset.symbol
                 }
             });
-            if (asset.id !== 'bnb') {
-                if (amount.eq(asset.borrowBalance)) {
-                    await methods.send(
-                        appContract.methods.repayBorrow,
-                        [
-                            new BigNumber(2)
-                                .pow(256)
-                                .minus(1)
-                                .toString(10)
-                        ],
-                        account
-                    );
+            try {
+
+                if (asset.id !== 'bnb') {
+                    if (amount.eq(asset.borrowBalance)) {
+                        await methods.send(
+                            appContract.methods.repayBorrow,
+                            [
+                                new BigNumber(2)
+                                    .pow(256)
+                                    .minus(1)
+                                    .toString(10)
+                            ],
+                            account
+                        );
+                    } else {
+                        await methods.send(
+                            appContract.methods.repayBorrow,
+                            [
+                                amount
+                                    .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
+                                    .integerValue()
+                                    .toString(10)
+                            ],
+                            account
+                        );
+                    }
+                    setAmountRepay(new BigNumber(0));
+                    onCloseModal();
+                    setIsLoadingRepay(false);
+                    setSetting({
+                        pendingInfo: {
+                            type: '',
+                            status: false,
+                            amount: 0,
+                            symbol: ''
+                        }
+                    });
                 } else {
-                    await methods.send(
-                        appContract.methods.repayBorrow,
-                        [
-                            amount
-                                .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
-                                .integerValue()
-                                .toString(10)
-                        ],
-                        account
+                    sendRepay(
+                        account,
+                        amount
+                            .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
+                            .integerValue()
+                            .toString(10),
+                        () => {
+                            setAmountRepay(new BigNumber(0));
+                            setIsLoadingRepay(false);
+                            onCloseModal();
+                            setSetting({
+                                pendingInfo: {
+                                    type: '',
+                                    status: false,
+                                    amount: 0,
+                                    symbol: ''
+                                }
+                            });
+                        }
                     );
                 }
-                setAmountRepay(new BigNumber(0));
-                onCloseModal();
+            } catch (e) {
                 setIsLoadingRepay(false);
-                setSetting({
-                    pendingInfo: {
-                        type: '',
-                        status: false,
-                        amount: 0,
-                        symbol: ''
-                    }
-                });
-            } else {
-                sendRepay(
-                    account,
-                    amount
-                        .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
-                        .integerValue()
-                        .toString(10),
-                    () => {
-                        setAmountRepay(new BigNumber(0));
-                        setIsLoadingRepay(false);
-                        onCloseModal();
-                        setSetting({
-                            pendingInfo: {
-                                type: '',
-                                status: false,
-                                amount: 0,
-                                symbol: ''
-                            }
-                        });
-                    }
-                );
             }
         }
     };
@@ -614,7 +620,11 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         content={content}
         open={open}
         onSetOpen={onSetOpen}
-        onCloseModal={onCloseModal}
+        onCloseModal={() => {
+            setAmountRepay(new BigNumber(0));
+            setAmount(new BigNumber(0));
+            onCloseModal()
+        }}
         afterCloseModal={() => setCurrentTab('borrow')}
       />
     </div>

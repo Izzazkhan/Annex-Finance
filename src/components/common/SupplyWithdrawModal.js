@@ -23,6 +23,7 @@ import Loading from "../UI/Loading";
 const StyledNumberFormat = styled(NumberFormat)`
     width: 95%;
     margin-left: 17.5%;
+    margin-right: 5%;
     border: none;
     height: 100%;
     font-size: 40px;
@@ -255,9 +256,9 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         );
         setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
 
-        if (tokenPrice && !amount.isZero() && !amount.isNaN()) {
+        if (tokenPrice && !withdrawAmount.isZero() && !withdrawAmount.isNaN()) {
             const temp = totalBorrowLimit.minus(
-                amount.times(tokenPrice).times(collateralFactor)
+                withdrawAmount.times(tokenPrice).times(collateralFactor)
             );
             setWithdrawNewBorrowLimit(temp);
             setWithdrawNewBorrowPercent(totalBorrowBalance.div(temp).times(100));
@@ -281,7 +282,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                 );
             }
         }
-    }, [account, amount]);
+    }, [account, withdrawAmount]);
 
 
     useEffect(() => {
@@ -409,7 +410,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       <div className="flex justify-between items-center">
         <div className="text-white">Fee</div>
         <div className="text-white">
-            {!amount.isNaN()
+            {!withdrawAmount.isNaN()
                 ? new BigNumber(withdrawAmount)
                     .times(withdrawFeePercent / 100)
                     .dp(4)
@@ -422,14 +423,14 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         >
             <div className="text-white text-lg">Borrow Limit</div>
             {withdrawAmount.isZero() || withdrawAmount.isNaN() ? (
-                <span>${format(borrowLimit.dp(2, 1).toString(10))}</span>
+                <span>${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</span>
             ) : (
                 <div className="flex">
-                    <div className="">${format(borrowLimit.dp(2, 1).toString(10))}</div>
+                    <div className="">${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</div>
                     <div className="text-primary">
                         <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                     </div>
-                    <div className="">${format(newBorrowLimit.dp(2, 1).toString(10))}</div>
+                    <div className="">${format(withdrawNewBorrowLimit.dp(2, 1).toString(10))}</div>
                 </div>
             )}
         </div>
@@ -443,7 +444,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                     <div className="text-primary">
                         <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                     </div>
-                    <div className="">{newBorrowPercent.dp(2, 1).toString(10)}%</div>
+                    <div className="">{withdrawNewBorrowPercent.dp(2, 1).toString(10)}%</div>
                 </div>
             )}
         </div>
@@ -457,28 +458,28 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           >
               <div className="text-white text-lg">Borrow Limit</div>
               {amount.isZero() || amount.isNaN() ? (
-                  <span>${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</span>
+                  <span>${format(borrowLimit.dp(2, 1).toString(10))}</span>
               ) : (
                   <div className="flex">
-                      <div className="">${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</div>
+                      <div className="">${format(borrowLimit.dp(2, 1).toString(10))}</div>
                       <div className="text-primary">
                           <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                       </div>
-                      <div className="">${format(withdrawNewBorrowLimit.dp(2, 1).toString(10))}</div>
+                      <div className="">${format(newBorrowLimit.dp(2, 1).toString(10))}</div>
                   </div>
               )}
           </div>
           <div className="flex justify-between items-center">
               <div className="text-white text-lg">Borrow Limit Used</div>
               {amount.isZero() || amount.isNaN() ? (
-                  <span>{withdrawBorrowPercent.dp(2, 1).toString(10)}%</span>
+                  <span>{borrowPercent.dp(2, 1).toString(10)}%</span>
               ) : (
                   <div className="flex">
-                      <div className="">{withdrawBorrowPercent.dp(2, 1).toString(10)}%</div>
+                      <div className="">{borrowPercent.dp(2, 1).toString(10)}%</div>
                       <div className="text-primary">
                           <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
                       </div>
-                      <div className="">{withdrawNewBorrowPercent.dp(2, 1).toString(10)}%</div>
+                      <div className="">{newBorrowPercent.dp(2, 1).toString(10)}%</div>
                   </div>
               )}
           </div>
@@ -538,8 +539,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       )}
       {currentTab === 'withdraw' && (
         <div className="px-8">
-          <div className="grid grid-cols-3 justify-items-center items-center">
-            <div />
+          <div className="flex align-center input-wrapper">
               {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
               <StyledNumberFormat autoFocus
                 value={withdrawAmount.isZero() ? '0' : withdrawAmount.toString(10)}
@@ -675,7 +675,11 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         content={content}
         open={open}
         onSetOpen={onSetOpen}
-        onCloseModal={onCloseModal}
+        onCloseModal={() => {
+            setWithdrawAmount(new BigNumber(0));
+            setAmount(new BigNumber(0));
+            onCloseModal();
+        }}
         afterCloseModal={() => setCurrentTab('supply')}
       />
     </div>
