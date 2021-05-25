@@ -83,7 +83,6 @@ function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
 
   const getMarkets = async () => {
     const res = await promisify(getGovernanceAnnex, {});
-    console.log(res);
     if (!res.status) {
       return;
     }

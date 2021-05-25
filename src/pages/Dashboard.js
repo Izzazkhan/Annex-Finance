@@ -1,5 +1,7 @@
 /*eslint-disable*/
 import React, {useCallback, useEffect, useState} from 'react';
+import { useCountUp } from 'react-countup';
+
 import Layout from '../layouts/MainLayout/MainLayout';
 import SummaryCard from '../components/common/SummaryCard';
 import DataTable from '../components/common/DataTable';
@@ -38,7 +40,8 @@ import {promisify} from "../utilities";
 import sxp from "../assets/images/coins/sxp.png";
 import arrowUp from '../assets/icons/arrowUp.png';
 import arrowDown from '../assets/icons/arrowDown.png';
-import SVG from "react-inlinesvg";
+import PendingTransaction from "../components/dashboard/PendingTransaction";
+import toast from "../components/UI/Toast";
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -50,42 +53,47 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
     if (!accountAddress || !settings.decimals || !settings.markets) {
       return;
     }
-    const appContract = getComptrollerContract();
-    const xaiControllerContract = getXaiControllerContract();
-    const xaiContract = getXaiTokenContract();
-    // xai amount in wallet
-    let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
-      accountAddress
-    ]);
-    xaiBalance = new BigNumber(xaiBalance).div(new BigNumber(10).pow(18));
+    try {
+      const appContract = getComptrollerContract();
+      const xaiControllerContract = getXaiControllerContract();
+      const xaiContract = getXaiTokenContract();
+      // xai amount in wallet
+      let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
+        accountAddress
+      ]);
 
-    // minted xai amount
-    let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
-      accountAddress
-    ]);
-    xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
+      xaiBalance = new BigNumber(xaiBalance).div(new BigNumber(10).pow(18));
 
-    // mintable xai amount
-    let { 1: mintableXai } = await methods.call(
-        xaiControllerContract.methods.getMintableVAI,
-        [accountAddress]
-    );
-    mintableXai = new BigNumber(mintableXai).div(new BigNumber(10).pow(18));
+      // minted xai amount
+      let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
+        accountAddress
+      ]);
 
-    // allowable amount
-    let allowBalance = await methods.call(xaiContract.methods.allowance, [
-      accountAddress,
-      constants.CONTRACT_XAI_UNITROLLER_ADDRESS
-    ]);
-    allowBalance = new BigNumber(allowBalance).div(new BigNumber(10).pow(18));
-    const xaiEnabled = allowBalance.isGreaterThanOrEqualTo(xaiMinted);
+      xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
 
-    setSetting({
-      xaiBalance,
-      xaiEnabled,
-      xaiMinted,
-      mintableXai
-    });
+      // mintable xai amount
+      let { 1: mintableXai } = await methods.call(
+          xaiControllerContract.methods.getMintableXAI,
+          [accountAddress]
+      );
+      mintableXai = new BigNumber(mintableXai).div(new BigNumber(10).pow(18));
+      // allowable amount
+      let allowBalance = await methods.call(xaiContract.methods.allowance, [
+        accountAddress,
+        constants.CONTRACT_XAI_UNITROLLER_ADDRESS
+      ]);
+      allowBalance = new BigNumber(allowBalance).div(new BigNumber(10).pow(18));
+      const xaiEnabled = allowBalance.isGreaterThanOrEqualTo(xaiMinted);
+
+      setSetting({
+        xaiBalance,
+        xaiEnabled,
+        xaiMinted,
+        mintableXai
+      });
+    } catch(e) {
+      console.log(e)
+    }
   };
 
   const handleAccountChange = async () => {
@@ -346,22 +354,20 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
               setCollateralToken({})
             });
       } else {
-        // toast.error({
-        //   title: `Collateral Required`,
-        //   description:
-        //       'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
-        // });
+        toast.error({
+          title: `Collateral Required`,
+          description:
+              'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+        });
       }
     } else {
-      // toast.error({
-      //   title: `Collateral Required`,
-      //   description:
-      //       'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
-      // });
+      toast.error({
+        title: `Collateral Required`,
+        description:
+            'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+      });
     }
   };
-
-
 
 
   const [displayWarning, setDisplayWarning] = useState(Boolean(!localStorage.getItem("betaWarning")));
@@ -424,7 +430,6 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   );
 
   const handleSupplyClickRow = row => {
-    console.log(row);
     setSupplyRecord(row);
     setSupplyWithdrawOpen(true);
   };
@@ -456,7 +461,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       return {
         Asset: (
             <div
-                className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+                className="h-20 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
                 onClick={() => handleSupplyClickRow(asset)}
             >
               <img className="w-6" src={asset.img} alt={asset.name} />
@@ -466,7 +471,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Apy: (
-            <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            <div className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
                  onClick={() => handleSupplyClickRow(asset)}
             >
               <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'}/>
@@ -479,7 +484,8 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             </div>
         ),
         Wallet: (
-            <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            <div className="h-20 font-bold cursor-pointer text-green w-full
+                  px-8 py-6 text-green flex flex-col items-end justify-center"
                  onClick={() => handleSupplyClickRow(asset)}
             >
               ${format(
@@ -488,10 +494,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                       .dp(2, 1)
                       .toString(10)
               )}
+              <div className="text-white text-right font-normal">
+                {format(asset.supplyBalance.dp(4, 1).toString(10))} {asset.symbol}
+              </div>
             </div>
         ),
         Collateral: +asset.collateralFactor ? (
-            <div className="h-13 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+            <div className="h-20 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
               <Switch
                   wrapperClassName="pt-1 pb-0"
                   value={asset.collateral}
@@ -613,7 +622,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                       .toString(10)
               )}
               <div className="text-white text-right font-normal">
-                {format(asset.borrowBalance.dp(4, 1).toString(10))} {asset.asymbol}
+                {format(asset.borrowBalance.dp(4, 1).toString(10))} {asset.symbol}
               </div>
             </div>
         ),
@@ -707,8 +716,12 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         .map(m => {
           return {
             createdAt: m.createdAt,
-            supplyApy: +new BigNumber(m.supplyApy || 0).dp(8, 1).toString(10),
-            borrowApy: +new BigNumber(m.borrowApy || 0).dp(8, 1).toString(10)
+            supplyApy: +new BigNumber(m.supplyApy || 0).dp(8, 1).toFixed(4),
+            borrowApy: +new BigNumber(m.borrowApy || 0).dp(8, 1).toFixed(4),
+            borrowAnnexApy: +new BigNumber(m.borrowAnnexApy || 0).dp(8, 1).toFixed(4),
+            supplyAnnexApy: +new BigNumber(m.supplyAnnexApy || 0).dp(8, 1).toFixed(4),
+            totalBorrow: +m.totalBorrow,
+            totalSupply: +m.totalSupply,
           };
         })
         .reverse();
@@ -722,7 +735,6 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       const info = settings.markets.find(
           item => item?.underlyingSymbol?.toLowerCase() === currentAsset
       );
-      console.log(info);
       setMarketInfo(info || {});
     }
   }, [settings.markets, currentAsset]);
@@ -785,6 +797,31 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
     return (process.env.REACT_APP_ENV === 'prod' && chainId !== 56)
         || (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
   }, [chainId])
+
+
+  const { countUp: availableCountUp, update: availableUpdate } = useCountUp({ end: 0 });
+  const { countUp: balanceCountUp, update: balanceUpdate } = useCountUp({ end: 0 });
+  const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0 });
+  const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0 });
+
+  useEffect(() => {
+    availableUpdate(Number(available));
+  }, [available])
+
+  useEffect(() => {
+    if(annBalance instanceof BigNumber) {
+      balanceUpdate(annBalance.toNumber());
+    }
+  }, [annBalance])
+
+  useEffect(() => {
+    supplyUpdate(Number(settings.totalSupplyBalance));
+  }, [settings.totalSupplyBalance])
+
+  useEffect(() => {
+    borrowUpdate(Number(settings.totalBorrowBalance));
+  }, [settings.totalBorrowBalance])
+
 
 
   return (
@@ -854,7 +891,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       )}
       <div className="text-white mt-10">
         <div className="px-6 lg:px-0 mb-17">
-          <div className="text-primary text-5xl font-normal">${format(available)}</div>
+          <div className="text-primary text-5xl font-normal">${format(availableCountUp)}</div>
           <div className="mt-1 text-lg">Available Credit</div>
           <div className="flex items-center w-full mt-4">
             <div className="opacity-70 whitespace-nowrap mr-2 text-lg">Borrow Limit</div>
@@ -866,7 +903,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-9 w-full mb-6 md:mb-0">
             <SummaryCard
               name="ANN Balance"
-              title={`${format(getBigNumber(annBalance).dp(2, 1).toString(10))} ANN`}
+              title={`${format(getBigNumber(balanceCountUp).dp(2, 1).toString(10))} ANN`}
               icon={ANNBalance}
               noData={!account || wrongNetwork}
               status="green"
@@ -894,7 +931,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             <div className="">
               <div className="">
                 <div className="text-lg font-bold">Supply Balance</div>
-                <div className="text-lg font-bold">{!account || wrongNetwork ? '-' : formatValue(getBigNumber(settings.totalSupplyBalance)
+                <div className="text-lg font-bold">{!account || wrongNetwork ? '-' : formatValue(getBigNumber(supplyCountUp)
                     .dp(2, 1)
                     .toString(10))}</div>
               </div>
@@ -935,7 +972,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             <div className="flex flex-col items-end">
               <div className="text-right">
                 <div className="text-lg font-bold">Borrow Balance</div>
-                <div className="text-lg font-bold">{!account || wrongNetwork ? '-' : formatValue(getBigNumber(settings.totalBorrowBalance)
+                <div className="text-lg font-bold">{!account || wrongNetwork ? '-' : formatValue(getBigNumber(borrowCountUp)
                     .dp(2, 1)
                     .toString(10))}</div>
               </div>
@@ -955,6 +992,14 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           {suppliedAssets.length > 0 && (
               <DataTable title="Supply" columns={supplyColumns} data={supplyData} />
           )}
+
+          {
+            settings.pendingInfo &&
+            settings.pendingInfo.status &&
+            ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && (
+                <PendingTransaction />
+            )
+          }
           {nonSuppliedAssets.length > 0 && (
               <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
           )}
@@ -967,6 +1012,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           {borrowedAssets.length > 0 && (
               <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
           )}
+          {
+            settings.pendingInfo &&
+            settings.pendingInfo.status &&
+            ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
+                <PendingTransaction />
+            )
+          }
           {nonBorrowedAssets.length > 0 && (
               <DataTable
                   title="All Borrow Markets"
@@ -1033,7 +1085,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
               <div className="text-sm sm:text-md">APY</div>
             </div>
           </div>
-          <CandleChart rawData={data} />
+          <CandleChart rawData={data} withANN={withANN} />
           <div className="flex flex-col space-y-8 lg:space-y-0 lg:flex-row lg:space-x-10 md:px-8 mt-4">
             <div className="flex flex-col text-white w-full">
               <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">

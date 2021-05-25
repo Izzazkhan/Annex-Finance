@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import people from '../../assets/icons/people.svg';
 import coins from '../../assets/icons/coins.svg';
 import MiniLogo from '../../components/UI/MiniLogo';
@@ -10,12 +10,29 @@ import commaNumber from "comma-number";
 import {getBigNumber} from "../../utilities/common";
 import BigNumber from "bignumber.js";
 import {nFormatter} from "../../utils/data";
+import {useCountUp} from "react-countup";
 
 const format = commaNumber.bindWith(',', '.');
 
 function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }) {
   const { account } = useActiveWeb3React();
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
+
+
+  const { countUp: mintedCountUp, update: mintedUpdate } = useCountUp({ end: 0 });
+  const { countUp: liquidityCountUp, update: liquidityUpdate } = useCountUp({ end: 0 });
+
+
+  useEffect(() => {
+    liquidityUpdate(Number(totalLiquidity));
+  }, [totalLiquidity])
+
+  useEffect(() => {
+    if(totalXaiMinted instanceof BigNumber) {
+      mintedUpdate(Number(totalXaiMinted?.toNumber()));
+    }
+  }, [totalXaiMinted])
+
 
   const ConnectWallet = () => (
     <button
@@ -73,7 +90,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
           <div className="">
             <div className="text-lg text-white text-center">
               {format(
-                  getBigNumber(totalXaiMinted)
+                  getBigNumber(mintedCountUp)
                       .dp(0, 1)
                       .toString(10)
               )}</div>
@@ -84,7 +101,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
           <img className="w-8" src={coins} alt="coins" />
           <div className="">
             <div className="text-lg text-white text-center">${nFormatter(
-                new BigNumber(totalLiquidity).dp(2, 1).toString(10),
+                new BigNumber(liquidityCountUp).dp(2, 1).toString(10),
                 2
             )}</div>
             <div className="text-secondary text-xs">Total Value Locked</div>

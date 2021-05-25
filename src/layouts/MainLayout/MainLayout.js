@@ -3,6 +3,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import Footer from "./Footer";
+import {toast, ToastContainer, Zoom} from "react-toastify";
 
 function MainLayout({ children, mainClassName }) {
     const [isOpen, setIsOpen] = useState(true);
@@ -30,7 +31,16 @@ function MainLayout({ children, mainClassName }) {
                 `}
             >
                 <Header onOpen={() => setIsOpen((bool) => !bool)} />
-                <main className={`${mainClassName}`}>{children}</main>
+                <main className={`relative ${mainClassName}`}>
+                    <ToastContainer
+                        autoClose={5000}
+                        transition={Zoom}
+                        hideProgressBar
+                        newestOnTop
+                        position={toast.POSITION.TOP_RIGHT}
+                    />
+                    {children}
+                </main>
                 <Footer/>
             </div>
         </div>

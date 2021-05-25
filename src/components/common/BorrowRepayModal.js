@@ -14,6 +14,7 @@ import NumberFormat from "react-number-format";
 import commaNumber from "comma-number";
 import primaryBigArrow from "../../assets/icons/primaryBigArrow.svg";
 import Loading from "../UI/Loading";
+import Progress from "../UI/Progress";
 
 const StyledNumberFormat = styled(NumberFormat)`
     width: 95%;
@@ -429,6 +430,21 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
               </div>
           )}
       </div>
+
+        <div className="flex flex-col items-stretch pt-4">
+            <Progress
+                strokeWidth={3}
+                symbolClassName={'hidden'}
+                percent={
+                    currentTab === 'repayBorrow'
+                        ? ((amountRepay.isZero() || amountRepay.isNaN())
+                            ? borrowPercentRepay.toFixed(2)
+                            : newBorrowPercentRepay.toFixed(2))
+                        : (amount.isZero() || amount.isNaN()
+                            ? borrowPercent.toFixed(2)
+                            : newBorrowPercent.toFixed(2))
+                }/>
+        </div>
     </div>
   );
 

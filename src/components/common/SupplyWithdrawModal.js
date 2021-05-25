@@ -19,6 +19,7 @@ import commaNumber from "comma-number";
 import primaryBigArrow from "../../assets/icons/primaryBigArrow.svg";
 import styled from "styled-components";
 import Loading from "../UI/Loading";
+import Progress from "../UI/Progress";
 
 const StyledNumberFormat = styled(NumberFormat)`
     width: 95%;
@@ -448,6 +449,16 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                 </div>
             )}
         </div>
+        <div className="flex flex-col items-stretch pt-4">
+            <Progress
+                strokeWidth={3}
+                symbolClassName={'hidden'}
+                percent={
+                    withdrawAmount.isZero() || withdrawAmount.isNaN()
+                    ? withdrawBorrowPercent.toFixed(2)
+                    :  withdrawNewBorrowPercent?.toFixed(2)
+                }/>
+        </div>
     </div>
   );
 
@@ -482,6 +493,16 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                       <div className="">{newBorrowPercent.dp(2, 1).toString(10)}%</div>
                   </div>
               )}
+          </div>
+          <div className="flex flex-col items-stretch pt-4">
+              <Progress
+                  strokeWidth={3}
+                  symbolClassName={'hidden'}
+                  percent={
+                      amount.isZero() || amount.isNaN()
+                          ? borrowPercent.toFixed(2)
+                          :  newBorrowPercent?.toFixed(2)
+                  }/>
           </div>
       </div>
   )
@@ -567,7 +588,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
               </div>
           </div>
           <p className="text-center mt-6 text-center">
-            Your available withdraw amount = Total Supply Amount - ANN Mint Amount - Borrowed Amount
+            Your available withdraw amount = Total Supply Amount - XVS Mint Amount - Borrowed Amount
           </p>
         </div>
       )}

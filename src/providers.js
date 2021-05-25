@@ -1,6 +1,7 @@
 import { createWeb3ReactRoot, Web3ReactProvider } from "@web3-react/core";
 import { BrowserRouter as Router } from 'react-router-dom';
 import {Provider} from "react-redux";
+import { toast, ToastContainer, Zoom } from 'react-toastify';
 
 import getLibrary from './utils/getLibrary';
 import { NetworkContextName } from "./constants";

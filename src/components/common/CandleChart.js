@@ -76,16 +76,16 @@ const Candlestick = (props) => {
   );
 };
 
-const CustomShapeBarChart = ({rawData}) => {
+const CustomShapeBarChart = ({rawData, withANN}) => {
   const data = useMemo(() => {
     return rawData || []
   }, [rawData])
-  const minValue = data.reduce((minValue, { borrowApy, supplyApy }) => {
-    const currentMin = Math.min(borrowApy, supplyApy);
+  const minValue = data.reduce((minValue, { borrowApy, supplyApy, borrowAnnexApy, supplyAnnexApy }) => {
+    const currentMin = withANN ? Math.min(borrowAnnexApy, supplyAnnexApy) : Math.min(borrowApy, supplyApy);
     return minValue === null || currentMin < minValue ? currentMin : minValue;
   }, null);
-  const maxValue = data.reduce((maxValue, { borrowApy, supplyApy }) => {
-    const currentMax = Math.max(borrowApy, supplyApy);
+  const maxValue = data.reduce((maxValue, { borrowApy, supplyApy, borrowAnnexApy, supplyAnnexApy }) => {
+    const currentMax = withANN ? Math.max(borrowAnnexApy, supplyAnnexApy) : Math.max(borrowApy, supplyApy);
     return currentMax > maxValue ? currentMax : maxValue;
   }, minValue);
 
@@ -123,7 +123,7 @@ const CustomShapeBarChart = ({rawData}) => {
           </defs>
           <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
           <Area
-            dataKey="borrowApy"
+            dataKey={withANN ? "borrowAnnexApy" : "borrowApy"}
             fill="url(#colorUv)"
             stroke={'#d62728'}
           >
@@ -132,7 +132,7 @@ const CustomShapeBarChart = ({rawData}) => {
             ))}
           </Area>
           <Area
-            dataKey="supplyApy"
+            dataKey={withANN ? "supplyAnnexApy" : "supplyApy"}
             fill="url(#colorPv)"
             stroke={'#2ca02c'}
           >
