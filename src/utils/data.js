@@ -6,6 +6,7 @@ export default function showData(data) {
 }
 
 export function nFormatter(num, digits) {
+	console.log(num)
 	var si = [
 		{ value: 1, symbol: "" },
 		{ value: 1E3, symbol: "k" },

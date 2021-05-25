@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import styled from "styled-components";
 
@@ -15,6 +15,11 @@ import filledArrow from '../../assets/icons/filledArrow.svg';
 import logo from '../../assets/icons/logo.svg';
 import Navigation from '../../components/common/Navigation';
 import RouteMap from '../../routes/RouteMap';
+import {getXaiTokenContract, methods} from "../../utilities/ContractService";
+import BigNumber from "bignumber.js";
+import {checkIsValidNetwork} from "../../utilities/common";
+import {accountActionCreators, connectAccount} from "../../core";
+import {bindActionCreators} from "redux";
 
 const Wrapper = styled.aside`
   @media (min-width: 1024px) {
@@ -47,10 +52,31 @@ const sidebarItems = [
   { key: 8, icon: pools, title: 'Pools', href: '/pools' },
 ];
 
-function Sidebar({ isOpen, onClose }) {
+function Sidebar({ isOpen, onClose, settings }) {
   const { pathname } = useLocation();
   const history = useHistory();
   const [displaySubCats, setDisplaySubCats] = useState([]);
+  const [totalXaiMinted, setTotalXaiMinted] = useState('0');
+
+
+  const getTotalXaiMinted = async () => {
+    // total xai minted
+    const xaiContract = getXaiTokenContract();
+    let tvm = await methods.call(xaiContract.methods.totalSupply, []);
+    tvm = new BigNumber(tvm).div(
+        new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18)
+    );
+
+    setTotalXaiMinted(tvm);
+  };
+
+
+  useEffect(() => {
+    if (checkIsValidNetwork('metamask')) {
+      getTotalXaiMinted();
+    }
+  }, [settings.markets]);
+
 
   const NavItems = ({ wrapperClassName, items }) => (
       <div className={wrapperClassName}>
@@ -124,7 +150,13 @@ function Sidebar({ isOpen, onClose }) {
             <Logo  src={logo} alt="Annex" />
           </div>
           <NavItems items={sidebarItems} wrapperClassName="pt-10" />
-          <Navigation isOpen={isOpen} wrapperClassName="block xl:hidden" />
+          <Navigation
+              isOpen={isOpen}
+              wrapperClassName="block xl:hidden"
+              onClose={onClose}
+              totalLiquidity={settings.totalLiquidity}
+              totalXaiMinted={totalXaiMinted}
+          />
           <div className="mt-auto mb-10 pl-8">
             <div className="font-bold text-white">Annex Trading</div>
             <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
@@ -134,4 +166,20 @@ function Sidebar({ isOpen, onClose }) {
   );
 }
 
-export default Sidebar;
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting
+});
+
+const mapDispatchToProps = dispatch => {
+  const { setSetting, getGovernanceAnnex } = accountActionCreators;
+
+  return bindActionCreators(
+      {
+        setSetting,
+        getGovernanceAnnex
+      },
+      dispatch
+  );
+};
+
+export default connectAccount(mapStateToProps, mapDispatchToProps)(Sidebar);

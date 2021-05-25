@@ -36,7 +36,6 @@ function MainLayout({ children, mainClassName }) {
                         autoClose={5000}
                         transition={Zoom}
                         hideProgressBar
-                        newestOnTop
                         position={toast.POSITION.TOP_RIGHT}
                     />
                     {children}

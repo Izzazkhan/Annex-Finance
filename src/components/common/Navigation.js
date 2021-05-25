@@ -14,7 +14,7 @@ import {useCountUp} from "react-countup";
 
 const format = commaNumber.bindWith(',', '.');
 
-function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }) {
+function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, onClose }) {
   const { account } = useActiveWeb3React();
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
 
@@ -34,10 +34,13 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
   }, [totalXaiMinted])
 
 
-  const ConnectWallet = () => (
+  const ConnectWallet = ({ action}) => (
     <button
       className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white"
       onClick={() => {
+          if(action) {
+            action()
+          }
           setConnectWalletsOpen(true);
       }}
     >
@@ -59,7 +62,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
             <div className="">
               <div className="text-2xl text-white text-left">
                 {format(
-                    getBigNumber(totalXaiMinted)
+                    getBigNumber(mintedCountUp)
                         .dp(0, 1)
                         .toString(10)
                 )}</div>
@@ -70,7 +73,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
             <img src={coins} alt="coins" />
             <div className="">
               <div className="text-2xl text-white text-left">${nFormatter(
-                  new BigNumber(totalLiquidity).dp(2, 1).toString(10),
+                  new BigNumber(liquidityCountUp).dp(2, 1).toString(10),
                   2
               )}</div>
               <div className="text-secondary text-sm">Total Value Locked</div>
@@ -88,19 +91,19 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
         <li className="flex items-center space-x-2">
           <img className="w-8" src={people} alt="people" />
           <div className="">
-            <div className="text-lg text-white text-center">
+            <div className="text-lg text-white">
               {format(
-                  getBigNumber(mintedCountUp)
+                  getBigNumber(totalXaiMinted)
                       .dp(0, 1)
                       .toString(10)
               )}</div>
-            <div className="text-secondary text-xs">Total VAI Minted</div>
+            <div className="text-secondary text-xs">Total XAI Minted</div>
           </div>
         </li>
         <li className="flex items-center space-x-2">
           <img className="w-8" src={coins} alt="coins" />
           <div className="">
-            <div className="text-lg text-white text-center">${nFormatter(
+            <div className="text-lg text-white">${nFormatter(
                 new BigNumber(liquidityCountUp).dp(2, 1).toString(10),
                 2
             )}</div>
@@ -108,7 +111,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted }
           </div>
         </li>
         <li className="">
-          <ConnectWallet />
+          <ConnectWallet action={onClose} />
         </li>
       </ul>
     </div>
