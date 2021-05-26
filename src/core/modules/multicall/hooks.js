@@ -41,7 +41,6 @@ function useCallsData(calls, options) {
 	);
 	const dispatch = useDispatch();
 
-	console.log(calls);
 	const serializedCallKeys = useMemo(
 		() =>
 			JSON.stringify(

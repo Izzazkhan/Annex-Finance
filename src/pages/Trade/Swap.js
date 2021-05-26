@@ -26,6 +26,7 @@ import {useUserDeadline, useUserSlippageTolerance} from "../../core";
 import TokenWarningModal from "../../components/swap/TokenWarningModal";
 import CurrencyInputPanel from "../../components/swap/CurrencyInputPanel";
 import AdvancedSwapDetails from "../../components/swap/AdvancedSwapDetails";
+import ConfirmSwapModal from "../../components/swap/ConfirmSwapModal";
 
 const cryptos = [
 	{ name: 'BTN', logo: <img className="" src={BTN} alt="" /> },
@@ -417,7 +418,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					{!account ? (
 						<button
 							disabled={true}
-							className={`focus:outline-none py-2 px-12 text-black text-24 ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
 								trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
@@ -429,7 +430,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 						<button
 							disabled={Boolean(wrapInputError)}
 							onClick={onWrap}
-							className={`focus:outline-none py-2 px-12 text-black text-24 ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
 								trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
@@ -446,7 +447,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					) : noRoute && userHasSpecifiedInputOutput ? (
 						<button
 							disabled={true}
-							className={`focus:outline-none py-2 px-12 text-black text-24 ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
 								trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
@@ -462,7 +463,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							<button
 								onClick={approveCallback}
 								disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-								className={`focus:outline-none py-2 px-12 flex-grow text-black text-24 ${
+								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14 ${
 									trade
 										? 'bg-white rounded-3xl'
 										: 'bgPrimaryGradient rounded-lg'
@@ -491,7 +492,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 									approval !== ApprovalState.APPROVED ||
 									(priceImpactSeverity > 3)
 								}
-								className={`focus:outline-none py-2 px-12 flex-grow text-black text-24 ${
+								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14 ${
 									trade
 										? 'bg-white rounded-3xl'
 										: 'bgPrimaryGradient rounded-lg'
@@ -516,7 +517,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							disabled={
 								!isValid || priceImpactSeverity > 3 || !!swapCallbackError
 							}
-							className={`focus:outline-none py-2 px-12 text-black text-24 ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
 								trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
@@ -530,6 +531,20 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					)}
 				</div>
 			</div>
+
+			<ConfirmSwapModal
+				isOpen={showConfirm}
+				trade={trade}
+				originalTrade={tradeToConfirm}
+				onAcceptChanges={handleAcceptChanges}
+				attemptingTxn={attemptingTxn}
+				txHash={txHash}
+				recipient={recipient}
+				allowedSlippage={allowedSlippage}
+				onConfirm={handleSwap}
+				swapErrorMessage={swapErrorMessage}
+				onDismiss={handleConfirmDismiss}
+			/>
 			{trade && (
 				<AdvancedSwapDetails trade={trade}/>
 			)}

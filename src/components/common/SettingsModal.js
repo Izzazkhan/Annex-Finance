@@ -1,47 +1,141 @@
-import React, { useState } from 'react';
+/* eslint-disable */
+import React, {useEffect, useState} from 'react';
 import Modal from '../UI/Modal';
+import {useUserDeadline, useUserSlippageTolerance} from "../../core";
+
+const MAX_SLIPPAGE = 5000;
+const RISKY_SLIPPAGE_LOW = 50;
+const RISKY_SLIPPAGE_HIGH = 500;
+
+const predefinedValues = [
+    { key: 1, label: "0.1%", value: 0.1 },
+    { key: 2, label: "0.5%", value: 0.5 },
+    { key: 3, label: "1%", value: 1 },
+];
 
 function SettingsModal({ open, onSetOpen, onCloseModal }) {
-  const [selectedSlippage, setSelectedSlippage] = useState(1);
+    const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance();
+    const [value, setValue] = useState(userSlippageTolerance / 100);
+    const [error, setError] = useState(null);
 
-  const slippages = [
-    { key: 1, value: '0.1%' },
-    { key: 2, value: '0.5%' },
-    { key: 3, value: '1%' },
-    { key: 4, value: '0.1' },
-  ];
 
-  const title = <div className="text-left text-2xl mt-10 mx-6">Settings</div>;
+    const [deadline, setDeadline] = useUserDeadline();
+    const [valueDeadline, setValueDeadline] = useState(deadline / 60); // deadline in minutes
+    const [errorDeadline, setErrorDeadline] = useState(null);
+
+
+    const handleChange = (evt) => {
+        const { value: inputValue } = evt.target;
+        setValue(parseFloat(inputValue));
+    };
+
+
+    const handleChangeDeadline = (evt) => {
+        const { value: inputValue } = evt.target;
+        setValueDeadline(parseInt(inputValue, 10));
+    };
+
+    useEffect(() => {
+        try {
+            const rawValue = value * 100;
+            if (!Number.isNaN(rawValue) && rawValue > 0 && rawValue < MAX_SLIPPAGE) {
+                setUserslippageTolerance(rawValue);
+                setError(null);
+            } else {
+                setError("Enter a valid slippage percentage");
+            }
+        } catch {
+            setError("Enter a valid slippage percentage");
+        }
+    }, [value, setError, setUserslippageTolerance]);
+
+
+    // Notify user if slippage is risky
+    useEffect(() => {
+        if (userSlippageTolerance < RISKY_SLIPPAGE_LOW) {
+            setError("Your transaction may fail");
+        } else if (userSlippageTolerance > RISKY_SLIPPAGE_HIGH) {
+            setError("Your transaction may be frontrun");
+        }
+    }, [userSlippageTolerance, setError]);
+
+
+    useEffect(() => {
+        try {
+            const rawValue = valueDeadline * 60;
+            if (!Number.isNaN(rawValue) && rawValue > 0) {
+                setDeadline(rawValue);
+                setErrorDeadline(null);
+            } else {
+                setErrorDeadline("Enter a valid deadline");
+            }
+        } catch {
+            setErrorDeadline("Enter a valid deadline");
+        }
+    }, [valueDeadline, setErrorDeadline, setDeadline]);
+
+
+    const title = <div className="text-left text-2xl mt-10 mx-6">Settings</div>;
 
   const content = (
     <div className="pt-10 pb-12 px-6">
       <div className="">Slippage tolerance</div>
       <div className="flex items-center space-x-4 mt-8">
-        {slippages?.map((s, index) => (
-          <button
-            key={s?.key}
-            className={`focus:outline-none py-4 px-10 rounded-md
-                            text-white text-xl font-bold ${
-                              selectedSlippage === s?.key ? 'bg-primary' : 'bg-fadeBlue'
-                            } ${index === slippages?.length - 1 ? 'flex-grow' : ''}`}
-            onClick={() => setSelectedSlippage(s?.key)}
-          >
-            {s?.value}
-          </button>
-        ))}
-        <div className="text-xl">%</div>
+
+          {predefinedValues.map(({ label, value: predefinedValue }) => {
+              const handleClick = () => setValue(predefinedValue);
+
+              return (
+                  <button
+                      key={predefinedValue}
+                      className={`focus:outline-none py-4 px-8 rounded-md
+                            text-lg font-bold ${
+                          value === predefinedValue ? 'bg-primary text-black' : 'bg-fadeBlue text-white '
+                      }`}
+                      onClick={handleClick}
+                  >
+                      {label}
+                  </button>
+              );
+          })}
+          <div className="bg-fadeBlue py-4 px-8 rounded-md text-white font-bold text-lg flex items-center">
+              <input
+                  type="number"
+                  step={0.1}
+                  min={0.1}
+                  placeholder="5%"
+                  value={value}
+                  onChange={handleChange}
+                  className="w-40 border-none bg-transparent focus:outline-none focus:bg-transparent focus:border-none text-white"/>
+              <div className="text-xl">%</div>
+          </div>
+
       </div>
-      <div className="text-darkRed mt-8">Your transaction may fail</div>
+        {error && (
+            <div className="text-darkRed mt-8">
+                {error}
+            </div>
+        )}
       <div className="text-xl mt-8">Transaction deadline</div>
       <div className="flex items-center space-x-4 mt-6">
-        <button
-          className="focus:outline-none bg-fadeBlue py-4 px-10 rounded-md
-                            text-white text-xl font-bold"
-        >
-          20
-        </button>
+          <div className="bg-fadeBlue py-4 px-10 rounded-md text-white font-bold text-lg flex items-center">
+              <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  placeholder={'20'}
+                  value={valueDeadline}
+                  onChange={handleChangeDeadline}
+                  className="w-40 border-none bg-transparent focus:outline-none focus:bg-transparent focus:border-none text-white"/>
+          </div>
         <div className="">Minutes</div>
       </div>
+
+        {errorDeadline && (
+            <div className="text-darkRed mt-8">
+                {errorDeadline}
+            </div>
+        )}
     </div>
   );
 

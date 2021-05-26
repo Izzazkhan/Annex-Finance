@@ -6,7 +6,9 @@ export default function Modal({ open, title, content, onCloseModal, afterCloseMo
 
   function closeModal() {
     onCloseModal();
-    afterCloseModal();
+    if(afterCloseModal) {
+      afterCloseModal();
+    }
   }
 
   return (

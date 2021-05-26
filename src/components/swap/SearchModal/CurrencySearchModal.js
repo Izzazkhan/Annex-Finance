@@ -3,6 +3,8 @@ import React, {useCallback, useEffect, useState} from "react";
 import Modal from "../../UI/Modal";
 import useLast from "../../../hooks/useLast";
 import {useSelectedListUrl} from "../../../core";
+import {ListSelect} from "./ListSelect";
+import CurrencySearch from "./CurrencySearch";
 
 export default function CurrencySearchModal({
 	isOpen,

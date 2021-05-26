@@ -28,9 +28,10 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     // Make this the last element so prettier config overrides other formatting rules
   ],
+  "plugins": ["react", "react-hooks"],
   rules: {
     'react/react-in-jsx-scope': 'off',
-    'max-len': [2, { code: 110, tabWidth: 2, ignoreUrls: true }],
+    'max-len': [2, { code: 150, tabWidth: 2, ignoreUrls: true }],
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'react/jsx-wrap-multilines': ['error', { declaration: false, assignment: false }],
     'global-require': 'off',

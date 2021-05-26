@@ -26,7 +26,7 @@ export default function CurrencyLogo({
 	size = "24px",
 	style,
 }) {
-	const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined);
+	const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.address : undefined);
 
 	const srcs = useMemo(() => {
 		if (currency === ETHER) return [];

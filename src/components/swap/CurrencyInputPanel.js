@@ -6,6 +6,7 @@ import {useCurrencyBalance} from "../../hooks/wallet";
 import {ChevronDownIcon} from "@heroicons/react/solid";
 import {Listbox} from "@headlessui/react";
 import CurrencyLogo from "../common/CurrencyLogo";
+import CurrencySearchModal from "./SearchModal/CurrencySearchModal";
 
 export default function CurrencyInputPanel({
 	title,
@@ -37,8 +38,17 @@ export default function CurrencyInputPanel({
 	return (
 		<>
 			<div className="w-full">
-				<div className={trade ? 'text-black mb-2' : 'text-white mb-2'}>
-					{title}
+				<div className="flex items-center justify-between">
+					<div className={trade ? 'text-black mb-2' : 'text-white mb-2'}>
+						{title}
+					</div>
+					{account && (
+						<div className={trade ? 'text-black mb-2' : 'text-white mb-2'} onClick={onMax}>
+							{!hideBalance && !!currency && selectedCurrencyBalance
+								? `Balance: ${selectedCurrencyBalance?.toSignificant(6)}`
+								: " -"}
+						</div>
+					)}
 				</div>
 				<div className="flex justify-between items-center space-x-4">
 					<NumericalInput
@@ -48,7 +58,13 @@ export default function CurrencyInputPanel({
 							onUserInput(val);
 						}}
 					/>
-					<div className="relative w-56 h-14 pl-3 pr-10 text-left text-white
+					<div
+						onClick={() => {
+							if (!disableCurrencySelect) {
+								setModalOpen(true);
+							}
+						}}
+						className="relative w-56 h-14 pl-3 pr-10 text-left text-white
 		              shadow-md cursor-default focus:outline-none
 		              cursor-pointer
 		              focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white
@@ -57,7 +73,7 @@ export default function CurrencyInputPanel({
 		               rounded-xl pl-5 pr-4">
 						<div className="flex items-center h-full w-full space-x-4 py-2">
 							{currency ? (
-								<CurrencyLogo currency={currency} size="36px" />
+								<CurrencyLogo currency={currency} size="24px" />
 							) : null}
 							<div>
 							<span
@@ -81,6 +97,16 @@ export default function CurrencyInputPanel({
 					</div>
 				</div>
 			</div>
+			{!disableCurrencySelect && onCurrencySelect && (
+				<CurrencySearchModal
+					isOpen={modalOpen}
+					onDismiss={handleDismissSearch}
+					onCurrencySelect={onCurrencySelect}
+					selectedCurrency={currency}
+					otherSelectedCurrency={otherCurrency}
+					showCommonBases={showCommonBases}
+				/>
+			)}
 
 		</>
 	);

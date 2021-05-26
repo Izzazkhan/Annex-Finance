@@ -13,23 +13,31 @@ import Vault from '../pages/Vault';
 import Vote from '../pages/Vote';
 import NotFound from '../pages/NotFound';
 import Web3ReactManager from "../components/common/Web3ReactManager";
+import ApplicationUpdater from "../core/modules/application/updater";
+import ListsUpdater from "../core/modules/lists/updater";
+import MulticallUpdater from "../core/modules/multicall/updater";
+import TransactionUpdater from "../core/modules/transactions/updater";
 
 const Routes = () => {
   return (
     <Web3ReactManager>
-        <Switch>
-          <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
-          <Route exact path={routes.dashboard} component={Dashboard} />
-          <Route exact path={routes.annex} component={Annex} />
-          <Route exact path={routes.farms} component={Farms} />
-          <Route exact path={routes.market} component={Market} />
-          <Route exact path={routes.pools} component={Pools} />
-          <Route exact path={routes.trade} component={Trade} />
-          <Route exact path={routes.vault} component={Vault} />
-          <Route exact path={routes.vote} component={Vote} />
-          <Route exact path={routes.demo} component={Demo} />
-          <Route component={NotFound} />
-        </Switch>
+      <ApplicationUpdater />
+      <MulticallUpdater />
+      <TransactionUpdater/>
+      <ListsUpdater/>
+      <Switch>
+        <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
+        <Route exact path={routes.dashboard} component={Dashboard} />
+        <Route exact path={routes.annex} component={Annex} />
+        <Route exact path={routes.farms} component={Farms} />
+        <Route exact path={routes.market} component={Market} />
+        <Route exact path={routes.pools} component={Pools} />
+        <Route exact path={routes.trade} component={Trade} />
+        <Route exact path={routes.vault} component={Vault} />
+        <Route exact path={routes.vote} component={Vote} />
+        <Route exact path={routes.demo} component={Demo} />
+        <Route component={NotFound} />
+      </Switch>
     </Web3ReactManager>
   );
 };
