@@ -773,8 +773,8 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           : borrowApy;
       setCurrentAPY(
           (settings.marketType || 'supply') === 'supply'
-              ? supplyApyWithANN.dp(2, 1).toString(10)
-              : borrowApyWithANN.dp(2, 1).toString(10)
+              ? supplyApyWithANN.isGreaterThan(100000000) ? "Infinity" : supplyApyWithANN.dp(2, 1).toString(10)
+              : borrowApyWithANN.isGreaterThan(100000000) ? "Infinity" : borrowApyWithANN.dp(2, 1).toString(10)
       );
     }
   }, [currentAsset, settings.marketType, settings.assetList, settings.withANN]);
@@ -821,7 +821,6 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   useEffect(() => {
     borrowUpdate(Number(settings.totalBorrowBalance));
   }, [settings.totalBorrowBalance])
-
 
 
   return (

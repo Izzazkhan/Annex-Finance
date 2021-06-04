@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React, {useState} from 'react';
 import {useActiveWeb3React} from "../../hooks";
+import {getEtherscanLink} from "../../utils";
 
 const Footer = props => {
 	const { account, chainId, library } = useActiveWeb3React();
@@ -24,12 +25,29 @@ const Footer = props => {
 	return (
 		<div className="flex justify-end items-center space-x-5 mt-12 mb-6">
 			{blockNumber ? (
-				<div className="flex flex-row items-center space-x-5">
+				<a
+					target={'_blank'}
+					rel={'noreferrer noopener'}
+					href={getEtherscanLink(process.env.REACT_APP_ENV === 'dev' ? 97 : 56, blockNumber, 'block')}
+					className="flex flex-row items-center space-x-4 no-underline focus:outline-none">
 					<div className="flex w-3 h-3 rounded-full bg-primary"/>
 					<div className="text-white no-underline focus:outline-none">Latest Block: {blockNumber}</div>
-				</div>
+				</a>
 			) : null}
-			<a href="#" className="text-white no-underline focus:outline-none">ANN</a>
+			<a
+				href={getEtherscanLink(
+					process.env.REACT_APP_ENV === 'dev' ? 97 : 56,
+					process.env.REACT_APP_ENV === 'dev'
+					? process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS
+					: process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS,
+					'token'
+				)}
+				target={'_blank'}
+				rel={'noreferrer noopener'}
+				className="text-white no-underline focus:outline-none"
+			>
+				ANN
+			</a>
 			<a href="#" className="text-white no-underline focus:outline-none">Support</a>
 			<a href="#" className="text-white no-underline focus:outline-none">Whitepaper</a>
 		</div>

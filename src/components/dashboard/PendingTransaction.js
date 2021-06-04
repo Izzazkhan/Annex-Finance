@@ -13,6 +13,8 @@ function PendingTransaction({ settings }) {
 	}, []);
 
 
+	console.log(curTime);
+
 	const baseColumns = [
 		{
 			Header: 'Transactions',
@@ -77,7 +79,7 @@ function PendingTransaction({ settings }) {
 				</div>
 			)
 		}
-	}, [settings.pendingInfo]);
+	}, [settings.pendingInfo, curTime]);
 
 	return (
 		<DataTable

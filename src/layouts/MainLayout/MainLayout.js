@@ -5,7 +5,7 @@ import { useWindowSize } from '../../hooks/useWindowSize';
 import Footer from "./Footer";
 import {toast, ToastContainer, Zoom} from "react-toastify";
 
-function MainLayout({ children, mainClassName }) {
+function MainLayout({ children, mainClassName, title }) {
     const [isOpen, setIsOpen] = useState(true);
 
     const { width } = useWindowSize() || {};
@@ -14,6 +14,7 @@ function MainLayout({ children, mainClassName }) {
             setIsOpen(false);
         }
     }, [width]);
+
 
     return (
         <div className="flex bg-black">
@@ -25,13 +26,12 @@ function MainLayout({ children, mainClassName }) {
                 />
             )}
             <div
-                className={`
-                    w-full h-full pr-2 lg:pr-8 py-6 
-                    ${width > 1023 && isOpen ? 'pl-68' : 'pl-2 lg:pl-8'}
-                `}
+                className={`w-full h-full pr-6 py-6 my-contents transition-all ease-in-out ${
+                    isOpen ? 'open' : 'pl-6'
+                }`}
             >
                 <Header onOpen={() => setIsOpen((bool) => !bool)} />
-                <main className={`relative ${mainClassName}`}>
+                <main className={`${mainClassName}`}>
                     <ToastContainer
                         autoClose={5000}
                         transition={Zoom}

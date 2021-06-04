@@ -18,14 +18,11 @@ import {checkIsValidNetwork} from "../../utilities/common";
 import {useActiveWeb3React} from "../../hooks";
 import commaNumber from "comma-number";
 import Web3 from "web3";
+import {useLocation} from "react-router-dom";
 
 
-function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
-  const [error, setError] = useState('');
-  const [web3, setWeb3] = useState(null);
-  const [awaiting, setAwaiting] = useState(false);
+function Header({ onOpen, title, settings, setSetting, getGovernanceAnnex }) {
   const [totalXaiMinted, setTotalXaiMinted] = useState('0');
-  const [wcUri, setWcUri] = useState(null);
   const { account } = useActiveWeb3React();
 
   const setDecimals = async () => {
@@ -355,16 +352,42 @@ function Header({ onOpen, settings, setSetting, getGovernanceAnnex }) {
     handleAccountChange();
   }, [account]);
 
+
+  const [currentTitle, setCurrentTitle] = useState('');
+  const { pathname, search } = useLocation();
+  const path = `${pathname}${search}`;
+
+  useEffect(() => {
+    let currentTitle = '';
+    const titles = {
+      dashboard: 'Lending',
+      vote: 'vote',
+      annex: 'annex',
+      market: 'market',
+      vault: 'vault',
+      swap: 'swap',
+      liquidity: 'liquidity',
+      farms: 'farms',
+      pools: 'pools',
+    };
+    Object.keys(titles)?.forEach((title) => {
+      if (path?.includes(title)) {
+        currentTitle = titles[title];
+      }
+    });
+    setCurrentTitle(currentTitle);
+  }, [path]);
+
   return (
     <header
       className="bg-fadeBlack flex justify-between items-center py-6 px-4
                        pl-6 lg:pr-8 rounded-lg w-full"
     >
       <div className="ml-2 flex items-center">
-        <div className="cursor-pointer" onClick={onOpen}>
-          <img className="w-12 lg:w-24" src={menu} alt="" />
+        <div className="w-14 cursor-pointer" onClick={onOpen}>
+          <img className="w-full" src={menu} alt="" />
         </div>
-        <h2 className="text-white ml-5 text-4xl font-bold">LENDING</h2>
+        <h2 className="text-white ml-5 text-4xl font-bold uppercase">{title || currentTitle}</h2>
       </div>
       <Navigation
           wrapperClassName="hidden lg:block"

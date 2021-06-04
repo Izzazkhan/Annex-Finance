@@ -418,7 +418,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					{!account ? (
 						<button
 							disabled={true}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 disabled:opacity-50 bg-white rounded-lg ${
 								trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
@@ -430,8 +430,10 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 						<button
 							disabled={Boolean(wrapInputError)}
 							onClick={onWrap}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
-								trade
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14
+							 ${
+								wrapInputError ? " disabled:opacity-50 bg-white rounded-lg" 
+									: trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
 							}`}
@@ -447,10 +449,10 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					) : noRoute && userHasSpecifiedInputOutput ? (
 						<button
 							disabled={true}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 disabled:opacity-50 bg-white rounded-lg ${
 								trade
-									? 'bg-white rounded-3xl'
-									: 'bgPrimaryGradient rounded-lg'
+									? 'rounded-3xl'
+									: 'rounded-lg'
 							}`}
 						>
 							Insufficient liquidity for this trade.
@@ -463,8 +465,9 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							<button
 								onClick={approveCallback}
 								disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14 ${
-									trade
+								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14
+								 ${approval !== ApprovalState.NOT_APPROVED || approvalSubmitted ? "bg-white disabled:opacity-50 rounded-lg"
+									: trade
 										? 'bg-white rounded-3xl'
 										: 'bgPrimaryGradient rounded-lg'
 								}`}
@@ -492,8 +495,12 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 									approval !== ApprovalState.APPROVED ||
 									(priceImpactSeverity > 3)
 								}
-								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14 ${
-									trade
+								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14 
+								${(!isValid ||
+								approval !== ApprovalState.APPROVED ||
+								(priceImpactSeverity > 3)) 
+									? " disabled:opacity-50 bg-white rounded-lg"
+									: trade
 										? 'bg-white rounded-3xl'
 										: 'bgPrimaryGradient rounded-lg'
 								}`}
@@ -517,8 +524,10 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							disabled={
 								!isValid || priceImpactSeverity > 3 || !!swapCallbackError
 							}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 ${
-								trade
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 
+							${!isValid || priceImpactSeverity > 3 || !!swapCallbackError 
+								? "bg-white disabled:opacity-50 rounded-lg"
+								: trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
 							}`}

@@ -19,7 +19,7 @@ export function isAddress(value) {
 
 const ETHERSCAN_PREFIXES = {
 	56: "",
-	97: "Bsc-testnet.",
+	97: "testnet.",
 };
 
 export function getEtherscanLink(chainId, data, type) {
@@ -31,6 +31,9 @@ export function getEtherscanLink(chainId, data, type) {
 		}
 		case "token": {
 			return `${prefix}/token/${data}`;
+		}
+		case "block": {
+			return `${prefix}/block/${data}`
 		}
 		case "address":
 		default: {

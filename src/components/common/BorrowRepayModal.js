@@ -239,14 +239,14 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                 pendingInfo: {
                     type: 'Repay Borrow',
                     status: true,
-                    amount: amount.dp(8, 1).toString(10),
+                    amount: amountRepay.dp(8, 1).toString(10),
                     symbol: asset.symbol
                 }
             });
             try {
 
                 if (asset.id !== 'bnb') {
-                    if (amount.eq(asset.borrowBalance)) {
+                    if (amountRepay.eq(asset.borrowBalance)) {
                         await methods.send(
                             appContract.methods.repayBorrow,
                             [
@@ -261,7 +261,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                         await methods.send(
                             appContract.methods.repayBorrow,
                             [
-                                amount
+                                amountRepay
                                     .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
                                     .integerValue()
                                     .toString(10)
@@ -283,7 +283,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                 } else {
                     sendRepay(
                         account,
-                        amount
+                        amountRepay
                             .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
                             .integerValue()
                             .toString(10),
@@ -304,6 +304,14 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                 }
             } catch (e) {
                 setIsLoadingRepay(false);
+                setSetting({
+                    pendingInfo: {
+                        type: '',
+                        status: false,
+                        amount: 0,
+                        symbol: ''
+                    }
+                });
             }
         }
     };
@@ -378,7 +386,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
       <div className="flex justify-between items-center text-white">
         <div className="text-white">Borrow Balance</div>
           {(currentTab === 'repayBorrow' && (amountRepay.isZero() || amountRepay.isNaN()))
-          || (amount.isZero() || amount.isNaN()) ? (
+          || (currentTab === 'borrow' && (amount.isZero() || amount.isNaN())) ? (
               <span>${(
                   currentTab === 'repayBorrow'
                       ? borrowBalanceRepay
@@ -408,7 +416,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
       <div className="flex justify-between items-center text-white">
         <div className="text-white">Borrow Limit Used</div>
           {(currentTab === 'repayBorrow' && (amountRepay.isZero() || amountRepay.isNaN()))
-          || (amount.isZero() || amount.isNaN()) ? (
+          || (currentTab === 'borrow' && (amount.isZero() || amount.isNaN())) ? (
               <span>{(currentTab === 'repayBorrow'
                       ? borrowPercentRepay
                       : borrowPercent).dp(2, 1).toString(10)}%</span>

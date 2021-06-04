@@ -13,18 +13,10 @@ import Vault from '../pages/Vault';
 import Vote from '../pages/Vote';
 import NotFound from '../pages/NotFound';
 import Web3ReactManager from "../components/common/Web3ReactManager";
-import ApplicationUpdater from "../core/modules/application/updater";
-import ListsUpdater from "../core/modules/lists/updater";
-import MulticallUpdater from "../core/modules/multicall/updater";
-import TransactionUpdater from "../core/modules/transactions/updater";
 
 const Routes = () => {
   return (
     <Web3ReactManager>
-      <ApplicationUpdater />
-      <MulticallUpdater />
-      <TransactionUpdater/>
-      <ListsUpdater/>
       <Switch>
         <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
         <Route exact path={routes.dashboard} component={Dashboard} />

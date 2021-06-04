@@ -20,6 +20,15 @@ import BigNumber from "bignumber.js";
 import {checkIsValidNetwork} from "../../utilities/common";
 import {accountActionCreators, connectAccount} from "../../core";
 import {bindActionCreators} from "redux";
+import {
+  AnnexIcon,
+  DashboardIcon,
+  FarmsIcon,
+  MarketIcon, PoolsIcon,
+  TradeIcon,
+  VaultIcon,
+  VoteIcon
+} from "../../components/common/Icons";
 
 const Wrapper = styled.aside`
   @media (min-width: 1024px) {
@@ -33,31 +42,106 @@ const Logo = styled.img`
 `
 
 const sidebarItems = [
-  { key: 1, icon: dashboard, title: 'Lending', href: '/dashboard' },
-  { key: 2, icon: vote, title: 'Vote', href: '/vote' },
-  { key: 3, icon: annex, title: 'Annex', href: '/annex' },
-  { key: 4, icon: market, title: 'Market', href: '/market' },
-  { key: 5, icon: vault, title: 'Vault', href: '/vault' },
+  {
+    key: 1,
+
+    // eslint-disable-next-line react/display-name
+    icon: (fill) => <DashboardIcon fill={fill} />,
+    title: 'Lending',
+    href: RouteMap.dashboard,
+  },
+  // eslint-disable-next-line react/display-name
+  { key: 2, icon: (fill) => <VoteIcon fill={fill} />, title: 'Vote', href: RouteMap.vote.index },
+  // eslint-disable-next-line react/display-name
+  { key: 3, icon: (fill) => <AnnexIcon fill={fill} />, title: 'Annex', href: RouteMap.annex },
+  // eslint-disable-next-line react/display-name
+  { key: 4, icon: (fill) => <MarketIcon fill={fill} />, title: 'Market', href: RouteMap.market },
+  // eslint-disable-next-line react/display-name
+  { key: 5, icon: (fill) => <VaultIcon fill={fill} />, title: 'Vault', href: RouteMap.vault },
   {
     key: 6,
-    icon: trade,
+    // eslint-disable-next-line react/display-name
+    icon: (fill) => <TradeIcon fill={fill} />,
     title: 'Trade',
-    href: '',
+    href: `${RouteMap.trade}`,
     subCats: [
-      { key: 1, icon: underscore, title: 'Swap', href: '/trade?tab=swap' },
-      { key: 2, icon: underscore, title: 'Liquidity', href: '/trade?tab=liquidity' },
+      { key: 1, icon: underscore, title: 'Swap', href: `${RouteMap.trade}?tab=swap` },
+      { key: 2, icon: underscore, title: 'Liquidity', href: `${RouteMap.trade}?tab=liquidity` },
     ],
   },
-  { key: 7, icon: farms, title: 'Farms', href: '/farms' },
-  { key: 8, icon: pools, title: 'Pools', href: '/pools' },
+  // eslint-disable-next-line react/display-name
+  { key: 7, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+  // eslint-disable-next-line react/display-name
+  { key: 8, icon: (fill) => <PoolsIcon fill={fill} />, title: 'Pools', href: RouteMap.pools },
 ];
 
-function Sidebar({ isOpen, onClose, settings }) {
-  const { pathname } = useLocation();
-  const history = useHistory();
-  const [displaySubCats, setDisplaySubCats] = useState([]);
-  const [totalXaiMinted, setTotalXaiMinted] = useState('0');
 
+const primaryColor = '#FF9800';
+
+const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
+    <div className={wrapperClassName}>
+      <div className="flex flex-col space-y-4 text-white">
+        {items?.map((i) => (
+            <div key={i.key}>
+              <div
+                  className={`sidebar-item gap-x-4 items-center cursor-pointer
+                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${
+                      i?.href?.includes(pathname) ? 'bg-black' : ''
+                  }`}
+                  onClick={() => {
+                    if (i.href) {
+                      history.push(i.href);
+                    }
+                  }}
+              >
+                <div className="flex items-center" onClick={() => {}}>
+                  <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
+                  <div className="text-23 2xl:text-24">{i.title}</div>
+                </div>
+                {i.subCats && (
+                    <img
+                        className={i?.href?.includes(pathname) ? 'transform rotate-90' : ''}
+                        src={filledArrow}
+                        alt={i.title}
+                    />
+                )}
+              </div>
+              {i?.href?.includes(pathname) && (
+                  <div
+                      className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
+                  >
+                    {i.subCats?.map((cat) => (
+                        <div
+                            className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
+                            key={cat.key}
+                            onClick={() => {
+                              history.push(cat.href);
+                            }}
+                        >
+                          <img src={cat.icon} alt={cat.title} />
+                          <div
+                              className={
+                                cat?.href?.includes(`${pathname}${search}`)
+                                    ? 'text-primary text-23 2xl:text-24'
+                                    : 'text-23 2xl:text-24'
+                              }
+                          >
+                            {cat.title}
+                          </div>
+                        </div>
+                    ))}
+                  </div>
+              )}
+            </div>
+        ))}
+      </div>
+    </div>
+);
+
+function Sidebar({ isOpen, onClose, settings }) {
+  const { pathname, search } = useLocation();
+  const [totalXaiMinted, setTotalXaiMinted] = useState('0');
+  const history = useHistory();
 
   const getTotalXaiMinted = async () => {
     // total xai minted
@@ -72,72 +156,15 @@ function Sidebar({ isOpen, onClose, settings }) {
 
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname, search])
+
+
+  useEffect(() => {
     if (checkIsValidNetwork('metamask')) {
       getTotalXaiMinted();
     }
   }, [settings.markets]);
-
-
-  const NavItems = ({ wrapperClassName, items }) => (
-      <div className={wrapperClassName}>
-        <div className="flex flex-col space-y-4 text-white">
-          {sidebarItems?.map((i) => (
-              <div key={i.key}>
-                <div
-                    className={`sidebar-item gap-x-4 items-center cursor-pointer
-                       py-2 pl-8 pr-6 rounded-3xl ${i.href === pathname ? 'bg-black' : ''}`}
-                    onClick={() => {
-                      if (i.href) {
-                        history.push(i.href);
-                      }
-                    }}
-                >
-                  <div
-                      className="flex items-center"
-                      onClick={() =>
-                          setDisplaySubCats((prevCubCats) => {
-                            if (!prevCubCats?.includes(i.key)) {
-                              return [...prevCubCats, i.key];
-                            } else {
-                              return displaySubCats?.filter((c) => c !== i.key);
-                            }
-                          })
-                      }
-                  >
-                    <div className="w-10">
-                      <img src={i.icon} alt={i.title} />
-                    </div>
-                    <div>{i.title}</div>
-                  </div>
-                  {i.subCats && (
-                      <img
-                          className={displaySubCats?.includes(i.key) ? 'transform rotate-90' : ''}
-                          src={filledArrow}
-                          alt={i.title}
-                      />
-                  )}
-                </div>
-                {
-                  <div
-                      className={`overflow-hidden transform transition-all duration-300 ease-in-out ${
-                          displaySubCats?.includes(i.key) ? 'max-h-55' : 'max-h-0'
-                      }`}
-                  >
-                    {i.subCats?.map((cat) => (
-                        <Link key={cat.key} to={cat.href}>
-                          <div className="flex items-center space-x-4 ml-12 mb-2" key={cat.key}>
-                            <img src={cat.icon} alt={cat.title} />
-                            <div className="">{cat.title}</div>
-                          </div>
-                        </Link>
-                    ))}
-                  </div>
-                }
-              </div>
-          ))}
-        </div>
-      </div>
-  );
 
   return (
       <>
@@ -149,7 +176,13 @@ function Sidebar({ isOpen, onClose, settings }) {
           <div className="flex justify-center items-center mt-14 cursor-pointer" onClick={onClose}>
             <Logo  src={logo} alt="Annex" />
           </div>
-          <NavItems items={sidebarItems} wrapperClassName="pt-10" />
+          <NavItems
+              items={sidebarItems}
+              wrapperClassName="pt-10"
+              search={search}
+              history={history}
+              pathname={pathname}
+          />
           <Navigation
               isOpen={isOpen}
               wrapperClassName="block xl:hidden"

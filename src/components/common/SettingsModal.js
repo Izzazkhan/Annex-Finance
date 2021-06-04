@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import Modal from '../UI/Modal';
 import {useUserDeadline, useUserSlippageTolerance} from "../../core";
+import QuestionHelper from "./QuestionHelper";
 
 const MAX_SLIPPAGE = 5000;
 const RISKY_SLIPPAGE_LOW = 50;
@@ -79,7 +80,11 @@ function SettingsModal({ open, onSetOpen, onCloseModal }) {
 
   const content = (
     <div className="pt-10 pb-12 px-6">
-      <div className="">Slippage tolerance</div>
+      <div className="">
+          Slippage tolerance
+          <QuestionHelper
+              text="Your transaction will revert if the price changes unfavorably by more than this percentage." />
+      </div>
       <div className="flex items-center space-x-4 mt-8">
 
           {predefinedValues.map(({ label, value: predefinedValue }) => {
@@ -98,7 +103,7 @@ function SettingsModal({ open, onSetOpen, onCloseModal }) {
                   </button>
               );
           })}
-          <div className="bg-fadeBlue py-4 px-8 rounded-md text-white font-bold text-lg flex items-center">
+          <div className={`${[0.1, 0.5, 1].includes(value) ? 'bg-fadeBlue text-white' : "bg-primary text-black"} py-4 px-8 rounded-md font-bold text-lg flex items-center`}>
               <input
                   type="number"
                   step={0.1}
@@ -106,7 +111,7 @@ function SettingsModal({ open, onSetOpen, onCloseModal }) {
                   placeholder="5%"
                   value={value}
                   onChange={handleChange}
-                  className="w-40 border-none bg-transparent focus:outline-none focus:bg-transparent focus:border-none text-white"/>
+                  className="w-40 border-none bg-transparent focus:outline-none focus:bg-transparent focus:border-none font-bold"/>
               <div className="text-xl">%</div>
           </div>
 
@@ -116,7 +121,10 @@ function SettingsModal({ open, onSetOpen, onCloseModal }) {
                 {error}
             </div>
         )}
-      <div className="text-xl mt-8">Transaction deadline</div>
+      <div className="text-xl mt-8">
+          Transaction deadline
+          <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
+      </div>
       <div className="flex items-center space-x-4 mt-6">
           <div className="bg-fadeBlue py-4 px-10 rounded-md text-white font-bold text-lg flex items-center">
               <input
@@ -126,7 +134,7 @@ function SettingsModal({ open, onSetOpen, onCloseModal }) {
                   placeholder={'20'}
                   value={valueDeadline}
                   onChange={handleChangeDeadline}
-                  className="w-40 border-none bg-transparent focus:outline-none focus:bg-transparent focus:border-none text-white"/>
+                  className="w-40 border-none bg-transparent font-bold focus:outline-none focus:bg-transparent focus:border-none text-white"/>
           </div>
         <div className="">Minutes</div>
       </div>

@@ -588,7 +588,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
               </div>
           </div>
           <p className="text-center mt-6 text-center">
-            Your available withdraw amount = Total Supply Amount - XVS Mint Amount - Borrowed Amount
+            Your available withdraw amount = Total Supply Amount - XAI Mint Amount - Borrowed Amount
           </p>
         </div>
       )}
