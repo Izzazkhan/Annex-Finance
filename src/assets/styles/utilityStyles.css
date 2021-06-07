@@ -105,6 +105,7 @@ button:disabled {
   position: sticky;
   position: -webkit-sticky;
   top: 12px;
+  left:
 }
 .Toastify__toast-container {
   left: 0;

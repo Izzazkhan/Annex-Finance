@@ -6,6 +6,8 @@ import { toast, ToastContainer, Zoom } from 'react-toastify';
 import getLibrary from './utils/getLibrary';
 import { NetworkContextName } from "./constants";
 import {store} from "./core";
+import APIProvider from "./APIProvider";
+import React from "react";
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
@@ -15,7 +17,9 @@ const Providers = props => {
 			<Web3ProviderNetwork getLibrary={getLibrary}>
 				<Provider store={store}>
 					<Router>
-						{props.children}
+						<APIProvider>
+							{props.children}
+						</APIProvider>
 					</Router>
 				</Provider>
 			</Web3ProviderNetwork>
