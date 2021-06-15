@@ -1,4 +1,5 @@
 import {Field} from "./swap/actions";
+import {Field as MintField} from "./mint/actions";
 import {DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL} from "../../constants/lists";
 import DEFAULT_LIST from "../../constants/tokens/annex.json";
 import {DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE} from "../../constants/swap";
@@ -90,6 +91,12 @@ const user = {
   timestamp: currentTimestamp(),
 }
 
+const mint = {
+  independentField: MintField.CURRENCY_A,
+  typedValue: "",
+  otherTypedValue: "",
+}
+
 export const initialState = {
   auth,
   account,
@@ -98,5 +105,6 @@ export const initialState = {
   lists,
   application,
   transaction,
-  user
+  user,
+  mint
 };

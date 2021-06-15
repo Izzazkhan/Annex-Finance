@@ -36,7 +36,7 @@ export default function Updater() {
 	const state = useSelector((s) => s.transactions);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const transactions = chainId ? state[chainId] ?? {} : {};
+	const transactions = chainId ? state[chainId] || {} : {};
 
 	useEffect(() => {
 		if (!chainId || !library || !lastBlockNumber) return;

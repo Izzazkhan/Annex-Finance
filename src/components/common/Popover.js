@@ -105,7 +105,7 @@ export default function Popover({ content, show, children, placement = "auto" })
 				>
 					{content}
 					<Arrow
-						className={`arrow-${attributes.popper?.["data-popper-placement"] ?? ""}`}
+						className={`arrow-${attributes.popper?.["data-popper-placement"] || ""}`}
 						ref={setArrowElement}
 						style={styles.arrow}
 						{...attributes.arrow}

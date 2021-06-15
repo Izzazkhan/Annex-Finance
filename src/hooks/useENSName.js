@@ -33,7 +33,7 @@ export default function useENSName(address) {
 
 	const changed = debouncedAddress !== address;
 	return {
-		ENSName: changed ? null : name.result?.[0] ?? null,
+		ENSName: changed ? null : name.result?.[0] || null,
 		loading: changed || resolverAddress.loading || name.loading,
 	};
 }

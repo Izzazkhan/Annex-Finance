@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { LOGOUT_SUCCESS } from '../modules/auth/actions';
-import { auth, account, swap, multicall, transactions, lists, application, user } from '../modules';
+import { auth, account, swap, multicall, transactions, lists, application, user, mint } from '../modules';
 import { resetReducer } from '../modules/reset';
 
 const appReducer = combineReducers({
@@ -11,7 +11,8 @@ const appReducer = combineReducers({
   transactions,
   lists,
   application,
-  user
+  user,
+  mint
 });
 
 export default function rootReducer(state, action) {

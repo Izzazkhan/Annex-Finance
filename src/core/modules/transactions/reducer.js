@@ -18,7 +18,7 @@ export default function transaction(state = initialState.transaction, action = {
 			if (oldState[chainId]?.[hash]) {
 				throw Error("Attempted to add existing transaction.");
 			}
-			const txs = oldState[chainId] ?? {};
+			const txs = oldState[chainId] || {};
 			txs[hash] = { hash, approval, summary, from, addedTime: now() };
 			oldState[chainId] = txs;
 

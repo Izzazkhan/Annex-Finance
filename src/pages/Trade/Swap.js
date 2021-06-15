@@ -4,11 +4,8 @@ import settings from '../../assets/icons/settings.svg';
 import settingsBlack from '../../assets/icons/settingsBlack.svg';
 import history from '../../assets/icons/history.svg';
 import historyBlack from '../../assets/icons/historyBlack.svg';
-import BTN from '../../assets/icons/BTN.svg';
-import LTC from '../../assets/icons/LTC.svg';
 import blackArrow from '../../assets/icons/blackArrow.svg';
 import whiteArrow from '../../assets/icons/whiteArrow.svg';
-import ValueRange from './ValueRange';
 import {useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState} from "../../core";
 import {useCurrency} from "../../hooks/Tokens";
 import {useActiveWeb3React} from "../../hooks";
@@ -28,16 +25,7 @@ import CurrencyInputPanel from "../../components/swap/CurrencyInputPanel";
 import AdvancedSwapDetails from "../../components/swap/AdvancedSwapDetails";
 import ConfirmSwapModal from "../../components/swap/ConfirmSwapModal";
 
-const cryptos = [
-	{ name: 'BTN', logo: <img className="" src={BTN} alt="" /> },
-	{ name: 'LTC', logo: <img className="" src={LTC} alt="" /> },
-	{ name: 'LTC', logo: <img className="" src={LTC} alt="" /> },
-	{ name: 'LTC', logo: <img className="" src={LTC} alt="" /> },
-	{ name: 'LTC', logo: <img className="" src={LTC} alt="" /> },
-];
-
 function Swap({ onSettingsOpen, onHistoryOpen }) {
-	const [rangeValues, setRangeValues] = useState({});
 	const loadedUrlParams = useDefaultsFromURLSearch();
 
 	// token warning stuff
@@ -51,7 +39,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 	const [isSyrup, setIsSyrup] = useState(false);
 	const [syrupTransactionType, setSyrupTransactionType] = useState("");
 	const urlLoadedTokens = useMemo(
-		() => [loadedInputCurrency, loadedOutputCurrency]?.filter((c) => c instanceof Token) ?? [],
+		() => [loadedInputCurrency, loadedOutputCurrency]?.filter((c) => c instanceof Token) || [],
 		[loadedInputCurrency, loadedOutputCurrency]
 );
 	const handleConfirmTokenWarning = useCallback(() => {
@@ -140,8 +128,8 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 	const formattedAmounts = {
 		[independentField]: typedValue,
 		[dependentField]: showWrap
-			? parsedAmounts[independentField]?.toExact() ?? ""
-			: parsedAmounts[dependentField]?.toSignificant(6) ?? "",
+			? parsedAmounts[independentField]?.toExact() || ""
+			: parsedAmounts[dependentField]?.toSignificant(6) || "",
 	};
 
 	const route = trade?.route;
@@ -439,7 +427,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							}`}
 						>
 
-							{wrapInputError ??
+							{wrapInputError ||
 							(wrapType === WrapType.WRAP
 								? "Wrap"
 								: wrapType === WrapType.UNWRAP

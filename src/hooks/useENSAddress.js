@@ -29,7 +29,7 @@ export default function useENSAddress(ensName) {
 
 	const changed = debouncedName !== ensName;
 	return {
-		address: changed ? null : addr.result?.[0] ?? null,
+		address: changed ? null : addr.result?.[0] || null,
 		loading: changed || resolverAddress.loading || addr.loading,
 	};
 }

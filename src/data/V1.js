@@ -43,7 +43,7 @@ function useMockV1Pair(inputCurrency) {
 	const isWETH = Boolean(token && token.equals(WETH[token.chainId]));
 	const v1PairAddress = useV1ExchangeAddress(isWETH ? undefined : token?.address);
 	const tokenBalance = useTokenBalance(v1PairAddress, token);
-	const ETHBalance = useETHBalances([v1PairAddress])[v1PairAddress ?? ""];
+	const ETHBalance = useETHBalances([v1PairAddress])[v1PairAddress || ""];
 
 	return useMemo(
 		() =>
@@ -70,7 +70,7 @@ export function useAllTokenV1Exchanges() {
 					memo[result[0]] = allTokens[args[ix][0]];
 				}
 				return memo;
-			}, {}) ?? {},
+			}, {}) || {},
 		[allTokens, args, data]
 	);
 }
@@ -89,7 +89,7 @@ export function useUserHasLiquidityInAllTokens() {
 		[chainId, exchanges]
 	);
 
-	const balances = useTokenBalances(account ?? undefined, v1ExchangeLiquidityTokens);
+	const balances = useTokenBalances(account || undefined, v1ExchangeLiquidityTokens);
 
 	return useMemo(
 		() =>

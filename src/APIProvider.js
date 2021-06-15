@@ -330,7 +330,7 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 	}, [account]);
 
 
-	return props.children;
+	return null;
 }
 
 const mapStateToProps = ({ account }) => ({

@@ -35,12 +35,12 @@ export default function CurrencyLogo({
 			if (currency instanceof WrappedTokenInfo) {
 				return [
 					...uriLocations,
-					`/images/coins/${currency?.symbol ?? "token"}.png`,
+					`/images/coins/${currency?.symbol || "token"}.png`,
 					getTokenLogoURL(currency.address),
 				];
 			}
 
-			return [`/images/coins/${currency?.symbol ?? "token"}.png`, getTokenLogoURL(currency.address)];
+			return [`/images/coins/${currency?.symbol || "token"}.png`, getTokenLogoURL(currency.address)];
 		}
 		return [];
 	}, [currency, uriLocations]);
@@ -50,8 +50,8 @@ export default function CurrencyLogo({
 	}
 
 	return (currency)?.symbol ? (
-		<CoinLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? "token"} logo`} style={style} />
+		<CoinLogo size={size} srcs={srcs} alt={`${currency?.symbol || "token"} logo`} style={style} />
 	) : (
-		<StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? "token"} logo`} style={style} />
+		<StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol || "token"} logo`} style={style} />
 	);
 }

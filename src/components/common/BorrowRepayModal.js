@@ -354,17 +354,6 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
                 .toString(10) + "%"}
         </div>
       </div>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <img className="w-6 h-6" src={available} alt="XAI" />
-          <div className="text-white">Repay XAI Balance</div>
-        </div>
-        <div className="text-white">
-            {getBigNumber(settings.xaiMinted)
-                .dp(2, 1)
-                .toString(10)}{' '} XAI
-        </div>
-      </div>
         {!new BigNumber(asset.borrowCaps || 0).isZero() && (
             <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">

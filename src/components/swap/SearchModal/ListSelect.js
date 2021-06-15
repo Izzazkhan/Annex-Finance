@@ -71,7 +71,7 @@ function ListOrigin({ listUrl }) {
 			return undefined;
 		}
 	}, [listUrl, ensName]);
-	return <>{ensName ?? host}</>;
+	return <>{ensName || host}</>;
 }
 
 function listUrlRowHTMLId(listUrl) {

@@ -13,7 +13,6 @@ function PendingTransaction({ settings }) {
 	}, []);
 
 
-	console.log(curTime);
 
 	const baseColumns = [
 		{

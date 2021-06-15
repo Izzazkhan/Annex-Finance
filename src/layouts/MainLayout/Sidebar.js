@@ -65,8 +65,8 @@ const sidebarItems = [
     title: 'Trade',
     href: `${RouteMap.trade}`,
     subCats: [
-      { key: 1, icon: underscore, title: 'Swap', href: `${RouteMap.trade}?tab=swap` },
-      { key: 2, icon: underscore, title: 'Liquidity', href: `${RouteMap.trade}?tab=liquidity` },
+      { key: 1, icon: underscore, title: 'Swap', href: `${RouteMap.trade}/swap` },
+      { key: 2, icon: underscore, title: 'Liquidity', href: `${RouteMap.trade}/liquidity` },
     ],
   },
   // eslint-disable-next-line react/display-name
@@ -86,7 +86,7 @@ const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
               <div
                   className={`sidebar-item gap-x-4 items-center cursor-pointer
                        py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${
-                      i?.href?.includes(pathname) ? 'bg-black' : ''
+                      pathname?.includes(i?.href) ? 'bg-black' : ''
                   }`}
                   onClick={() => {
                     if (i.href) {
@@ -96,17 +96,17 @@ const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
               >
                 <div className="flex items-center" onClick={() => {}}>
                   <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
-                  <div className="text-23 2xl:text-24">{i.title}</div>
+                  <div className="text-23">{i.title}</div>
                 </div>
                 {i.subCats && (
                     <img
-                        className={i?.href?.includes(pathname) ? 'transform rotate-90' : ''}
+                        className={pathname?.includes(i?.href) ? 'transform rotate-90' : ''}
                         src={filledArrow}
                         alt={i.title}
                     />
                 )}
               </div>
-              {i?.href?.includes(pathname) && (
+              {pathname?.includes(i?.href) && (
                   <div
                       className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
                   >
@@ -122,8 +122,8 @@ const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
                           <div
                               className={
                                 cat?.href?.includes(`${pathname}${search}`)
-                                    ? 'text-primary text-23 2xl:text-24'
-                                    : 'text-23 2xl:text-24'
+                                    ? 'text-primary text-23'
+                                    : 'text-23'
                               }
                           >
                             {cat.title}

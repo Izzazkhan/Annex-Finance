@@ -54,7 +54,7 @@ export function useTokenBalancesWithLoadingIndicator(
 	tokens
 ) {
 	const validatedTokens = useMemo(
-		() => tokens?.filter((t) => isAddress(t?.address) !== false) ?? [],
+		() => tokens?.filter((t) => isAddress(t?.address) !== false) || [],
 		[tokens]
 	);
 
@@ -105,12 +105,12 @@ export function useCurrencyBalances(
 	account,
 	currencies
 ) {
-	const tokens = useMemo(() => currencies?.filter((currency) => currency instanceof Token) ?? [], [
+	const tokens = useMemo(() => currencies?.filter((currency) => currency instanceof Token) || [], [
 		currencies,
-	]);
+	])
 
 	const tokenBalances = useTokenBalances(account, tokens);
-	const containsETH = useMemo(() => currencies?.some((currency) => currency === ETHER) ?? false, [
+	const containsETH = useMemo(() => currencies?.some((currency) => currency === ETHER) || false, [
 		currencies,
 	]);
 	const ethBalance = useETHBalances(containsETH ? [account] : []);
@@ -122,7 +122,7 @@ export function useCurrencyBalances(
 				if (currency instanceof Token) return tokenBalances[currency.address];
 				if (currency === ETHER) return ethBalance[account];
 				return undefined;
-			}) ?? [],
+			}) || [],
 		[account, currencies, ethBalance, tokenBalances]
 	);
 }
@@ -135,7 +135,7 @@ export function useCurrencyBalance(account, currency) {
 export function useAllTokenBalances() {
 	const { account } = useActiveWeb3React();
 	const allTokens = useAllTokens();
-	const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens]);
-	const balances = useTokenBalances(account ?? undefined, allTokensArray);
-	return balances ?? {};
+	const allTokensArray = useMemo(() => Object.values(allTokens || {}), [allTokens]);
+	const balances = useTokenBalances(account || undefined, allTokensArray);
+	return balances || {};
 }

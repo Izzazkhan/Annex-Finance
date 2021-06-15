@@ -8,7 +8,7 @@ function Progress({
   status = '',
   type = 'line',
   color = '#FF9800',
-  trailColor = '#B06800',
+  trailColor = '#663C00',
   symbolClassName = 'hidden',
   ...props
 }) {

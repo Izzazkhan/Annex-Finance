@@ -393,16 +393,6 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
 
         </div>
       </div>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <img className="w-6 h-6" src={available} alt="XAI" />
-          <div className="text-white">Available XAI Limit</div>
-        </div>
-        <div className="text-white">
-            {getBigNumber(settings.mintableXai)
-                .dp(2, 1)
-                .toString(10)}{' '} XAI</div>
-      </div>
     </div>
   );
 

@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import { useCountUp } from 'react-countup';
 
 import Layout from '../layouts/MainLayout/MainLayout';
@@ -27,7 +27,8 @@ import { connectAccount, accountActionCreators } from '../core';
 import {bindActionCreators} from "redux";
 import BigNumber from "bignumber.js";
 import {
-  getComptrollerContract,
+  getAbepContract,
+  getComptrollerContract, getTokenContract,
   getXaiControllerContract,
   getXaiTokenContract, getXaiVaultContract,
   methods
@@ -35,7 +36,7 @@ import {
 import * as constants from "../utilities/constants";
 import {useActiveWeb3React} from "../hooks";
 import commaNumber from "comma-number";
-import {addToken, getBigNumber} from "../utilities/common";
+import {addToken, checkIsValidNetwork, getBigNumber} from "../utilities/common";
 import {promisify} from "../utilities";
 import sxp from "../assets/images/coins/sxp.png";
 import arrowUp from '../assets/icons/arrowUp.png';
@@ -135,9 +136,146 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   }, [settings.totalBorrowBalance, settings.totalBorrowLimit, account]);
 
 
+  // Rewards
+  const [earnedBalance, setEarnedBalance] = useState('0.0000');
+  const [xaiMint, setXaiMint] = useState('0.0000');
+
+  const getVoteInfo = async () => {
+    const myAddress = account;
+    if (!myAddress) return;
+    const appContract = getComptrollerContract();
+    const xaiContract = getXaiControllerContract();
+    const annexInitialIndex = await methods.call(
+        appContract.methods.annexInitialIndex,
+        []
+    );
+    let annexEarned = new BigNumber(0);
+    for (
+        let index = 0;
+        index < Object.values(constants.CONTRACT_ABEP_ADDRESS).length;
+        index += 1
+    ) {
+      const item = Object.values(constants.CONTRACT_ABEP_ADDRESS)[index];
+
+      const aBepContract = getAbepContract(item.id);
+      const supplyState = await methods.call(
+          appContract.methods.annexSupplyState,
+          [item.address]
+      );
+      const supplyIndex = supplyState.index;
+      let supplierIndex = await methods.call(
+          appContract.methods.annexSupplierIndex,
+          [item.address, myAddress]
+      );
+      if (+supplierIndex === 0 && +supplyIndex > 0) {
+        supplierIndex = annexInitialIndex;
+      }
+      let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+
+      const supplierTokens = await methods.call(
+          aBepContract.methods.balanceOf,
+          [myAddress]
+      );
+      const supplierDelta = new BigNumber(supplierTokens)
+          .multipliedBy(deltaIndex)
+          .dividedBy(1e36);
+
+      annexEarned = annexEarned.plus(supplierDelta);
+
+      const borrowState = await methods.call(
+          appContract.methods.annexBorrowState,
+          [item.address]
+      );
+      let borrowIndex = borrowState.index;
+      const borrowerIndex = await methods.call(
+          appContract.methods.annexBorrowerIndex,
+          [item.address, myAddress]
+      );
+      if (+borrowerIndex > 0) {
+        deltaIndex = new BigNumber(borrowIndex).minus(borrowerIndex);
+        const borrowBalanceStored = await methods.call(
+            aBepContract.methods.borrowBalanceStored,
+            [myAddress]
+        );
+        borrowIndex = await methods.call(aBepContract.methods.borrowIndex, []);
+        const borrowerAmount = new BigNumber(borrowBalanceStored)
+            .multipliedBy(1e18)
+            .dividedBy(borrowIndex);
+        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
+        annexEarned = annexEarned.plus(borrowerDelta);
+      }
+    }
+
+    const annexAccrued = await methods.call(appContract.methods.annexAccrued, [
+      myAddress
+    ]);
+    annexEarned = annexEarned
+        .plus(annexAccrued)
+        .dividedBy(1e18)
+        .dp(4, 1)
+        .toString(10);
+
+    const annexXAIState = await methods.call(
+        xaiContract.methods.annexXAIState,
+        []
+    );
+    const xaiMintIndex = annexXAIState.index;
+    let xaiMinterIndex = await methods.call(
+        xaiContract.methods.annexXAIMinterIndex,
+        [myAddress]
+    );
+    if (+xaiMinterIndex === 0 && +xaiMintIndex > 0) {
+      xaiMinterIndex = annexInitialIndex;
+    }
+    const deltaIndex = new BigNumber(xaiMintIndex).minus(
+        new BigNumber(xaiMinterIndex)
+    );
+    const xaiMinterAmount = await methods.call(appContract.methods.mintedXAIs, [
+      myAddress
+    ]);
+    const xaiMinterDelta = new BigNumber(xaiMinterAmount)
+        .times(deltaIndex)
+        .div(1e54)
+        .dp(4, 1)
+        .toString(10);
+    setEarnedBalance(
+        annexEarned && annexEarned !== '0' ? `${annexEarned}` : '0.0000'
+    );
+    setXaiMint(
+        xaiMinterDelta && xaiMinterDelta !== '0'
+            ? `${xaiMinterDelta}`
+            : '0.0000'
+    );
+  };
+
+
+
+  useEffect(() => {
+    getVoteInfo();
+  }, [settings.markets, account]);
+
+
   // Wallet balance
   const [netAPY, setNetAPY] = useState('0');
   const [withANN, setWithANN] = useState(true);
+
+  const estDailyEarning = useMemo(() => {
+    const apy = new BigNumber(netAPY);
+    const res = apy.times(settings.totalSupplyBalance).div(100).div(365)
+
+    return res
+        .dp(2, 1)
+        .toString(10)
+  }, [netAPY, settings.totalSupplyBalance])
+
+  const annualEarning = useMemo(() => {
+    const apy = new BigNumber(netAPY);
+    const res = apy.times(settings.totalSupplyBalance).div(100)
+
+    return res
+        .dp(2, 1)
+        .toString(10)
+  }, [netAPY, settings.totalSupplyBalance])
 
   const addXAIApy = useCallback(
       async apy => {
@@ -437,21 +575,31 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
 
   const loadingData = React.useMemo(() => fillArray({
     Asset: (
-        <div className="animate-pulse rounded-lg w-20 bg-lightGray w-full h-full flex items-center px-8 py-3"/>
+        <div className="h-13 flex items-center justify-center px-4 py-2">
+          <div className="animate-pulse rounded-lg w-20 bg-lightGray w-full flex items-center px-8 py-3"/>
+        </div>
     ),
     Apy: (
-        <div className="animate-pulse rounded-lg w-14 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        <div className="h-13 flex items-center justify-center px-4 py-2">
+          <div className="animate-pulse rounded-lg w-14 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        </div>
     ),
     Wallet: (
-        <div className="animate-pulse rounded-lg w-22 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        <div className="h-13 flex items-center justify-center px-4 py-2">
+          <div className="animate-pulse rounded-lg w-22 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        </div>
     ),
     Collateral: (
-        <div className="animate-pulse rounded-lg w-18 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        <div className="h-13 flex items-center justify-center px-4 py-2">
+          <div className="animate-pulse rounded-lg w-18 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        </div>
     ),
     Liquidity: (
-        <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        <div className="h-13 flex items-center justify-center px-4 py-2">
+          <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end"/>
+        </div>
     )
-  }, 15), []);
+  }, 8), []);
 
   const supplyData = React.useMemo(() => {
     return suppliedAssets.map(asset => {
@@ -888,8 +1036,8 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           </div>
         </div>
       )}
-      <div className="text-white mt-10">
-        <div className="px-6 lg:px-0 mb-17">
+      <div className="text-white mt-8">
+        <div className="px-6 lg:px-0 mb-8">
           <div className="text-primary text-5xl font-normal">${format(availableCountUp)}</div>
           <div className="mt-1 text-lg">Available Credit</div>
           <div className="flex items-center w-full mt-4">
@@ -909,19 +1057,19 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
             />
             <SummaryCard
                 name="Daily Earning"
-                title="$0"
+                title={!account || wrongNetwork ? '-' : estDailyEarning ? `$${estDailyEarning}` : "-"}
                 icon={DailyEarning}
                 noData={!account || wrongNetwork}
                 status="green" />
             <SummaryCard
                 name="ANN Rewards"
-                title="$0"
+                title={`${format(getBigNumber(earnedBalance).dp(2, 1).toString(10))} ANN`}
                 icon={ANNRewards}
                 noData={!account || wrongNetwork}
                 status="red" />
             <SummaryCard
                 name="Annual Earning"
-                title="$0"
+                title={!account || wrongNetwork ? '-' : annualEarning ? `$${annualEarning}` : "-"}
                 icon={AnnualEarning}
                 noData={!account || wrongNetwork}
                 status="red" />
@@ -936,7 +1084,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
               </div>
               <div className="mt-12">
                 <div className="text-lg">ANN Earned</div>
-                <div className="text-lg">{!account || wrongNetwork ? '-' : '$0'}</div>
+                <div className="text-lg">{!account || wrongNetwork ? '-' : `$${xaiMint}`}</div>
               </div>
             </div>
             <div className="flex flex-col justify-between items-center py-4">
@@ -956,7 +1104,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
                   strokeWidth={4}
                 />
                 <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 justify-center">
-                  <div className="text-primary text-2xl">{!account || wrongNetwork ? '-' : '$0'}</div>
+                  <div className="text-primary text-2xl">{!account || wrongNetwork ? '-' : estDailyEarning ? `$${estDailyEarning}` : "-"}</div>
                   <div className="text-lg md:text-base whitespace-nowrap text-center mt-4 md:mt-6">
                     Estimated Daily <br /> Earnings
                   </div>
@@ -977,7 +1125,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
               </div>
               <div className="mt-12 text-right">
                 <div className="text-lg">Net APY</div>
-                <div className="text-lg">{!account || wrongNetwork ? '-' : '$0'}</div>
+                <div className="text-lg">{!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}</div>
               </div>
             </div>
           </div>
