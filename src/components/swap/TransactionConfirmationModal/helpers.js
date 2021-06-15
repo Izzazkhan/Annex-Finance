@@ -44,11 +44,15 @@ const Heading = styled.div`
 	display: flex;
 	align-items: center;
 	flex: 1;
+	justify-content: center;
+	padding-left: 24px;
 `;
 
 const StyledContentHeader = styled.div`
 	align-items: center;
 	display: flex;
+	justify-content: space-between;
+	width: 100%;
 `;
 
 const StyledButton = styled.button`

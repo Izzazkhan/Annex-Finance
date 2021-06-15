@@ -35,7 +35,7 @@ export function useAllTransactions() {
 
 	const state = useSelector((s) => s.transactions);
 
-	return chainId ? state[chainId] ?? {} : {};
+	return chainId ? state[chainId] || {} : {};
 }
 
 export function useIsTransactionPending(transactionHash) {

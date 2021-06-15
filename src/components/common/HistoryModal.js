@@ -79,7 +79,7 @@ function HistoryModal({ open, onSetOpen, onCloseModal }) {
                             font-bold text-lg focus:outline-none hover:text-primary`}
                             href={getEtherscanLink(chainId, hash, "transaction")}
                         >
-                            {summary ?? hash}
+                            {summary || hash}
                         </a>
                     </FlexRow>
                 </>

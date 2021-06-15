@@ -25,10 +25,10 @@ export default function AdvancedSwapDetails({trade}) {
 					{isExactIn
 						? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${
 						trade.outputAmount.currency.symbol
-					}` ?? "-"
+					}` || "-"
 						: `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${
 						trade.inputAmount.currency.symbol
-					}` ?? "-"}</div>
+					}` || "-"}</div>
 			</div>
 			<div className="flex justify-between">
 				<div className="text-white text-22 font-bold">Price Impact</div>

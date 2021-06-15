@@ -11,7 +11,7 @@ export function useOnClickOutside(
 
 	useEffect(() => {
 		const handleClickOutside = (e) => {
-			if (node.current?.contains(e.target) ?? false) {
+			if (node.current?.contains(e.target) || false) {
 				return;
 			}
 			if (handlerRef.current) handlerRef.current();

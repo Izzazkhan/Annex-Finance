@@ -4,7 +4,7 @@ import {ROUTER_ADDRESS} from "../constants/swap";
 import {ETHER, Percent, JSBI, Token} from "@pancakeswap-libs/sdk";
 import { abi as IUniswapV2Router02ABI } from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
 import {AddressZero} from "@ethersproject/constants";
-import BigNumber from "bignumber.js";
+import { BigNumber } from "@ethersproject/bignumber";
 
 export { fillArray } from './fillArray';
 

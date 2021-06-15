@@ -21,7 +21,7 @@ class MiniRpcProvider {
 		this.host = parsed.host;
 		this.path = parsed.pathname;
 		// how long to wait to batch calls
-		this.batchWaitTimeMs = batchWaitTimeMs ?? 50;
+		this.batchWaitTimeMs = batchWaitTimeMs || 50;
 	}
 
 	async learBatch() {
@@ -110,7 +110,7 @@ class MiniRpcProvider {
 				reject,
 			});
 		});
-		this.batchTimeoutId = this.batchTimeoutId ?? setTimeout(this.clearBatch, this.batchWaitTimeMs);
+		this.batchTimeoutId = this.batchTimeoutId || setTimeout(this.clearBatch, this.batchWaitTimeMs);
 		return promise;
 	}
 }

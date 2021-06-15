@@ -88,16 +88,29 @@ input.gray-placeholder::placeholder {
 }
 
 @media (min-width: 1024px) {
-  .my-contents.open{
-    padding-left: 360px;
+  .my-contents.open {
+    padding-left: 274px;
   }
+}
+@media (min-width: 1440px) {
+  .my-contents.open {
+    padding-left: 270px;
+  }
+}
+@media (min-width: 1600px) {
+  .my-contents.open {
+    padding-left: 324px;
+  }
+}
+@media (min-width: 1024px) {
   .my-contents{
-    padding: 30px;
+  padding: 30px;
   }
 }
 
 button:disabled {
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .Toastify {
@@ -105,7 +118,6 @@ button:disabled {
   position: sticky;
   position: -webkit-sticky;
   top: 12px;
-  left:
 }
 .Toastify__toast-container {
   left: 0;

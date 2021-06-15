@@ -64,8 +64,8 @@ export default function SwapModalFooter({
 						<span
 							className={'text-white text-sm'}>
 							{trade.tradeType === TradeType.EXACT_INPUT
-								? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? "-"
-								: slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? "-"}
+								? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) || "-"
+								: slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) || "-"}
 						</span>
 						<span
 							className={'text-white text-sm ml-1'}>

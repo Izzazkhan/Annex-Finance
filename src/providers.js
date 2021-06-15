@@ -17,9 +17,8 @@ const Providers = props => {
 			<Web3ProviderNetwork getLibrary={getLibrary}>
 				<Provider store={store}>
 					<Router>
-						<APIProvider>
-							{props.children}
-						</APIProvider>
+						<APIProvider/>
+						{props.children}
 					</Router>
 				</Provider>
 			</Web3ProviderNetwork>

@@ -180,7 +180,7 @@ export default function Updater() {
 								results: outdatedCallKeys
 									.slice(firstCallKeyIndex, lastCallKeyIndex)
 									.reduce((memo, callKey, i) => {
-							memo[callKey] = returnData[i] ?? null;
+							memo[callKey] = returnData[i] || null;
 							return memo;
 						}, {}),
 							blockNumber: fetchBlockNumber,

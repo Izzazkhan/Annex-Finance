@@ -83,9 +83,9 @@ export function tryParseAmount(value, currency) {
 }
 
 const BAD_RECIPIENT_ADDRESSES = [
-	"0xBCfCcbde45cE874adCB698cC183deBcF17952812", // v2 factory
+	"0x6725F303b657a9451d8BA641348b6761A6CC7a17", // v2 factory
 	"0xf164fC0Ec4E93095b804a4795bBe1e041497b92a", // v2 router 01
-	"0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F", // v2 router 02
+	"0xD99D1c33F9fC3444f8101754aBC46c52416550D1", // v2 router 02
 ];
 
 /**
@@ -116,20 +116,20 @@ export function useDerivedSwapInfo() {
 
 	const inputCurrency = useCurrency(inputCurrencyId);
 	const outputCurrency = useCurrency(outputCurrencyId);
-	const recipientLookup = useENS(recipient ?? undefined);
-	const to = (recipient === null ? account : recipientLookup.address) ?? null;
+	const recipientLookup = useENS(recipient || undefined);
+	const to = (recipient === null ? account : recipientLookup.address) || null;
 
-	const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
-		inputCurrency ?? undefined,
-		outputCurrency ?? undefined,
+	const relevantTokenBalances = useCurrencyBalances(account || undefined, [
+		inputCurrency || undefined,
+		outputCurrency || undefined,
 	]);
 
 	const isExactIn = independentField === Field.INPUT;
-	const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined);
+	const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) || undefined);
 
-	const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined);
+	const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency || undefined);
 	// eslint-disable-next-line max-len
-	const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined);
+	const bestTradeExactOut = useTradeExactOut(inputCurrency || undefined, !isExactIn ? parsedAmount : undefined);
 
 	const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
 
@@ -139,8 +139,8 @@ export function useDerivedSwapInfo() {
 	};
 
 	const currencies = {
-		[Field.INPUT]: inputCurrency ?? undefined,
-		[Field.OUTPUT]: outputCurrency ?? undefined,
+		[Field.INPUT]: inputCurrency || undefined,
+		[Field.OUTPUT]: outputCurrency || undefined,
 	};
 
 	// get link to trade on v1, if a better rate exists
@@ -152,22 +152,22 @@ export function useDerivedSwapInfo() {
 	}
 
 	if (!parsedAmount) {
-		inputError = inputError ?? "Enter an amount";
+		inputError = inputError || "Enter an amount";
 	}
 
 	if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-		inputError = inputError ?? "Select a token";
+		inputError = inputError || "Select a token";
 	}
 
 	const formattedTo = isAddress(to);
 	if (!to || !formattedTo) {
-		inputError = inputError ?? "Enter a recipient";
+		inputError = inputError || "Enter a recipient";
 	} else if (
 		BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
 		(bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
 		(bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
 	) {
-		inputError = inputError ?? "Invalid recipient";
+		inputError = inputError || "Invalid recipient";
 	}
 
 	const [allowedSlippage] = useUserSlippageTolerance();
@@ -198,7 +198,7 @@ export function useDerivedSwapInfo() {
 		currencies,
 		currencyBalances,
 		parsedAmount,
-		v2Trade: v2Trade ?? undefined,
+		v2Trade: v2Trade || undefined,
 		inputError,
 		v1Trade,
 	};
@@ -211,7 +211,7 @@ function parseCurrencyFromURLParameter(urlParam) {
 		if (urlParam.toUpperCase() === "ETH") return "ETH";
 		if (valid === false) return "ETH";
 	}
-	return "ETH" ?? "";
+	return "ETH" || "";
 }
 
 function parseTokenAmountURLParameter(urlParam) {

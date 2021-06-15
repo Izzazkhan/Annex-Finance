@@ -42,7 +42,7 @@ export function listToTokenMap(list) {
 						if (!list.tags?.[tagId]) return undefined;
 						return { ...list.tags[tagId], id: tagId };
 					})
-					?.filter((x) => Boolean(x)) ?? [];
+					?.filter((x) => Boolean(x)) || [];
 			const token = new WrappedTokenInfo(tokenInfo, tags);
 			if (tokenMap[token.chainId][token.address] !== undefined) throw Error("Duplicate tokens.");
 			return {
@@ -87,8 +87,8 @@ export function useSelectedListInfo() {
 	const listsByUrl = useSelector((state) => state.lists.byUrl);
 	const list = selectedUrl ? listsByUrl[selectedUrl] : undefined;
 	return {
-		current: list?.current ?? null,
-		pending: list?.pendingUpdate ?? null,
+		current: list?.current || null,
+		pending: list?.pendingUpdate || null,
 		loading: list?.loadingRequestId !== null,
 	};
 }

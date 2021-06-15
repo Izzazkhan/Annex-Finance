@@ -78,7 +78,7 @@ function useAllCommonPairs(currencyA, currencyB) {
 					)
 					// filter out duplicated pairs
 					.reduce((memo, [, curr]) => {
-						memo[curr.liquidityToken.address] = memo[curr.liquidityToken.address] ?? curr;
+						memo[curr.liquidityToken.address] = memo[curr.liquidityToken.address] || curr;
 						return memo;
 					}, {})
 			),
@@ -98,7 +98,7 @@ export function useTradeExactIn(currencyAmountIn, currencyOut) {
 				Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, {
 					maxHops: 3,
 					maxNumResults: 1,
-				})[0] ?? null
+				})[0] || null
 			);
 		}
 		return null;
@@ -117,7 +117,7 @@ export function useTradeExactOut(currencyIn, currencyAmountOut) {
 				Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, {
 					maxHops: 3,
 					maxNumResults: 1,
-				})[0] ?? null
+				})[0] || null
 			);
 		}
 		return null;
