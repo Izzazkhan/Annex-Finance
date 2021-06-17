@@ -994,7 +994,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           <MiniLogo size="sm" />
           <p className="text-black flex-grow">
             This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
-            warranties, including that Akropolis is error-free or secure. Use it at your own risk.
+            warranties, including that Annex is error-free or secure. Use it at your own risk.
           </p>
           <div className="cursor-pointer" onClick={() => {
             localStorage.setItem("betaWarning", "true");
