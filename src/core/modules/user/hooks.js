@@ -120,6 +120,7 @@ export function useTrackedTokenPairs() {
 		});
 	}, [savedSerializedPairs, chainId]);
 
+
 	const combinedList = useMemo(() => userPairs.concat(generatedPairs).concat(pinnedPairs), [
 		generatedPairs,
 		pinnedPairs,

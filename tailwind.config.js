@@ -3,7 +3,7 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
-      sans: ['AvenirNext', 'sans-serif'],
+      sans: ['Poppins', 'sans-serif'],
     },
     container: {
       center: true,
@@ -18,7 +18,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        roboto: ['Roboto', 'sans-serif'],
+        roboto: ['Poppins', 'sans-serif'],
       },
       colors: {
         primary: '#FF9800',

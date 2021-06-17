@@ -9,8 +9,8 @@ export default function Switch({ wrapperClassName, value = false, onChange = (va
         onChange={(val) => {
             onChange(val)
         }}
-        className={`${value ? 'bg-fadeBlack' : 'bg-fadeBlack'}
-          relative inline-flex flex-shrink-0 h-4 w-12  
+        className={`
+          bg-darkGray relative inline-flex flex-shrink-0 h-4 w-12  
           border-2 border-transparent rounded-full cursor-pointer
            transition-colors ease-in-out duration-200 focus:outline-none 
            focus-visible:ring-2 focus-visible:ring-white 

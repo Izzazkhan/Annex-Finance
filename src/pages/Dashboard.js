@@ -1,23 +1,15 @@
 /*eslint-disable*/
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import { useCountUp } from 'react-countup';
 
 import Layout from '../layouts/MainLayout/MainLayout';
-import SummaryCard from '../components/common/SummaryCard';
 import DataTable from '../components/common/DataTable';
 import CandleChart from '../components/common/CandleChart';
 import MiniLogo from '../components/UI/MiniLogo';
-import Progress from '../components/UI/Progress';
 import Switch from '../components/UI/Switch';
 import Select from '../components/UI/Select';
 import { fillArray } from '../utils';
 import close from '../assets/icons/close.svg';
-import ANNBalance from '../assets/icons/ANN-Balance.svg';
-import DailyEarning from '../assets/icons/Daily-Earning.svg';
-import ANNRewards from '../assets/icons/ANN-Rewards.svg';
-import AnnualEarning from '../assets/icons/Annual-Earning.svg';
 import plusButtonIcon from '../assets/icons/plusButonIcon.svg';
-import fire from '../assets/icons/fire.svg';
 import SupplyWithdrawModal from '../components/common/SupplyWithdrawModal';
 import BorrowRepayModal from '../components/common/BorrowRepayModal';
 import BalanceModal from '../components/common/BalanceModal';
@@ -28,7 +20,7 @@ import {bindActionCreators} from "redux";
 import BigNumber from "bignumber.js";
 import {
   getAbepContract,
-  getComptrollerContract, getTokenContract,
+  getComptrollerContract,
   getXaiControllerContract,
   getXaiTokenContract, getXaiVaultContract,
   methods
@@ -36,13 +28,15 @@ import {
 import * as constants from "../utilities/constants";
 import {useActiveWeb3React} from "../hooks";
 import commaNumber from "comma-number";
-import {addToken, checkIsValidNetwork, getBigNumber} from "../utilities/common";
+import {addToken, getBigNumber} from "../utilities/common";
 import {promisify} from "../utilities";
 import sxp from "../assets/images/coins/sxp.png";
 import arrowUp from '../assets/icons/arrowUp.png';
 import arrowDown from '../assets/icons/arrowDown.png';
 import PendingTransaction from "../components/dashboard/PendingTransaction";
 import toast from "../components/UI/Toast";
+import AccountOverview from "../components/dashboard/AccountOverview";
+import MarketHistory from "../components/dashboard/MarketHistory";
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -260,6 +254,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   const [withANN, setWithANN] = useState(true);
 
   const estDailyEarning = useMemo(() => {
+    if(!netAPY || !settings.totalSupplyBalance) return '0';
     const apy = new BigNumber(netAPY);
     const res = apy.times(settings.totalSupplyBalance).div(100).div(365)
 
@@ -268,7 +263,9 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         .toString(10)
   }, [netAPY, settings.totalSupplyBalance])
 
+
   const annualEarning = useMemo(() => {
+    if(!netAPY || !settings.totalSupplyBalance) return '0';
     const apy = new BigNumber(netAPY);
     const res = apy.times(settings.totalSupplyBalance).div(100)
 
@@ -370,14 +367,6 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
       withANN
     });
   }, [withANN]);
-
-  const formatValue = value => {
-    return `$${format(
-        getBigNumber(value)
-            .dp(2, 1)
-            .toString(10)
-    )}`;
-  };
 
   // Markets
   const [suppliedAssets, setSuppliedAssets] = useState([]);
@@ -857,12 +846,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   const [marketInfo, setMarketInfo] = useState({});
   const [currentAPY, setCurrentAPY] = useState(0);
 
-  const getGraphData = async (asset, type) => {
+  const getGraphData = async (asset, type, limit) => {
     let tempData = [];
-    const res = await promisify(getMarketHistory, { asset, type });
+    const res = await promisify(getMarketHistory, { asset, type, limit });
     tempData = res?.data?.result
         .map(m => {
           return {
+            blockNumber: m?.blockNumber,
             createdAt: m.createdAt,
             supplyApy: +new BigNumber(m.supplyApy || 0).dp(8, 1).toFixed(4),
             borrowApy: +new BigNumber(m.borrowApy || 0).dp(8, 1).toFixed(4),
@@ -896,7 +886,8 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
     if (currentAsset) {
       getGraphData(
           constants.CONTRACT_ABEP_ADDRESS[currentAsset].address,
-          process.env.REACT_APP_GRAPH_TICKER || null
+          process.env.REACT_APP_GRAPH_TICKER || null,
+          60
       );
     }
   }, [account, currentAsset]);
@@ -936,7 +927,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         (key, index) => ({
           id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
           name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
-          logo: <img alt={constants.CONTRACT_TOKEN_ADDRESS[key].symbol} src={constants.CONTRACT_TOKEN_ADDRESS[key].asset} style={{ width: 32, height: 32}} />
+          logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset
         })
     )
   }, [])
@@ -946,29 +937,6 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         || (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
   }, [chainId])
 
-
-  const { countUp: availableCountUp, update: availableUpdate } = useCountUp({ end: 0 });
-  const { countUp: balanceCountUp, update: balanceUpdate } = useCountUp({ end: 0 });
-  const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0 });
-  const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0 });
-
-  useEffect(() => {
-    availableUpdate(Number(available));
-  }, [available])
-
-  useEffect(() => {
-    if(annBalance instanceof BigNumber) {
-      balanceUpdate(annBalance.toNumber());
-    }
-  }, [annBalance])
-
-  useEffect(() => {
-    supplyUpdate(Number(settings.totalSupplyBalance));
-  }, [settings.totalSupplyBalance])
-
-  useEffect(() => {
-    borrowUpdate(Number(settings.totalBorrowBalance));
-  }, [settings.totalBorrowBalance])
 
 
   return (
@@ -1036,101 +1004,18 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           </div>
         </div>
       )}
-      <div className="text-white mt-8">
-        <div className="px-6 lg:px-0 mb-8">
-          <div className="text-primary text-5xl font-normal">${format(availableCountUp)}</div>
-          <div className="mt-1 text-lg">Available Credit</div>
-          <div className="flex items-center w-full mt-4">
-            <div className="opacity-70 whitespace-nowrap mr-2 text-lg">Borrow Limit</div>
-            <div className="mr-4 text-lg">{borrowPercent}%</div>
-            <Progress wrapperClassName="w-full" percent={Number(borrowPercent)} />
-          </div>
-        </div>
-        <div className="bg-fadeBlack flex flex-col lg:flex-row justify-between lg:space-x-4 p-6 rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-9 w-full mb-6 md:mb-0">
-            <SummaryCard
-              name="ANN Balance"
-              title={`${format(getBigNumber(balanceCountUp).dp(2, 1).toString(10))} ANN`}
-              icon={ANNBalance}
-              noData={!account || wrongNetwork}
-              status="green"
-            />
-            <SummaryCard
-                name="Daily Earning"
-                title={!account || wrongNetwork ? '-' : estDailyEarning ? `$${estDailyEarning}` : "-"}
-                icon={DailyEarning}
-                noData={!account || wrongNetwork}
-                status="green" />
-            <SummaryCard
-                name="ANN Rewards"
-                title={`${format(getBigNumber(earnedBalance).dp(2, 1).toString(10))} ANN`}
-                icon={ANNRewards}
-                noData={!account || wrongNetwork}
-                status="red" />
-            <SummaryCard
-                name="Annual Earning"
-                title={!account || wrongNetwork ? '-' : annualEarning ? `$${annualEarning}` : "-"}
-                icon={AnnualEarning}
-                noData={!account || wrongNetwork}
-                status="red" />
-          </div>
-          <div className="bg-black flex justify-between w-full p-6 mt-0 rounded-lg">
-            <div className="">
-              <div className="">
-                <div className="text-lg font-bold">Supply Balance</div>
-                <div className="text-lg font-bold">{!account || wrongNetwork ? '-' : formatValue(getBigNumber(supplyCountUp)
-                    .dp(2, 1)
-                    .toString(10))}</div>
-              </div>
-              <div className="mt-12">
-                <div className="text-lg">ANN Earned</div>
-                <div className="text-lg">{!account || wrongNetwork ? '-' : `$${xaiMint}`}</div>
-              </div>
-            </div>
-            <div className="flex flex-col justify-between items-center py-4">
-              <div className="relative mb-5">
-                <Progress
-                  wrapperClassName="hidden md:block"
-                  type="circle"
-                  width={210}
-                  percent={100}
-                  strokeWidth={4}
-                />
-                <Progress
-                  wrapperClassName="block md:hidden"
-                  type="circle"
-                  width={120}
-                  percent={100}
-                  strokeWidth={4}
-                />
-                <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 justify-center">
-                  <div className="text-primary text-2xl">{!account || wrongNetwork ? '-' : estDailyEarning ? `$${estDailyEarning}` : "-"}</div>
-                  <div className="text-lg md:text-base whitespace-nowrap text-center mt-4 md:mt-6">
-                    Estimated Daily <br /> Earnings
-                  </div>
-                </div>
-              </div>
-              <Switch value={withANN} onChange={() => setWithANN(oldVal => !oldVal)} />
-              <div className="flex">
-                <img src={fire} alt="" />
-                <div className="ml-2 text-lg">APY with ANN</div>
-              </div>
-            </div>
-            <div className="flex flex-col items-end">
-              <div className="text-right">
-                <div className="text-lg font-bold">Borrow Balance</div>
-                <div className="text-lg font-bold">{!account || wrongNetwork ? '-' : formatValue(getBigNumber(borrowCountUp)
-                    .dp(2, 1)
-                    .toString(10))}</div>
-              </div>
-              <div className="mt-12 text-right">
-                <div className="text-lg">Net APY</div>
-                <div className="text-lg">{!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AccountOverview
+        available={available}
+        borrowPercent={borrowPercent}
+        balance={annBalance}
+        dailyEarning={estDailyEarning}
+        earnedBalance={earnedBalance}
+        annualEarning={annualEarning}
+        withANN={withANN}
+        setWithANN={setWithANN}
+        netAPY={netAPY}
+        settings={settings}
+      />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-stretch mt-5">
         <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
           {(suppliedAssets.length === 0 && nonSuppliedAssets.length === 0) && (
@@ -1175,204 +1060,16 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           )}
         </div>
       </div>
-      <div className="bg-fadeBlack py-4 px-6 mt-5 rounded-lg">
-        <div className="text-white text-2xl ml-2">APY History</div>
-        <div className="bg-black py-6 md:p-6 mt-4 rounded-xl">
-          <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row items-center justify-between">
-            <Select
-                options={options}
-                onChange={handleChangeAsset}
-            />
-            <div className="flex space-x-4text-2xl text-white">
-              <div className="ml-4 font-medium">Overview</div>
-              {currentAsset !== 'bnb' && (
-                  <div className="ml-4">
-                    {currentAsset?.toUpperCase()}
-                    <img
-                        src={plusButtonIcon}
-                        alt="plusButtonIcon"
-                        className="ml-2 inline cursor-pointer"
-                        onClick={() =>
-                            addToken(
-                                currentAsset,
-                                settings.decimals[currentAsset || 'sxp']?.token,
-                                'token'
-                            )
-                        }
-                    />
-                  </div>
-              )}
-              <div className="ml-4 font-medium">
-                {`a${
-                    currentAsset === 'btcb' ? 'BTC' : currentAsset?.toUpperCase()
-                }`}
-                <img
-                    src={plusButtonIcon}
-                    alt="plusButtonIcon"
-                    className="ml-2 inline cursor-pointer"
-                    onClick={() =>
-                        addToken(
-                            currentAsset,
-                            settings.decimals[currentAsset || 'sxp']?.atoken,
-                            'atoken'
-                        )
-                    }
-                />
-              </div>
-              <div className="ml-4 font-medium">To MetaMask</div>
-            </div>
-          </div>
-          <div className="flex justify-between text-white mt-4">
-            <div className="ml-4 font-medium md:ml-8">Historical rates</div>
-            <div className="text-right">
-              <div className="text-primary text-md sm:text-lg font-bold">{!account || wrongNetwork
-                  ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
-                  : `${currentAPY}%`}</div>
-              <div className="text-sm sm:text-md">Supply APY & Borrow APY</div>
-              <div className="text-sm sm:text-md">APY</div>
-            </div>
-          </div>
-          <CandleChart rawData={data} withANN={withANN} />
-          <div className="flex flex-col space-y-8 lg:space-y-0 lg:flex-row lg:space-x-10 md:px-8 mt-4">
-            <div className="flex flex-col text-white w-full">
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Price</div>
-                <div className="font-medium text-lg">
-                  {!account || wrongNetwork
-                      ? (<div className="animate-pulse w-16 h-6 bg-lightGray rounded-lg inline-block"/>)
-                      : marketInfo?.underlyingPrice ? `$${new BigNumber(marketInfo?.underlyingPrice || 0)
-                    .div(
-                        new BigNumber(10).pow(
-                            18 + 18 - parseInt(settings.decimals[currentAsset || 'sxp']?.token, 10)
-                        )
-                    )
-                    .dp(8, 1)
-                    .toString(10)}` : "-"}
-                </div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Market Liquidity</div>
-                <div className="font-medium text-lg">
-                  {!account || wrongNetwork
-                      ? (<div className="animate-pulse w-24 h-6 bg-lightGray rounded-lg inline-block"/>)
-                      : marketInfo?.cash ? `${format(
-                      new BigNumber(marketInfo?.cash || 0)
-                          .div(
-                              new BigNumber(10).pow(settings.decimals[currentAsset || 'sxp']?.token)
-                          )
-                          .dp(8, 1)
-                          .toString(10)
-                  )}` : "-"} <span className="text-red">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-10 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : marketInfo?.underlyingSymbol || ''}</span>
-                </div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className=""># of Suppliers</div>
-                <div className="font-medium text-lg">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    :  Number(marketInfo?.supplierCount) >= 0 ? format(marketInfo?.supplierCount) : "-"}</div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className=""># of Borrowers</div>
-                <div className="font-medium text-lg">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-12 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : Number(marketInfo?.borrowerCount) >= 0 ? format(marketInfo?.borrowerCount) : "-"}</div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Reserves</div>
-                <div className="font-medium text-lg">
-                  {!account || wrongNetwork
-                      ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
-                      : marketInfo?.totalReserves ? `${new BigNumber(marketInfo?.totalReserves || 0)
-                      .div(new BigNumber(10).pow(settings.decimals[currentAsset || 'sxp']?.token))
-                      .dp(8, 1)
-                      .toString(10)} ` : "-"} <span className="text-red">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-10 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : marketInfo?.underlyingSymbol || ''}</span>
-                </div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Reserve Factor</div>
-                <div className="font-medium text-lg">
-                  {!account || wrongNetwork
-                      ? (<div className="animate-pulse w-18 h-6 bg-lightGray rounded-lg inline-block"/>)
-                      : marketInfo.reserveFactor ? `${new BigNumber(marketInfo.reserveFactor || 0)
-                      .div(new BigNumber(10).pow(18))
-                      .multipliedBy(100)
-                      .dp(8, 1)
-                      .toString(10)}%` : "-"}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col text-white w-full">
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Collateral Factor</div>
-                <div className="font-medium text-lg">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-32 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : marketInfo.collateralFactor ? `${new BigNumber(marketInfo.collateralFactor || 0)
-                    .div(new BigNumber(10).pow(18))
-                    .times(100)
-                    .dp(2, 1)
-                    .toString(10)}%`: '-'}
-                </div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Total Supply</div>
-                <div className="font-medium text-lg">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-24 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : marketInfo.totalSupplyUsd ? `$${format(
-                    new BigNumber(marketInfo.totalSupplyUsd || 0)
-                        .dp(2, 1)
-                        .toString(10)
-                )}` : "-"}
-                </div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Total Borrow</div>
-                <div className="font-medium text-lg">{!account || wrongNetwork
-                    ? (<div className="animate-pulse w-16 h-6 bg-lightGray rounded-lg inline-block"/>)
-                    : marketInfo.totalBorrowsUsd ? `$${format(
-                    new BigNumber(marketInfo.totalBorrowsUsd || 0)
-                        .dp(2, 1)
-                        .toString(10)
-                )}`: "-"}
-                </div>
-              </div>
-              <div className="flex justify-between px-4 rounded-md py-2 items-center transition-all hover:bg-fadeBlack">
-                <div className="">Exchange Rate</div>
-                <div className="font-medium text-lg">
-                  {!account || wrongNetwork
-                      ? (<div className="animate-pulse w-36 h-6 bg-lightGray rounded-lg inline-block"/>)
-                      : marketInfo.exchangeRate ? (
-                          <>
-                            1 <span className="text-red">{marketInfo.underlyingSymbol || '-'}</span> =  {!account || wrongNetwork
-                              ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
-                              : new BigNumber(1)
-                                .div(
-                                    new BigNumber(marketInfo.exchangeRate).div(
-                                        new BigNumber(10).pow(
-                                            18 +
-                                            +parseInt(
-                                                settings.decimals[currentAsset || 'sxp']?.token,
-                                                10
-                                            ) -
-                                            +parseInt(
-                                                settings.decimals[currentAsset || 'sxp']?.atoken,
-                                                10
-                                            )
-                                        )
-                                    )
-                                )
-                                .toFixed(6) || "-"} <span className="text-green">{marketInfo.symbol || ''}</span>
-                          </>
-                      ) : "-"}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MarketHistory
+        options={options}
+        handleChangeAsset={handleChangeAsset}
+        marketInfo={marketInfo}
+        settings={settings}
+        withANN={withANN}
+        currentAsset={currentAsset}
+        currentAPY={currentAPY}
+        data={data}
+      />
     </Layout>
   );
 }

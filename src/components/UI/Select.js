@@ -4,6 +4,7 @@ import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import usdc from '../../assets/images/coins/usdc.png';
 import styled from "styled-components";
+import * as constants from "../../utilities/constants";
 
 const ListboxOptions = styled(Listbox.Options)`
   border-radius: 24px;
@@ -53,7 +54,13 @@ export default function Select({
               >
                 <div className="flex items-center space-x-4 py-2">
                   {selected?.logo && (
-                    <div className={logoClassName ? logoClassName : ''}>{selected?.logo}</div>
+                    <div className={logoClassName ? logoClassName : ''}>
+                      <img
+                          alt={selected?.name}
+                          src={selected?.logo}
+                          style={{ width: 32, height: 32}}
+                      />
+                    </div>
                   )}
                   <div>
                     {label && <div className={labelClassName}>{label}</div>}
@@ -108,7 +115,13 @@ export default function Select({
                       {({ selected, active }) => (
                         <div className="flex items-center space-x-2">
                           {option?.logo && (
-                            <div className={logoClassName ? logoClassName : ''}>{option?.logo}</div>
+                            <div className={logoClassName ? logoClassName : ''}>
+                              <img
+
+                                  alt={option?.name}
+                                  src={option?.logo}
+                                  style={{ width: 32, height: 32}}
+                              /></div>
                           )}
                           <span
                             className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}
