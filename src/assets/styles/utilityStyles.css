@@ -633,10 +633,10 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem;
+  padding: 4px 8px;
   background-color: #0A0A0E;
   color: white;
-  border-radius: 12px;
+  border-radius: 4px;
   position: absolute;
   transition: all ease 0.2s;
   pointer-events: none;

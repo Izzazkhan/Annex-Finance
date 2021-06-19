@@ -44,6 +44,8 @@ const MarketHistoryChart = ({
         if (tooltip.opacity === 0) {
             tooltipEl.style.opacity = 0;
             dateLabel.style.opacity = 0;
+            lineChart?.current?.tooltip?.setActiveElements([])
+            barChart?.current?.tooltip?.setActiveElements([])
             return;
         }
 
@@ -51,6 +53,23 @@ const MarketHistoryChart = ({
         // Set Text
         if (tooltip.body) {
             const titleLines = tooltip.title || [];
+            const lineIndex = lineChart?.current?.data?.labels?.findIndex(i => titleLines[0] === i);
+            if(lineIndex > -1) {
+                lineChart?.current?.tooltip?.setActiveElements([
+                    {
+                        datasetIndex: 0,
+                        index: lineIndex,
+                    }
+                ])
+                barChart?.current?.tooltip?.setActiveElements([
+                    {
+                        datasetIndex: 0,
+                        index: lineIndex,
+                    }
+                ])
+            }
+
+            console.log(tooltip.body);
             const bodyLines = tooltip.body.map(b => b.lines);
 
 
@@ -91,7 +110,7 @@ const MarketHistoryChart = ({
         tooltipEl.style.top = positionY + tooltip.caretY + 'px';
         dateLabel.style.left = tooltip.caretX + 'px';
         dateLabel.style.transform = 'translate(-50%, 0)';
-        tooltipEl.style.transform = 'translate(-50%, -110%)';
+        tooltipEl.style.transform = 'translate(-50%, -115%)';
     };
 
     const lineOptions = useMemo(() => {
@@ -106,6 +125,12 @@ const MarketHistoryChart = ({
                         const result = value.replace(/,/g, '');
                         return `${new BigNumber(result).dp(2, 1).toString(10)}%`;
                     })
+                }
+            },
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10
                 }
             },
             scales: {
@@ -153,6 +178,9 @@ const MarketHistoryChart = ({
             },
             scales: {
                 y: {
+                    grid: {
+                        display: false,
+                    },
                     afterFit: axis => {
                         axis.width = 100
                     },
@@ -183,9 +211,12 @@ const MarketHistoryChart = ({
             ? (withANN ? 'supplyAnnexApy' : 'supplyApy')
             : (withANN ? 'borrowAnnexApy' : 'borrowApy');
 
-        const filteredData = data?.filter(item => item?.[field] < Infinity)
+        const filteredData = data?.map(item => item?.[field] < Infinity ? item : {
+            ...item,
+            [field]: 0
+        });
 
-        const result = {
+        return {
             labels: filteredData?.map(item => item?.createdAt),
             datasets: [{
                 label: type === TYPES.Supply ? "Supply APY" : "Borrow APY",
@@ -194,14 +225,16 @@ const MarketHistoryChart = ({
                 backgroundColor: '#FFAB2D',
                 borderColor: '#FFAB2D',
                 borderWidth: 12,
-                pointRadius: 0,
+                hoverBackgroundColor: "#FFAB2D",
+                hoverBorderColor: "#fff",
+                hoverBorderWidth: 4,
+                hoverRadius: 6,
+                pointRadius: 5.5,
                 pointHitRadius: 6,
                 pointBorderWidth: 0,
                 tension: 0.1
             }]
         }
-
-        return result
     }, [data, type, withANN])
 
 
@@ -210,9 +243,12 @@ const MarketHistoryChart = ({
             ? 'totalSupply'
             : 'totalBorrow';
 
-        const filteredData = data?.filter(item => item?.[field] < Infinity)
+        const filteredData = data?.map(item => item?.[field] < Infinity ? item : {
+            ...item,
+            [field]: 0
+        });
 
-        const result = {
+        return {
             labels: filteredData?.map(item => item?.createdAt),
             datasets: [{
                 label: type === TYPES.Supply ? "Total Supply" : "Total Borrow",
@@ -225,20 +261,18 @@ const MarketHistoryChart = ({
                 hoverBorderColor: 'rgba(255, 255, 255, 0.82)',
             }]
         }
-
-        return result
     }, [data, type, withANN])
 
 
 
     return (
         <div className={'flex flex-col items-stretch pt-12 pb-2'}>
-            <div style={{ height: 140 }} className={'flex flex-col items-stretch mb-8'}>
+            <div style={{ height: 150 }} className={'flex flex-col items-stretch mb-18'}>
                 <Line
                     data={lineData}
                     type={'line'}
                     options={lineOptions}
-                    height={140}
+                    height={150}
                     width={null}
                     ref={lineChart}
                 />
