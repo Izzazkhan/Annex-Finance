@@ -279,21 +279,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         if(!account) {
           return;
         }
-        const vaultContract = getXaiVaultContract();
-        const { 0: staked } = await methods.call(vaultContract.methods.userInfo, [
-          account
-        ]);
-        const amount = new BigNumber(staked).div(1e18);
-        if (amount.isNaN() || amount.isZero()) {
-          setNetAPY(apy.dp(2, 1).toString(10));
-        } else {
-          setNetAPY(
-              apy
-                  .plus(settings.xaiAPY)
-                  .dp(2, 1)
-                  .toString(10)
-          );
-        }
+        setNetAPY(apy.dp(2, 1).toString(10));
       },
       [settings, account]
   );

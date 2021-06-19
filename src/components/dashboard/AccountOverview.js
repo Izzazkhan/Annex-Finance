@@ -99,11 +99,11 @@ const AccountOverview = ({
 
     return (
         <Wrapper className="text-white mt-8 p-6 border border-lightGray rounded-md">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-6">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2">
                 <div className="flex flex-row items-center justify-between flex-wrap flex-grow">
                     <div className="flex flex-col items-stretch md:items-start flex-grow text-left space-y-1 md:space-y-2 order-first">
-                        <div className="text-primary font-bold text-lg md:text-2xl">Supply Balance</div>
-                        <div className="text-white font-bold text-2xl md:text-4xl">
+                        <div className="text-primary font-bold text-lg md:text-xl">Supply Balance</div>
+                        <div className="text-white font-bold text-2xl md:text-3xl">
                             {!account || wrongNetwork ? '-' : formatValue(getBigNumber(supplyCountUp)
                             .dp(2, 1)
                             .toString(10))}
@@ -113,8 +113,8 @@ const AccountOverview = ({
                         className={`flex flex-col items-stretch md:items-end flex-grow md:hidden
                     text-right space-y-1 md:space-y-2 order-3`}
                     >
-                        <div className="text-primary font-bold text-lg md:text-2xl">Borrow Balance</div>
-                        <div className="text-white font-bold text-2xl md:text-4xl">
+                        <div className="text-primary font-bold text-lg md:text-xl">Borrow Balance</div>
+                        <div className="text-white font-bold text-2xl md:text-3xl">
                             {!account || wrongNetwork ? '-' : formatValue(getBigNumber(borrowCountUp)
                                 .dp(2, 1)
                                 .toString(10))}
@@ -122,11 +122,11 @@ const AccountOverview = ({
                     </div>
                 </div>
                 <div className="flex flex-col justify-between items-center order-last md:order-2">
-                    <div className="relative mb-5">
+                    <div className="relative mb-2">
                         <Progress
                             wrapperClassName="hidden md:block"
                             type="circle"
-                            width={250}
+                            width={200}
                             percent={Number(netAPY || 100)}
                             strokeWidth={4}
                         />
@@ -140,9 +140,9 @@ const AccountOverview = ({
                         <div className={`flex flex-col items-center absolute top-1/2 left-1/2 
                             w-full h-full pt-18 md:pt-14 pb-14 md:pb-10 px-4
                             transform -translate-x-1/2 -translate-y-1/2 justify-center`}>
-                            <div className="flex flex-col items-center space-y-1 md:space-y-3 mb-3 md:mb-6 flex-grow text-center">
-                                <div className="text-primary font-bold text-lg md:text-2xl">Net APY</div>
-                                <div className="text-white font-bold text-2xl md:text-4xl">
+                            <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
+                                <div className="text-primary font-bold text-lg md:text-xl">Net APY</div>
+                                <div className="text-white font-bold text-xl md:text-2xl">
                                     {!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}
                                 </div>
                             </div>
@@ -154,8 +154,8 @@ const AccountOverview = ({
                     className={`hidden md:flex flex-col items-stretch md:items-end flex-grow 
                     text-left mt-4 md:mt-0 md:text-right space-y-1 md:space-y-2 order-3`}
                 >
-                    <div className="text-primary font-bold text-lg md:text-2xl">Borrow Balance</div>
-                    <div className="text-white font-bold text-2xl md:text-4xl">
+                    <div className="text-primary font-bold text-lg md:text-xl">Borrow Balance</div>
+                    <div className="text-white font-bold text-2xl md:text-3xl">
                         {!account || wrongNetwork ? '-' : formatValue(getBigNumber(borrowCountUp)
                             .dp(2, 1)
                             .toString(10))}
@@ -185,7 +185,7 @@ const AccountOverview = ({
                 </ArrowDown>
             </div>
             {showDetails && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-9 w-full mt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-9 w-full mt-4">
                     <SummaryCard
                         name="ANN Balance"
                         title={`${format(getBigNumber(balanceCountUp).dp(2, 1).toString(10))} ANN`}

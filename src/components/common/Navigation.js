@@ -56,19 +56,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, 
         onCloseModal={() => setConnectWalletsOpen(false)}
       />
       {!isOpen && (
-        <ul className="hidden lg:flex justify-between items-center w-full max-w-650 ml-auto">
-          <li className="flex items-center space-x-2">
-            <img src={people} alt="people" />
-            <div className="">
-              <div className="text-2xl text-white text-left">
-                {format(
-                    getBigNumber(mintedCountUp)
-                        .dp(0, 1)
-                        .toString(10)
-                )}</div>
-              <div className="text-secondary text-sm">Total XAI Minted</div>
-            </div>
-          </li>
+        <ul className="hidden lg:flex justify-between items-center w-full max-w-450 ml-auto">
           <li className="flex items-center space-x-2">
             <img src={coins} alt="coins" />
             <div className="">
@@ -88,18 +76,6 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, 
         </ul>
       )}
       <ul className="lg:hidden flex flex-col space-y-6 mt-4 pl-6">
-        <li className="flex items-center space-x-2">
-          <img className="w-8" src={people} alt="people" />
-          <div className="">
-            <div className="text-lg text-white">
-              {format(
-                  getBigNumber(totalXaiMinted)
-                      .dp(0, 1)
-                      .toString(10)
-              )}</div>
-            <div className="text-secondary text-xs">Total XAI Minted</div>
-          </div>
-        </li>
         <li className="flex items-center space-x-2">
           <img className="w-8" src={coins} alt="coins" />
           <div className="">

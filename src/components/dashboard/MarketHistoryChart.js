@@ -1,110 +1,183 @@
-import styled from "styled-components";
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import { Line, Bar } from 'react-chartjs-2';
-
+import BigNumber from "bignumber.js";
+import commaNumber from "comma-number";
+import {getBigNumber} from "../../utilities/common";
+import moment from "moment";
 
 const TYPES = {
     Supply: "SUPPLY",
     Borrow: "BORROW"
 }
 
-
-const getOrCreateTooltip = (chart) => {
-    let tooltipEl = chart.canvas.parentNode.querySelector('div');
-
-    if (!tooltipEl) {
-        tooltipEl = document.createElement('div');
-        tooltipEl.classList.add('market-chart-tooltip')
-        tooltipEl.style.opacity = 1;
-        tooltipEl.style.transform = 'translate(-50%, 0)';
-
-        chart.canvas.parentNode.appendChild(tooltipEl);
-    }
-
-    return tooltipEl;
-};
-
-const externalTooltipHandler = (context) => {
-    // Tooltip Element
-    const {chart, tooltip} = context;
-    const tooltipEl = getOrCreateTooltip(chart);
-
-    // Hide if no tooltip
-    if (tooltip.opacity === 0) {
-        tooltipEl.style.opacity = 0;
-        return;
-    }
-
-    // Set Text
-    if (tooltip.body) {
-        const bodyLines = tooltip.body.map(b => b.lines);
-
-        const tableBody = document.createElement('div');
-        tableBody.classList.add("flex", "flex-col", "items-center", "justify-center", "text-center");
-        bodyLines.forEach((body, i) => {
-            const newBody = body[0].split(":");
-            const span1 = document.createElement('span');
-            const text1 = document.createTextNode(newBody[1]);
-
-            const span2 = document.createElement('span');
-            const text2 = document.createTextNode(newBody[0]);
-
-            span1.appendChild(text1);
-            span2.appendChild(text2);
-            tableBody.appendChild(span1);
-            tableBody.appendChild(span2);
-        });
-
-        // Remove old children
-        while (tooltipEl.firstChild) {
-            tooltipEl.firstChild.remove();
-        }
-
-        // Add new children
-        tooltipEl.appendChild(tableBody);
-    }
-
-    const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
-
-    // Display, position, and set styles for font
-    tooltipEl.style.opacity = 1;
-    tooltipEl.style.left = positionX + tooltip.caretX + 'px';
-    tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-    tooltipEl.style.transform = 'translate(-50%, -120%)';
-};
-
-const options = {
-    plugins: {
-        legend: {
-            display: false,
-        },
-        tooltip: {
-            enabled: false,
-            external: externalTooltipHandler
-        }
-    },
-    scales: {
-        y: {
-            position: 'right',
-            color: "#FFF",
-            font: {
-                size: 24
-            }
-        },
-        x: {
-            display: false,
-        }
-    },
-    maintainAspectRatio: false,
-    responsive: true,
-}
-
+const format = commaNumber.bindWith(',', '.');
 
 const MarketHistoryChart = ({
     data,
     type,
     withANN
 }) => {
+    const lineChart = useRef();
+    const barChart = useRef();
+    const getOrCreateTooltip = (chart) => {
+        let tooltipEl = chart.canvas.parentNode.querySelector('div');
+
+        if (!tooltipEl) {
+            tooltipEl = document.createElement('div');
+            tooltipEl.classList.add('market-chart-tooltip')
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.transform = 'translate(-50%, 0)';
+
+            chart.canvas.parentNode.appendChild(tooltipEl);
+        }
+
+        return tooltipEl;
+    };
+
+    const externalTooltipHandler = (context, formatter) => {
+        // Tooltip Element
+        const {chart, tooltip} = context;
+        const tooltipEl = getOrCreateTooltip(chart);
+        const dateLabel = document.getElementById("market-chart-date-label")
+
+        // Hide if no tooltip
+        if (tooltip.opacity === 0) {
+            tooltipEl.style.opacity = 0;
+            dateLabel.style.opacity = 0;
+            return;
+        }
+
+
+        // Set Text
+        if (tooltip.body) {
+            const titleLines = tooltip.title || [];
+            const bodyLines = tooltip.body.map(b => b.lines);
+
+
+            titleLines.forEach(title => {
+                dateLabel.textContent = moment(title).format("MMM D");
+            });
+            const tableBody = document.createElement('div');
+            tableBody.classList.add("flex", "flex-col", "items-center", "justify-center", "text-center");
+            bodyLines.forEach((body, i) => {
+                const newBody = body[0].split(":");
+                const span1 = document.createElement('span');
+                const text1 = document.createTextNode(formatter(newBody[1]));
+
+                const span2 = document.createElement('span');
+                const text2 = document.createTextNode(newBody[0]);
+
+                span1.appendChild(text1);
+                span2.appendChild(text2);
+                tableBody.appendChild(span1);
+                tableBody.appendChild(span2);
+            });
+
+            // Remove old children
+            while (tooltipEl.firstChild) {
+                tooltipEl.firstChild.remove();
+            }
+
+            // Add new children
+            tooltipEl.appendChild(tableBody);
+        }
+
+        const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
+
+        // Display, position, and set styles for font
+        tooltipEl.style.opacity = 1;
+        dateLabel.style.opacity = 1;
+        tooltipEl.style.left = positionX + tooltip.caretX + 'px';
+        tooltipEl.style.top = positionY + tooltip.caretY + 'px';
+        dateLabel.style.left = tooltip.caretX + 'px';
+        dateLabel.style.transform = 'translate(-50%, 0)';
+        tooltipEl.style.transform = 'translate(-50%, -110%)';
+    };
+
+    const lineOptions = useMemo(() => {
+        return {
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    enabled: false,
+                    external: context => externalTooltipHandler(context, function(value) {
+                        const result = value.replace(/,/g, '');
+                        return `${new BigNumber(result).dp(2, 1).toString(10)}%`;
+                    })
+                }
+            },
+            scales: {
+                y: {
+                    afterFit: axis => {
+                        axis.width = 100
+                    },
+                    beginAtZero: true,
+                    position: 'right',
+                    ticks: {
+                        color: "#fff",
+                        font: {
+                            family: "Poppins, sans-serif",
+                            size: 12,
+                            weight: 700
+                        },
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, values) {
+                            return `${new BigNumber(value).dp(0, 1).toString(10)}%`;
+                        }
+                    }
+                },
+                x: {
+                    display: false,
+                }
+            },
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    }, [])
+
+    const barOptions = useMemo(() => {
+        return {
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    enabled: false,
+                        external: context => externalTooltipHandler(context, function(value) {
+                        const result = value.replace(/,/g, '');
+                        return `$${format(getBigNumber(result).dp(2, 1).toString(10))}`
+                    })
+                }
+            },
+            scales: {
+                y: {
+                    afterFit: axis => {
+                        axis.width = 100
+                    },
+                        position: 'right',
+                        ticks: {
+                        font: {
+                            family: "Poppins, sans-serif",
+                                size: 12
+                        },
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, values) {
+                            return `$${format(getBigNumber(value).dp(2, 1).toString(10))}`
+                        }
+                    }
+                },
+                x: {
+                    display: false,
+                }
+            },
+            maintainAspectRatio: false,
+                responsive: true,
+        }
+    }, [])
+
+
     const lineData = useMemo(() => {
         const field = type === TYPES.Supply
             ? (withANN ? 'supplyAnnexApy' : 'supplyApy')
@@ -159,24 +232,29 @@ const MarketHistoryChart = ({
 
 
     return (
-        <div className={'flex flex-col items-stretch py-8'}>
-            <div style={{ height: 140 }} className={'flex flex-col items-stretch mb-12'}>
+        <div className={'flex flex-col items-stretch pt-12 pb-2'}>
+            <div style={{ height: 140 }} className={'flex flex-col items-stretch mb-8'}>
                 <Line
                     data={lineData}
                     type={'line'}
-                    options={options}
+                    options={lineOptions}
                     height={140}
                     width={null}
+                    ref={lineChart}
                 />
             </div>
             <div style={{ height: 200 }} className={'flex flex-col items-stretch'}>
                 <Bar
                     data={barData}
                     type={'bar'}
-                    options={options}
+                    options={barOptions}
                     height={200}
                     width={null}
+                    ref={barChart}
                 />
+            </div>
+            <div style={{ height: 40 }} className={'flex flex-col items-stretch relative'}>
+                <div className="market-chart-time-label absolute" id={'market-chart-date-label'}/>
             </div>
         </div>
     )

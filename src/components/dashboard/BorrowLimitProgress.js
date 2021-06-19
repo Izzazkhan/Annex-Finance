@@ -2,9 +2,9 @@ import styled from "styled-components";
 import React, {useMemo} from 'react';
 
 const STATES = {
-    SUCCESS: "green",
-    NORMAL: "primaryLight",
-    DANGER: "red"
+    SUCCESS: "#3ab67a",
+    NORMAL: "#FFAB2D",
+    DANGER: "#fd5353"
 }
 
 const Container = styled.div`
@@ -41,6 +41,7 @@ const Percentage = styled.span`
 
 const InnerLine = styled(Line)`
   width: ${({ percent }) => `calc(${percent}% - 1.875rem)`};
+  background-color: ${({ type }) => type || "#FFAB2D" };
 `
 
 const EmptyLine = styled(Line)`
@@ -69,13 +70,11 @@ const BorrowLimitProgress = ({
         <Container>
             <InnerLine
                 percent={fixedPercent}
-                className={`bg-${
-                    fixedPercent <= safeLimit
-                        ? STATES.SUCCESS
-                        : fixedPercent >= dangerLimit
-                            ? STATES.DANGER
-                            : STATES.NORMAL
-                }`}
+                type={fixedPercent <= safeLimit
+                    ? STATES.SUCCESS
+                    : fixedPercent >= dangerLimit
+                        ? STATES.DANGER
+                        : STATES.NORMAL}
             />
             <Percentage>{fixedPercent}</Percentage>
             <EmptyLine
