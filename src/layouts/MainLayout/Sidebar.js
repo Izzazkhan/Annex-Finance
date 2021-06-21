@@ -121,7 +121,7 @@ const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
                           <img src={cat.icon} alt={cat.title} />
                           <div
                               className={
-                                cat?.href?.includes(`${pathname}${search}`)
+                                `${pathname}${search}`?.includes(cat?.href)
                                     ? 'text-primary text-23'
                                     : 'text-23'
                               }

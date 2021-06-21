@@ -5,7 +5,7 @@ import { useMulticallContract } from "../../../hooks/useContract";
 import useDebounce from "../../../hooks/useDebounce";
 import chunkArray from "../../../utils/chunkArray";
 import { CancelledError, retry, RetryableError } from "../../../utils/retry";
-import { useBlockNumber } from "../application/hooks";
+import { useBlockNumber } from "../application";
 import {
 	multicallActionCreators,
 	parseCallKey,
@@ -116,6 +116,7 @@ export function outdatedListeningKeys(
 export default function Updater() {
 	const dispatch = useDispatch();
 	const state = useSelector((s) => s.multicall);
+	console.log(state);
 	// wait for listeners to settle before triggering updates
 	const debouncedListeners = useDebounce(state.callListeners, 100);
 	const latestBlockNumber = useBlockNumber();
@@ -136,11 +137,13 @@ export default function Updater() {
 	]);
 
 	useEffect(() => {
+		console.log('running')
 		if (!latestBlockNumber || !chainId || !multicallContract) return;
 
 		const outdatedCallKeys = JSON.parse(serializedOutdatedCallKeys);
 		if (outdatedCallKeys.length === 0) return;
 		const calls = outdatedCallKeys.map((key) => parseCallKey(key));
+		// .filter(item => item.address.toLowerCase() !== '0xBCfCcbde45cE874adCB698cC183deBcF17952812'.toLowerCase())
 
 		const chunkedCalls = chunkArray(calls, CALL_CHUNK_SIZE);
 
@@ -188,6 +191,7 @@ export default function Updater() {
 					);
 					})
 					.catch((error) => {
+						console.log(error);
 						if (error instanceof CancelledError) {
 							console.error("Cancelled fetch for blockNumber", latestBlockNumber);
 							return;

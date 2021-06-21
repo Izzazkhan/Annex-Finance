@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Switch, Route, useRouteMatch, Redirect, useHistory} from 'react-router-dom';
+import {Switch, Route, useRouteMatch, Redirect, useHistory, useLocation} from 'react-router-dom';
 
 import Layout from '../../layouts/MainLayout/MainLayout';
 import SettingsModal from '../../components/common/SettingsModal';
@@ -10,11 +10,11 @@ import AddLiquidity from "./AddLiquidity";
 import {RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure} from "./redirects/addLiquidity";
 
 function Trade() {
+    const { pathname, search } = useLocation();
     const { path } = useRouteMatch();
     const history = useHistory();
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [historyOpen, setHistoryOpen] = useState(false);
-    const [tab, setTab] = useState('swap');
 
     const buttons = [
         { key: 1, title: 'Swap', tab: 'swap', route: `${path}/swap` },
@@ -31,12 +31,11 @@ function Trade() {
                         <button
                             key={b.key}
                             className={`focus:outline-none py-2 px-12 rounded-3xl text-xl ${
-                                b.tab === tab
+                                pathname.includes(b.route)
                                     ? 'text-black font-bold bgPrimaryGradient'
                                     : 'text-white bg-black border border-solid border-gray'
                             }`}
                             onClick={() => {
-                                setTab(b.tab);
                                 history.push(b.route);
                             }}
                         >

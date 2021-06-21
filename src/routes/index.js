@@ -21,10 +21,10 @@ import ListsUpdater from "../core/modules/lists/updater";
 const Routes = () => {
   return (
     <Web3ReactManager>
-      <ApplicationUpdater />
-      <MulticallUpdater />
-      <TransactionUpdater/>
-      <ListsUpdater/>
+        <ListsUpdater />
+        <ApplicationUpdater />
+        <TransactionUpdater />
+        <MulticallUpdater />
       <Switch>
         <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
         <Route exact path={routes.dashboard} component={Dashboard} />

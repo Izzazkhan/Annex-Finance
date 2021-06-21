@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useState} from "react";
 
 import Modal from "../../UI/Modal";
 import useLast from "../../../hooks/useLast";
-import {useSelectedListUrl} from "../../../core";
 import {ListSelect} from "./ListSelect";
 import CurrencySearch from "./CurrencySearch";
 
@@ -37,21 +36,9 @@ export default function CurrencySearchModal({
 		setListView(false);
 	}, []);
 
-	const selectedListUrl = useSelectedListUrl();
-	const noListSelected = !selectedListUrl;
 
 	const content = listView ? (
 		<ListSelect onDismiss={onDismiss} onBack={handleClickBack} />
-	) : noListSelected ? (
-		<CurrencySearch
-			isOpen={isOpen}
-			onDismiss={onDismiss}
-			onCurrencySelect={handleCurrencySelect}
-			onChangeList={handleClickChangeList}
-			selectedCurrency={selectedCurrency}
-			otherSelectedCurrency={otherSelectedCurrency}
-			showCommonBases={false}
-		/>
 	) : (
 		<CurrencySearch
 			isOpen={isOpen}
@@ -62,7 +49,7 @@ export default function CurrencySearchModal({
 			otherSelectedCurrency={otherSelectedCurrency}
 			showCommonBases={false}
 		/>
-	);
+	)
 
 	return (
 		<Modal

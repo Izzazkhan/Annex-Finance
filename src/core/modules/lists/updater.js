@@ -15,6 +15,7 @@ export default function Updater() {
 	const dispatch = useDispatch();
 	const lists = useSelector((state) => state.lists.byUrl);
 
+
 	const isWindowVisible = useIsWindowVisible();
 
 	const fetchList = useFetchListCallback();

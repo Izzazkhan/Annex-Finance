@@ -69,11 +69,9 @@ function CurrencyRow({
 	otherSelected,
 	style,
 }) {
-	const { account, chainId } = useActiveWeb3React();
+	const { account } = useActiveWeb3React();
 	const key = currencyKey(currency);
-	const selectedTokenList = useSelectedTokenList();
-	const isOnSelectedList = isTokenOnList(selectedTokenList, currency);
-	const balance = useCurrencyBalance(account || undefined, currency);
+	const balance = useCurrencyBalance(account || undefined, currency || undefined);
 
 	return (
 		<MenuItem
@@ -112,6 +110,7 @@ export default function CurrencyList({
 		currencies,
 		showETH,
 	]);
+
 
 	const Row = useCallback(
 		({ data, index, style }) => {
