@@ -1,13 +1,13 @@
-import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
+import Web3 from 'web3';
 import WalletConnect from '@walletconnect/client';
-import * as constants from 'utilities/constants';
+import * as constants from './constants';
 
 const TOKEN_ABI = {
   sxp: constants.CONTRACT_SXP_TOKEN_ABI,
   usdc: constants.CONTRACT_USDC_TOKEN_ABI,
   usdt: constants.CONTRACT_USDT_TOKEN_ABI,
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
-  xvs: constants.CONTRACT_XVS_TOKEN_ABI,
+  ann: constants.CONTRACT_ANN_TOKEN_ABI,
   btcb: constants.CONTRACT_BTCB_TOKEN_ABI,
   eth: constants.CONTRACT_ETH_TOKEN_ABI,
   ltc: constants.CONTRACT_LTC_TOKEN_ABI,
@@ -95,78 +95,78 @@ export default class WalletConnectClass {
     return Number(this.web3.utils.fromWei(weiBalance, 'ether'));
   }
 
-  getVaiTokenContract = () => {
+  getXaiTokenContract() {
     return new this.web3.eth.Contract(
-      JSON.parse(constants.CONTRACT_VAI_TOKEN_ABI),
-      constants.CONTRACT_VAI_TOKEN_ADDRESS
+      JSON.parse(constants.CONTRACT_XAI_TOKEN_ABI),
+      constants.CONTRACT_XAI_TOKEN_ADDRESS
     );
-  };
+  }
 
-  getVaiControllerContract = () => {
+  getXaiControllerContract() {
     return new this.web3.eth.Contract(
-      JSON.parse(constants.CONTRACT_VAI_CONTROLLER_ABI),
-      constants.CONTRACT_VAI_UNITROLLER_ADDRESS
+      JSON.parse(constants.CONTRACT_XAI_CONTROLLER_ABI),
+      constants.CONTRACT_XAI_UNITROLLER_ADDRESS
     );
-  };
+  }
 
-  getVaiVaultContract = () => {
+  getXaiVaultContract() {
     return new this.web3.eth.Contract(
-      JSON.parse(constants.CONTRACT_VAI_VAULT_ABI),
-      constants.CONTRACT_VAI_VAULT_ADDRESS
+      JSON.parse(constants.CONTRACT_XAI_VAULT_ABI),
+      constants.CONTRACT_XAI_VAULT_ADDRESS
     );
-  };
+  }
 
-  getTokenContract = name => {
+  getTokenContract(name) {
     return new this.web3.eth.Contract(
       JSON.parse(TOKEN_ABI[name]),
       constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc']
         ? constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc'].address
         : constants.CONTRACT_TOKEN_ADDRESS.usdc.address
     );
-  };
+  }
 
-  getVbepContract = name => {
+  getAbepContract(name) {
     return new this.web3.eth.Contract(
       JSON.parse(
         name !== 'bnb'
-          ? constants.CONTRACT_VBEP_ABI
-          : constants.CONTRACT_VBNB_ABI
+          ? constants.CONTRACT_ABEP_ABI
+          : constants.CONTRACT_ABNB_ABI
       ),
-      constants.CONTRACT_VBEP_ADDRESS[name || 'usdc']
-        ? constants.CONTRACT_VBEP_ADDRESS[name || 'usdc'].address
-        : constants.CONTRACT_VBEP_ADDRESS.usdc.address
+      constants.CONTRACT_ABEP_ADDRESS[name || 'usdc']
+        ? constants.CONTRACT_ABEP_ADDRESS[name || 'usdc'].address
+        : constants.CONTRACT_ABEP_ADDRESS.usdc.address
     );
-  };
+  }
 
-  getComptrollerContract = () => {
+  getComptrollerContract() {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
       constants.CONTRACT_COMPTROLLER_ADDRESS
     );
-  };
+  }
 
-  getPriceOracleContract = (
+  getPriceOracleContract(
     address = constants.CONTRACT_PRICE_ORACLE_ADDRESS
-  ) => {
+  ) {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI),
       address
     );
-  };
+  }
 
-  getVoteContract = () => {
+  getVoteContract() {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_VOTE_ABI),
       constants.CONTRACT_VOTE_ADDRESS
     );
-  };
+  }
 
-  getInterestModelContract = address => {
+  getInterestModelContract(address) {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_INTEREST_MODEL_ABI),
       address
     );
-  };
+  }
 
   getTokenBalanceAsync(contractAddress, address, callback) {
     let updatedAddress = address;
