@@ -28,16 +28,16 @@ const Routes = () => {
       <MulticallUpdater />
       <Switch>
         <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
-        <Route exact path={routes.dashboard} component={Dashboard} />
-        <Route exact path={routes.annex} component={Annex} />
-        <Route exact path={routes.farms} component={Farms} />
-        <Route exact path={routes.market} component={Market} />
-        <Route exact path={routes.pools} component={Pools} />
-        <Route path={routes.trade} component={Trade} />
-        <Route path={routes.auction} component={Auction} />
-        <Route exact path={routes.vault} component={Vault} />
-        <Route exact path={routes.vote} component={Vote} />
-        <Route exact path={routes.demo} component={Demo} />
+        <Route exact path={`${routes.dashboard}`} component={Dashboard} />
+        <Route exact path={`${routes.annex}`} component={Annex} />
+        <Route exact path={`${routes.farms}`} component={Farms} />
+        <Route exact path={`${routes.market}`} component={Market} />
+        <Route exact path={`${routes.pools}`} component={Pools} />
+        <Route path={`${routes.trade}`} component={Trade} />
+        <Route path={`${routes.auction}`} component={Auction} />
+        <Route exact path={`${routes.vault}`} component={Vault} />
+        <Route exact path={`${routes.vote}`} component={Vote} />
+        <Route exact path={`${routes.demo}`} component={Demo} />
         <Route component={NotFound} />
       </Switch>
     </Web3ReactManager>
