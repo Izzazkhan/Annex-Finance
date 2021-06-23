@@ -46,6 +46,7 @@ function Header({ onOpen, title, settings }) {
       annex: 'annex',
       market: 'market',
       vault: 'vault',
+      auction: 'auction',
       swap: 'swap',
       liquidity: 'liquidity',
       farms: 'farms',
