@@ -29,7 +29,7 @@ import {
   TradeIcon,
   VaultIcon,
   VoteIcon,
-  Auction
+  Auction,
 } from '../../components/common/Icons';
 
 const Wrapper = styled.aside`
@@ -91,7 +91,15 @@ const sidebarItems = [
 
 const primaryColor = '#FF9800';
 
-const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
+const NavItems = ({
+  wrapperClassName,
+  items,
+  pathname,
+  search,
+  history,
+  activeMenu,
+  toggleDropdown,
+}) => (
   <div className={wrapperClassName}>
     <div className="flex flex-col space-y-4 text-white">
       {items?.map((i) => (
@@ -107,19 +115,19 @@ const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
               }
             }}
           >
-            <div className="flex items-center" onClick={() => {}}>
+            <div className="flex items-center" onClick={() => toggleDropdown(i.title)}>
               <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
               <div className="text-23">{i.title}</div>
             </div>
             {i.subCats && (
               <img
-                className={pathname?.includes(i?.href) ? 'transform rotate-90' : ''}
+                className={activeMenu === i.title ? 'transform rotate-90' : ''}
                 src={filledArrow}
                 alt={i.title}
               />
             )}
           </div>
-          {pathname?.includes(i?.href) && (
+          {activeMenu === i.title && (
             <div
               className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
             >
@@ -154,6 +162,7 @@ const NavItems = ({ wrapperClassName, items, pathname, search, history }) => (
 function Sidebar({ isOpen, onClose, settings }) {
   const { pathname, search } = useLocation();
   const [totalXaiMinted, setTotalXaiMinted] = useState('0');
+  const [activeMenu, updateActiveMenu] = useState('');
   const history = useHistory();
 
   const getTotalXaiMinted = async () => {
@@ -168,6 +177,16 @@ function Sidebar({ isOpen, onClose, settings }) {
   };
 
   useEffect(() => {
+    let menuIndex = sidebarItems.findIndex((x) => pathname.includes(x.href));
+    if (menuIndex !== -1) {
+      let title = sidebarItems[menuIndex].title;
+      if (activeMenu !== title) {
+        updateActiveMenu(title);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname, search]);
 
@@ -176,7 +195,9 @@ function Sidebar({ isOpen, onClose, settings }) {
       getTotalXaiMinted();
     }
   }, [settings.markets]);
-
+  const toggleDropdown = (val) => {
+    updateActiveMenu(val !== activeMenu ? val : '');
+  };
   return (
     <>
       <Wrapper
@@ -193,6 +214,8 @@ function Sidebar({ isOpen, onClose, settings }) {
           search={search}
           history={history}
           pathname={pathname}
+          activeMenu={activeMenu}
+          toggleDropdown={toggleDropdown}
         />
         <Navigation
           isOpen={isOpen}
