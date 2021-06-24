@@ -33,6 +33,7 @@
     "ajv": "6.12.x",
     "bignumber.js": "^9.0.1",
     "chart.js": "^3.3.2",
+    "chroma-js": "^2.1.2",
     "cids": "^1.1.6",
     "comma-number": "^2.1.0",
     "copy-to-clipboard": "^3.3.1",
