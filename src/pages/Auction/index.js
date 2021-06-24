@@ -1,19 +1,22 @@
 import React from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
-
+import styled from 'styled-components';
 import Layout from '../../layouts/MainLayout/MainLayout';
 
 import Live from './Live';
 import Past from './Past';
 import Upcoming from './Upcoming';
 
+const Styles = styled.div`
+
+`;
+
 function Auction() {
   const { path } = useRouteMatch();
 
   return (
     <Layout mainClassName="pt-10 min-h-screen" title={'Auction'}>
-      <div className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl">
-        <Switch>
+        <Styles>
           <Switch>
             <Route exact strict path={`${path}/past`}>
               <Past />
@@ -26,8 +29,7 @@ function Auction() {
             </Route>
             <Redirect to={`${path}/past`} />
           </Switch>
-        </Switch>
-      </div>
+        </Styles>
     </Layout>
   );
 }
