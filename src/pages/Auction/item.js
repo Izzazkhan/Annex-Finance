@@ -74,8 +74,21 @@ function AuctionItem(props) {
         </div>
       </div>
       <div className="graph">
+        <div className="flex items-end">
+        <div className="graph-left-label flex flex-col items-center text-white text-sm mt-8 justify-center font-normal">
+          <span className="border first"></span>
+          <span className="label my-2 font-normal">No. of share <b>50</b></span>
+          <span className=" border last"></span>
+        </div>
         {/* <img src={require('../../assets/images/graph.png').default} alt="" /> */}
         <canvas id={`myCanvas${props.id}`} width="290" height="211"></canvas>
+        </div>
+     
+        <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
+          <span className="border first "></span>
+          <span className="label mx-2 font-normal">Bid per share, sorted from lowest to highest</span>
+          <span className=" border last "></span>
+        </div>
       </div>
 
       <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
