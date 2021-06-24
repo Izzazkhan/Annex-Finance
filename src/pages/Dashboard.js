@@ -1060,7 +1060,6 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
   );
 }
 
-
 Dashboard.defaultProps = {
   settings: {}
 };
