@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import MiniLogo from '../../../components/UI/MiniLogo';
 import { BlockChart } from '../../../components/common/BlockChart';
+import LineChart from '../../../components/common/LineChart';
 import { useHistory } from 'react-router-dom';
 
 let blockChartOptions = {
@@ -59,8 +60,10 @@ let blockChartOptions = {
 function AuctionItem(props) {
   const history = useHistory();
   useEffect(() => {
-    const blockchart = new BlockChart(`myCanvas${props.id}`, blockChartOptions);
-    blockchart.loadData(props.data);
+    if (props.chartType === 'block') {
+      const blockchart = new BlockChart(`myCanvas${props.id}`, blockChartOptions);
+      blockchart.loadData(props.data);
+    }
   }, []);
   const redirectToUrl = (url) => {
     history.push(url);
@@ -80,14 +83,24 @@ function AuctionItem(props) {
       <div className="graph">
         <div className="flex items-end">
           <div className="graph-left-label flex flex-col items-center text-white text-sm mt-8 justify-center font-normal">
-            <span className="border first"></span>
-            <span className="label my-2 font-normal">
-              No. of share <b>50</b>
-            </span>
-            <span className=" border last"></span>
+            {/* {props.chartType === 'block' ? (
+              <>
+                <span className="border first"></span>
+                <span className="label my-2 font-normal">
+                  No. of share <b>50</b>
+                </span>
+                <span className=" border last"></span>
+              </>
+            ) : (
+              ''
+            )} */}
           </div>
           {/* <img src={require('../../assets/images/graph.png').default} alt="" /> */}
-          <canvas id={`myCanvas${props.id}`} width="290" height="211"></canvas>
+          {props.chartType === 'block' ? (
+            <canvas id={`myCanvas${props.id}`} width="290" height="211"></canvas>
+          ) : (
+            <LineChart />
+          )}
         </div>
 
         <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">

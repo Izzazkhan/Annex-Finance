@@ -61,7 +61,14 @@ function Upcoming(props) {
       <h2 className="text-white ml-5 text-4xl font-normal">Upcoming Auctions</h2>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
         {auction.map((item, index) => {
-          return <AuctionItem id={index} key={index} data={graphData} />;
+          return (
+            <AuctionItem
+              id={index}
+              key={index}
+              data={graphData}
+              chartType={index === 1 ? 'line' : 'block'}
+            />
+          );
         })}
       </div>
     </div>
