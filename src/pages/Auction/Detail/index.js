@@ -1,6 +1,5 @@
 import React from 'react';
-// import Table from '../../../../src/pages/Market/index';
-import MiniLogo from '../../../components/UI/MiniLogo';
+import Table from './Table';
 
 function Detail(props) {
   return (
@@ -39,12 +38,13 @@ function Detail(props) {
               <div className="text-base font-normal">Auction id#1DPRC</div>
             </div>
             <div className="flex flex-col items-center ">
-              <div className=""><span className="upcoming-icon"></span></div>
+              <div className="">
+                <span className="upcoming-icon"></span>
+              </div>
               <div className="text-sm">Upcoming</div>
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
-
             <div className="flex flex-col mb-7">
               <div className="text-lg font-bold mb-2">Contract</div>
               <div className="text-xl font-bold">OXICFO...IFBC74C57D</div>
@@ -68,16 +68,17 @@ function Detail(props) {
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
-
             <div className="flex flex-col mb-7">
               <div className="text-lg font-bold mb-2">Description</div>
               <div className="text-2xl font-normal">
-                Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in,
-                iaculis eu lectus. Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.</div>
+                Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu
+                lectus. Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus
+                nibh.
+              </div>
             </div>
           </div>
           <div className="text-white flex flex-row items-stretch justify-between items-center p-6 ">
-            <div className="items-start " >
+            <div className="items-start ">
               <div className="text-primary text-sm font-normal">Dutch auction</div>
             </div>
           </div>
@@ -86,7 +87,7 @@ function Detail(props) {
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
             <div className="flex flex-col items-start justify-start ">
               <div className="text-white text-2xl ">Auction Progress</div>
-              <div className="text-base font-normal opacity-0 ">  text</div>
+              <div className="text-base font-normal opacity-0 "> text</div>
             </div>
           </div>
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6">
@@ -94,10 +95,9 @@ function Detail(props) {
               <div className="text-white text-2xl ">Auction Progress</div>
             </div>
           </div>
-
         </div>
       </div>
-      {/* <Table/> */}
+      <Table />
     </div>
   );
 }
