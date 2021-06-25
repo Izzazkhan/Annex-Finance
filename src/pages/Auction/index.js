@@ -89,6 +89,32 @@ const Styles = styled.div`
       }
     }
   }
+  .timer{
+    border-radius: 50%;
+    width: 235px;
+    height: 235px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    border: 10px solid #1c1c21;
+    &::before{
+      content: '';
+      position:absolute;
+      right:0;
+
+    }
+  }
+  .upcoming-icon {
+    color: rgba(255, 152, 0, 1);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background: rgba(255, 152, 0, 1);
+}
 `;
 
 function Auction() {
