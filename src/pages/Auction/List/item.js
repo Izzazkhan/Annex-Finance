@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import MiniLogo from '../../components/UI/MiniLogo';
-import { BlockChart } from '../../components/common/BlockChart';
-
+import MiniLogo from '../../../components/UI/MiniLogo';
+import { BlockChart } from '../../../components/common/BlockChart';
+import { useHistory } from 'react-router-dom';
 
 let blockChartOptions = {
   // style of canvas and boundary to be plotted on to
@@ -57,10 +57,14 @@ let blockChartOptions = {
   },
 };
 function AuctionItem(props) {
+  const history = useHistory();
   useEffect(() => {
     const blockchart = new BlockChart(`myCanvas${props.id}`, blockChartOptions);
     blockchart.loadData(props.data);
   }, []);
+  const redirectToUrl = (url) => {
+    history.push(url);
+  };
   return (
     <div className="col-span-12 lg:col-span-4 md:col-span-6 bg-black rounded-2xl p-6 flex flex-col">
       <div className="text-white flex flex-row items-stretch justify-between items-center mb-8">
@@ -75,32 +79,36 @@ function AuctionItem(props) {
       </div>
       <div className="graph">
         <div className="flex items-end">
-        <div className="graph-left-label flex flex-col items-center text-white text-sm mt-8 justify-center font-normal">
-          <span className="border first"></span>
-          <span className="label my-2 font-normal">No. of share <b>50</b></span>
-          <span className=" border last"></span>
+          <div className="graph-left-label flex flex-col items-center text-white text-sm mt-8 justify-center font-normal">
+            <span className="border first"></span>
+            <span className="label my-2 font-normal">
+              No. of share <b>50</b>
+            </span>
+            <span className=" border last"></span>
+          </div>
+          {/* <img src={require('../../assets/images/graph.png').default} alt="" /> */}
+          <canvas id={`myCanvas${props.id}`} width="290" height="211"></canvas>
         </div>
-        {/* <img src={require('../../assets/images/graph.png').default} alt="" /> */}
-        <canvas id={`myCanvas${props.id}`} width="290" height="211"></canvas>
-        </div>
-     
+
         <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
           <span className="border first "></span>
-          <span className="label mx-2 font-normal">Bid per share, sorted from lowest to highest</span>
+          <span className="label mx-2 font-normal">
+            Bid per share, sorted from lowest to highest
+          </span>
           <span className=" border last "></span>
         </div>
       </div>
 
       <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
-        <div className="items-start ">
+        <div className="items-start " onClick={() => redirectToUrl('/auction/detail')}>
           <div className="text-primary text-sm font-normal">Batch auction</div>
         </div>
-        <div className="items-center ">
+        <div className="items-center " onClick={() => redirectToUrl('/auction/detail')}>
           <div className="flex items-center text-primary text-sm font-bold">
             Enter
             <img
               className="ml-2"
-              src={require('../../assets/images/enter-icon.png').default}
+              src={require('../../../assets/images/enter-icon.png').default}
               alt=""
             />
           </div>
