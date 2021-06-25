@@ -115,6 +115,12 @@ const Styles = styled.div`
     display: inline-block;
     background: rgba(255, 152, 0, 1);
 }
+.border-lightprimary{
+  border-color: rgba(255, 185, 81, 1);
+}
+.text-blue{
+  color: rgba(43, 152, 214, 1);
+}
 `;
 
 function Auction() {
