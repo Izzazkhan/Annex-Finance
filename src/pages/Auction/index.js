@@ -49,13 +49,16 @@ const Styles = styled.div`
   .graph-left-label {
     float: left;
     width: 40px;
+    position: absolute;
+    left: 0;
+    height: 100%;
     .border {
-      height: 105px;
       color: rgba(46, 46, 46, 1);
       margin-right: 15px;
       position: relative;
       width: 1px;
       margin: 0;
+      height:calc(50% - 31px);
       &.first {
         &::before {
           content: '';
@@ -122,6 +125,11 @@ table{
       }
       
     }
+  }
+}
+.graph{
+  canvas{
+    max-width: 100%;
   }
 }
 `;
