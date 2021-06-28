@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Table from './Table';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
@@ -167,6 +167,5 @@ function Detail(props) {
     </div>
   );
 }
-
 
 export default Detail;
