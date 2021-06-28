@@ -132,6 +132,20 @@ table{
     max-width: 100%;
   }
 }
+.input-with-button {
+  input{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  button{
+    right:0;
+    margin-left: -7px;
+  }
+}
+
+
+
+
 `;
 
 function Auction() {
