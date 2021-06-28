@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import MiniLogo from '../../../components/UI/MiniLogo';
 import { Link } from 'react-router-dom';
 import { BlockChart } from '../../../components/common/BlockChart';
@@ -83,29 +83,45 @@ function AuctionItem(props) {
           </div>
         </div>
         <div className="graph">
-          <div className="flex items-end relative pl-10">
-            <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
-              <span className="border first"></span>
-              <span className="label my-2 font-normal">
-                No. of share <b>50</b>
-              </span>
-              <span className=" border last"></span>
-            </div>
-            {/* <img src={require('../../assets/images/graph.png').default} alt="" /> */}
-            {props.chartType === 'block' ? (
-              <canvas id={`myCanvas${props.id}`} width="290" height="211"></canvas>
-            ) : (
-              <LineChart />
-            )}
-          </div>
-
-          <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
-            <span className="border first "></span>
-            <span className="label mx-2 font-normal">
-              Bid per share, sorted from lowest to highest
-            </span>
-            <span className=" border last "></span>
-          </div>
+          {props.chartType === 'block' ? (
+            <Fragment>
+              <div className="flex items-end relative pl-10">
+                <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
+                  <span className="border first"></span>
+                  <span className="label my-2 font-normal">
+                    No. of share <b>50</b>
+                  </span>
+                  <span className=" border last"></span>
+                </div>
+                <canvas id={`myCanvas${props.id}`} width="290px" height="211px"></canvas>
+              </div>
+              <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
+                <span className="border first "></span>
+                <span className="label mx-2 font-normal">
+                  Bid per share, sorted from lowest to highest
+                </span>
+                <span className=" border last "></span>
+              </div>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <div className="flex items-end relative ">
+                <LineChart width="290px" height="211px" />
+              </div>
+              <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
+                <div className="items-center ">
+                  <div className="flex items-center text-primary text-sm font-bold">
+                    Auction Start
+                  </div>
+                </div>
+                <div className="items-center ">
+                  <div className="flex items-center text-primary text-sm font-bold">
+                    Auction End
+                  </div>
+                </div>
+              </div>
+            </Fragment>
+          )}
         </div>
 
         <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
