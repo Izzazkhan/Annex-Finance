@@ -5,7 +5,7 @@ const data = {
   labels: ['1', '2'],
   datasets: [
     {
-      label: '# of Votes',
+      label: '',
       data: [19, 2],
       fill: false,
       backgroundColor: 'rgb(255, 99, 132)',
@@ -36,6 +36,14 @@ const options = {
       },
     ],
   },
+  tooltips: {
+    callbacks: {
+      label: function(tooltipItem) {
+        return tooltipItem.yLabel;
+      }
+    }
+  }
 };
-const LineChart = () => <Line data={data} options={options}/>;
+
+const LineChart = () => <Line data={data} options={options} />;
 export default LineChart;

@@ -49,7 +49,6 @@ function Detail(props) {
               {...props}
               auctionEndDate={auctionEndDate}
               auctionStartDate={auctionStartDate}
-              
             />
           )}
         />
@@ -157,7 +156,7 @@ function Detail(props) {
           </div>
         </div>
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
-          <AuctionStatus auctionEndDate={auctionEndDate}/>
+          <AuctionStatus auctionEndDate={auctionEndDate} label="Auction Progress" />
         </div>
       </div>
       <Table />

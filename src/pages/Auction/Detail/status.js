@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
 import Countdown from 'react-countdown';
 
-const AuctionStatus = ({ auctionEndDate }) => {
+const AuctionStatus = ({ auctionEndDate, label }) => {
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
         <div className="flex flex-col items-start justify-start ">
-          <div className="text-white text-2xl ">Auction Progress</div>
+          <div className="text-white text-2xl ">{label}</div>
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
