@@ -9,15 +9,15 @@ function Detail(props) {
         <h2 className="text-white mb-2 text-4xl font-normal">Auction Details</h2>
         <div className="text-gray text-2xl ">Non-Fungible Bible - Auction id# 1DPRC</div>
       </div>
-      <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row justify-between">
-        <div className="col-span-6 lg:col-span-3 md:col-span-6  px-8 flex flex-col border-r border-lightGray flex-1">
+      <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row justify-between relative">
+        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
           <h2 className="text-white mb-1 text-3xl font-bold text-primary">850 WETH/Rip</h2>
           <div className="flex items-center text-white text-2xl ">
             Current Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6  px-8 flex flex-col flex-1">
+        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1">
           <h2 className="flex items-center text-white mb-1 text-3xl font-bold text-blue">
             <img
               className="mr-2"
@@ -32,16 +32,17 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
+        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1"></div>
         {/* <div className="timer bg-fadeBlack col-span-6 lg:col-span-3 md:col-span-6 px-8 flex flex-col flex-1 justify-center items-center">
           <h2 className="text-white mb-1 text-3xl font-bold text-primary">05:01:25</h2>
           <div className="text-white text-3xl font-bold">ENDS IN</div>
         </div> */}
-        <div className="flex flex-col justify-between items-center order-last md:order-2">
-          <div className="relative mb-2">
+        <div className="timer flex flex-col justify-between items-center">
+          <div className="relative ">
             <Progress
               wrapperClassName="hidden md:block"
               type="circle"
-              width={200}
+              width={250}
               percent={0}
               strokeWidth={4}
             />
@@ -50,14 +51,14 @@ function Detail(props) {
                             w-full h-full pt-18 md:pt-14 pb-14 md:pb-10 px-4
                             transform -translate-x-1/2 -translate-y-1/2 justify-center`}
             >
-              <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
-                <div className="text-primary font-bold text-lg md:text-xl">05:01:25</div>
-                <div className="text-white font-bold text-xl md:text-2xl">ENDS IN</div>
+              <div className="flex flex-col items-center flex-grow text-center justify-center">
+                <div className="text-primary font-bold text-3xl ">05:01:25</div>
+                <div className="text-white font-bold text-3xl">ENDS IN</div>
               </div>
             </div>
           </div>
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6  px-8 flex flex-col border-r border-lightGray flex-1">
+        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
           <h2 className="flex items-center text-white mb-1 text-3xl font-bold text-primary">
             250 WETH{' '}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
@@ -67,11 +68,10 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6 px-8 flex flex-col flex-1">
+        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1">
           <h2 className="text-white mb-1 text-3xl font-bold text-primary">
-            600 WETH/<span className="text-blue">Ripple</span>
           </h2>
-          <div className="flex items-center text-white text-2xl ">
+          <div className="flex items-center text-white text-xl ">
             {' '}
             Min Bid Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />

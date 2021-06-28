@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+
 const Styles = styled.div`
   width: 100%;
   overflow: auto;
@@ -40,20 +41,61 @@ function Table(props) {
     <div className="relative w-full">
       <div className="bg-fadeBlack w-full p-6 mt-16">
         <h2 className="text-white py-6 text-4xl font-normal mb-5">Auction User Transaction History</h2>
-        <table className="">
+        <table className="text-left">
           <thead>
             <tr>
-              <td>Address</td>
-              <td>Amount Committed</td>
-              <td>Tokens Claimable</td>
-              <td>TX Hash</td>
-              <td>Block Number</td>
+              <th>Address</th>
+              <th>Amount Committed</th>
+              <th>Tokens Claimable</th>
+              <th>TX Hash</th>
+              <th>Block Number</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colSpan="12">
+              {/* <td colSpan="12">
                 <div>No Data found</div>
+              </td> */}
+              <td>
+                <div className="flex justify-start items-center space-x-2">
+                  <img src={require('../../../assets/icons/bitcoinBlack.svg').default} alt=""/>
+                  <div>0x39500416…158B46e9 </div>
+                </div>
+              </td>
+              <td>
+                <div>0.5 BTC</div>
+              </td>
+              <td>
+                <div>0.5197505197505198</div>
+              </td>
+              <td>
+                <div className="text-primary">0x3c89498f…a30153c4</div>
+              </td>
+              <td>
+                <div>12690644</div>
+              </td>
+            </tr>
+            <tr>
+              {/* <td colSpan="12">
+                <div>No Data found</div>
+              </td> */}
+              <td>
+                <div className="flex justify-start items-center space-x-2">
+                  <img src={require('../../../assets/icons/bitcoinBlack.svg').default} alt=""/>
+                  <div>0x39500416…158B46e9 </div>
+                </div>
+              </td>
+              <td>
+                <div>0.01 ETH</div>
+              </td>
+              <td>
+                <div>0.5197505197505198</div>
+              </td>
+              <td>
+                <div className="text-primary">0x3c89498f…a30153c4</div>
+              </td>
+              <td>
+                <div>12690644</div>
               </td>
             </tr>
           </tbody>
