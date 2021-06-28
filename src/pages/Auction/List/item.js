@@ -106,7 +106,7 @@ function AuctionItem(props) {
           ) : (
             <Fragment>
               <div className="flex items-end relative ">
-                <LineChart width="290px" height="211px" />
+                <LineChart width="310px" height="211px" />
               </div>
               <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
                 <div className="items-center ">

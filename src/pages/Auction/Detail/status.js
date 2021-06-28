@@ -119,7 +119,7 @@ const AuctionStatus = ({ auctionEndDate, label }) => {
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      <AuctionProgress auctionEndDate={auctionEndDate} />
+      <AuctionCompleted auctionEndDate={auctionEndDate} />
     </Fragment>
   );
 };
