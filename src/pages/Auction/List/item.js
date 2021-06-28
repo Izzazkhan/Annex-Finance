@@ -110,7 +110,7 @@ function AuctionItem(props) {
 
         <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
           <div className="items-start " onClick={() => redirectToUrl('/auction/detail')}>
-            <div className="text-primary text-sm font-normal">Batch auction</div>
+            <div className="text-primary text-sm font-normal">Dutch auction</div>
           </div>
           <div className="items-center " onClick={() => redirectToUrl('/auction/detail')}>
             <div className="flex items-center text-primary text-sm font-bold">

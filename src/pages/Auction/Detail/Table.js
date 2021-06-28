@@ -52,7 +52,7 @@ function Table(props) {
           </thead>
           <tbody>
             <tr>
-              <td colspan="12">
+              <td colSpan="12">
                 <div>No Data found</div>
               </td>
             </tr>
