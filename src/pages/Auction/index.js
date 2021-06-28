@@ -90,22 +90,14 @@ const Styles = styled.div`
     }
   }
   .timer{
-    border-radius: 50%;
-    width: 235px;
-    height: 235px;
     position: absolute;
     left: 0;
     right: 0;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    border: 10px solid #1c1c21;
-    &::before{
-      content: '';
-      position:absolute;
-      right:0;
-
-    }
+    margin: 0 auto;
+    width: 250px;
+    top: calc(50% - 125px);
+    background: black;
+    border-radius: 50%;
   }
   .upcoming-icon {
     color: rgba(255, 152, 0, 1);
@@ -120,6 +112,17 @@ const Styles = styled.div`
 }
 .text-blue{
   color: rgba(43, 152, 214, 1);
+}
+table{
+  &.text-left{
+    tr{
+      th, td{
+        text-align: left;
+        padding-left: 20px;
+      }
+      
+    }
+  }
 }
 `;
 

@@ -39,7 +39,7 @@ const AuctionCountDown = ({ auctionEndDate }) => {
                 </div>
                 <div className="flex flex-col items-center px-6">
                   <div className="text-3xl font-bold">{seconds}</div>
-                  <div className="text-3xl font-normal">SEC</div>
+                  <div className="text-2xl font-normal">SEC</div>
                 </div>
               </Fragment>
             )}
