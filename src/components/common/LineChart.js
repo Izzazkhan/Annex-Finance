@@ -8,8 +8,8 @@ const data = {
       label: '',
       data: [19, 2],
       fill: false,
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgba(255, 99, 132, 0.2)',
+      backgroundColor: 'rgba(255, 171, 45, 1)',
+      borderColor: 'rgba(255, 152, 0, 1)',
     },
   ],
 };
@@ -38,11 +38,11 @@ const options = {
   },
   tooltips: {
     callbacks: {
-      label: function(tooltipItem) {
+      label: function (tooltipItem) {
         return tooltipItem.yLabel;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 const LineChart = () => <Line data={data} options={options} />;
