@@ -17,14 +17,14 @@ function Detail(props) {
       </div>
       <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row justify-between relative">
         <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
-          <h2 className="text-white mb-1 text-2xl md:text-xl font-bold text-primary">850 WETH/Rip</h2>
+          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">850 WETH/Rip</h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
         <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1">
-          <h2 className="flex items-center text-white mb-1 text-3xl font-bold text-blue">
+          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
             <img
               className="mr-2"
               src={require('../../../assets/images/ripple.svg').default}
@@ -33,7 +33,7 @@ function Detail(props) {
             Ripple{' '}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
-          <div className="flex items-center text-white text-2xl ">
+          <div className="flex items-center text-white text-xl md:text-lg ">
             Bidding With{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
@@ -52,20 +52,20 @@ function Detail(props) {
           />
         </div>
         <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
-          <h2 className="flex items-center text-white mb-1 text-3xl font-bold text-primary">
+          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             250 WETH{' '}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
-          <div className="flex items-center text-white text-2xl ">
+          <div className="flex items-center text-white text-xl md:text-lg ">
             Total Auctions{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
         <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1">
-          <h2 className="text-white mb-1 text-3xl font-bold text-primary">
+          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             600 WETH/<span className="text-blue">Ripple</span>
           </h2>
-          <div className="flex items-center text-white text-xl ">
+          <div className="flex items-center text-white text-xl md:text-lg ">
             {' '}
             Min Bid Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
@@ -101,7 +101,7 @@ function Detail(props) {
             </div>
             <div className="flex flex-col  mb-7">
               <div className="text-lg font-medium mb-3">About</div>
-              <div className="flex justify-between space-x-2 ">
+              <div className="flex flex-wrap justify-between space-x-2 ">
                 <div className="flex items-center text-xl font-medium underline">
                   <img
                     className="mr-3"
