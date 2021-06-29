@@ -196,7 +196,7 @@ const AuctionProgress = (props) => {
               type="text"
             />
             <button
-              className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
+              className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
          h-14 bg-white rounded-lg bg-primary rounded-lg"
             >
               Commit
