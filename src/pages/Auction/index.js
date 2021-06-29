@@ -131,6 +131,11 @@ table{
   canvas{
     max-width: 100%;
   }
+  .upcoming-icon{
+    width: 9px;
+    height: 9px;
+    margin-right: 3px;
+  }
 }
 .input-with-button {
   input{
@@ -142,6 +147,7 @@ table{
     margin-left: -7px;
   }
 }
+
 
 
 
