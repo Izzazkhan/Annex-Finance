@@ -71,7 +71,7 @@ function AuctionItem(props) {
   };
   return (
     <div className="col-span-12 lg:col-span-4 md:col-span-6 bg-black rounded-2xl p-6 flex flex-col">
-      <Link to="detail">
+      <Link className="flex flex-col h-full justify-between" to="detail">
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-8">
           <div className="flex flex-col items-start justify-start ">
             <div className="text-white text-2xl ">Non-Fungible Bible</div>
@@ -110,12 +110,12 @@ function AuctionItem(props) {
               </div>
               <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
                 <div className="items-center ">
-                  <div className="flex items-center text-primary text-sm font-bold">
+                  <div className="flex items-center text-primary text-xs font-bold">
                     Auction Start
                   </div>
                 </div>
                 <div className="items-center ">
-                  <div className="flex items-center text-primary text-sm font-bold">
+                  <div className="flex items-center text-primary text-xs font-bold">
                     Auction End
                   </div>
                 </div>
