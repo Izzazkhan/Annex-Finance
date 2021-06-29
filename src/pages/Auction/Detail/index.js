@@ -9,87 +9,21 @@ function Detail(props) {
   const [state, setState] = useState({
     auctionEndDate: moment().add(1, 'minutes').toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
-    detail: {
-      chartType: 'line',
-      type: 'Batch',
-      data: [
-        {
-          name: '',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-        },
-        {
-          name: '',
-          uv: 3000,
-          pv: 398,
-          amt: 2210,
-        },
-      ],
-      status: 'Live',
-      statusClass: 'live',
-      title: 'Non-Fungible Bible',
-      id: '1DPRD',
-      contract: 'OXICFO...IFBC74C57D',
-      token: 'OXI032...CC1FFE315B',
-      website: 'https://google.com',
-      description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
-        Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
-    },
     // detail: {
-    //   chartType: 'block',
+    //   chartType: 'line',
     //   type: 'Batch',
     //   data: [
     //     {
-    //       value: 3,
+    //       name: '',
+    //       uv: 4000,
+    //       pv: 2400,
+    //       amt: 2400,
     //     },
     //     {
-    //       value: 3,
-    //     },
-    //     {
-    //       value: 3,
-    //     },
-    //     {
-    //       value: 3,
-    //     },
-    //     {
-    //       value: 3,
-    //     },
-    //     {
-    //       value: 1,
-    //     },
-    //     {
-    //       value: 8,
-    //     },
-    //     {
-    //       value: 3,
-    //     },
-    //     {
-    //       value: 4,
-    //     },
-    //     {
-    //       value: 9,
-    //     },
-    //     {
-    //       value: 9,
-    //     },
-    //     {
-    //       value: 9,
-    //     },
-    //     {
-    //       value: 9,
-    //     },
-    //     {
-    //       value: 9,
-    //     },
-    //     {
-    //       value: 10,
-    //     },
-    //     {
-    //       value: 2,
-    //     },
-    //     {
-    //       value: 3,
+    //       name: '',
+    //       uv: 3000,
+    //       pv: 398,
+    //       amt: 2210,
     //     },
     //   ],
     //   status: 'Live',
@@ -102,6 +36,72 @@ function Detail(props) {
     //   description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
     //     Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
     // },
+    detail: {
+      chartType: 'block',
+      type: 'Batch',
+      data: [
+        {
+          value: 3,
+        },
+        {
+          value: 3,
+        },
+        {
+          value: 3,
+        },
+        {
+          value: 3,
+        },
+        {
+          value: 3,
+        },
+        {
+          value: 1,
+        },
+        {
+          value: 8,
+        },
+        {
+          value: 3,
+        },
+        {
+          value: 4,
+        },
+        {
+          value: 9,
+        },
+        {
+          value: 9,
+        },
+        {
+          value: 9,
+        },
+        {
+          value: 9,
+        },
+        {
+          value: 9,
+        },
+        {
+          value: 10,
+        },
+        {
+          value: 2,
+        },
+        {
+          value: 3,
+        },
+      ],
+      status: 'Live',
+      statusClass: 'live',
+      title: 'Non-Fungible Bible',
+      id: '1DPRD',
+      contract: 'OXICFO...IFBC74C57D',
+      token: 'OXI032...CC1FFE315B',
+      website: 'https://google.com',
+      description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
+        Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
+    },
   });
   return (
     <div>

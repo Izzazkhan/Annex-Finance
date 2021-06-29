@@ -152,13 +152,15 @@ class BlockChart {
       bottom: this.canvas.clientHeight - this.options.padding.bottom,
     };
     this.blockDimension = {
-      width: Math.floor(
-        (this.boundary.width -
-          (this.options.blocks.scaleX.scale.length - 1) * this.options.blocks.space.horizontal) /
-          (this.options.blocks.scaleX.scale.length + 1),
-      ),
+      // width: Math.floor(
+      //   (this.boundary.width -
+      //     (this.options.blocks.scaleX.scale.length - 1) * this.options.blocks.space.horizontal) /
+      //     (this.options.blocks.scaleX.scale.length + 1),
+      // ),
+      width: 30,
       height: 100,
     };
+    console.log('this.blockDimension', this.blockDimension);
     this.gutterSize = Math.floor(this.blockDimension.width / 2);
     this.initialScale = this.options.blocks.scaleX.scale.map((c) => [c]);
 
@@ -184,7 +186,7 @@ class BlockChart {
 
   erase() {
     this.restoreContext();
-
+    // debugger;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.options.canvas.background.style === 'static') {

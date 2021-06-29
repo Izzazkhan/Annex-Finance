@@ -57,59 +57,6 @@ let blockChartOptions = {
     },
   },
 };
-const graphData = [
-  {
-    value: 3,
-  },
-  {
-    value: 3,
-  },
-  {
-    value: 3,
-  },
-  {
-    value: 3,
-  },
-  {
-    value: 3,
-  },
-  {
-    value: 1,
-  },
-  {
-    value: 8,
-  },
-  {
-    value: 3,
-  },
-  {
-    value: 4,
-  },
-  {
-    value: 9,
-  },
-  {
-    value: 9,
-  },
-  {
-    value: 9,
-  },
-  {
-    value: 9,
-  },
-  {
-    value: 9,
-  },
-  {
-    value: 10,
-  },
-  {
-    value: 2,
-  },
-  {
-    value: 3,
-  },
-];
 
 const AuctionStatus = ({ auctionEndDate, label, detail }) => {
   return (
@@ -187,8 +134,11 @@ const AuctionProgress = (props) => {
   return (
     <>
       {props.detail.chartType === 'block' ? (
-        <div className="flex items-end relative pl-10">
-          <canvas id={`myCanvas${props.detail.id}`}></canvas>
+        <div className="">
+          <canvas
+            id={`myCanvas${props.detail.id}`}
+            // style={{ height: '250px', width: '300px' }}
+          ></canvas>
         </div>
       ) : (
         <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
