@@ -77,8 +77,8 @@ function AuctionItem(props) {
             <div className="text-white text-2xl ">{props.title}</div>
             <div className="text-base font-normal">Auction id#{props.id}</div>
           </div>
-          <div className="flex flex-col items-center relative">
-            <span className="live-icon absolute right-0 top-0"></span>
+          <div className="flex flex-col items-end relative">
+            <span className={`${props.statusClass}-icon absolute right-0 top-0`}></span>
             <MiniLogo size="sm" />
             <div className="text-sm mt-2">{props.status}</div>
           </div>

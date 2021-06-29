@@ -1,23 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Countdown from 'react-countdown';
 import Table from './Table';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
 
-const auctionEndDate = moment().add(1, 'minutes').toDate().getTime();
-const auctionStartDate = moment().toDate().getTime();
-
 function Detail(props) {
+  const [state, setState] = useState({
+    auctionEndDate: moment().add(1, 'minutes').toDate().getTime(),
+    auctionStartDate: moment().toDate().getTime(),
+    detail: {
+      chartType: 'line',
+      type: 'Dutch',
+      data: [
+        {
+          name: '',
+          uv: 4000,
+          pv: 2400,
+          amt: 2400,
+        },
+        {
+          name: '',
+          uv: 3000,
+          pv: 398,
+          amt: 2210,
+        },
+      ],
+      status: 'Live',
+      statusClass: 'live',
+      title: 'Non-Fungible Bible',
+      id: '1DPRD',
+      contract: 'OXICFO...IFBC74C57D',
+      token: 'OXI032...CC1FFE315B',
+      website: 'https://google.com',
+      description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
+        Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
+    },
+  });
   return (
     <div>
       <div className="col-span-12 p-6 flex flex-col">
         <h2 className="text-white mb-2 text-4xl font-normal">Auction Details</h2>
-        <div className="text-gray text-2xl ">Non-Fungible Bible - Auction id# 1DPRC</div>
+        <div className="text-gray text-2xl ">
+          {state.detail.title} - Auction id# {state.detail.id}
+        </div>
       </div>
       <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row justify-between relative">
         <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
-          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">850 WETH/Rip</h2>
+          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+            850 WETH/Rip
+          </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
@@ -41,12 +73,12 @@ function Detail(props) {
         <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1"></div>
         <div className="timer flex flex-col justify-between items-center">
           <Countdown
-            date={auctionEndDate}
+            date={state.auctionEndDate}
             renderer={(props) => (
               <ProgressBar
                 {...props}
-                auctionEndDate={auctionEndDate}
-                auctionStartDate={auctionStartDate}
+                auctionEndDate={state.auctionEndDate}
+                auctionStartDate={state.auctionStartDate}
               />
             )}
           />
@@ -76,85 +108,53 @@ function Detail(props) {
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col ">
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
             <div className="flex flex-col items-start justify-start ">
-              <div className="text-white text-2xl ">Non-Fungible Bible</div>
-              <div className="text-base font-normal">Auction id#1DPRC</div>
+              <div className="text-white text-2xl ">{state.detail.title}</div>
+              <div className="text-base font-normal">Auction id#{state.detail.id}</div>
             </div>
             <div className="flex flex-col items-center ">
               <div className="">
-                <span className="upcoming-icon"></span>
+                <span className={`${state.detail.statusClass}-icon`}></span>
               </div>
-              <div className="text-sm">Upcoming</div>
+              <div className="text-sm">{state.detail.status}</div>
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Contract</div>
-              <div className="text-xl font-medium">OXICFO...IFBC74C57D</div>
+              <div className="text-xl font-medium">{state.detail.contract}</div>
             </div>
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Token</div>
-              <div className="text-xl font-medium">OXI032...CC1FFE315B</div>
+              <div className="text-xl font-medium">{state.detail.token}</div>
             </div>
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Website</div>
-              <div className="text-xl font-medium">https://google.com</div>
+              <div className="text-xl font-medium">{state.detail.website}</div>
             </div>
             <div className="flex flex-col  mb-7">
               <div className="text-lg font-medium mb-3">About</div>
               <div className="flex flex-wrap justify-between space-x-2 ">
-                <div className="flex items-center text-xl font-medium underline">
-                  <img
-                    className="mr-3"
-                    src={require('../../../assets/images/telegram.svg').default}
-                    alt=""
-                  />{' '}
-                  Telegram
-                </div>
-                <div className="flex items-center text-xl font-medium underline">
-                  <img
-                    className="mr-3"
-                    src={require('../../../assets/images/discord.svg').default}
-                    alt=""
-                  />
-                  Discord
-                </div>
-                <div className="flex items-center text-xl font-medium underline">
-                  <img
-                    className="mr-3"
-                    src={require('../../../assets/images/medium.svg').default}
-                    alt=""
-                  />
-                  Medium
-                </div>
-                <div className="flex items-center text-xl font-medium underline">
-                  <img
-                    className="mr-3"
-                    src={require('../../../assets/images/telegram.svg').default}
-                    alt=""
-                  />
-                  Twitter
-                </div>
+                <MediaIcon name="Telegram" src="telegram"/>
+                <MediaIcon name="Discord" src="discord"/>
+                <MediaIcon name="Medium" src="medium"/>
+                <MediaIcon name="Twitter" src="telegram"/>
               </div>
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
             <div className="flex flex-col mb-7">
               <div className="text-lg font-medium mb-2">Description</div>
-              <div className="text-lg font-normal">
-                Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu
-                lectus. Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus
-                nibh.
-              </div>
+              <div className="text-lg font-normal">{state.detail.description}</div>
             </div>
           </div>
           <div className="text-white flex flex-row items-stretch justify-between items-center p-6 ">
             <div className="items-start ">
-              <div className="text-primary text-sm font-normal">Dutch auction</div>
+              <div className="text-primary text-sm font-normal">{state.detail.type} auction</div>
             </div>
           </div>
         </div>
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
-          <AuctionStatus auctionEndDate={auctionEndDate} label="Auction Progress" />
+          <AuctionStatus auctionEndDate={state.auctionEndDate} label="Auction Progress" />
         </div>
       </div>
       <Table />
@@ -206,6 +206,15 @@ const ProgressBar = ({
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const MediaIcon = ({ name, src }) => {
+  return (
+    <div className="flex items-center text-xl font-medium underline">
+      <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
+      {name}
     </div>
   );
 };

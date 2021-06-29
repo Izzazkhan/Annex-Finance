@@ -110,6 +110,7 @@ const Styles = styled.div`
     display: inline-block;
     background: rgba(255, 152, 0, 1);
     border: 1px solid #fff;
+    z-index: 1;
   }
   .live-icon{
     color: #3DC01C;
@@ -120,6 +121,7 @@ const Styles = styled.div`
     background: #3DC01C;
     z-index: 9;
     border: 1px solid #fff;
+    z-index: 1;
   }
   .past-icon{
     color: #2B98D6;
@@ -130,6 +132,7 @@ const Styles = styled.div`
     background: #2B98D6;
     z-index: 9;
     border: 1px solid #fff;
+    z-index: 1;
   }
 .border-lightprimary{
   border-color: rgba(255, 185, 81, 1);
