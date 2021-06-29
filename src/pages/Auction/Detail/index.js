@@ -111,8 +111,8 @@ function Detail(props) {
           {state.detail.title} - Auction id# {state.detail.id}
         </div>
       </div>
-      <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row justify-between relative">
-        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
+      <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row flex-wrap justify-between relative">
+        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             850 WETH/Rip
           </h2>
@@ -121,7 +121,7 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1">
+        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
             <img
               className="mr-2"
@@ -136,7 +136,7 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1"></div>
+        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
         <div className="timer flex flex-col justify-between items-center">
           <Countdown
             date={state.auctionEndDate}
@@ -149,7 +149,7 @@ function Detail(props) {
             )}
           />
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray flex-1">
+        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             250 WETH{' '}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
@@ -159,7 +159,7 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col flex-1">
+        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             600 WETH/<span className="text-blue">Ripple</span>
           </h2>
@@ -282,7 +282,7 @@ const ProgressBar = ({
 
 const MediaIcon = ({ name, src }) => {
   return (
-    <div className="flex items-center text-xl font-medium underline">
+    <div className="flex items-center text-xl font-medium underline mb-3">
       <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
       {name}
     </div>
