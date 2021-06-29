@@ -171,9 +171,25 @@ table{
     margin-right: 3px;
   }
 }
-
-
-
+.rangeslider {
+  background: #343435;
+}
+.rangeslider-horizontal {
+  height: 5px;
+  border-radius: 20px;
+}
+.rangeslider-horizontal .rangeslider__fill {
+  background-color:  #FF9800;
+}
+.rangeslider-horizontal .rangeslider__handle {
+  width: 14px;
+  height: 14px;
+  border-radius: 30px;
+  background-color:  #FF9800;
+}
+.rangeslider-horizontal .rangeslider__handle::after{
+  display: none;
+}
 
 `;
 

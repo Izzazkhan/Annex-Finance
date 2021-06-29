@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import Countdown from 'react-countdown';
 // import { BlockChart } from '../../../components/common/BlockChart';
 import LineChart from '../../../components/common/LineChart';
+import Slider from 'react-rangeslider';
 
 let blockChartOptions = {
   // style of canvas and boundary to be plotted on to
@@ -177,10 +178,10 @@ const AuctionCompleted = () => {
   );
 };
 const AuctionProgress = () => {
-//   useEffect(() => {
-//     const blockchart = new BlockChart(`myCanvas`, blockChartOptions);
-//     blockchart.loadData(graphData);
-//   }, []);
+  //   useEffect(() => {
+  //     const blockchart = new BlockChart(`myCanvas`, blockChartOptions);
+  //     blockchart.loadData(graphData);
+  //   }, []);
   return (
     <>
       <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
@@ -200,7 +201,10 @@ const AuctionProgress = () => {
                 <div className="text-lg font-bold">951.7</div>
               </div>
             </div>
-            <input className="w-full" type="range" min="0" max="951.7" />
+            <div className="custom-range">
+            <Slider min={850} max={5000} value={2000} />
+              {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
+            </div>
           </div>
           <div className="mb-7">
             <input
