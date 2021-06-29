@@ -11,7 +11,7 @@ function Detail(props) {
     auctionStartDate: moment().toDate().getTime(),
     detail: {
       chartType: 'line',
-      type: 'Dutch',
+      type: 'Batch',
       data: [
         {
           name: '',
@@ -36,6 +36,72 @@ function Detail(props) {
       description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
         Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
     },
+    // detail: {
+    //   chartType: 'block',
+    //   type: 'Batch',
+    //   data: [
+    //     {
+    //       value: 3,
+    //     },
+    //     {
+    //       value: 3,
+    //     },
+    //     {
+    //       value: 3,
+    //     },
+    //     {
+    //       value: 3,
+    //     },
+    //     {
+    //       value: 3,
+    //     },
+    //     {
+    //       value: 1,
+    //     },
+    //     {
+    //       value: 8,
+    //     },
+    //     {
+    //       value: 3,
+    //     },
+    //     {
+    //       value: 4,
+    //     },
+    //     {
+    //       value: 9,
+    //     },
+    //     {
+    //       value: 9,
+    //     },
+    //     {
+    //       value: 9,
+    //     },
+    //     {
+    //       value: 9,
+    //     },
+    //     {
+    //       value: 9,
+    //     },
+    //     {
+    //       value: 10,
+    //     },
+    //     {
+    //       value: 2,
+    //     },
+    //     {
+    //       value: 3,
+    //     },
+    //   ],
+    //   status: 'Live',
+    //   statusClass: 'live',
+    //   title: 'Non-Fungible Bible',
+    //   id: '1DPRD',
+    //   contract: 'OXICFO...IFBC74C57D',
+    //   token: 'OXI032...CC1FFE315B',
+    //   website: 'https://google.com',
+    //   description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
+    //     Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
+    // },
   });
   return (
     <div>
@@ -156,7 +222,7 @@ function Detail(props) {
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <AuctionStatus
             auctionEndDate={state.auctionEndDate}
-            data={state.detail.data}
+            detail={state.detail}
             label="Auction Progress"
           />
         </div>

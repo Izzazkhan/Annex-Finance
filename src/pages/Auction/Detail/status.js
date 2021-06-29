@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import Countdown from 'react-countdown';
-// import { BlockChart } from '../../../components/common/BlockChart';
+import { BlockChart } from '../../../components/common/BlockChart';
 import LineChart from '../../../components/common/LineChart';
 import Slider from 'react-rangeslider';
 
@@ -111,7 +111,7 @@ const graphData = [
   },
 ];
 
-const AuctionStatus = ({ auctionEndDate, label, data }) => {
+const AuctionStatus = ({ auctionEndDate, label, detail }) => {
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -120,7 +120,7 @@ const AuctionStatus = ({ auctionEndDate, label, data }) => {
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      <AuctionProgress auctionEndDate={auctionEndDate} data={data} />
+      <AuctionProgress auctionEndDate={auctionEndDate} detail={detail} />
     </Fragment>
   );
 };
@@ -178,16 +178,31 @@ const AuctionCompleted = () => {
   );
 };
 const AuctionProgress = (props) => {
-  //   useEffect(() => {
-  //     const blockchart = new BlockChart(`myCanvas`, blockChartOptions);
-  //     blockchart.loadData(graphData);
-  //   }, []);
+  useEffect(() => {
+    if (props.detail.chartType === 'block') {
+      const blockchart = new BlockChart(`myCanvas${props.detail.id}`, blockChartOptions);
+      blockchart.loadData(props.detail.data);
+    }
+  }, []);
   return (
     <>
-      <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
-        {/* <canvas id={`myCanvas`}></canvas> */}
-        <LineChart width="100%" height="211px" data={props.data} />
-      </div>
+      {props.detail.chartType === 'block' ? (
+        <div className="flex items-end relative pl-10">
+          <canvas id={`myCanvas${props.detail.id}`}></canvas>
+        </div>
+      ) : (
+        <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
+          <LineChart width="100%" height="211px" data={props.detail.data} />
+          <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
+            <div className="items-center ">
+              <div className="flex items-center text-primary text-xs font-bold">Auction Start</div>
+            </div>
+            <div className="items-center ">
+              <div className="flex items-center text-primary text-xs font-bold">Auction End</div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="text-white flex flex-col items-stretch justify-between items-center p-6 ">
         <div className="">
           <div className="mb-7">
