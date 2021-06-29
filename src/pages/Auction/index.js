@@ -109,7 +109,28 @@ const Styles = styled.div`
     border-radius: 50%;
     display: inline-block;
     background: rgba(255, 152, 0, 1);
-}
+    border: 1px solid #fff;
+  }
+  .live-icon{
+    color: #3DC01C;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background: #3DC01C;
+    z-index: 9;
+    border: 1px solid #fff;
+  }
+  .past-icon{
+    color: #2B98D6;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background: #2B98D6;
+    z-index: 9;
+    border: 1px solid #fff;
+  }
 .border-lightprimary{
   border-color: rgba(255, 185, 81, 1);
 }
@@ -131,11 +152,7 @@ table{
   canvas{
     max-width: 100%;
   }
-  .upcoming-icon{
-    width: 9px;
-    height: 9px;
-    margin-right: 3px;
-  }
+ 
 }
 .input-with-button {
   input{
@@ -147,7 +164,13 @@ table{
     margin-left: -7px;
   }
 }
-
+.text-icon {
+  .upcoming-icon{
+    width: 9px;
+    height: 9px;
+    margin-right: 3px;
+  }
+}
 
 
 

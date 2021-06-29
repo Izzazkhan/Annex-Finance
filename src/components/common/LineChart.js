@@ -74,7 +74,7 @@ export default function Chart({ width, height }) {
         <div className="text-base font-bold">2 ETH</div>
       </div>
       <div className="absolute left-2 bottom-2 right-top flex flex-col text-left">
-        <div className="text-xs font-normal"><span className="upcoming-icon"></span>Current Token Price</div>
+        <div className="text-xs font-normal text-icon"><span className="upcoming-icon"></span>Current Token Price</div>
         <div className="text-base font-bold">0.510588 ETH</div>
       </div>
       <ResponsiveContainer width="100%" height="100%">

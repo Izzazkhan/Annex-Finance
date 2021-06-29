@@ -77,7 +77,8 @@ function AuctionItem(props) {
             <div className="text-white text-2xl ">Non-Fungible Bible</div>
             <div className="text-base font-normal">Auction id#1DPRC</div>
           </div>
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center relative">
+            <span className="live-icon absolute right-0 top-0"></span>
             <MiniLogo size="sm" />
             <div className="text-sm mt-2">Live</div>
           </div>
