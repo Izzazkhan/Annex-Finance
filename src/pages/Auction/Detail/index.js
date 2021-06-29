@@ -134,10 +134,10 @@ function Detail(props) {
             <div className="flex flex-col  mb-7">
               <div className="text-lg font-medium mb-3">About</div>
               <div className="flex flex-wrap justify-between space-x-2 ">
-                <MediaIcon name="Telegram" src="telegram"/>
-                <MediaIcon name="Discord" src="discord"/>
-                <MediaIcon name="Medium" src="medium"/>
-                <MediaIcon name="Twitter" src="telegram"/>
+                <MediaIcon name="Telegram" src="telegram" />
+                <MediaIcon name="Discord" src="discord" />
+                <MediaIcon name="Medium" src="medium" />
+                <MediaIcon name="Twitter" src="telegram" />
               </div>
             </div>
           </div>
@@ -154,7 +154,11 @@ function Detail(props) {
           </div>
         </div>
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
-          <AuctionStatus auctionEndDate={state.auctionEndDate} label="Auction Progress" />
+          <AuctionStatus
+            auctionEndDate={state.auctionEndDate}
+            data={state.detail.data}
+            label="Auction Progress"
+          />
         </div>
       </div>
       <Table />

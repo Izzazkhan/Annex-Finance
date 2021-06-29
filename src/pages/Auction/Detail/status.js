@@ -111,7 +111,7 @@ const graphData = [
   },
 ];
 
-const AuctionStatus = ({ auctionEndDate, label }) => {
+const AuctionStatus = ({ auctionEndDate, label, data }) => {
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -120,7 +120,7 @@ const AuctionStatus = ({ auctionEndDate, label }) => {
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      <AuctionProgress auctionEndDate={auctionEndDate} />
+      <AuctionProgress auctionEndDate={auctionEndDate} data={data} />
     </Fragment>
   );
 };
@@ -177,7 +177,7 @@ const AuctionCompleted = () => {
     </div>
   );
 };
-const AuctionProgress = () => {
+const AuctionProgress = (props) => {
   //   useEffect(() => {
   //     const blockchart = new BlockChart(`myCanvas`, blockChartOptions);
   //     blockchart.loadData(graphData);
@@ -186,7 +186,7 @@ const AuctionProgress = () => {
     <>
       <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
         {/* <canvas id={`myCanvas`}></canvas> */}
-        <LineChart width="100%" height="211px" />
+        <LineChart width="100%" height="211px" data={props.data} />
       </div>
       <div className="text-white flex flex-col items-stretch justify-between items-center p-6 ">
         <div className="">
@@ -202,7 +202,7 @@ const AuctionProgress = () => {
               </div>
             </div>
             <div className="custom-range">
-            <Slider min={850} max={5000} value={2000} />
+              <Slider min={850} max={5000} value={2000} />
               {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
             </div>
           </div>
