@@ -74,12 +74,12 @@ function AuctionItem(props) {
       <Link to="detail">
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-8">
           <div className="flex flex-col items-start justify-start ">
-            <div className="text-white text-2xl ">Non-Fungible Bible</div>
-            <div className="text-base font-normal">Auction id#1DPRC</div>
+            <div className="text-white text-2xl ">{props.title}</div>
+            <div className="text-base font-normal">Auction id#{props.id}</div>
           </div>
           <div className="flex flex-col items-center ">
             <MiniLogo size="sm" />
-            <div className="text-sm mt-2">Live</div>
+            <div className="text-sm mt-2">{props.status}</div>
           </div>
         </div>
         <div className="graph">
@@ -106,7 +106,7 @@ function AuctionItem(props) {
           ) : (
             <Fragment>
               <div className="flex items-end relative ">
-                <LineChart width="310px" height="211px" />
+                <LineChart width="310px" height="211px" data={props.data} />
               </div>
               <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
                 <div className="items-center ">
@@ -126,7 +126,7 @@ function AuctionItem(props) {
 
         <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
           <div className="items-start " onClick={() => redirectToUrl('/auction/detail')}>
-            <div className="text-primary text-sm font-normal">Dutch auction</div>
+            <div className="text-primary text-sm font-normal">{props.type} auction</div>
           </div>
           <div className="items-center " onClick={() => redirectToUrl('/auction/detail')}>
             <div className="flex items-center text-primary text-sm font-bold">
