@@ -1,4 +1,4 @@
-import { BarChart, Bar, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 
 export default function Chart(props) {
   return (
@@ -11,8 +11,13 @@ export default function Chart(props) {
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={props.data}>
-          <Bar dataKey="pv" stackId="a" fill="#C4C4C4" />
-          <Bar dataKey="uv" stackId="a" fill="#565656" />
+          <Bar dataKey="pv" fill="#C4C4C4">
+            {props.data.map((entry, index) => {
+              const color = entry.isSuccessfull ? '#565656' : '#C4C4C4';
+              return <Cell fill={color} key={index} />;
+            })}
+          </Bar>
+          {/* <Bar dataKey="uv" fill="#565656" /> */}
         </BarChart>
       </ResponsiveContainer>
     </div>
