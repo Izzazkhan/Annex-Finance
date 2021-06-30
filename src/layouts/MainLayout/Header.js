@@ -1,28 +1,24 @@
-import React, {useEffect, useState} from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navigation from '../../components/common/Navigation';
 import menu from '../../assets/icons/menu.svg';
-import {accountActionCreators, connectAccount} from "../../core";
-import {bindActionCreators} from "redux";
-import {
-  getXaiTokenContract,
-  methods
-} from "../../utilities/ContractService";
-import BigNumber from "bignumber.js";
-import {checkIsValidNetwork} from "../../utilities/common";
-import {useLocation} from "react-router-dom";
-
+import RouteMap from '../../routes/RouteMap';
+import { accountActionCreators, connectAccount } from '../../core';
+import { bindActionCreators } from 'redux';
+import { getXaiTokenContract, methods } from '../../utilities/ContractService';
+import BigNumber from 'bignumber.js';
+import { checkIsValidNetwork } from '../../utilities/common';
+import { useLocation } from 'react-router-dom';
 
 function Header({ onOpen, title, settings }) {
   const [totalXaiMinted, setTotalXaiMinted] = useState('0');
-
 
   const getTotalXaiMinted = async () => {
     // total xai minted
     const xaiContract = getXaiTokenContract();
     let tvm = await methods.call(xaiContract.methods.totalSupply, []);
     tvm = new BigNumber(tvm).div(
-        new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18)
+      new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18),
     );
 
     setTotalXaiMinted(tvm);
@@ -37,7 +33,7 @@ function Header({ onOpen, title, settings }) {
   const [currentTitle, setCurrentTitle] = useState('');
   const { pathname, search } = useLocation();
   const path = `${pathname}${search}`;
-
+  console.log(pathname);
   useEffect(() => {
     let currentTitle = '';
     const titles = {
@@ -71,27 +67,39 @@ function Header({ onOpen, title, settings }) {
         </div>
         <h2 className="text-white ml-5 text-4xl font-bold uppercase">{title || currentTitle}</h2>
       </div>
+      {pathname?.includes(RouteMap.auction) && pathname !== `${RouteMap.auction}/create` ? (
+        <Link
+          to="/auction/create"
+          className="focus:outline-none bg-transparent border border-primary py-2 px-4 rounded-3xl text-white ml-10 w-80 text-center"
+        >
+          Create an Auction{' '}
+        </Link>
+      ) : (
+        ''
+      )}
+
       <Navigation
-          wrapperClassName="hidden lg:block"
-          totalLiquidity={settings.totalLiquidity}
-          totalXaiMinted={totalXaiMinted} />
+        wrapperClassName="hidden lg:block"
+        totalLiquidity={settings.totalLiquidity}
+        totalXaiMinted={totalXaiMinted}
+      />
     </header>
   );
 }
 
 const mapStateToProps = ({ account }) => ({
-  settings: account.setting
+  settings: account.setting,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   const { setSetting, getGovernanceAnnex } = accountActionCreators;
 
   return bindActionCreators(
-      {
-        setSetting,
-        getGovernanceAnnex
-      },
-      dispatch
+    {
+      setSetting,
+      getGovernanceAnnex,
+    },
+    dispatch,
   );
 };
 

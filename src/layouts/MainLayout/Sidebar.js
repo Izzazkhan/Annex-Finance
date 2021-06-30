@@ -82,9 +82,9 @@ const sidebarItems = [
     title: 'Auction',
     href: `${RouteMap.auction}`,
     subCats: [
-      { key: 1, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
+      { key: 1, icon: underscore, title: 'Live', href: `${RouteMap.auction}/live` },
       { key: 2, icon: underscore, title: 'Upcoming', href: `${RouteMap.auction}/upcoming` },
-      { key: 3, icon: underscore, title: 'Live', href: `${RouteMap.auction}/live` },
+      { key: 3, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
     ],
   },
 ];

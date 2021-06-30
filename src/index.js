@@ -7,6 +7,7 @@ import Routes from './routes/index';
 import './assets/styles/fontStyles.css';
 import './assets/styles/utilityStyles.css';
 import './assets/styles/tailwind.css';
+import 'react-rangeslider/lib/index.css';
 
 ReactDOM.render(
   <Providers>
