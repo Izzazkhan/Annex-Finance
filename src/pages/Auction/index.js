@@ -206,7 +206,6 @@ const Styles = styled.div`
     border-color: #ff9800;
   }
 }
-  
   .custom-check{
     .container {
       display: block;
@@ -260,7 +259,7 @@ const Styles = styled.div`
       transform: rotate(45deg);
     }
   }
-  
+
 `;
 
 function Auction() {
