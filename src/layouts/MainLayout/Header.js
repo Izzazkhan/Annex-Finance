@@ -70,9 +70,9 @@ function Header({ onOpen, title, settings }) {
       {pathname?.includes(RouteMap.auction) && pathname !== `${RouteMap.auction}/create` ? (
         <Link
           to="/auction/create"
-          className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white ml-10"
+          className="focus:outline-none bg-transparent border border-primary py-2 px-4 rounded-3xl text-white ml-10 w-80 text-center"
         >
-          Create auction{' '}
+          Create an Auction{' '}
         </Link>
       ) : (
         ''
