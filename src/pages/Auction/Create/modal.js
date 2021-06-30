@@ -7,7 +7,7 @@ const types = {
   INPROGRESS: 'inprogress',
 };
 
-function AuctionModal({ open, onSetOpen, onCloseModal }) {
+function AuctionModal({ open, onSetOpen, onCloseModal, type }) {
   const title = (
     <div className="text-center text-xl font-bold mt-4 mx-12 py-6 border-b border-solid border-gray-600">
       Auction Submitting Confirmation
@@ -15,7 +15,7 @@ function AuctionModal({ open, onSetOpen, onCloseModal }) {
   );
 
   const content =
-    props.type === types['SUCCESS'] ? (
+    type === types['SUCCESS'] ? (
       <div className="p-14">
         <div className="flex flex-col items-center">
           <img className="w-150px " src={circleTick} alt="transaction broadcast" />
@@ -31,7 +31,7 @@ function AuctionModal({ open, onSetOpen, onCloseModal }) {
           </button>
         </div>
       </div>
-    ) : props.type === types['INPROGRESS'] ? (
+    ) : type === types['INPROGRESS'] ? (
       <div className="p-14">
         <div className="flex flex-col items-center">
           <img className="w-150px " src={circleTick} alt="transaction broadcast" />

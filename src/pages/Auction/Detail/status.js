@@ -129,7 +129,7 @@ const AuctionProgress = (props) => {
     <>
       {props.detail.chartType === 'block' ? (
         <Fragment>
-          <div className="flex items-end relative pl-10">
+          <div className="flex items-end relative mt-5 pl-10">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
               <span className="border first"></span>
               <span className="label my-2 font-normal">
@@ -204,7 +204,7 @@ const AuctionProgress = (props) => {
             />
             <button
               className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
-         h-14 bg-white rounded-lg bg-primary rounded-lg"
+         h-14 bg-primary rounded-lg"
             >
               Commit
             </button>
