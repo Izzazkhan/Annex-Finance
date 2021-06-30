@@ -94,7 +94,6 @@ const Styles = styled.div`
     }
   }
   .timer {
-    position: absolute;
     left: 0;
     right: 0;
     margin: 0 auto;

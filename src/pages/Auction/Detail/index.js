@@ -102,8 +102,9 @@ function Detail(props) {
           {state.detail.title} - Auction id# {state.detail.id}
         </div>
       </div>
-      <div className="text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row flex-wrap justify-between relative">
-        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
+      <div className="grid grid-cols-12 xl:grid-cols-10
+        text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row  justify-between relative">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             850 WETH/Rip
           </h2>
@@ -112,7 +113,7 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col ">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
             <img
               className="mr-2"
@@ -127,8 +128,29 @@ function Detail(props) {
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
-        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
-        <div className="timer flex flex-col justify-between items-center">
+        <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
+          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+            250 WETH{' '}
+            <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
+          </h2>
+          <div className="flex items-center text-white text-xl md:text-lg ">
+            Total Auctions{' '}
+            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+          </div>
+        </div>
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
+          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+            600 WETH/<span className="text-blue">Ripple</span>
+          </h2>
+          <div className="flex items-center text-white text-xl md:text-lg ">
+            {' '}
+            Min Bid Price{' '}
+            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+          </div>
+        </div>
+        <div className="col-span-12 text-center">
+        <div className="relative xl:absolute timer flex flex-col justify-between items-center">
           <Countdown
             date={state.auctionEndDate}
             renderer={(props) => (
@@ -140,29 +162,12 @@ function Detail(props) {
             )}
           />
         </div>
-        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
-          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            250 WETH{' '}
-            <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
-          </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
-            Total Auctions{' '}
-            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
-          </div>
         </div>
-        <div className="col-span-6 xl:col-span-3 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col ">
-          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            600 WETH/<span className="text-blue">Ripple</span>
-          </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
-            {' '}
-            Min Bid Price{' '}
-            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
-          </div>
-        </div>
+        
+        
       </div>
       <div className="grid grid-cols-1 md:grid-cols-8 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-15">
-        <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col ">
+        <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
             <div className="flex flex-col items-start justify-start ">
               <div className="text-white text-2xl ">{state.detail.title}</div>
@@ -238,7 +243,7 @@ const ProgressBar = ({
   return (
     <div className="relative ">
       <Progress
-        wrapperClassName="hidden md:block"
+        wrapperClassName=""
         type="circle"
         width={250}
         percent={percentage || 0}
