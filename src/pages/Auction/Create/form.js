@@ -126,7 +126,7 @@ export default function Form(props) {
           className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
      h-14 bg-primary rounded-lg"
           onClick={() => {
-            props.updateShowModal(true);
+            props.hanldeShowModal(true);
           }}
         >
           Submit Form
