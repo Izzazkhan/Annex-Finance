@@ -7,6 +7,7 @@ import Live from './List/Live';
 import Past from './List/Past';
 import Upcoming from './List/Upcoming';
 import Detail from './Detail';
+import CreateAuction from './Create';
 
 const Styles = styled.div`
   .graph-bottom-label {
@@ -58,7 +59,7 @@ const Styles = styled.div`
       position: relative;
       width: 1px;
       margin: 0;
-      height:calc(50% - 31px);
+      height: calc(50% - 31px);
       &.first {
         &::before {
           content: '';
@@ -92,7 +93,7 @@ const Styles = styled.div`
       }
     }
   }
-  .timer{
+  .timer {
     position: absolute;
     left: 0;
     right: 0;
@@ -112,88 +113,86 @@ const Styles = styled.div`
     border: 1px solid #fff;
     z-index: 1;
   }
-  .live-icon{
-    color: #3DC01C;
+  .live-icon {
+    color: #3dc01c;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     display: inline-block;
-    background: #3DC01C;
+    background: #3dc01c;
     z-index: 9;
     border: 1px solid #fff;
     z-index: 1;
   }
-  .past-icon{
-    color: #2B98D6;
+  .past-icon {
+    color: #2b98d6;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     display: inline-block;
-    background: #2B98D6;
+    background: #2b98d6;
     z-index: 9;
     border: 1px solid #fff;
     z-index: 1;
   }
-.border-lightprimary{
-  border-color: rgba(255, 185, 81, 1);
-}
-.text-blue{
-  color: rgba(43, 152, 214, 1);
-}
-table{
-  &.text-left{
-    tr{
-      th, td{
-        text-align: left;
-        padding-left: 20px;
+  .border-lightprimary {
+    border-color: rgba(255, 185, 81, 1);
+  }
+  .text-blue {
+    color: rgba(43, 152, 214, 1);
+  }
+  table {
+    &.text-left {
+      tr {
+        th,
+        td {
+          text-align: left;
+          padding-left: 20px;
+        }
       }
-      
     }
   }
-}
-.graph{
-  canvas{
-    max-width: 100%;
+  .graph {
+    canvas {
+      max-width: 100%;
+    }
   }
- 
-}
-.input-with-button {
-  input{
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+  .input-with-button {
+    input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    button {
+      right: 0;
+      margin-left: -7px;
+    }
   }
-  button{
-    right:0;
-    margin-left: -7px;
+  .text-icon {
+    .upcoming-icon {
+      width: 9px;
+      height: 9px;
+      margin-right: 3px;
+    }
   }
-}
-.text-icon {
-  .upcoming-icon{
-    width: 9px;
-    height: 9px;
-    margin-right: 3px;
+  .rangeslider {
+    background: #343435;
   }
-}
-.rangeslider {
-  background: #343435;
-}
-.rangeslider-horizontal {
-  height: 5px;
-  border-radius: 20px;
-}
-.rangeslider-horizontal .rangeslider__fill {
-  background-color:  #FF9800;
-}
-.rangeslider-horizontal .rangeslider__handle {
-  width: 14px;
-  height: 14px;
-  border-radius: 30px;
-  background-color:  #FF9800;
-}
-.rangeslider-horizontal .rangeslider__handle::after{
-  display: none;
-}
-
+  .rangeslider-horizontal {
+    height: 5px;
+    border-radius: 20px;
+  }
+  .rangeslider-horizontal .rangeslider__fill {
+    background-color: #ff9800;
+  }
+  .rangeslider-horizontal .rangeslider__handle {
+    width: 14px;
+    height: 14px;
+    border-radius: 30px;
+    background-color: #ff9800;
+  }
+  .rangeslider-horizontal .rangeslider__handle::after {
+    display: none;
+  }
 `;
 
 function Auction() {
@@ -214,6 +213,9 @@ function Auction() {
           </Route>
           <Route exact strict path={`${path}/detail`}>
             <Detail />
+          </Route>
+          <Route exact strict path={`${path}/create`}>
+            <CreateAuction />
           </Route>
           <Redirect to={`${path}/past`} />
         </Switch>

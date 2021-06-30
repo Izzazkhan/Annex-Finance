@@ -1,71 +1,12 @@
 import React, { Fragment, useEffect } from 'react';
 import MiniLogo from '../../../components/UI/MiniLogo';
 import { Link } from 'react-router-dom';
-import { BlockChart } from '../../../components/common/BlockChart';
+import BarChart from '../../../components/common/BarChart';
 import LineChart from '../../../components/common/LineChart';
 import { useHistory } from 'react-router-dom';
 
-let blockChartOptions = {
-  // style of canvas and boundary to be plotted on to
-  canvas: {
-    background: {
-      style: 'transparent',
-    },
-  },
-  padding: {
-    top: 0, // space between canvas and top of draw area
-    bottom: 0, // space between canvas and bottom of draw area
-    left: 0, // space between canvas and left of draw area
-    right: 0, // space between canvas and right of draw area
-  },
-  boundary: {
-    background: {
-      style: 'transparent',
-    },
-  },
-  yAxis: {
-    width: 0.5, // thickness of y axis
-    color: '#C4C4C4', // color of y axis
-  },
-  xAxis: {
-    width: 0.5, // thickness of x axis
-    color: '#C4C4C4', // color of x axis
-  },
-  // style and properties of blocks to be plotted
-  blocks: {
-    forceSquare: true,
-    space: {
-      horizontal: 0, // space between each column
-      vertical: 0, // space between each blocks in vertical
-    },
-    groupBy: 'value', // key used to group data into same column
-    background: {
-      style: 'custom', // custom background color. other supported color is 'scale', 'preset-scale'
-      color: '#aaaaaa', // default block background color
-      scaleTo: '#eacd31', // when scale style is used, color palette will be generate from color -> scaleTo color
-    },
-    shadow: {
-      style: 'custom', // custom shadow. other supported shadow is 'none'
-      color: '#aaaaaa',
-      blur: 1,
-      offsetX: 1,
-      offsetY: 1,
-    },
-    border: {
-      style: 'line',
-      width: 2,
-      color: '#000000',
-    },
-  },
-};
 function AuctionItem(props) {
   const history = useHistory();
-  useEffect(() => {
-    if (props.chartType === 'block') {
-      const blockchart = new BlockChart(`myCanvas${props.id}`, blockChartOptions);
-      blockchart.loadData(props.data);
-    }
-  }, []);
   const redirectToUrl = (url) => {
     history.push(url);
   };
@@ -94,7 +35,7 @@ function AuctionItem(props) {
                   </span>
                   <span className=" border last"></span>
                 </div>
-                <canvas id={`myCanvas${props.id}`} width="290px" height="211px"></canvas>
+                <BarChart width="310px" height="211px" data={props.data}/>
               </div>
               <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
                 <span className="border first "></span>

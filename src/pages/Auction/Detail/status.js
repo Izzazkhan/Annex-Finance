@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import Countdown from 'react-countdown';
-import { BlockChart } from '../../../components/common/BlockChart';
+import BarChart from '../../../components/common/BarChart';
 import LineChart from '../../../components/common/LineChart';
 import Slider from 'react-rangeslider';
 
@@ -125,21 +125,28 @@ const AuctionCompleted = () => {
   );
 };
 const AuctionProgress = (props) => {
-  useEffect(() => {
-    if (props.detail.chartType === 'block') {
-      const blockchart = new BlockChart(`myCanvas${props.detail.id}`, blockChartOptions);
-      blockchart.loadData(props.detail.data);
-    }
-  }, []);
   return (
     <>
       {props.detail.chartType === 'block' ? (
-        <div className="">
-          <canvas
-            id={`myCanvas${props.detail.id}`}
-            // style={{ height: '250px', width: '300px' }}
-          ></canvas>
-        </div>
+        <Fragment>
+          <div className="flex items-end relative pl-10">
+            <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
+              <span className="border first"></span>
+              <span className="label my-2 font-normal">
+                No. of share <b>50</b>
+              </span>
+              <span className=" border last"></span>
+            </div>
+            <BarChart width="100%" height="211px" data={props.detail.data} />
+          </div>
+          <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
+            <span className="border first "></span>
+            <span className="label mx-2 font-normal">
+              Bid per share, sorted from lowest to highest
+            </span>
+            <span className=" border last "></span>
+          </div>
+        </Fragment>
       ) : (
         <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
           <LineChart width="100%" height="211px" data={props.detail.data} />
