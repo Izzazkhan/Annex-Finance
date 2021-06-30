@@ -192,6 +192,75 @@ const Styles = styled.div`
   .rangeslider-horizontal .rangeslider__handle::after {
     display: none;
   }
+.create-auction {
+  input::placeholder{
+    color: #fff;
+  }
+  input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+  textarea::placeholder{
+    color: #fff;
+  }
+  .focus-visible {
+    border-color: #ff9800;
+  }
+}
+  
+  .custom-check{
+    .container {
+      display: block;
+      position: relative;
+      padding-left: 35px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 25px;
+      width: 25px;
+      background-color: #101016;
+      border: 1px solid #717579;
+    }
+  
+    .container input:checked ~ .checkmark {
+      background-color: #FF9800;
+      border: 1px solid #FF9800;
+    }
+    
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    
+    .container input:checked ~ .checkmark:after {
+      display: block;
+    }
+    
+    .container .checkmark:after {
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+  
 `;
 
 function Auction() {
