@@ -35,8 +35,8 @@ function AuctionItem(props) {
                   </span>
                   <span className=" border last"></span>
                 </div>
-                <span className="label info">Successfull</span>
-                <span className="label info">UnSuccessfull</span>
+                <span className="label info success text-sm font-normal"><span></span>Successfull</span>
+                <span className="label info unsuccess text-sm font-normal"><span></span>UnSuccessfull</span>
                 <BarChart width="310px" height="211px" data={props.data} />
               </div>
               <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">

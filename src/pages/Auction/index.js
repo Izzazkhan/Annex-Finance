@@ -155,6 +155,32 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
+    span.label.info {
+      position: absolute;
+      top: 0;
+    }
+    .label.info.success {
+        right: 0;
+        /* color: #565656; */
+    }
+    .info.success span{
+      background : #565656;
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .label.info.unsuccess {
+        left: 40px;
+        /* color: #c4c4c4; */
+    }
+    .label.info.unsuccess span {
+      background : #c4c4c4;
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin-right: 5px;
+    }
   }
   .input-with-button {
     input {

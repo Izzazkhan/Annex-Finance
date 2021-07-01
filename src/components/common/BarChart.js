@@ -17,7 +17,7 @@ export default function Chart(props) {
               return <Cell fill={color} key={index} />;
             })}
           </Bar>
-          <XAxis key="name" />
+          {/* <XAxis key="name" /> */}
         </BarChart>
       </ResponsiveContainer>
     
