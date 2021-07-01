@@ -3,7 +3,7 @@ import { BarChart, Bar, ResponsiveContainer, Cell, XAxis, Legend } from 'rechart
 export default function Chart(props) {
   return (
     <div
-      className="relative pt-10"
+      className="relative pt-5"
       style={{
         width: '100%',
         height: props.height,

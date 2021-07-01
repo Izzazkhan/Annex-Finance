@@ -129,7 +129,7 @@ const AuctionProgress = (props) => {
     <>
       {props.detail.chartType === 'block' ? (
         <Fragment>
-          <div className="flex items-end relative mt-5 pl-10">
+          <div className="chart flex items-end relative mt-5 pl-10 mr-2">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
               <span className="border first"></span>
               <span className="label my-2 font-normal">
@@ -137,6 +137,8 @@ const AuctionProgress = (props) => {
               </span>
               <span className=" border last"></span>
             </div>
+            <span className="label info success text-sm font-normal"><span></span>Successfull</span>
+            <span className="label info unsuccess text-sm font-normal"><span></span>UnSuccessfull</span>
             <BarChart width="100%" height="211px" data={props.detail.data} />
           </div>
           <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">

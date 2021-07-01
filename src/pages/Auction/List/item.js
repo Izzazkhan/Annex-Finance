@@ -27,7 +27,7 @@ function AuctionItem(props) {
         <div className="graph">
           {props.chartType === 'block' ? (
             <Fragment>
-              <div className="flex items-end relative pl-10">
+              <div className="chart flex items-end relative pl-10">
                 <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
                   <span className="border first"></span>
                   <span className="label my-2 font-normal">
@@ -39,7 +39,7 @@ function AuctionItem(props) {
                 <span className="label info unsuccess text-sm font-normal"><span></span>UnSuccessfull</span>
                 <BarChart width="310px" height="211px" data={props.data} />
               </div>
-              <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
+              <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal h-10">
                 <span className="border first "></span>
                 <span className="label mx-2 font-normal">
                   Bid per share, sorted from lowest to highest
@@ -52,7 +52,7 @@ function AuctionItem(props) {
               <div className="flex items-end relative ">
                 <LineChart width="310px" height="211px" data={props.data} />
               </div>
-              <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
+              <div className="text-white flex flex-row items-center justify-between items-center mt-8 h-10">
                 <div className="items-center ">
                   <div className="flex items-center text-primary text-xs font-bold">
                     Auction Start

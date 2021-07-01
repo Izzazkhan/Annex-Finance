@@ -17,6 +17,7 @@ const Styles = styled.div`
       margin-right: 15px;
       position: relative;
       width: 60px;
+      background: rgba(46,46,46,1);
       &.first {
         &::before {
           content: '';
@@ -60,6 +61,7 @@ const Styles = styled.div`
       width: 1px;
       margin: 0;
       height: calc(50% - 31px);
+      background: rgba(46,46,46,1);
       &.first {
         &::before {
           content: '';
@@ -155,32 +157,7 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
-    span.label.info {
-      position: absolute;
-      top: 0;
-    }
-    .label.info.success {
-        right: 0;
-        /* color: #565656; */
-    }
-    .info.success span{
-      background : #565656;
-      width: 12px;
-      height: 12px;
-      display: inline-block;
-      margin-right: 5px;
-    }
-    .label.info.unsuccess {
-        left: 40px;
-        /* color: #c4c4c4; */
-    }
-    .label.info.unsuccess span {
-      background : #c4c4c4;
-      width: 12px;
-      height: 12px;
-      display: inline-block;
-      margin-right: 5px;
-    }
+    
   }
   .input-with-button {
     input {
@@ -285,7 +262,34 @@ const Styles = styled.div`
       transform: rotate(45deg);
     }
   }
-
+.chart{
+  span.label.info {
+    position: absolute;
+    top: 0;
+  }
+  .label.info.success {
+      right: 0;
+      /* color: #565656; */
+  }
+  .info.success span{
+    background : #565656;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .label.info.unsuccess {
+      left: 40px;
+      /* color: #c4c4c4; */
+  }
+  .label.info.unsuccess span {
+    background : #c4c4c4;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+}
 `;
 
 function Auction() {
