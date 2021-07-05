@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react';
 import styled from 'styled-components';
 import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
+import Select from '../../../components/UI/Select';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -36,9 +37,10 @@ export default function Form(props) {
         description: 'Loram ipsum dioole jxugio vsheip awci',
       },
       {
-        type: 'text',
+        type: 'select',
         placeholder: 'Bidding token ',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        options: props.options,
       },
       {
         type: 'date',
@@ -89,11 +91,35 @@ export default function Form(props) {
       },
     ],
   });
+  const [selectedToken, setSelectedToken] = useState(props.options[0]);
+  const changeCurrentSymbol = (value) => {
+    setSelectedToken(value);
+  };
+  const validateForm = () => {
+    var form = document.getElementsByClassName('needs-validation')[0];
+    let isValid = true;
+    if (form.checkValidity() === false) {
+      isValid = false;
+      form.classList.add('was-validated');
+    }
+    return isValid;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let isValid = validateForm();
+    if (isValid) {
+      props.hanldeShowModal(true);
+    }
+  };
   return (
-    <Fragment>
+    <form className="needs-validation" onSubmit={handleSubmit} noValidate>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
         {state.inputs.map((input, index) => {
-          return <Input key={index} {...input} />;
+          return input.type === 'select' ? (
+            <SelectInput {...input} key={index} onChange={changeCurrentSymbol} />
+          ) : (
+            <Input key={index} {...input} />
+          );
         })}
       </div>
       <div className="text-right">
@@ -125,14 +151,15 @@ export default function Form(props) {
         <button
           className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
      h-14 bg-primary rounded-lg"
-          onClick={() => {
-            props.hanldeShowModal(true);
+          type="button"
+          onClick={(e) => {
+            handleSubmit(e);
           }}
         >
           Submit Form
         </button>
       </div>
-    </Fragment>
+    </form>
   );
 }
 
@@ -144,8 +171,10 @@ const Input = ({ type, placeholder, description }) => {
                  rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         type={type}
         placeholder={placeholder}
+        required
       />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
+      {/* <div className="invalid-feedback">title is required.</div> */}
     </div>
   );
 };
@@ -173,6 +202,15 @@ const Checkbox = ({ description }) => {
         <input type="checkbox" />
         <span className="checkmark"></span>
       </label>
+    </div>
+  );
+};
+
+const SelectInput = ({ options, changeCurrentSymbol, description }) => {
+  return (
+    <div className="col-span-6 flex flex-col mt-8">
+      <Select options={options} onChange={changeCurrentSymbol} width="w-66" type="basic-xl" />
+      <div className="text-gray text-sm font-normal mt-3">{description}</div>
     </div>
   );
 };
