@@ -33,7 +33,6 @@ function Header({ onOpen, title, settings }) {
   const [currentTitle, setCurrentTitle] = useState('');
   const { pathname, search } = useLocation();
   const path = `${pathname}${search}`;
-  console.log(pathname);
   useEffect(() => {
     let currentTitle = '';
     const titles = {
