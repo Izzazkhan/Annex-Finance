@@ -3,6 +3,14 @@ import styled from 'styled-components';
 import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
 import Select from '../../../components/UI/Select';
+import {
+  getANNTokenContract,
+  getAuctionContract,
+  getTokenContractWithDynamicAbi,
+  methods,
+} from '../../../utilities/ContractService';
+import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
+import BigNumber from "bignumber.js";
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -34,11 +42,13 @@ export default function Form(props) {
       {
         type: 'text',
         placeholder: 'Auction token',
+        id: 'auctionToken',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
       },
       {
         type: 'select',
+        id: 'biddingToken',
         placeholder: 'Bidding token ',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         options: props.options,
@@ -46,36 +56,42 @@ export default function Form(props) {
       },
       {
         type: 'date',
+        id: 'endDate',
         placeholder: 'Auction end date',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
       },
       {
         type: 'date',
+        id: 'cancellationDate',
         placeholder: 'Order cancellation date',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
       },
       {
         type: 'text',
+        id: 'sellAmount',
         placeholder: 'Auction sell amount',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
       },
       {
         type: 'text',
+        id: 'buyAmount',
         placeholder: 'Minimum buy amount',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
       },
       {
         type: 'text',
+        id: 'minBidAmount',
         placeholder: 'Minimum bidding amount per order',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
       },
       {
         type: 'text',
+        id: 'minFundThreshold',
         placeholder: 'Minimum funding threshold',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
@@ -84,18 +100,21 @@ export default function Form(props) {
     advanceInputs: [
       {
         type: 'checkbox',
+        id: 'isAccessAuto',
         placeholder: '',
         description: 'Action will settle auto ?',
         value: false,
       },
       {
         type: 'text',
+        id: 'accessContractAddr',
         placeholder: 'Access manager contract address',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
       },
       {
         type: 'textarea',
+        id: 'accessData',
         placeholder: 'Access manager data',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         value: '',
@@ -127,17 +146,97 @@ export default function Form(props) {
       }
       input['value'] = value;
     }
+    console.log(inputs);
     setState({
       ...state,
       [key]: inputs,
     });
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let isValid = validateForm();
-    if (isValid) {
-      props.hanldeShowModal(true);
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      let type = 'batch';
+      let formatedStateData = getFormState();
+      console.log("formatedStateData",formatedStateData);
+      const accountId = props.account;
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[type]['address'];
+      const annTokenContract = getANNTokenContract();
+      const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
+      const auctionContract = getAuctionContract(type);
+      const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
+      const threshold = await methods.call(auctionContract.methods.threshold, []);
+      if (balanceOf > threshold) {
+        // let annAllowance = await getTokenAllowance(
+        //   annTokenContract.methods,
+        //   auctionAddr,
+        //   threshold,
+        // );
+        // let auctionTokenAllowance = await getTokenAllowance(
+        //   auctionTokenContract.methods,
+        //   formatedStateData.auctionToken,
+        //   threshold,
+        // );
+        let data = [
+          formatedStateData.auctionToken,
+          formatedStateData.biddingToken,
+          formatedStateData.accessContractAddr,
+          formatedStateData.orderCancellationEndDate,
+          formatedStateData.auctionEndDate,
+          formatedStateData.minBidAmount,
+          formatedStateData.minFundThreshold,
+          formatedStateData.sellAmount,
+          formatedStateData.buyAmount,
+          formatedStateData.isAccessAuto,
+          formatedStateData.accessData,
+          0,
+        ];
+        // await auctionContract.methods.initiateAuction();
+        // console.log(
+        //   'balnce ' + balanceOf,
+        //   'threshold ' + threshold,
+        //   'annAllowance ' + annAllowance,
+        //   'auctionTokenAllowance ' + auctionTokenAllowance,
+        // );
+      } else {
+        console.log('buy ann');
+      }
+      // let isValid = validateForm();
+      // if (isValid) {
+      //   props.hanldeShowModal(true);
+      // }
+    } catch (error) {
+      console.log(error.message);
     }
+  };
+  const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
+    const accountId = props.account;
+    let allowance = await methods.call(contractMethods.allowance, [accountId, spenderAddr]);
+    if (allowance < threshold) {
+      let maxValue = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+      await methods.send(contractMethods.approve, [spenderAddr, maxValue], accountId);
+      allowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+    }
+    return allowance;
+  };
+
+  const getFormState = () => {
+    let arr = state.inputs.concat(state.advanceInputs);
+    let obj = {};
+    for (let index = 0; index < arr.length; index++) {
+      const element = arr[index];
+      if (element.type === 'select') {
+        obj[element.id] = element.value.addr;
+      } else if (
+        element.id === 'minBidAmount' ||
+        element.id === 'minFundThreshold' ||
+        element.id === 'buyAmount'
+      ) {
+        obj[element.id] = new BigNumber(element.value).div(1e18).toString();
+      } else {
+        obj[element.id] = element.value;
+      }
+    }
+    return obj;
   };
   return (
     <form className="needs-validation" onSubmit={handleSubmit} noValidate>
@@ -146,7 +245,7 @@ export default function Form(props) {
           return input.type === 'select' ? (
             <SelectInput
               {...input}
-              id={index}
+              index={index}
               key={index}
               isAdvance={false}
               handleInputChange={handleInputChange}
@@ -154,7 +253,7 @@ export default function Form(props) {
           ) : (
             <Input
               key={index}
-              id={index}
+              index={index}
               {...input}
               isAdvance={false}
               handleInputChange={handleInputChange}
@@ -178,21 +277,21 @@ export default function Form(props) {
                 {input.type === 'checkbox' ? (
                   <Checkbox
                     {...input}
-                    id={index}
+                    index={index}
                     isAdvance={true}
                     handleInputChange={handleInputChange}
                   />
                 ) : input.type === 'textarea' ? (
                   <Textarea
                     {...input}
-                    id={index}
+                    index={index}
                     isAdvance={true}
                     handleInputChange={handleInputChange}
                   />
                 ) : (
                   <Input
                     {...input}
-                    id={index}
+                    index={index}
                     isAdvance={true}
                     handleInputChange={handleInputChange}
                   />
@@ -218,7 +317,7 @@ export default function Form(props) {
   );
 }
 
-const Input = ({ id, type, placeholder, value, isAdvance, description, handleInputChange }) => {
+const Input = ({ index, type, placeholder, value, isAdvance, description, handleInputChange }) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <input
@@ -227,7 +326,7 @@ const Input = ({ id, type, placeholder, value, isAdvance, description, handleInp
         type={type}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+        onChange={(e) => handleInputChange(e, type, index, isAdvance)}
         required
       />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
@@ -236,7 +335,15 @@ const Input = ({ id, type, placeholder, value, isAdvance, description, handleInp
   );
 };
 
-const Textarea = ({ id, type, placeholder, value, isAdvance, description, handleInputChange }) => {
+const Textarea = ({
+  index,
+  type,
+  placeholder,
+  value,
+  isAdvance,
+  description,
+  handleInputChange,
+}) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <textarea
@@ -245,7 +352,7 @@ const Textarea = ({ id, type, placeholder, value, isAdvance, description, handle
         type="text"
         placeholder={placeholder}
         row="5"
-        onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+        onChange={(e) => handleInputChange(e, type, index, isAdvance)}
         value={value}
       ></textarea>
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
@@ -253,7 +360,7 @@ const Textarea = ({ id, type, placeholder, value, isAdvance, description, handle
   );
 };
 
-const Checkbox = ({ id, type, description, value, isAdvance, handleInputChange }) => {
+const Checkbox = ({ index, type, description, value, isAdvance, handleInputChange }) => {
   return (
     <div className="col-span-6 flex mt-8 items-center custom-check">
       <label className="container text-base ml-2 font-normal">
@@ -261,7 +368,7 @@ const Checkbox = ({ id, type, description, value, isAdvance, handleInputChange }
         <input
           type={type}
           checked={value}
-          onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+          onChange={(e) => handleInputChange(e, type, index, isAdvance)}
         />
         <span className="checkmark"></span>
       </label>
@@ -269,12 +376,20 @@ const Checkbox = ({ id, type, description, value, isAdvance, handleInputChange }
   );
 };
 
-const SelectInput = ({ id, options, value, type, isAdvance, handleInputChange, description }) => {
+const SelectInput = ({
+  index,
+  options,
+  value,
+  type,
+  isAdvance,
+  handleInputChange,
+  description,
+}) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <Select
         options={options}
-        onChange={(val) => handleInputChange(val, type, id, isAdvance)}
+        onChange={(val) => handleInputChange(val, type, index, isAdvance)}
         width="w-66"
         value={value}
         type="basic-xl"

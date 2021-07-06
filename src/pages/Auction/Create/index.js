@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import Modal from './modal';
 import Form from './form';
 import * as constants from '../../../utilities/constants';
+import { useActiveWeb3React } from '../../../hooks';
 import subGraphContext from '../../../contexts/subgraph';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
@@ -9,6 +10,7 @@ import { useSubgraph } from 'thegraph-react';
 export default function CreateAuction(props) {
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
+  const { account } = useActiveWeb3React();
   // const subGraphInstance = useContext(subGraphContext);
   // const { useQuery } = useSubgraph(subGraphInstance);
   // const { error, loading, data } = useQuery(gql`
@@ -36,6 +38,8 @@ export default function CreateAuction(props) {
       id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
       name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
       logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
+      addr: constants.CONTRACT_TOKEN_ADDRESS[key].address,
+      decimal: constants.CONTRACT_TOKEN_ADDRESS[key].decimals,
     }));
   }, []);
   return (
@@ -43,7 +47,7 @@ export default function CreateAuction(props) {
       <h2 className="text-white text-4xl font-normal">Create An Auction</h2>
       <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
       {/* <form> */}
-      <Form hanldeShowModal={hanldeShowModal} options={options} />
+      <Form hanldeShowModal={hanldeShowModal} options={options} account={account} />
       {/* </form> */}
       <Modal
         open={showModal}

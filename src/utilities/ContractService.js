@@ -111,6 +111,17 @@ export const getAuctionContract = (name) => {
   );
 };
 
+export const getANNTokenContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI),
+    constants.CONTRACT_ANN_TOKEN_ADDRESS,
+  );
+};
+
+export const getTokenContractWithDynamicAbi = (addr) => {
+  return new instance.eth.Contract(JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI), addr);
+};
+
 export const methods = {
   call,
   send,
