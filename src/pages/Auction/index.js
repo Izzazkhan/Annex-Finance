@@ -227,7 +227,7 @@ const Styles = styled.div`
     
     .checkmark {
       position: absolute;
-      top: 0;
+      top: -2px;
       left: 0;
       height: 25px;
       width: 25px;
