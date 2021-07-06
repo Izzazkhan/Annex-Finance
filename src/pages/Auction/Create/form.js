@@ -11,6 +11,8 @@ import {
 } from '../../../utilities/ContractService';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import BigNumber from "bignumber.js";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/themes/dark.css";
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -36,6 +38,8 @@ const ArrowDown = styled.button`
 `;
 
 export default function Form(props) {
+
+
   const [showDetails, setShowDetails] = useState(false);
   const [state, setState] = useState({
     inputs: [
@@ -59,14 +63,14 @@ export default function Form(props) {
         id: 'endDate',
         placeholder: 'Auction end date',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: new Date(),
       },
       {
         type: 'date',
         id: 'cancellationDate',
         placeholder: 'Order cancellation date',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: new Date(),
       },
       {
         type: 'text',
@@ -120,6 +124,7 @@ export default function Form(props) {
         value: '',
       },
     ],
+
   });
 
   const validateForm = () => {
@@ -137,12 +142,14 @@ export default function Form(props) {
     let input = inputs[index];
     if (input) {
       let value = '';
-      if (type === 'text' || type === 'date' || type === 'textarea') {
+      if (type === 'text' || type === 'textarea') {
         value = e.target.value;
       } else if (type === 'select') {
         value = e;
       } else if (type === 'checkbox') {
         value = !input['value'];
+      }else if( type === 'date'){
+        value = e[0];
       }
       input['value'] = value;
     }
@@ -241,6 +248,7 @@ export default function Form(props) {
   return (
     <form className="needs-validation" onSubmit={handleSubmit} noValidate>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
+
         {state.inputs.map((input, index) => {
           return input.type === 'select' ? (
             <SelectInput
@@ -250,7 +258,13 @@ export default function Form(props) {
               isAdvance={false}
               handleInputChange={handleInputChange}
             />
-          ) : (
+          ) : input.type === 'date' ? <DateInput
+            key={index}
+            id={index}
+            {...input}
+            isAdvance={false}
+            handleInputChange={handleInputChange}
+          /> : (
             <Input
               key={index}
               index={index}
@@ -395,6 +409,22 @@ const SelectInput = ({
         type="basic-xl"
       />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
+    </div>
+  );
+};
+
+const DateInput = ({ id, type, placeholder, value, isAdvance, description, handleInputChange }) => {
+ console.log(value)
+  return (
+    <div className="col-span-6 flex flex-col mt-8">
+      <Flatpickr
+      className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
+        data-enable-time={true}
+        value={value}
+        onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+      />
+      <div className="text-gray text-sm font-normal mt-3">{description}</div>
+      {/* <div className="invalid-feedback">title is required.</div> */}
     </div>
   );
 };
