@@ -9,30 +9,30 @@ import { useSubgraph } from 'thegraph-react';
 export default function CreateAuction(props) {
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
-  const subGraphInstance = useContext(subGraphContext);
-  const { useQuery } = useSubgraph(subGraphInstance);
-  const { error, loading, data } = useQuery(gql`
-    {
-      uniswapFactories(first: 5) {
-        id
-        pairCount
-        totalVolumeUSD
-        totalVolumeETH
-      }
-      tokens(first: 5) {
-        id
-        symbol
-        name
-        decimals
-      }
-    }
-  `);
+  // const subGraphInstance = useContext(subGraphContext);
+  // const { useQuery } = useSubgraph(subGraphInstance);
+  // const { error, loading, data } = useQuery(gql`
+  //   {
+  //     uniswapFactories(first: 5) {
+  //       id
+  //       pairCount
+  //       totalVolumeUSD
+  //       totalVolumeETH
+  //     }
+  //     tokens(first: 5) {
+  //       id
+  //       symbol
+  //       name
+  //       decimals
+  //     }
+  //   }
+  // `);
   const hanldeShowModal = (val) => {
     updateModalType('inprogress');
     updateShowModal(val);
   };
   const options = React.useMemo(() => {
-    return Object.keys(constants.CONTRACT_ABEP_ADDRESS).map((key, index) => ({
+    return Object.keys(constants.BIDDING_AUCTION_TOKEN).map((key, index) => ({
       id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
       name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
       logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
@@ -52,9 +52,9 @@ export default function CreateAuction(props) {
         onSetOpen={() => updateShowModal(true)}
         onCloseModal={() => updateShowModal(false)}
       />
-      <div>
+      {/* <div>
         <span>{error || loading ? 'Loading...' : JSON.stringify(data)}</span>
-      </div>
+      </div> */}
     </div>
   );
 }

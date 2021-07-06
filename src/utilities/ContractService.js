@@ -9,16 +9,19 @@ const TOKEN_ABI = {
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   ann: constants.CONTRACT_ANN_TOKEN_ABI,
 };
+const AUCTION_ABI = {
+  batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
+};
 
 const call = (method, params) => {
   // eslint-disable-next-line no-undef
   return new Promise((resolve, reject) => {
     method(...params)
       .call()
-      .then(res => {
+      .then((res) => {
         resolve(res);
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -29,10 +32,10 @@ const send = (method, params, from) => {
   return new Promise((resolve, reject) => {
     method(...params)
       .send({ from })
-      .then(res => {
+      .then((res) => {
         resolve(res);
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -41,75 +44,74 @@ const send = (method, params, from) => {
 export const getXaiTokenContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_XAI_TOKEN_ABI),
-    constants.CONTRACT_XAI_TOKEN_ADDRESS
+    constants.CONTRACT_XAI_TOKEN_ADDRESS,
   );
 };
 
 export const getXaiControllerContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_XAI_CONTROLLER_ABI),
-    constants.CONTRACT_XAI_UNITROLLER_ADDRESS
+    constants.CONTRACT_XAI_UNITROLLER_ADDRESS,
   );
 };
 
 export const getXaiVaultContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_XAI_VAULT_ABI),
-    constants.CONTRACT_XAI_VAULT_ADDRESS
+    constants.CONTRACT_XAI_VAULT_ADDRESS,
   );
 };
 
-export const getTokenContract = name => {
+export const getTokenContract = (name) => {
   return new instance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
     constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc']
       ? constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc'].address
-      : constants.CONTRACT_TOKEN_ADDRESS.usdc.address
+      : constants.CONTRACT_TOKEN_ADDRESS.usdc.address,
   );
 };
 
-export const getAbepContract = name => {
+export const getAbepContract = (name) => {
   return new instance.eth.Contract(
-    JSON.parse(
-      name !== 'bnb' ? constants.CONTRACT_ABEP_ABI : constants.CONTRACT_ABNB_ABI
-    ),
+    JSON.parse(name !== 'bnb' ? constants.CONTRACT_ABEP_ABI : constants.CONTRACT_ABNB_ABI),
     constants.CONTRACT_ABEP_ADDRESS[name || 'usdc']
       ? constants.CONTRACT_ABEP_ADDRESS[name || 'usdc'].address
-      : constants.CONTRACT_ABEP_ADDRESS.usdc.address
+      : constants.CONTRACT_ABEP_ADDRESS.usdc.address,
   );
 };
 
 export const getComptrollerContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
-    constants.CONTRACT_COMPTROLLER_ADDRESS
+    constants.CONTRACT_COMPTROLLER_ADDRESS,
   );
 };
 
-export const getPriceOracleContract = (
-  address = constants.CONTRACT_PRICE_ORACLE_ADDRESS
-) => {
-  return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI),
-    address
-  );
+export const getPriceOracleContract = (address = constants.CONTRACT_PRICE_ORACLE_ADDRESS) => {
+  return new instance.eth.Contract(JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI), address);
 };
 
 export const getVoteContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_VOTE_ABI),
-    constants.CONTRACT_VOTE_ADDRESS
+    constants.CONTRACT_VOTE_ADDRESS,
   );
 };
 
-export const getInterestModelContract = address => {
+export const getInterestModelContract = (address) => {
+  return new instance.eth.Contract(JSON.parse(constants.CONTRACT_INTEREST_MODEL_ABI), address);
+};
+
+export const getAuctionContract = (name) => {
   return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_INTEREST_MODEL_ABI),
-    address
+    JSON.parse(AUCTION_ABI[name]),
+    constants.CONTRACT_ANNEX_AUCTION[name || 'batch']
+      ? constants.CONTRACT_ANNEX_AUCTION[name || 'batch'].address
+      : constants.CONTRACT_ANNEX_AUCTION.batch.address,
   );
 };
 
 export const methods = {
   call,
-  send
+  send,
 };

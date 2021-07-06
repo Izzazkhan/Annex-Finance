@@ -35,42 +35,50 @@ export default function Form(props) {
         type: 'text',
         placeholder: 'Auction token',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'select',
         placeholder: 'Bidding token ',
         description: 'Loram ipsum dioole jxugio vsheip awci',
         options: props.options,
+        value: props.options[0] ? props.options[0] : [],
       },
       {
         type: 'date',
         placeholder: 'Auction end date',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'date',
         placeholder: 'Order cancellation date',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'text',
         placeholder: 'Auction sell amount',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'text',
         placeholder: 'Minimum buy amount',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'text',
         placeholder: 'Minimum bidding amount per order',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'text',
         placeholder: 'Minimum funding threshold',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
     ],
     advanceInputs: [
@@ -78,23 +86,23 @@ export default function Form(props) {
         type: 'checkbox',
         placeholder: '',
         description: 'Action will settle auto ?',
+        value: false,
       },
       {
         type: 'text',
         placeholder: 'Access manager contract address',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
       {
         type: 'textarea',
         placeholder: 'Access manager data',
         description: 'Loram ipsum dioole jxugio vsheip awci',
+        value: '',
       },
     ],
   });
-  const [selectedToken, setSelectedToken] = useState(props.options[0]);
-  const changeCurrentSymbol = (value) => {
-    setSelectedToken(value);
-  };
+
   const validateForm = () => {
     var form = document.getElementsByClassName('needs-validation')[0];
     let isValid = true;
@@ -103,6 +111,26 @@ export default function Form(props) {
       form.classList.add('was-validated');
     }
     return isValid;
+  };
+  const handleInputChange = (e, type, index, isAdvance) => {
+    let key = isAdvance ? 'advanceInputs' : 'inputs';
+    let inputs = isAdvance ? [...state.advanceInputs] : [...state.inputs];
+    let input = inputs[index];
+    if (input) {
+      let value = '';
+      if (type === 'text' || type === 'date' || type === 'textarea') {
+        value = e.target.value;
+      } else if (type === 'select') {
+        value = e;
+      } else if (type === 'checkbox') {
+        value = !input['value'];
+      }
+      input['value'] = value;
+    }
+    setState({
+      ...state,
+      [key]: inputs,
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -116,9 +144,21 @@ export default function Form(props) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
         {state.inputs.map((input, index) => {
           return input.type === 'select' ? (
-            <SelectInput {...input} key={index} onChange={changeCurrentSymbol} />
+            <SelectInput
+              {...input}
+              id={index}
+              key={index}
+              isAdvance={false}
+              handleInputChange={handleInputChange}
+            />
           ) : (
-            <Input key={index} {...input} />
+            <Input
+              key={index}
+              id={index}
+              {...input}
+              isAdvance={false}
+              handleInputChange={handleInputChange}
+            />
           );
         })}
       </div>
@@ -136,11 +176,26 @@ export default function Form(props) {
             return (
               <div className="grid grid-cols-1 md:grid-cols-12 col-span-12" key={index}>
                 {input.type === 'checkbox' ? (
-                  <Checkbox {...input} />
+                  <Checkbox
+                    {...input}
+                    id={index}
+                    isAdvance={true}
+                    handleInputChange={handleInputChange}
+                  />
                 ) : input.type === 'textarea' ? (
-                  <Textarea {...input} />
+                  <Textarea
+                    {...input}
+                    id={index}
+                    isAdvance={true}
+                    handleInputChange={handleInputChange}
+                  />
                 ) : (
-                  <Input {...input} />
+                  <Input
+                    {...input}
+                    id={index}
+                    isAdvance={true}
+                    handleInputChange={handleInputChange}
+                  />
                 )}
               </div>
             );
@@ -163,7 +218,7 @@ export default function Form(props) {
   );
 }
 
-const Input = ({ type, placeholder, description }) => {
+const Input = ({ id, type, placeholder, value, isAdvance, description, handleInputChange }) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <input
@@ -171,6 +226,8 @@ const Input = ({ type, placeholder, description }) => {
                  rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={(e) => handleInputChange(e, type, id, isAdvance)}
         required
       />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
@@ -179,7 +236,7 @@ const Input = ({ type, placeholder, description }) => {
   );
 };
 
-const Textarea = ({ placeholder, description }) => {
+const Textarea = ({ id, type, placeholder, value, isAdvance, description, handleInputChange }) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <textarea
@@ -188,28 +245,40 @@ const Textarea = ({ placeholder, description }) => {
         type="text"
         placeholder={placeholder}
         row="5"
+        onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+        value={value}
       ></textarea>
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
     </div>
   );
 };
 
-const Checkbox = ({ description }) => {
+const Checkbox = ({ id, type, description, value, isAdvance, handleInputChange }) => {
   return (
     <div className="col-span-6 flex mt-8 items-center custom-check">
       <label className="container text-base ml-2 font-normal">
         {description}
-        <input type="checkbox" />
+        <input
+          type={type}
+          checked={value}
+          onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+        />
         <span className="checkmark"></span>
       </label>
     </div>
   );
 };
 
-const SelectInput = ({ options, changeCurrentSymbol, description }) => {
+const SelectInput = ({ id, options, value, type, isAdvance, handleInputChange, description }) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
-      <Select options={options} onChange={changeCurrentSymbol} width="w-66" type="basic-xl" />
+      <Select
+        options={options}
+        onChange={(val) => handleInputChange(val, type, id, isAdvance)}
+        width="w-66"
+        value={value}
+        type="basic-xl"
+      />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
     </div>
   );
