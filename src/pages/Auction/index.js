@@ -17,7 +17,7 @@ const Styles = styled.div`
       margin-right: 15px;
       position: relative;
       width: 60px;
-      background: rgba(46,46,46,1);
+      background: rgba(46, 46, 46, 1);
       &.first {
         &::before {
           content: '';
@@ -61,7 +61,7 @@ const Styles = styled.div`
       width: 1px;
       margin: 0;
       height: calc(50% - 31px);
-      background: rgba(46,46,46,1);
+      background: rgba(46, 46, 46, 1);
       &.first {
         &::before {
           content: '';
@@ -157,7 +157,6 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
-    
   }
   .input-with-button {
     input {
@@ -195,21 +194,21 @@ const Styles = styled.div`
   .rangeslider-horizontal .rangeslider__handle::after {
     display: none;
   }
-.create-auction {
-  input::placeholder{
-    color: #fff;
+  .create-auction {
+    input::placeholder {
+      color: #fff;
+    }
+    input::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
+    textarea::placeholder {
+      color: #fff;
+    }
+    .focus-visible {
+      border-color: #ff9800;
+    }
   }
-  input::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
-  textarea::placeholder{
-    color: #fff;
-  }
-  .focus-visible {
-    border-color: #ff9800;
-  }
-}
-  .custom-check{
+  .custom-check {
     .container {
       display: block;
       position: relative;
@@ -224,7 +223,7 @@ const Styles = styled.div`
       height: 0;
       width: 0;
     }
-    
+
     .checkmark {
       position: absolute;
       top: -2px;
@@ -234,22 +233,22 @@ const Styles = styled.div`
       background-color: #101016;
       border: 1px solid #717579;
     }
-  
+
     .container input:checked ~ .checkmark {
-      background-color: #FF9800;
-      border: 1px solid #FF9800;
+      background-color: #ff9800;
+      border: 1px solid #ff9800;
     }
-    
+
     .checkmark:after {
-      content: "";
+      content: '';
       position: absolute;
       display: none;
     }
-    
+
     .container input:checked ~ .checkmark:after {
       display: block;
     }
-    
+
     .container .checkmark:after {
       left: 9px;
       top: 5px;
@@ -262,34 +261,34 @@ const Styles = styled.div`
       transform: rotate(45deg);
     }
   }
-.chart{
-  span.label.info {
-    position: absolute;
-    top: 0;
-  }
-  .label.info.success {
+  .chart {
+    span.label.info {
+      position: absolute;
+      top: 0;
+    }
+    .label.info.success {
       right: 0;
       /* color: #565656; */
-  }
-  .info.success span{
-    background : #565656;
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    margin-right: 5px;
-  }
-  .label.info.unsuccess {
+    }
+    .info.success span {
+      background: #565656;
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .label.info.unsuccess {
       left: 40px;
       /* color: #c4c4c4; */
+    }
+    .label.info.unsuccess span {
+      background: #c4c4c4;
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin-right: 5px;
+    }
   }
-  .label.info.unsuccess span {
-    background : #c4c4c4;
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    margin-right: 5px;
-  }
-}
 `;
 
 function Auction() {
@@ -299,21 +298,11 @@ function Auction() {
     <Layout mainClassName="pt-10 min-h-screen" title={'Auction'}>
       <Styles>
         <Switch>
-          <Route exact strict path={`${path}/past`}>
-            <Past />
-          </Route>
-          <Route exact strict path={`${path}/upcoming`}>
-            <Upcoming />
-          </Route>
-          <Route exact strict path={`${path}/live`}>
-            <Live />
-          </Route>
-          <Route exact strict path={`${path}/detail`}>
-            <Detail />
-          </Route>
-          <Route exact strict path={`${path}/create`}>
-            <CreateAuction />
-          </Route>
+          <Route exact strict path={`${path}/past`} component={Past} />
+          <Route exact strict path={`${path}/upcoming`} component={Upcoming} />
+          <Route exact strict path={`${path}/live`} component={Live} />
+          <Route exact strict path={`${path}/detail/:id`} component={Detail} />
+          <Route exact strict path={`${path}/create`} component={CreateAuction} />
           <Redirect to={`${path}/past`} />
         </Switch>
       </Styles>

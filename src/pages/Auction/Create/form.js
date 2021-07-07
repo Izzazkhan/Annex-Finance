@@ -1,4 +1,5 @@
-import { Fragment, useState } from 'react';
+import {  useState } from 'react';
+import Web3 from 'web3';
 import styled from 'styled-components';
 import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
@@ -10,9 +11,10 @@ import {
   methods,
 } from '../../../utilities/ContractService';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
-import BigNumber from "bignumber.js";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/dark.css";
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/dark.css';
+import moment from 'moment';
+import toHex from 'to-hex';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -38,9 +40,7 @@ const ArrowDown = styled.button`
 `;
 
 export default function Form(props) {
-
-
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [state, setState] = useState({
     inputs: [
       {
@@ -77,28 +77,28 @@ export default function Form(props) {
         id: 'sellAmount',
         placeholder: 'Auction sell amount',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '1',
       },
       {
         type: 'text',
         id: 'buyAmount',
         placeholder: 'Minimum buy amount',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '1',
       },
       {
         type: 'text',
         id: 'minBidAmount',
         placeholder: 'Minimum bidding amount per order',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '1',
       },
       {
         type: 'text',
         id: 'minFundThreshold',
         placeholder: 'Minimum funding threshold',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '1',
       },
     ],
     advanceInputs: [
@@ -114,17 +114,16 @@ export default function Form(props) {
         id: 'accessContractAddr',
         placeholder: 'Access manager contract address',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '0x0000000000000000000000000000000000000000',
       },
       {
         type: 'textarea',
         id: 'accessData',
         placeholder: 'Access manager data',
         description: 'Loram ipsum dioole jxugio vsheip awci',
-        value: '',
+        value: '0x',
       },
     ],
-
   });
 
   const validateForm = () => {
@@ -148,7 +147,7 @@ export default function Form(props) {
         value = e;
       } else if (type === 'checkbox') {
         value = !input['value'];
-      }else if( type === 'date'){
+      } else if (type === 'date') {
         value = e[0];
       }
       input['value'] = value;
@@ -164,31 +163,36 @@ export default function Form(props) {
       e.preventDefault();
       let type = 'batch';
       let formatedStateData = getFormState();
-      console.log("formatedStateData",formatedStateData);
+      console.log('formatedStateData', formatedStateData);
       const accountId = props.account;
       let auctionAddr = CONTRACT_ANNEX_AUCTION[type]['address'];
       const annTokenContract = getANNTokenContract();
       const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
+      const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
       const auctionContract = getAuctionContract(type);
       const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
       const threshold = await methods.call(auctionContract.methods.threshold, []);
       if (balanceOf > threshold) {
-        // let annAllowance = await getTokenAllowance(
-        //   annTokenContract.methods,
-        //   auctionAddr,
-        //   threshold,
-        // );
-        // let auctionTokenAllowance = await getTokenAllowance(
-        //   auctionTokenContract.methods,
-        //   formatedStateData.auctionToken,
-        //   threshold,
-        // );
+        let annAllowance = await getTokenAllowance(
+          annTokenContract.methods,
+          auctionAddr,
+          threshold,
+        );
+        let auctionTokenAllowance = await getTokenAllowance(
+          auctionTokenContract.methods,
+          auctionAddr,
+          threshold,
+        );
+        formatedStateData.sellAmount = enocodeParamToUint(
+          formatedStateData.sellAmount,
+          auctionTokenDecimal,
+        );
         let data = [
           formatedStateData.auctionToken,
           formatedStateData.biddingToken,
           formatedStateData.accessContractAddr,
-          formatedStateData.orderCancellationEndDate,
-          formatedStateData.auctionEndDate,
+          formatedStateData.cancellationDate,
+          formatedStateData.endDate,
           formatedStateData.minBidAmount,
           formatedStateData.minFundThreshold,
           formatedStateData.sellAmount,
@@ -197,13 +201,15 @@ export default function Form(props) {
           formatedStateData.accessData,
           0,
         ];
-        // await auctionContract.methods.initiateAuction();
-        // console.log(
-        //   'balnce ' + balanceOf,
-        //   'threshold ' + threshold,
-        //   'annAllowance ' + annAllowance,
-        //   'auctionTokenAllowance ' + auctionTokenAllowance,
-        // );
+        console.log('data', data);
+        console.log(
+          'balnce ' + balanceOf,
+          'threshold ' + threshold,
+          'annAllowance ' + annAllowance,
+          'auctionTokenAllowance ' + auctionTokenAllowance,
+        );
+        await methods.send(auctionContract.methods.initiateAuction, [data], accountId);
+       
       } else {
         console.log('buy ann');
       }
@@ -212,9 +218,10 @@ export default function Form(props) {
       //   props.hanldeShowModal(true);
       // }
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   };
+
   const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
     const accountId = props.account;
     let allowance = await methods.call(contractMethods.allowance, [accountId, spenderAddr]);
@@ -229,6 +236,12 @@ export default function Form(props) {
   const getFormState = () => {
     let arr = state.inputs.concat(state.advanceInputs);
     let obj = {};
+    let biddingDecimal = 0;
+    let biddingIndex = state.inputs.findIndex((x) => x.id === 'biddingToken');
+    if (biddingIndex !== -1) {
+      biddingDecimal = state.inputs[biddingIndex]['value']['decimal'];
+    }
+    let emptyAddr = '0x0000000000000000000000000000000000000000';
     for (let index = 0; index < arr.length; index++) {
       const element = arr[index];
       if (element.type === 'select') {
@@ -238,17 +251,35 @@ export default function Form(props) {
         element.id === 'minFundThreshold' ||
         element.id === 'buyAmount'
       ) {
-        obj[element.id] = new BigNumber(element.value).div(1e18).toString();
+        obj[element.id] = enocodeParamToUint(element.value, biddingDecimal);
+      } else if (
+        (element.id === 'accessData' || element.id === 'accessContractAddr') &&
+        element.value === ''
+      ) {
+        obj[element.id] = emptyAddr;
+      } else if (element.id === 'cancellationDate' || element.id === 'endDate') {
+        obj[element.id] = moment(element.value).valueOf();
       } else {
         obj[element.id] = element.value;
       }
     }
     return obj;
   };
+
+  const enocodeParamToUint = (value, decimal) => {
+    const web3 = new Web3(window.web3.currentProvider);
+    // value = new BigNumber(value).div(decimal).toString();
+    // // value = value.replace('-', '');
+    // // value = Number(value);
+    // console.log(value);
+    // value = web3.eth.abi.encodeParameter('uint256', value);
+    value = toHex(value * Number('1e' + decimal), { addPrefix: true });
+    value = web3.eth.abi.encodeParameter('uint256', value);
+    return value;
+  };
   return (
     <form className="needs-validation" onSubmit={handleSubmit} noValidate>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
-
         {state.inputs.map((input, index) => {
           return input.type === 'select' ? (
             <SelectInput
@@ -258,13 +289,15 @@ export default function Form(props) {
               isAdvance={false}
               handleInputChange={handleInputChange}
             />
-          ) : input.type === 'date' ? <DateInput
-            key={index}
-            id={index}
-            {...input}
-            isAdvance={false}
-            handleInputChange={handleInputChange}
-          /> : (
+          ) : input.type === 'date' ? (
+            <DateInput
+              key={index}
+              id={index}
+              {...input}
+              isAdvance={false}
+              handleInputChange={handleInputChange}
+            />
+          ) : (
             <Input
               key={index}
               index={index}
@@ -413,18 +446,16 @@ const SelectInput = ({
   );
 };
 
-const DateInput = ({ id, type, placeholder, value, isAdvance, description, handleInputChange }) => {
- console.log(value)
+const DateInput = ({ id, type, value, isAdvance, description, handleInputChange }) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <Flatpickr
-      className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
+        className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         data-enable-time={true}
         value={value}
         onChange={(e) => handleInputChange(e, type, id, isAdvance)}
       />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
-      {/* <div className="invalid-feedback">title is required.</div> */}
     </div>
   );
 };

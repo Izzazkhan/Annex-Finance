@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Countdown from 'react-countdown';
 import Table from './Table';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
+import subGraphContext from '../../../contexts/subgraph';
+import { gql } from '@apollo/client';
+import { useSubgraph } from 'thegraph-react';
+import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
+import BigNumber from 'bignumber.js';
 
 function Detail(props) {
   const [state, setState] = useState({
@@ -36,64 +41,124 @@ function Detail(props) {
     //   description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
     //     Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
     // },
-    detail: {
-      chartType: 'block',
-      type: 'Batch',
-      data: [
-        {
-          name: '1',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-          isSuccessfull: false,
-        },
-        {
-          name: '2',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-          isSuccessfull: false,
-        },
-        {
-          name: '3',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-          isSuccessfull: false,
-        },
-        {
-          name: '4',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-          isSuccessfull: true,
-        },
-        {
-          name: '5',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-          isSuccessfull: true,
-        },
-        {
-          name: '6',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-          isSuccessfull: true,
-        },
-      ],
-      status: 'Live',
-      statusClass: 'live',
-      title: 'Non-Fungible Bible',
-      id: '1DPRD',
-      contract: 'OXICFO...IFBC74C57D',
-      token: 'OXI032...CC1FFE315B',
-      website: 'https://google.com',
-      description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
-        Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
-    },
+    detail: {},
   });
+  const subGraphInstance = useContext(subGraphContext);
+  const { useQuery } = useSubgraph(subGraphInstance);
+  const { error, loading, data } = useQuery(gql`
+    {
+      auctions(where: { id : ${props.match.params.id} }) {
+        id
+        type
+        userId {
+          id
+          address
+        }
+        auctioningToken {
+          id
+          name
+          symbol
+          decimals
+        }
+        biddingToken {
+          id
+          name
+          symbol
+          decimals
+        }
+        orderCancellationEndDate
+        auctionEndDate
+        auctionedSellAmount
+        minBuyAmount
+        liquidity
+        soldAuctioningTokens
+        clearingPriceOrder
+        finished
+      }
+    }
+  `);
+  useEffect(() => {
+    if (data && data.auctions) {
+      let elem = data.auctions[0];
+      let type = elem['type'];
+      let totalAuction = new BigNumber(elem['soldAuctioningTokens'])
+        .dividedBy(Number('1e' + elem['auctioningToken']['decimals']))
+        .toString();
+      let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
+      let auctionTokenName = elem['auctioningToken']['name'];
+      let biddingSymbol = `${elem['biddingToken']['symbol']}`;
+      let biddingTokenName = elem['biddingToken']['name'];
+      console.log('biddingSymbol',biddingSymbol)
+      let detail = {
+        type,
+        id: elem.id,
+        totalAuction,
+        auctionTokenName,
+        auctionSymbol,
+        biddingSymbol,
+        biddingTokenName,
+        chartType: 'block',
+        data: [
+          {
+            name: '1',
+            uv: 4000,
+            pv: 2400,
+            amt: 2400,
+            isSuccessfull: false,
+          },
+          {
+            name: '2',
+            uv: 3000,
+            pv: 1398,
+            amt: 2210,
+            isSuccessfull: false,
+          },
+          {
+            name: '3',
+            uv: 2000,
+            pv: 9800,
+            amt: 2290,
+            isSuccessfull: false,
+          },
+          {
+            name: '4',
+            uv: 4000,
+            pv: 2400,
+            amt: 2400,
+            isSuccessfull: true,
+          },
+          {
+            name: '5',
+            uv: 3000,
+            pv: 1398,
+            amt: 2210,
+            isSuccessfull: true,
+          },
+          {
+            name: '6',
+            uv: 2000,
+            pv: 9800,
+            amt: 2290,
+            isSuccessfull: true,
+          },
+        ],
+        status: 'Live',
+        statusClass: 'live',
+        title: type + ' Auction',
+        contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+        token: elem['auctioningToken']['id'],
+        website: 'https://google.com',
+        description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
+          Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
+      };
+      setState({
+        ...state,
+        detail,
+        // auctionEndDate: elem.auctionEndDate,
+      });
+      console.log('detail', state.auctionEndDate);
+    }
+  }, [data]);
   return (
     <div>
       <div className="col-span-12 p-6 flex flex-col">
@@ -102,8 +167,10 @@ function Detail(props) {
           {state.detail.title} - Auction id# {state.detail.id}
         </div>
       </div>
-      <div className="grid grid-cols-12 xl:grid-cols-10
-        text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row  justify-between relative">
+      <div
+        className="grid grid-cols-12 xl:grid-cols-10
+        text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row  justify-between relative"
+      >
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
             850 WETH/Rip
@@ -115,12 +182,18 @@ function Detail(props) {
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
-            <img
-              className="mr-2"
-              src={require('../../../assets/images/ripple.svg').default}
-              alt=""
-            />{' '}
-            Ripple{' '}
+            {state.detail.biddingSymbol ? (
+              <img
+                className="mr-2"
+                src={
+                  require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`).default
+                }
+                alt=""
+              />
+            ) : (
+              ''
+            )}{' '}
+            {state.detail.biddingTokenName}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
@@ -131,7 +204,7 @@ function Detail(props) {
         <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            250 WETH{' '}
+            {`${state.detail.totalAuction} ${state.detail.auctionSymbol}`}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
@@ -150,21 +223,19 @@ function Detail(props) {
           </div>
         </div>
         <div className="col-span-12 text-center">
-        <div className="relative xl:absolute timer flex flex-col justify-between items-center">
-          <Countdown
-            date={state.auctionEndDate}
-            renderer={(props) => (
-              <ProgressBar
-                {...props}
-                auctionEndDate={state.auctionEndDate}
-                auctionStartDate={state.auctionStartDate}
-              />
-            )}
-          />
+          <div className="relative xl:absolute timer flex flex-col justify-between items-center">
+            <Countdown
+              date={state.auctionEndDate}
+              renderer={(props) => (
+                <ProgressBar
+                  {...props}
+                  auctionEndDate={state.auctionEndDate}
+                  auctionStartDate={state.auctionStartDate}
+                />
+              )}
+            />
+          </div>
         </div>
-        </div>
-        
-        
       </div>
       <div className="grid grid-cols-1 md:grid-cols-8 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-15">
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">

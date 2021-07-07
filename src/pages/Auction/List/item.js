@@ -12,7 +12,7 @@ function AuctionItem(props) {
   };
   return (
     <div className="col-span-12 lg:col-span-4 md:col-span-6 bg-black rounded-2xl p-6 flex flex-col">
-      <Link className="flex flex-col h-full justify-between" to="detail">
+      <Link className="flex flex-col h-full justify-between" to={`detail/${props.id}`}>
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-8">
           <div className="flex flex-col items-start justify-start ">
             <div className="text-white text-2xl ">{props.title}</div>

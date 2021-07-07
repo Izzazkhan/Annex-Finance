@@ -1,45 +1,25 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Modal from './modal';
 import Form from './form';
 import * as constants from '../../../utilities/constants';
 import { useActiveWeb3React } from '../../../hooks';
-import subGraphContext from '../../../contexts/subgraph';
-import { gql } from '@apollo/client';
-import { useSubgraph } from 'thegraph-react';
 
 export default function CreateAuction(props) {
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const { account } = useActiveWeb3React();
-  // const subGraphInstance = useContext(subGraphContext);
-  // const { useQuery } = useSubgraph(subGraphInstance);
-  // const { error, loading, data } = useQuery(gql`
-  //   {
-  //     uniswapFactories(first: 5) {
-  //       id
-  //       pairCount
-  //       totalVolumeUSD
-  //       totalVolumeETH
-  //     }
-  //     tokens(first: 5) {
-  //       id
-  //       symbol
-  //       name
-  //       decimals
-  //     }
-  //   }
-  // `);
+
   const hanldeShowModal = (val) => {
     updateModalType('inprogress');
     updateShowModal(val);
   };
   const options = React.useMemo(() => {
     return Object.keys(constants.BIDDING_AUCTION_TOKEN).map((key, index) => ({
-      id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
-      name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
+      id: constants.BIDDING_AUCTION_TOKEN[key].id,
+      name: constants.BIDDING_AUCTION_TOKEN[key].symbol,
       logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
-      addr: constants.CONTRACT_TOKEN_ADDRESS[key].address,
-      decimal: constants.CONTRACT_TOKEN_ADDRESS[key].decimals,
+      addr: constants.BIDDING_AUCTION_TOKEN[key].address,
+      decimal: constants.BIDDING_AUCTION_TOKEN[key].decimals,
     }));
   }, []);
   return (
@@ -56,9 +36,6 @@ export default function CreateAuction(props) {
         onSetOpen={() => updateShowModal(true)}
         onCloseModal={() => updateShowModal(false)}
       />
-      {/* <div>
-        <span>{error || loading ? 'Loading...' : JSON.stringify(data)}</span>
-      </div> */}
     </div>
   );
 }
