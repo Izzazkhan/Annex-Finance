@@ -183,7 +183,7 @@ function Detail(props) {
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
             {state.detail.biddingSymbol ? (
-              <img
+              <img width="40"
                 className="mr-2"
                 src={
                   require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`).default
