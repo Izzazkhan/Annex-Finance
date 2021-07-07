@@ -81,18 +81,21 @@ function Detail(props) {
     if (data && data.auctions) {
       let elem = data.auctions[0];
       let type = elem['type'];
+      let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
       let totalAuction = new BigNumber(elem['soldAuctioningTokens'])
-        .dividedBy(Number('1e' + elem['auctioningToken']['decimals']))
+        .dividedBy(auctionDecimal)
         .toString();
+      let minBuyAmount = new BigNumber(elem['minBuyAmount']).dividedBy(auctionDecimal).toString();
       let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
       let auctionTokenName = elem['auctioningToken']['name'];
       let biddingSymbol = `${elem['biddingToken']['symbol']}`;
       let biddingTokenName = elem['biddingToken']['name'];
-      console.log('biddingSymbol',biddingSymbol)
+      let auctionEndDate = moment.unix(elem['auctionEndDate']).toDate().getTime();
       let detail = {
         type,
         id: elem.id,
         totalAuction,
+        minBuyAmount,
         auctionTokenName,
         auctionSymbol,
         biddingSymbol,
@@ -154,9 +157,8 @@ function Detail(props) {
       setState({
         ...state,
         detail,
-        // auctionEndDate: elem.auctionEndDate,
+        auctionEndDate: auctionEndDate,
       });
-      console.log('detail', state.auctionEndDate);
     }
   }, [data]);
   return (
@@ -186,7 +188,8 @@ function Detail(props) {
               <img
                 className="mr-2"
                 src={
-                  require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`).default
+                  require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`)
+                    .default
                 }
                 alt=""
               />
@@ -291,6 +294,7 @@ function Detail(props) {
             auctionEndDate={state.auctionEndDate}
             detail={state.detail}
             label="Auction Progress"
+            minBuyAmount={state.detail.minBuyAmount}
           />
         </div>
       </div>

@@ -58,7 +58,7 @@ let blockChartOptions = {
   },
 };
 
-const AuctionStatus = ({ auctionEndDate, label, detail }) => {
+const AuctionStatus = ({ auctionEndDate, label, detail, minBuyAmount }) => {
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -67,7 +67,11 @@ const AuctionStatus = ({ auctionEndDate, label, detail }) => {
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      <AuctionProgress auctionEndDate={auctionEndDate} detail={detail} />
+      <AuctionProgress
+        auctionEndDate={auctionEndDate}
+        detail={detail}
+        minBuyAmount={minBuyAmount}
+      />
     </Fragment>
   );
 };
@@ -137,8 +141,12 @@ const AuctionProgress = (props) => {
               </span>
               <span className=" border last"></span>
             </div>
-            <span className="label info success text-sm font-normal"><span></span>Successfull</span>
-            <span className="label info unsuccess text-sm font-normal"><span></span>UnSuccessfull</span>
+            <span className="label info success text-sm font-normal">
+              <span></span>Successfull
+            </span>
+            <span className="label info unsuccess text-sm font-normal">
+              <span></span>UnSuccessfull
+            </span>
             <BarChart width="100%" height="211px" data={props.detail.data} />
           </div>
           <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
@@ -168,7 +176,7 @@ const AuctionProgress = (props) => {
             <div className="label flex flex-row justify-between items-center mb-4">
               <div className="flex flex-col">
                 <div className="text-sm ">Minimum Token Amount</div>
-                <div className="text-lg font-bold">0.33248854885568644856</div>
+                <div className="text-lg font-bold">{props.minBuyAmount}</div>
               </div>
               <div className="flex flex-col text-right">
                 <div className="text-sm ">Max Available</div>
