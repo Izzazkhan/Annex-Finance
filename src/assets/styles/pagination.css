@@ -1,0 +1,120 @@
+.rc-pagination {
+    margin: 0;
+    padding: 0;
+    font-size: 14px
+}
+
+.rc-pagination ol,.rc-pagination ul {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.rc-pagination:after {
+    display: block;
+    clear: both;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    content: " "
+}
+
+.rc-pagination-total-text {
+    display: none;
+}
+
+.rc-pagination-item {
+    display: inline-block;
+    min-width: 28px;
+    height: 28px;
+    margin-right: 16px;
+    font-family: "Poppins", "AvenirNext", sans-serif;
+    line-height: 26px;
+    text-align: center;
+    vertical-align: middle;
+    list-style: none;
+    background-color: transparent;
+    border: none;
+    border-radius: 2px;
+    outline: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+.rc-pagination-item a {
+    display: block;
+    padding: 0 6px;
+    font-size: 1rem;
+    color: white;
+    transition: color ease 0.3s;
+    text-decoration: none
+}
+
+.rc-pagination-item a:hover {
+    color: #FFAB2D
+}
+
+.rc-pagination-item:focus,.rc-pagination-item:hover {
+    transition: all .3s
+}
+
+.rc-pagination-item:focus a,.rc-pagination-item:hover a {
+    color: #FFAB2D
+}
+
+.rc-pagination-item-active {
+    font-weight: 500;
+}
+
+.rc-pagination-item-active a {
+    color: #FFAB2D
+}
+
+.rc-pagination-item-active:focus a,.rc-pagination-item-active:hover a {
+    color: #C97629
+}
+
+.rc-pagination-jump-next,.rc-pagination-jump-prev {
+    outline: 0;
+    display: none;
+}
+
+.rc-pagination-jump-next,.rc-pagination-jump-prev,.rc-pagination-next,.rc-pagination-prev {
+    display: none;
+}
+
+.rc-pagination-disabled,.rc-pagination-disabled:focus,.rc-pagination-disabled:hover {
+    cursor: not-allowed
+}
+
+.rc-pagination-disabled .rc-pagination-item-link,.rc-pagination-disabled:focus .rc-pagination-item-link,.rc-pagination-disabled:hover .rc-pagination-item-link {
+    color: rgba(255,255,255,.25);
+    cursor: not-allowed
+}
+
+.rc-pagination-slash {
+    margin: 0 10px 0 5px
+}
+
+.rc-pagination-options {
+    display: inline-block;
+    margin-left: 16px;
+    vertical-align: middle
+}
+
+@media (-ms-high-contrast:none) {
+    .rc-pagination-options,.rc-pagination-options ::-ms-backdrop {
+        vertical-align: top
+    }
+}
+
+.rc-pagination-options-size-changer.rc-select {
+    display: none;
+}
+
+.rc-pagination-options-quick-jumper {
+    display: none;
+}

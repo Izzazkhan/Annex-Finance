@@ -1,7 +1,5 @@
 import { createWeb3ReactRoot, Web3ReactProvider } from "@web3-react/core";
-import { BrowserRouter as Router } from 'react-router-dom';
 import {Provider} from "react-redux";
-import { toast, ToastContainer, Zoom } from 'react-toastify';
 
 import getLibrary from './utils/getLibrary';
 import { NetworkContextName } from "./constants";
@@ -16,10 +14,8 @@ const Providers = props => {
 		<Web3ReactProvider getLibrary={getLibrary}>
 			<Web3ProviderNetwork getLibrary={getLibrary}>
 				<Provider store={store}>
-					<Router>
-						<APIProvider/>
-						{props.children}
-					</Router>
+					<APIProvider/>
+					{props.children}
 				</Provider>
 			</Web3ProviderNetwork>
 		</Web3ReactProvider>

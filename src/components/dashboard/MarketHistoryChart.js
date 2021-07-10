@@ -69,7 +69,6 @@ const MarketHistoryChart = ({
                 ])
             }
 
-            console.log(tooltip.body);
             const bodyLines = tooltip.body.map(b => b.lines);
 
 

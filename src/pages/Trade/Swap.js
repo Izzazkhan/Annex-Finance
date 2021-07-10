@@ -284,14 +284,14 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 				<div className="flex justify-between">
 					<div className="">
 						<div
-							className={`text-xl 2xl:text-24 font-bold ${
+							className={`text-xl 2xl:text-xl font-bold ${
 								trade ? 'text-black' : 'text-white'
 							}`}
 						>
 							Exchange
 						</div>
 						<div
-							className={`md:text-xs 2xl:text-18 mt-3 ${
+							className={`md:text-xs 2xl:text-base mt-3 ${
 								trade ? 'text-black' : 'text-gray'
 							}`}
 						>
@@ -365,14 +365,14 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 								<div className="flex justify-between text-white mt-6">
 									<div
 										className={
-											trade ? 'text-black text-18' : 'text-white text-18'
+											trade ? 'text-black text-base' : 'text-white text-base'
 										}
 									>
 										Price
 									</div>
 									<div
 										className={
-											trade ? 'text-black text-18' : 'text-white text-18'
+											trade ? 'text-black text-base' : 'text-white text-base'
 										}
 									>
 										{trade?.executionPrice?.toSignificant(6)}
@@ -386,14 +386,14 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 								<div className="flex justify-between text-white mt-6">
 									<div
 										className={
-											trade ? 'text-black text-18' : 'text-white text-18'
+											trade ? 'text-black text-base' : 'text-white text-base'
 										}
 									>
 										Slippage Tolerance
 									</div>
 									<div
 										className={
-											trade ? 'text-black text-18' : 'text-white text-18'
+											trade ? 'text-black text-base' : 'text-white text-base'
 										}
 									>
 										{allowedSlippage / 100}%
@@ -406,7 +406,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					{!account ? (
 						<button
 							disabled={true}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 disabled:opacity-50 bg-white rounded-lg ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 disabled:opacity-50 bg-white rounded-lg ${
 								trade
 									? 'bg-white rounded-3xl'
 									: 'bgPrimaryGradient rounded-lg'
@@ -418,7 +418,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 						<button
 							disabled={Boolean(wrapInputError)}
 							onClick={onWrap}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14
 							 ${
 								wrapInputError ? " disabled:opacity-50 bg-white rounded-lg" 
 									: trade
@@ -437,7 +437,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 					) : noRoute && userHasSpecifiedInputOutput ? (
 						<button
 							disabled={true}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 disabled:opacity-50 bg-white rounded-lg ${
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 disabled:opacity-50 bg-white rounded-lg ${
 								trade
 									? 'rounded-3xl'
 									: 'rounded-lg'
@@ -453,7 +453,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							<button
 								onClick={approveCallback}
 								disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14
+								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-xl h-14
 								 ${approval !== ApprovalState.NOT_APPROVED || approvalSubmitted ? "bg-white disabled:opacity-50 rounded-lg"
 									: trade
 										? 'bg-white rounded-3xl'
@@ -483,7 +483,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 									approval !== ApprovalState.APPROVED ||
 									(priceImpactSeverity > 3)
 								}
-								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-24 h-14 
+								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-xl h-14 
 								${(!isValid ||
 								approval !== ApprovalState.APPROVED ||
 								(priceImpactSeverity > 3)) 
@@ -512,7 +512,7 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 							disabled={
 								!isValid || priceImpactSeverity > 3 || !!swapCallbackError
 							}
-							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 h-14 
+							className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 
 							${!isValid || priceImpactSeverity > 3 || !!swapCallbackError 
 								? "bg-white disabled:opacity-50 rounded-lg"
 								: trade

@@ -116,7 +116,6 @@ export function outdatedListeningKeys(
 export default function Updater() {
 	const dispatch = useDispatch();
 	const state = useSelector((s) => s.multicall);
-	console.log(state);
 	// wait for listeners to settle before triggering updates
 	const debouncedListeners = useDebounce(state.callListeners, 100);
 	const latestBlockNumber = useBlockNumber();
@@ -137,7 +136,6 @@ export default function Updater() {
 	]);
 
 	useEffect(() => {
-		console.log('running')
 		if (!latestBlockNumber || !chainId || !multicallContract) return;
 
 		const outdatedCallKeys = JSON.parse(serializedOutdatedCallKeys);
@@ -191,7 +189,6 @@ export default function Updater() {
 					);
 					})
 					.catch((error) => {
-						console.log(error);
 						if (error instanceof CancelledError) {
 							console.error("Cancelled fetch for blockNumber", latestBlockNumber);
 							return;
