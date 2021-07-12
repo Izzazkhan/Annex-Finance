@@ -149,6 +149,7 @@ function AddLiquidity({
 	const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS);
 	const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS);
 
+
 	const addTransaction = useTransactionAdder();
 
 	async function onAdd() {
@@ -199,6 +200,7 @@ function AddLiquidity({
 			];
 			value = null;
 		}
+
 
 		setAttemptingTxn(true);
 		// const aa = await estimate(...args, value ? { value } : {})
@@ -396,7 +398,7 @@ function AddLiquidity({
 					{currencies[Field.CURRENCY_A] &&
 						currencies[Field.CURRENCY_B] &&
 						pairState !== PairState.INVALID && (
-						<div className="bg-primary p-6 rounded-3xl w-full mt-8">
+						<div className="bg-primary bg-opacity-70 p-6 rounded-3xl w-full mt-8">
 							<div className="font-bold">PRICE AND POOL SHARE</div>
 							<div className="flex justify-between mt-4 px-10">
 								<div className="">

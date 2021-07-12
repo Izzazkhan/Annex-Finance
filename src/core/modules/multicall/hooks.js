@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useBlockNumber } from "../application/hooks";
+import { useBlockNumber } from "../application";
 import {
 	multicallActionCreators,
 	parseCallKey,
@@ -10,7 +10,6 @@ import { useActiveWeb3React } from "../../../hooks";
 
 const {
 	addMulticallListeners,
-	Call,
 	removeMulticallListeners,
 } = multicallActionCreators;
 

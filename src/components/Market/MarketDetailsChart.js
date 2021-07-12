@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useMemo, useRef} from "react";
 import { Line, Bar } from 'react-chartjs-2';
 import BigNumber from "bignumber.js";
 import commaNumber from "comma-number";
@@ -6,16 +6,15 @@ import {getBigNumber} from "../../utilities/common";
 import moment from "moment";
 
 const TYPES = {
-    Supply: "SUPPLY",
-    Borrow: "BORROW"
+    Supply: "supply",
+    Borrow: "borrow"
 }
 
 const format = commaNumber.bindWith(',', '.');
 
 const MarketHistoryChart = ({
     data,
-    type,
-    withANN
+    marketType
 }) => {
     const lineChart = useRef();
     const barChart = useRef();
@@ -134,23 +133,7 @@ const MarketHistoryChart = ({
             },
             scales: {
                 y: {
-                    afterFit: axis => {
-                        axis.width = 100
-                    },
-                    beginAtZero: true,
-                    position: 'right',
-                    ticks: {
-                        color: "#fff",
-                        font: {
-                            family: "Poppins, sans-serif",
-                            size: 12,
-                            weight: 700
-                        },
-                        // Include a dollar sign in the ticks
-                        callback: function(value, index, values) {
-                            return `${new BigNumber(value).dp(0, 1).toString(10)}%`;
-                        }
-                    }
+                    display: false,
                 },
                 x: {
                     display: false,
@@ -169,7 +152,7 @@ const MarketHistoryChart = ({
                 },
                 tooltip: {
                     enabled: false,
-                        external: context => externalTooltipHandler(context, function(value) {
+                    external: context => externalTooltipHandler(context, function(value) {
                         const result = value.replace(/,/g, '');
                         return `$${format(getBigNumber(result).dp(2, 1).toString(10))}`
                     })
@@ -177,38 +160,22 @@ const MarketHistoryChart = ({
             },
             scales: {
                 y: {
-                    grid: {
-                        display: false,
-                    },
-                    afterFit: axis => {
-                        axis.width = 100
-                    },
-                        position: 'right',
-                        ticks: {
-                        font: {
-                            family: "Poppins, sans-serif",
-                                size: 12
-                        },
-                        // Include a dollar sign in the ticks
-                        callback: function(value, index, values) {
-                            return `$${format(getBigNumber(value).dp(2, 1).toString(10))}`
-                        }
-                    }
+                    display: false,
                 },
                 x: {
                     display: false,
                 }
             },
             maintainAspectRatio: false,
-                responsive: true,
+            responsive: true,
         }
     }, [])
 
 
     const lineData = useMemo(() => {
-        const field = type === TYPES.Supply
-            ? (withANN ? 'supplyAnnexApy' : 'supplyApy')
-            : (withANN ? 'borrowAnnexApy' : 'borrowApy');
+        const field = marketType === TYPES.Supply
+            ? 'supplyApy'
+            : 'borrowApy';
 
         const filteredData = data?.map(item => item?.[field] < Infinity ? item : {
             ...item,
@@ -218,27 +185,27 @@ const MarketHistoryChart = ({
         return {
             labels: filteredData?.map(item => item?.createdAt),
             datasets: [{
-                label: type === TYPES.Supply ? "Supply APY" : "Borrow APY",
+                label: marketType === TYPES.Supply ? "Supply APY" : "Borrow APY",
                 data: filteredData?.map(item => Number(item?.[field]) || 0.0000),
                 fill: false,
-                backgroundColor: '#FFAB2D',
-                borderColor: '#FFAB2D',
-                borderWidth: 12,
-                hoverBackgroundColor: "#FFAB2D",
+                backgroundColor: '#3AB67A',
+                borderColor: '#3AB67A',
+                borderWidth: 4,
+                hoverBackgroundColor: "#3AB67A",
                 hoverBorderColor: "#fff",
                 hoverBorderWidth: 4,
-                hoverRadius: 6,
-                pointRadius: 5.5,
-                pointHitRadius: 6,
+                hoverRadius: 2,
+                pointRadius: 2,
+                pointHitRadius: 2,
                 pointBorderWidth: 0,
                 tension: 0.1
             }]
         }
-    }, [data, type, withANN])
+    }, [data, marketType])
 
 
     const barData = useMemo(() => {
-        const field = type === TYPES.Supply
+        const field = marketType === TYPES.Supply
             ? 'totalSupply'
             : 'totalBorrow';
 
@@ -250,44 +217,41 @@ const MarketHistoryChart = ({
         return {
             labels: filteredData?.map(item => item?.createdAt),
             datasets: [{
-                label: type === TYPES.Supply ? "Total Supply" : "Total Borrow",
+                label: marketType === TYPES.Supply ? "Total Supply" : "Total Borrow",
                 data: filteredData?.map(item => Number(item?.[field]) || 0.0000),
                 fill: false,
-                backgroundColor: 'rgba(241, 153, 32, 0.20)',
-                borderColor: 'rgba(241, 153, 32, 0.20)',
-                hoverBackgroundColor: "rgba(241, 153, 32, 0.82)",
-                hoverBorderWidth: 3,
-                hoverBorderColor: 'rgba(255, 255, 255, 0.82)',
+                backgroundColor: '#343435',
+                hoverBackgroundColor: "#343435",
             }]
         }
-    }, [data, type, withANN])
+    }, [data, marketType])
 
 
 
     return (
         <div className={'flex flex-col items-stretch pt-12 pb-2'}>
-            <div style={{ height: 150 }} className={'flex flex-col items-stretch mb-18'}>
+            <div style={{ height: 120 }} className={'flex flex-col items-stretch mb-18'}>
                 <Line
                     data={lineData}
                     type={'line'}
                     options={lineOptions}
-                    height={150}
+                    height={120}
                     width={null}
                     ref={lineChart}
                 />
             </div>
-            <div style={{ height: 200 }} className={'flex flex-col items-stretch'}>
+            <div style={{ height: 160 }} className={'flex flex-col items-stretch'}>
                 <Bar
                     data={barData}
                     type={'bar'}
                     options={barOptions}
-                    height={200}
+                    height={160}
                     width={null}
                     ref={barChart}
                 />
             </div>
             <div style={{ height: 40 }} className={'flex flex-col items-stretch relative'}>
-                <div className="market-chart-time-label absolute" id={'market-chart-date-label'}/>
+                <div className="market-chart-time-label absolute" style={{ top: 8 }} id={'market-chart-date-label'}/>
             </div>
         </div>
     )

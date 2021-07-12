@@ -39,9 +39,9 @@ function Header({ onOpen, title, settings }) {
       dashboard: 'Lending',
       vote: 'vote',
       annex: 'annex',
+      auction: 'auction',
       market: 'market',
       vault: 'vault',
-      auction: 'auction',
       swap: 'swap',
       liquidity: 'liquidity',
       farms: 'farms',
@@ -76,7 +76,6 @@ function Header({ onOpen, title, settings }) {
       ) : (
         ''
       )}
-
       <Navigation
         wrapperClassName="hidden lg:block"
         totalLiquidity={settings.totalLiquidity}

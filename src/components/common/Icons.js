@@ -24,8 +24,8 @@ export const DashboardIcon = ({ fill }) => (
             y2="7.08525"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor="#C97629" />
-            <stop offset="1" stopColor="#FF9801" />
+            <stop stop-color="#C97629" />
+            <stop offset="1" stop-color="#FF9801" />
           </linearGradient>
         </defs>
       </svg>
@@ -42,6 +42,8 @@ export const DashboardIcon = ({ fill }) => (
     )}
   </div>
 );
+
+
 
 export const VoteIcon = ({ fill }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill={fill} xmlns="http://www.w3.org/2000/svg">
@@ -104,6 +106,7 @@ export const PoolsIcon = ({ fill }) => (
     />
   </svg>
 );
+
 export const Auction = ({ fill }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" viewBox="0 0 16 24" fill={fill}>
     <path
