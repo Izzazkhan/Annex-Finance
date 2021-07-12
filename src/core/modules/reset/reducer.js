@@ -1,5 +1,5 @@
-import { LOGOUT_SUCCESS } from 'core/modules/auth/actions';
-import { initialState } from 'core/modules/initialState';
+import { LOGOUT_SUCCESS } from '../auth/actions';
+import { initialState } from '../initialState';
 
 export default function resetReducer(state, action) {
   switch (action.type) {

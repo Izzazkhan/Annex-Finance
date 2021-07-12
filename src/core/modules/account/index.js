@@ -1,4 +1,4 @@
-export { default as account } from 'core/modules/account/reducer';
-export { connectAccount } from 'core/modules/account/connectAccount';
-export { accountActionCreators } from 'core/modules/account/actions';
-export { default as accountSaga } from 'core/modules/account/saga';
+export { default as account } from './reducer';
+export { connectAccount } from './connectAccount';
+export { accountActionCreators } from './actions';
+export { default as accountSaga } from './saga';

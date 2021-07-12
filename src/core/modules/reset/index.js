@@ -1,1 +1,1 @@
-export { default as resetReducer } from 'core/modules/reset/reducer';
+export { default as resetReducer } from './reducer';
