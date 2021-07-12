@@ -1,17 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from 'containers/App';
-// import * as serviceWorker from 'serviceWorker';
-import { BrowserRouter } from 'react-router-dom';
+import reportWebVitals from './reportWebVitals';
 
-import 'antd/dist/antd.css';
-import 'assets/styles/index.scss';
+import Providers from './providers'
+import Routes from './routes/index';
+import './assets/styles/fontStyles.css';
+import './assets/styles/utilityStyles.css';
+import './assets/styles/tailwind.css';
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
-  document.getElementById('root')
+  <Providers>
+    <Routes />
+  </Providers>,
+  document.getElementById('root'),
 );
 
-// serviceWorker.register();
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

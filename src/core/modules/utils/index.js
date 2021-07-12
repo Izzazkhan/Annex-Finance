@@ -1,1 +1,1 @@
-export { createPromiseAction } from 'core/modules/utils/createPromiseAction';
+export { createPromiseAction } from './createPromiseAction';

@@ -1,2 +1,2 @@
-export { promisify } from 'utilities/promisify';
-export { restService } from 'utilities/restService';
+export { promisify } from './promisify';
+export { restService } from './restService';

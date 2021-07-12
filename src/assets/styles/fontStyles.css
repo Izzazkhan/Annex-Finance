@@ -1,0 +1,40 @@
+@font-face {
+  font-family: 'AvenirNext';
+  src: url('../fonts/AvenirNextLTPro-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AvenirNext';
+  src: url('../fonts/AvenirNextLTPro-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AvenirNext';
+  src: url('../fonts/AvenirNextLTPro-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+html {
+  font-size: 16px;
+}
+
+@media only screen and (max-width: 1599px) {
+  html {
+    font-size: 15px;
+  }
+}
+@media only screen and (max-width: 1439px) {
+  html {
+    font-size: 14px;
+  }
+}
+@media only screen and (max-width: 650px) {
+  html {
+    font-size: 10px;
+  }
+}
