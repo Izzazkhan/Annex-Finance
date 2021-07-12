@@ -1,3 +1,3 @@
-export { store } from './store';
+export { store } from 'core/store';
 
-export * from './modules';
+export * from 'core/modules';

@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions';
-import { createPromiseAction } from '../utils';
+import { createPromiseAction } from 'core/modules/utils';
 
 /**
  * Action Types

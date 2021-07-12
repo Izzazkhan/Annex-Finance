@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import Web3 from 'web3'; // eslint-disable-line import/no-unresolved
 
 import * as constants from './constants';
 
@@ -40,7 +40,6 @@ export default class MetaMask {
   }
 
   async getAccounts() {
-    // eslint-disable-next-line no-undef
     return new Promise((resolve, reject) => {
       this.web3.eth.getAccounts((err, accounts) => {
         if (err !== null) {
@@ -55,7 +54,6 @@ export default class MetaMask {
   }
 
   async getLatestBlockNumber() {
-    // eslint-disable-next-line no-undef
     return new Promise((resolve, reject) => {
       this.web3.eth.getBlockNumber((err, blockNumber) => {
         if (err !== null) {

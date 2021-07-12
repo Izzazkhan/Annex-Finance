@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { accountActionCreators } from './actions';
+import { accountActionCreators } from 'core/modules/account/actions';
 
 function mapStateToProps({ account }) {
   return {

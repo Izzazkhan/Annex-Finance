@@ -7,9 +7,9 @@ import {
   REGISTER_REQUEST,
   LOGOUT_REQUEST,
   authActionCreators
-} from './actions';
+} from 'core/modules/auth/actions';
 
-import { restService } from '../../../utilities';
+import { restService } from 'utilities';
 
 export function* handleAuthErrorRequest({ payload, resolve, reject }) {
   const { response } = payload;
@@ -28,7 +28,7 @@ export function* asyncLoginRequest({ payload, resolve, reject }) {
 
   try {
     const response = yield call(restService, {
-      api: `/v1`,
+      api: ``,
       method: 'POST',
       params: {
         Username: email,
@@ -51,7 +51,7 @@ export function* asyncRegisterRequest({ payload, resolve, reject }) {
 
   try {
     const response = yield call(restService, {
-      api: `/v1`,
+      api: ``,
       method: 'POST',
       params: {
         username: email,

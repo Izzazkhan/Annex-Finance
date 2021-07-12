@@ -5,23 +5,23 @@ import {
   GET_MARKET_HISTORY_REQUEST,
   GET_PROPOSALS_REQUEST,
   GET_FAUCET_REQUEST,
-  GET_GOVERNANCE_ANNEX_REQUEST,
+  GET_GOVERNANCE_VENUS_REQUEST,
   GET_PROPOSAL_BY_ID_REQUEST,
   GET_VOTERS_REQUEST,
   GET_VOTER_DETAIL_REQUEST,
   GET_VOTER_HISTORY_REQUEST,
   GET_VOTER_ACCOUNTS_REQUEST,
   accountActionCreators
-} from './actions';
+} from 'core/modules/account/actions';
 
-import { restService } from '../../../utilities';
+import { restService } from 'utilities';
 
 export function* asyncGetMarketHistoryRequest({ payload, resolve, reject }) {
-  const { asset, type, limit } = payload;
+  const { asset, type } = payload;
 
   try {
     const response = yield call(restService, {
-      api: `/v1/market_history/graph?asset=${asset}&type=${type}&limit=${limit}`,
+      api: `/market_history/graph?asset=${asset}&type=${type}`,
       method: 'GET',
       params: {}
     });
@@ -33,10 +33,10 @@ export function* asyncGetMarketHistoryRequest({ payload, resolve, reject }) {
   }
 }
 
-export function* asyncGetGovernanceAnnexRequest({ payload, resolve, reject }) {
+export function* asyncGetGovernanceVenusRequest({ payload, resolve, reject }) {
   try {
     const response = yield call(restService, {
-      api: `/v1/governance/annex`,
+      api: `/governance/venus`,
       method: 'GET',
       params: {}
     });
@@ -52,7 +52,7 @@ export function* asyncGetProposalsRequest({ payload, resolve, reject }) {
   const { limit, offset } = payload;
   try {
     const response = yield call(restService, {
-      api: `/v1/proposals?limit=${limit || 5}&offset=${offset || 0}`,
+      api: `/proposals?limit=${limit || 5}&offset=${offset || 0}`,
       method: 'GET',
       params: {}
     });
@@ -71,7 +71,7 @@ export function* asyncGetFaucetRequest({ payload, resolve, reject }) {
 
   try {
     const response = yield call(restService, {
-      api: `/v1/faucet`,
+      api: `/faucet`,
       method: 'POST',
       params: {
         address,
@@ -94,7 +94,7 @@ export function* asyncGetProposalByIdRequest({ payload, resolve, reject }) {
   const { id } = payload;
   try {
     const response = yield call(restService, {
-      api: `/v1/proposals/${id}`,
+      api: `/proposals/${id}`,
       method: 'GET',
       params: {}
     });
@@ -111,7 +111,7 @@ export function* asyncGetVotersRequest({ payload, resolve, reject }) {
   const { limit, filter, id } = payload;
   try {
     const response = yield call(restService, {
-      api: `/v1/voters/${id}?limit=${limit || 3}&filter=${filter}`,
+      api: `/voters/${id}?limit=${limit || 3}&filter=${filter}`,
       method: 'GET',
       params: {}
     });
@@ -128,7 +128,7 @@ export function* asyncGetVoterDetailRequest({ payload, resolve, reject }) {
   const { address } = payload;
   try {
     const response = yield call(restService, {
-      api: `/v1/voters/accounts/${address}`,
+      api: `/voters/accounts/${address}`,
       method: 'GET',
       params: {}
     });
@@ -145,7 +145,7 @@ export function* asyncGetVoterHistoryRequest({ payload, resolve, reject }) {
   const { offset, limit, address } = payload;
   try {
     const response = yield call(restService, {
-      api: `/v1/voters/history/${address}?offset=${offset || 0}&limit=${limit ||
+      api: `/voters/history/${address}?offset=${offset || 0}&limit=${limit ||
         5}`,
       method: 'GET',
       params: {}
@@ -164,7 +164,7 @@ export function* asyncGetVoterAccountsRequest({ payload, resolve, reject }) {
 
   try {
     const response = yield call(restService, {
-      api: `/v1/voters/accounts?limit=${limit || 100}&offset=${offset || 0}`,
+      api: `/voters/accounts?limit=${limit || 100}&offset=${offset || 0}`,
       method: 'GET',
       params: {}
     });
@@ -183,10 +183,10 @@ export function* watchGetMarketHistoryRequest() {
   }
 }
 
-export function* watchGetGovernanceAnnexRequest() {
+export function* watchGetGovernanceVenusRequest() {
   while (true) {
-    const action = yield take(GET_GOVERNANCE_ANNEX_REQUEST);
-    yield* asyncGetGovernanceAnnexRequest(action);
+    const action = yield take(GET_GOVERNANCE_VENUS_REQUEST);
+    yield* asyncGetGovernanceVenusRequest(action);
   }
 }
 
@@ -236,7 +236,7 @@ export function* watchGetVoterAccountsRequest() {
 export default function*() {
   yield all([
     fork(watchGetMarketHistoryRequest),
-    fork(watchGetGovernanceAnnexRequest),
+    fork(watchGetGovernanceVenusRequest),
     fork(watchGetFaucetRequest),
     fork(watchGetProposalsRequest),
     fork(watchGetProposalByIdRequest),

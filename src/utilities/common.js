@@ -1,4 +1,4 @@
-import * as constants from './constants';
+import * as constants from 'utilities/constants';
 import BigNumber from 'bignumber.js';
 
 const ethers = require('ethers');
@@ -55,28 +55,28 @@ export const checkIsValidNetwork = (walletType = 'metamask') => {
   return false;
 };
 
-export const addToken = async (asset = 'xai', decimal, type) => {
+export const addToken = async (asset = 'vai', decimal, type) => {
   let tokenAddress = '';
   let tokenSymbol = '';
   let tokenDecimals = 18;
   let tokenImage = '';
-  if (asset === 'xai') {
-    tokenAddress = constants.CONTRACT_XAI_TOKEN_ADDRESS;
-    tokenSymbol = 'XAI';
+  if (asset === 'vai') {
+    tokenAddress = constants.CONTRACT_VAI_TOKEN_ADDRESS;
+    tokenSymbol = 'VAI';
     tokenDecimals = 18;
-    tokenImage = `${window.location.origin}/coins/xai.svg`;
+    tokenImage = `${window.location.origin}/coins/vai.svg`;
   } else {
     tokenAddress =
       type === 'token'
         ? constants.CONTRACT_TOKEN_ADDRESS[asset].address
-        : constants.CONTRACT_ABEP_ADDRESS[asset].address;
+        : constants.CONTRACT_VBEP_ADDRESS[asset].address;
     tokenSymbol =
       type === 'token'
         ? asset.toUpperCase()
-        : `a${(asset === 'btcb' ? 'btc' : asset).toUpperCase()}`;
+        : `v${(asset === 'btcb' ? 'btc' : asset).toUpperCase()}`;
     tokenDecimals = decimal || (type === 'token' ? 18 : 8);
     tokenImage = `${window.location.origin}/coins/${
-      type === 'token' ? asset : `a${asset === 'btcb' ? 'btc' : asset}`
+      type === 'token' ? asset : `v${asset === 'btcb' ? 'btc' : asset}`
     }.png`;
   }
 

@@ -1,5 +1,5 @@
-import { LOGIN_SUCCESS, REGISTER_SUCCESS } from './actions';
-import { initialState } from '../initialState';
+import { LOGIN_SUCCESS, REGISTER_SUCCESS } from 'core/modules/auth/actions';
+import { initialState } from 'core/modules/initialState';
 
 export default function auth(state = initialState.auth, action = {}) {
   const { type, payload } = action;

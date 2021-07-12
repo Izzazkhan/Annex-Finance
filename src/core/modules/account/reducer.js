@@ -1,5 +1,5 @@
-import { SET_SETTING_REQUEST } from './actions';
-import { initialState } from '../initialState';
+import { SET_SETTING_REQUEST } from 'core/modules/account/actions';
+import { initialState } from 'core/modules/initialState';
 
 export default function account(state = initialState.account, action = {}) {
   const { type, payload } = action;
