@@ -58,7 +58,7 @@ let blockChartOptions = {
   },
 };
 
-const AuctionStatus = ({ auctionEndDate, label, detail, minBuyAmount }) => {
+const AuctionStatus = ({ auctionEndDate, label, detail, minBuyAmount, maxAvailable }) => {
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -71,6 +71,7 @@ const AuctionStatus = ({ auctionEndDate, label, detail, minBuyAmount }) => {
         auctionEndDate={auctionEndDate}
         detail={detail}
         minBuyAmount={minBuyAmount}
+        maxAvailable={maxAvailable}
       />
     </Fragment>
   );
@@ -180,7 +181,7 @@ const AuctionProgress = (props) => {
               </div>
               <div className="flex flex-col text-right">
                 <div className="text-sm ">Max Available</div>
-                <div className="text-lg font-bold">951.7</div>
+                <div className="text-lg font-bold">{props.maxAvailable}</div>
               </div>
             </div>
             <div className="custom-range">

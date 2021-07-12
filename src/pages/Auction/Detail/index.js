@@ -66,6 +66,10 @@ function Detail(props) {
           symbol
           decimals
         }
+        minimumPrice 
+        maxAvailable 
+        currentPrice 
+        minimumBiddingAmountPerOrder
         orderCancellationEndDate
         auctionEndDate
         auctionedSellAmount
@@ -85,6 +89,9 @@ function Detail(props) {
       let totalAuction = new BigNumber(elem['soldAuctioningTokens'])
         .dividedBy(auctionDecimal)
         .toString();
+      let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(auctionDecimal).toString();
+      let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toString();
+      let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(auctionDecimal).toString();
       let minBuyAmount = new BigNumber(elem['minBuyAmount']).dividedBy(auctionDecimal).toString();
       let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
       let auctionTokenName = elem['auctioningToken']['name'];
@@ -92,6 +99,9 @@ function Detail(props) {
       let biddingTokenName = elem['biddingToken']['name'];
       let auctionEndDate = moment.unix(elem['auctionEndDate']).toDate().getTime();
       let detail = {
+        minimumPrice,
+        maxAvailable,
+        currentPrice,
         type,
         id: elem.id,
         totalAuction,
@@ -175,7 +185,7 @@ function Detail(props) {
       >
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            850 WETH/Rip
+            {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
@@ -185,7 +195,8 @@ function Detail(props) {
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
             {state.detail.biddingSymbol ? (
-              <img width="40"
+              <img
+                width="40"
                 className="mr-2"
                 src={
                   require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`)
@@ -196,7 +207,7 @@ function Detail(props) {
             ) : (
               ''
             )}{' '}
-            {state.detail.biddingTokenName}
+            {state.detail.biddingSymbol}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
@@ -217,7 +228,8 @@ function Detail(props) {
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            600 WETH/<span className="text-blue">Ripple</span>
+            {state.detail.minimumPrice} {state.detail.auctionSymbol}/
+            <span className="text-blue">{state.detail.biddingSymbol}</span>
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             {' '}
@@ -295,6 +307,7 @@ function Detail(props) {
             detail={state.detail}
             label="Auction Progress"
             minBuyAmount={state.detail.minBuyAmount}
+            maxAvailable={state.detail.maxAvailable}
           />
         </div>
       </div>
@@ -321,7 +334,7 @@ const ProgressBar = ({
         wrapperClassName=""
         type="circle"
         width={250}
-        percent={percentage || 0}
+        percent={completed ? 100 : percentage || 0}
         strokeWidth={4}
         color="#FFAB2D"
         trailColor="#101016"
