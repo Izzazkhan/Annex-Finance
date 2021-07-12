@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 const Loading = props => {
 	return (
 		<Wrapper className={'text-black'} {...props}>
-			<SVG src={LoadingSVG} />
+			<SVG src={LoadingSVG} width={'100%'} height={'100%'} />
 		</Wrapper>
 	)
 }
