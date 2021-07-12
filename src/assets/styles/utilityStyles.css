@@ -1,3 +1,6 @@
+@import "./pagination.css";
+
+
 html {
   overflow: auto !important;
 }

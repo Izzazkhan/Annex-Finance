@@ -86,25 +86,6 @@ function Table({ columns, data, onRowClick }) {
 }
 
 function App({ columns, data, onRowClick }) {
-  const defaultColumns = React.useMemo(
-    () => [
-      {
-        Header: 'Name',
-        columns: [
-          {
-            Header: 'First Name',
-            accessor: 'firstName',
-          },
-          {
-            Header: 'Last Name',
-            accessor: 'lastName',
-          },
-        ],
-      },
-    ],
-    [],
-  );
-
   return (
     <Styles>
       <Table columns={columns} data={data} onRowClick={onRowClick} />

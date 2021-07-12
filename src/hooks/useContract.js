@@ -48,7 +48,7 @@ export function useTokenContract(tokenAddress, withSignerIfPossible) {
 
 export function useWETHContract(withSignerIfPossible) {
 	const { chainId } = useActiveWeb3React();
-	return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible);
+	return useContract(chainId ? WETH[chainId]?.address : undefined, WETH_ABI, withSignerIfPossible);
 }
 
 export function useENSRegistrarContract(withSignerIfPossible) {
