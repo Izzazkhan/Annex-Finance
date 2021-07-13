@@ -2,7 +2,6 @@ import React from 'react';
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 export default function Chart({ width, height, data }) {
-  console.log(width, height);
   return (
     <div className="relative pt-10" style={{ 'width': '100%', height,'border' : '1px solid #2E2E2E', 'borderTop': 'none' }}>
       <div className="absolute left-2 top-0 left-top flex flex-col">

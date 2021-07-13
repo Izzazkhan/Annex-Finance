@@ -1,62 +1,8 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import Countdown from 'react-countdown';
 import BarChart from '../../../components/common/BarChart';
 import LineChart from '../../../components/common/LineChart';
 import Slider from 'react-rangeslider';
-
-let blockChartOptions = {
-  // style of canvas and boundary to be plotted on to
-  canvas: {
-    background: {
-      style: 'transparent',
-    },
-  },
-  padding: {
-    top: 0, // space between canvas and top of draw area
-    bottom: 0, // space between canvas and bottom of draw area
-    left: 0, // space between canvas and left of draw area
-    right: 0, // space between canvas and right of draw area
-  },
-  boundary: {
-    background: {
-      style: 'transparent',
-    },
-  },
-  yAxis: {
-    width: 0.5, // thickness of y axis
-    color: '#C4C4C4', // color of y axis
-  },
-  xAxis: {
-    width: 0.5, // thickness of x axis
-    color: '#C4C4C4', // color of x axis
-  },
-  // style and properties of blocks to be plotted
-  blocks: {
-    forceSquare: true,
-    space: {
-      horizontal: 0, // space between each column
-      vertical: 0, // space between each blocks in vertical
-    },
-    groupBy: 'value', // key used to group data into same column
-    background: {
-      style: 'custom', // custom background color. other supported color is 'scale', 'preset-scale'
-      color: '#aaaaaa', // default block background color
-      scaleTo: '#eacd31', // when scale style is used, color palette will be generate from color -> scaleTo color
-    },
-    shadow: {
-      style: 'custom', // custom shadow. other supported shadow is 'none'
-      color: '#aaaaaa',
-      blur: 1,
-      offsetX: 1,
-      offsetY: 1,
-    },
-    border: {
-      style: 'line',
-      width: 2,
-      color: '#000000',
-    },
-  },
-};
 
 const AuctionStatus = ({ auctionEndDate, label, detail, minBuyAmount, maxAvailable }) => {
   return (
@@ -130,6 +76,47 @@ const AuctionCompleted = () => {
   );
 };
 const AuctionProgress = (props) => {
+  const [state, setState] = useState({
+    minBuyAmount: '',
+    sellAmount: '',
+  });
+  const handleInputChange = (e) => {
+    let value = e.target.value;
+    let id = e.target.id;
+    setState({
+      ...state,
+      [id]: value,
+    });
+  };
+  const validateForm = () => {
+    let inputs = [
+      { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
+      { id: 'sellAmount', placeholder: 'Sell Amount' },
+    ];
+    let isValid = true;
+    let errorMessage = '';
+    for (let index = 0; index < inputs.length; index++) {
+      let key = inputs[index]['id'];
+      let placeholder = inputs[index]['placeholder'];
+      let value = state[key];
+      if (value === '') {
+        errorMessage = `${placeholder} required`;
+        isValid = false;
+        break;
+      } else if (
+        (key === 'minBuyAmount' && value < props.minBuyAmount) ||
+        value > props.maxAvailable
+      ) {
+        errorMessage = `${placeholder} required`;
+        isValid = false;
+        break;
+      } else if (key === 'sellAmount' && value) {
+        errorMessage = `${placeholder} required`;
+        isValid = false;
+        break;
+      }
+    }
+  };
   return (
     <>
       {props.detail.chartType === 'block' ? (
@@ -190,13 +177,6 @@ const AuctionProgress = (props) => {
             </div>
           </div>
           <div className="mb-7">
-            <input
-              className="border border-solid border-gray bg-transparent
-                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
-              type="text"
-            />
-          </div>
-          <div className="mb-7">
             <div className="label flex flex-row justify-between items-center mb-4">
               <div className="flex flex-col">
                 <div className="text-md text-primary font-bold mb-2 ">Commitment</div>
@@ -207,12 +187,29 @@ const AuctionProgress = (props) => {
               </div>
             </div>
           </div>
-          <div className="input-with-button flex">
-            <input
-              className="w-full border border-solid border-primary bg-transparent
-                           rounded-xl w-full focus:outline-none font-bold px-4 pr-10 h-14 text-white"
-              type="text"
-            />
+          <div className="flex justify-between">
+            <div className="mb-3 w-full pr-2">
+              <input
+                placeholder="Min Buy Amount"
+                id="minBuyAmount"
+                className="border border-solid border-gray bg-transparent
+                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                type="number"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="mb-3 w-full">
+              <input
+                placeholder="Sell Amount"
+                id="sellAmount"
+                onChange={handleInputChange}
+                className="border border-solid border-gray bg-transparent
+                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                type="number"
+              />
+            </div>
+          </div>
+          <div className="input-with-button text-right">
             <button
               className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
          h-14 bg-primary rounded-lg"

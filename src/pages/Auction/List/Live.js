@@ -92,7 +92,6 @@ function Live(props) {
         });
       });
       setAuction(arr);
-      console.log(data);
     }
   }, [data]);
 

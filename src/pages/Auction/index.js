@@ -293,7 +293,6 @@ const Styles = styled.div`
 
 function Auction() {
   const { path } = useRouteMatch();
-  console.log('path', path);
   return (
     <Layout mainClassName="pt-10 min-h-screen" title={'Auction'}>
       <Styles>
