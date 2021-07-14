@@ -77,7 +77,7 @@ const MarketDetails = ({
             );
         }
         timeStamp = Date.now();
-    }, [settings.selectedAddress, currentAsset, getGraphData]);
+    }, [account, currentAsset, getGraphData]);
 
 
     useEffect(() => {

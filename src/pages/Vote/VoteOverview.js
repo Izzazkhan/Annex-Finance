@@ -14,8 +14,10 @@ import BigNumber from "bignumber.js";
 import VoteCard from "../../components/vote/VoteOverview/VoteCard";
 import ProposalDetails from "../../components/vote/VoteOverview/ProposalDetails";
 import ProposalHistory from "../../components/vote/VoteOverview/ProposalHistory";
+import {useActiveWeb3React} from "../../hooks";
 
 const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
+    const { account } = useActiveWeb3React();
     const [proposalInfo, setProposalInfo] = useState({});
     const [agreeVotes, setAgreeVotes] = useState({});
     const [againstVotes, setAgainstVotes] = useState({});
@@ -29,7 +31,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
     const [executeEta, setExecuteEta] = useState('');
 
     const updateBalance = useCallback(async () => {
-        if (settings.selectedAddress && proposalInfo.id) {
+        if (account && proposalInfo.id) {
             const annTokenContract = getTokenContract('ann');
             const voteContract = getVoteContract();
             await methods
@@ -43,13 +45,13 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
                     setProposerVotingWeight(+Web3.utils.fromWei(res, 'ether'));
                 });
         }
-    }, [settings.selectedAddress, proposalInfo]);
+    }, [account, proposalInfo]);
 
     useEffect(() => {
-        if (settings.selectedAddress) {
+        if (account) {
             updateBalance();
         }
-    }, [settings.selectedAddress, updateBalance]);
+    }, [account, updateBalance]);
 
     useEffect(() => {
         if (match.params && match.params.id) {
@@ -139,7 +141,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
                 .send(
                     appContract.methods.queue,
                     [proposalInfo.id],
-                    settings.selectedAddress
+                    account
                 )
                 .then(() => {
                     setIsLoading(false);
@@ -158,7 +160,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
                 .send(
                     appContract.methods.execute,
                     [proposalInfo.id],
-                    settings.selectedAddress
+                    account
                 )
                 .then(() => {
                     setIsLoading(false);
@@ -177,7 +179,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
                 .send(
                     appContract.methods.cancel,
                     [proposalInfo.id],
-                    settings.selectedAddress
+                    account
                 )
                 .then(() => {
                     setIsCancelLoading(false);

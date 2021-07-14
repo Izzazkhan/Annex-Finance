@@ -68,7 +68,7 @@ const ProposalInfo = ({ proposalInfo }) => {
 
     return (
         <div className="text-white">
-            <div className="text-36 text-center md:text-left">
+            <div className="text-2xl text-center md:text-left">
                 <Markdown>{proposalInfo.description?.split('\n')[0]}</Markdown>
             </div>
             <div className="flex space-x-8 mt-2">

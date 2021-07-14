@@ -1,11 +1,16 @@
 import {withRouter} from "react-router-dom";
 import {compose} from "redux";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import ReactMarkdown from 'react-markdown';
 import * as moment from "moment";
 
 import {getVoteContract, methods} from "../../utilities/ContractService";
 import VoteActionDetails from "./VoteActionDetails";
+import BigNumber from "bignumber.js";
+import ActionModal from "./Modals/ActionModal";
+import toast from "../UI/Toast";
+import {useActiveWeb3React} from "../../hooks";
+import Loading from "../UI/Loading";
 
 const Proposal = ({
     address,
@@ -14,9 +19,13 @@ const Proposal = ({
     votingWeight,
     history
 }) => {
+    const { account } = useActiveWeb3React();
     const [isLoading, setIsLoading] = useState(false);
     const [voteType, setVoteType] = useState('like');
     const [voteStatus, setVoteStatus] = useState('');
+    const [showActionModal, setShowActionModal] = useState(false);
+    const [executeLoading, setExecuteLoading] = useState(false);
+    const [status, setStatus] = useState('pending');
 
     const getStatus = p => {
         if (p.state === 'Executed') {
@@ -121,6 +130,75 @@ const Proposal = ({
         return '';
     };
 
+    const votePercents = useMemo(() => {
+        if(!proposal) {
+            return {
+                forVotes: 0,
+                againstVotes: 0,
+            }
+        }
+
+        const forVotes = new BigNumber(proposal?.forVotes);
+        const againstVotes = new BigNumber(proposal?.againstVotes);
+        const totalVotes = new BigNumber(proposal?.forVotes).plus(proposal?.againstVotes)
+
+        if(totalVotes?.toNumber() === 0) {
+            return {
+                forVotes: 0,
+                againstVotes: 0,
+            }
+        }
+
+        return {
+            forVotes: forVotes.dividedBy(totalVotes).times(100).toNumber(),
+            againstVotes: againstVotes.dividedBy(totalVotes).times(100).toNumber(),
+        }
+
+    }, [proposal])
+
+
+    const handleUpdateProposal = statusType => {
+        const appContract = getVoteContract();
+        if (statusType === 'Queue') {
+            setExecuteLoading(true);
+            methods
+                .send(
+                    appContract.methods.queue,
+                    [proposal.id],
+                    account
+                )
+                .then(() => {
+                    setExecuteLoading(false);
+                    setStatus('success');
+                    toast.success({
+                        title: `Proposal list will be updated within a few seconds`
+                    });
+                })
+                .catch(() => {
+                    setExecuteLoading(false);
+                    setStatus('failure');
+                });
+        } else if (statusType === 'Execute') {
+            setExecuteLoading(true);
+            methods
+                .send(
+                    appContract.methods.execute,
+                    [proposal.id],
+                    account
+                )
+                .then(() => {
+                    setExecuteLoading(false);
+                    setStatus('success');
+                    toast.success({
+                        title: `Proposal list will be updated within a few seconds`
+                    });
+                })
+                .catch(() => {
+                    setExecuteLoading(false);
+                    setStatus('failure');
+                });
+        }
+    };
 
     return (
         <div
@@ -147,23 +225,86 @@ const Proposal = ({
                 <div className="flex space-x-4">
                     <button
                         className="focus:outline-none bg-primary text-black px-5 py-0.5 rounded text-xl"
-                        disabled={true}
+                        onClick={() => setShowActionModal(true)}
                     >
                         Actions
                     </button>
-                    <button
-                        className="focus:outline-none bg-primary text-black px-5 py-0.5 rounded text-xl"
-                        disabled={true}
-                    >
-                        Execute
-                    </button>
+                    {proposal.state !== 'Executed' &&
+                    proposal.state !== 'Defeated' &&
+                    proposal.state !== 'Canceled' && (
+                        <div className="flex align-center just-center update-proposal-status">
+                            {proposal.state === 'Succeeded' && (
+                                <button
+                                    className="focus:outline-none bg-primary text-black px-5 py-0.5 rounded text-xl flex items-center justify-center"
+                                    disabled={isLoading || status === 'success'}
+                                    onClick={() => handleUpdateProposal('Queue')}
+                                >
+                                    {executeLoading && <Loading size={'18px'} margin={'8px'}/>}
+                                    {status === 'pending' || status === 'failure'
+                                        ? 'Queue'
+                                        : 'Queued'}
+                                </button>
+                            )}
+                            {proposal.state === 'Queued' && (
+                                <button
+                                    className="focus:outline-none bg-primary text-black px-5 py-0.5 rounded text-xl flex items-center justify-center"
+                                    disabled={
+                                        isLoading ||
+                                        status === 'success'
+                                    }
+                                    onClick={() => handleUpdateProposal('Execute')}
+                                >
+                                    {executeLoading && <Loading size={'18px'} margin={'8px'}/>}
+                                    {status === 'pending' || status === 'failure'
+                                        ? 'Execute'
+                                        : 'Executed'}
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4 mt-4">
-                <VoteActionDetails title="For" percent={0} />
-                <VoteActionDetails title="Against" percent={0} size="sm" />
-                <VoteActionDetails title="Abstain" percent={0} size="sm" />
+                {voteStatus &&
+                voteStatus === 'novoted' &&
+                proposal.state === 'Active' &&
+                delegateAddress !==
+                '0x0000000000000000000000000000000000000000' && (
+                    <>
+                        <VoteActionDetails
+                            title="For"
+                            percent={votePercents?.forVotes}
+                            disabled={
+                                votingWeight === '0' ||
+                                !proposal ||
+                                (proposal && proposal.state !== 'Active')
+                            }
+                            loading={isLoading && voteType === 'like'}
+                            onVote={() => {
+                                handleVote('like')
+                            }} />
+                        <VoteActionDetails
+                            title="Against"
+                            percent={votePercents?.againstVotes}
+                            size="sm"
+                            disabled={
+                                votingWeight === '0' ||
+                                !proposal ||
+                                (proposal && proposal.state !== 'Active')
+                            }
+                            loading={isLoading && voteType === 'dislike'}
+                            onVote={() => {
+                                handleVote('dislike')
+                            }} />
+                    </>
+                )}
             </div>
+
+            <ActionModal
+                proposal={proposal}
+                visible={showActionModal}
+                onClose={() => setShowActionModal(false)}
+            />
         </div>
     )
 }
