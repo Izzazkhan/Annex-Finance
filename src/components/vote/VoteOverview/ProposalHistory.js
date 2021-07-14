@@ -2,7 +2,16 @@ import tickGreen from '../../../assets/icons/tickGreen.svg';
 import tickGray from '../../../assets/icons/tickGray.svg';
 import moment from "moment";
 
+const STATUSES = ['Pending', 'Active', 'Succeeded', 'Queued', 'Executed'];
+
 const ProposalHistory = ({ proposalInfo }) => {
+    const getStepNumber = () => {
+        if (proposalInfo.state === 'Defeated' || proposalInfo.state === 'Canceled')
+            return 2;
+        return STATUSES.findIndex(s => s === proposalInfo.state);
+    };
+
+    console.log(getStepNumber());
     return (
         <div className="col-span-3 bg-fadeBlack rounded-2xl py-10 px-6">
             <div className="text-primary text-xl font-bold">Proposal History</div>
@@ -12,7 +21,10 @@ const ProposalHistory = ({ proposalInfo }) => {
                         className="col-start-2 flex items-start space-x-2
                                 border-l-6 border-solid border-lightGreen pl-4"
                     >
-                        <img className="w-5 mt-2" src={tickGreen} alt="" />
+                        {getStepNumber() >= 0
+                            ? <img className="w-5 mt-2" src={tickGreen} alt="" />
+                            : <img className="w-5 mt-2" src={tickGray} alt="" />
+                        }
                         <div className="">
                             <div className="text-white text-xl">Created</div>
                             <div className="text-gray text-base">
@@ -38,7 +50,10 @@ const ProposalHistory = ({ proposalInfo }) => {
                                 }
                             </div>
                         </div>
-                        <img className="w-5 mt-2" src={tickGreen} alt="" />
+                        {getStepNumber() >= 1
+                            ? <img className="w-5 mt-2" src={tickGreen} alt="" />
+                            : <img className="w-5 mt-2" src={tickGray} alt="" />
+                        }
                     </div>
                     <div/>
                     <div
@@ -50,7 +65,9 @@ const ProposalHistory = ({ proposalInfo }) => {
                             proposalInfo.state === 'Canceled' ||
                             proposalInfo.state === 'Defeated'
                                 ? <img className="w-5 mt-2" src={tickGray} alt="" />
-                                : <img className="w-5 mt-2" src={tickGreen} alt="" />
+                                : getStepNumber() >= 2
+                                ? <img className="w-5 mt-2" src={tickGreen} alt="" />
+                                : <img className="w-5 mt-2" src={tickGray} alt="" />
                         }
                         <div className="">
                             <div className="text-white text-xl">
@@ -105,7 +122,10 @@ const ProposalHistory = ({ proposalInfo }) => {
                                             }
                                         </div>
                                     </div>
-                                    <img className="mt-2" src={tickGreen} alt="" />
+                                    {getStepNumber() >= 3
+                                        ? <img className="w-5 mt-2" src={tickGreen} alt="" />
+                                        : <img className="w-5 mt-2" src={tickGray} alt="" />
+                                    }
                                 </div>
                                 <div/>
                             </>
@@ -119,7 +139,10 @@ const ProposalHistory = ({ proposalInfo }) => {
                                     className="col-start-2 flex items-start space-x-2
                                 border-l-6 border-solid border-gray pl-4"
                                 >
-                                    <img className="mt-2" src={tickGreen} alt="" />
+                                    {getStepNumber() >= 4
+                                        ? <img className="w-5 mt-2" src={tickGreen} alt="" />
+                                        : <img className="w-5 mt-2" src={tickGray} alt="" />
+                                    }
                                     <div className="">
                                         <div className="text-white text-xl">
                                             {

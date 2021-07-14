@@ -196,18 +196,22 @@ const Annex = ({ settings, getMarketHistory }) => {
                     // eslint-disable-next-line react/display-name
                     Cell: ({value}) => {
                         return (
-                            <div className="font-semibold">{value}%</div>
+                            <div className={`font-semibold ${value > 0 ? "text-green" : value === 0 ? "text-white" : "text-red"}`}>
+                                {value}%
+                            </div>
                         )
                     }
                 },
                 {
-                    Header: 'Borrow',
+                    Header: 'Borrow APY',
                     accessor: 'borrowAPY',
                     disableFilters: true,
                     // eslint-disable-next-line react/display-name
                     Cell: ({value}) => {
                         return (
-                            <div className="font-semibold">{value}%</div>
+                            <div className={`font-semibold ${value > 0 ? "text-green" : value === 0 ? "text-white" : "text-red"}`}>
+                                {value}%
+                            </div>
                         )
                     }
                 },
@@ -216,12 +220,12 @@ const Annex = ({ settings, getMarketHistory }) => {
                     accessor: 'borrowAnnexAPY',
                     disableFilters: true,
                     // eslint-disable-next-line react/display-name
-                    Cell: ({value, row}) => {
+                    Cell: ({value}) => {
                         return (
                             <div className="w-full flex flex-row items-center justify-end">
                                 <div className="w-60 md:w-72" style={{ height: 75 }}>
                                     <APYSparkline
-                                        color={row.id % 2 === 0 ? "green" : "red"}
+                                        color={value[0].borrowAnnexApy >= 0 ? "green" : "red"}
                                         data={value}
                                     />
                                 </div>

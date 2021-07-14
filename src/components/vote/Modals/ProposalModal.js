@@ -9,9 +9,9 @@ import edit from '../../../assets/icons/edit.svg';
 import closeCirclePrimary from '../../../assets/icons/closeCirclePrimary.svg';
 
 import crossPrimary from '../../../assets/icons/crossPrimary.svg';
-import toast from "../../UI/Toast";
 import Loading from "../../UI/Loading";
 import {getVoteContract, methods} from "../../../utilities/ContractService";
+import MdEditor from "react-markdown-editor-lite";
 
 const mdParser = new MarkdownIt();
 
@@ -69,6 +69,7 @@ const ProposalModal = ({
             setErrorMsg('');
         }
 
+        const proposalDescription = `${formValues?.title}\n${description}`
         try {
             for (let i = 0; i < formData.length; i += 1) {
                 const callDataValues = [];
@@ -101,7 +102,7 @@ const ProposalModal = ({
         methods
             .send(
                 appContract.methods.propose,
-                [targetAddresses, values, signatures, callDatas, description],
+                [targetAddresses, values, signatures, callDatas, proposalDescription],
                 address
             )
             .then(() => {
@@ -151,7 +152,7 @@ const ProposalModal = ({
 
     const handleParseFunc = (funcStr, idx) => {
         if (
-            (form.getFieldValue(`signature${idx}`) || '')
+            (funcStr || '')
                 .trim()
                 .replace(/^s+|s+$/g, '')
         ) {
@@ -203,7 +204,7 @@ const ProposalModal = ({
     const content = (
         <Form
             onFinishFailed={(errorInfo) => {
-                toast.error(errorInfo.errorFields[0].errors[0]);
+                setErrorMsg(errorInfo.errorFields[0].errors[0]);
             }}
             onFinish={handleSubmit}
         >
@@ -227,17 +228,22 @@ const ProposalModal = ({
                         </div>
                         <div className="mt-4">
                             <div className="text-24">Overview</div>
-                            <Field name={'description'}>
-                                <textarea
-                                    name="overview"
-                                    rows={6}
-                                    className="border border-solid border-primary bg-black
-                                        rounded-xl w-full focus:outline-none font-bold py-3 pl-7 pr-4 text-white mt-2 mb-4"
-                                    onChange={e => setDescription(e.target.value)}
-                                    placeholder="Thorough description of all changes. Link to all relevant
-                                        contact addresses. Markdown is supported."
-                                />
-                            </Field>
+                            <MdEditor
+                                style={{
+                                    background: "#0A0A0E",
+                                    border: "1px solid #FF9800",
+                                    borderRadius: "10px",
+                                    fontWeight: '700',
+                                    overflow: "hidden",
+                                    color: "white",
+                                    height: 280
+                                }}
+                                value={description}
+                                renderHTML={text => mdParser.render(text)}
+                                onChange={handleEditorChange}
+                                placeholder="Thorough description of all changes. Link to all relevant
+                                    contact addresses. Markdown is supported."
+                            />
                         </div>
                     </div>
 
@@ -291,12 +297,12 @@ const ProposalModal = ({
                                             >
                                                 <input
                                                     placeholder="Address"
-                                                    onKeyUp={() =>
+                                                    onChange={(e) =>
                                                         handleKeyUp(
                                                             'targetAddress',
                                                             index,
                                                             null,
-                                                            form.getFieldValue(`targetAddress${index}`)
+                                                            e.target.value
                                                         )
                                                     }
                                                     type="text"
@@ -318,9 +324,9 @@ const ProposalModal = ({
                                             >
                                                 <input
                                                     placeholder="assumeOwnership(address,string,uint256)"
-                                                    onKeyUp={() =>
+                                                    onChange={(e) =>
                                                         handleParseFunc(
-                                                            form.getFieldValue(`signature${index}`),
+                                                            e.target.value,
                                                             index
                                                         )
                                                     }
@@ -349,17 +355,17 @@ const ProposalModal = ({
                                                     >
                                                         <input
                                                             type="text"
-                                                            placeholder={`${c}(calldata)`}
+                                                            placeholder={`${c}`}
                                                             className="primary-placeholder border border-solid
                                                                border-primary bg-black
                                                                rounded-xl w-full focus:outline-none
                                                                font-bold py-5 px-4 text-white mb-4 mt-2"
-                                                            onKeyUp={() =>
+                                                            onChange={(e) =>
                                                                 handleKeyUp(
                                                                     'calldata',
                                                                     index,
                                                                     cIdx,
-                                                                    form.getFieldValue(`calldata_${index}_${cIdx}`)
+                                                                    e.target.value
                                                                 )
                                                             }
                                                         />
@@ -405,6 +411,10 @@ const ProposalModal = ({
                 <div className="flex justify-center mt-8 md:mt-0">
                     <button
                         className="bgPrimaryGradient focus:outline-none py-2 px-12 mt-6
+<<<<<<< HEAD
+=======
+                            flex flex-row items-center justify-center
+>>>>>>> dev2
                          rounded-md text-24 text-black w-full"
                         style={{ maxWidth: 320 }}
                         disabled={

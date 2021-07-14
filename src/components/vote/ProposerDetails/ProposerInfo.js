@@ -14,7 +14,7 @@ const ProposerInfo = ({ address }) => {
                     text={address}
                     onCopy={() => {
                         toast.success({
-                            title: `Copied address`
+                            title: `Address copied`
                         });
                     }}
                 >
