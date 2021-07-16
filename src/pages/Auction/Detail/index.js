@@ -52,6 +52,7 @@ function Detail(props) {
           medium
           twitter
           description
+          website
         }
         minimumPrice 
         maxAvailable 
@@ -188,7 +189,7 @@ function Detail(props) {
         title: type + ' Auction',
         contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
         token: elem['auctioningToken']['id'],
-        website: 'https://google.com',
+        website: elem['about']['website'],
         description: elem['about']['description'],
         isAlreadySettle: elem['clearingPriceOrder'] !== emptyAddr,
         isAllowCancellation,

@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AuctionItem from './item';
 import subGraphContext from '../../../contexts/subgraph';
+import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
+import { BigNumber } from '@ethersproject/bignumber';
 
 function Live(props) {
   const subGraphInstance = useContext(subGraphContext);
@@ -19,17 +21,31 @@ function Live(props) {
         }
         auctioningToken {
           id
+          decimals
         }
         biddingToken {
           id
+          decimals
         }
         orderCancellationEndDate
         auctionEndDate
-        auctionedSellAmount
-        minBuyAmount
-        liquidity
-        soldAuctioningTokens
-        clearingPriceOrder
+        orders {
+          id
+          buyAmount
+          sellAmount
+          claimableLP
+          status
+          userId {
+            id
+          }
+          auctionId {
+            id
+          }
+          bidder {
+            id
+            status
+          }
+        }
       }
     }
   `);
@@ -81,10 +97,27 @@ function Live(props) {
         },
       ];
       data.auctions.forEach((element) => {
+        let auctionDecimal = element['auctioningToken']['decimals'];
+        let biddingDecimal = element['biddingToken']['decimals'];
+        let { orders, clearingPriceOrder } = calculateClearingPrice(
+          element.orders,
+          auctionDecimal,
+          biddingDecimal,
+        );
+        let updatedGraphData = [];
+        orders &&
+          orders.forEach((item) => {
+            updatedGraphData.push({
+              ...item,
+              isSuccessfull: item.price >= clearingPriceOrder.price,
+            });
+          });
+        console.log('clearingPrice', clearingPriceOrder);
+        console.log('orders', orders);
         arr.push({
           ...element,
           chartType: 'block',
-          data: graphData,
+          data: updatedGraphData,
           status: 'Live',
           statusClass: 'live',
           title: element.type + ' Auction',

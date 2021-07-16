@@ -12,7 +12,7 @@ export default function Chart(props) {
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={props.data} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
-          <Bar dataKey="pv" fill="#C4C4C4">
+          <Bar dataKey="price" fill="#C4C4C4">
             {props.data.map((entry, index) => {
               const color = entry.isSuccessfull ? '#C4C4C4' : '#565656';
               return <Cell fill={color} key={index} />;
