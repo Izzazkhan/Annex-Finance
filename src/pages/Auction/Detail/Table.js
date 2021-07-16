@@ -100,15 +100,26 @@ function Table(props) {
   return (
     <div className="relative w-full">
       <div className="bg-fadeBlack w-full p-6 mt-16">
+      <div className="flex justify-between items-center">
         <h2 className="text-white py-6 text-4xl font-normal mb-5">
           Auction User Transaction History
         </h2>
+        <div className="flex text-white text-sm items-center custom-check">
+        <label className="container text-base ml-2 font-normal">
+        Show my orders only
+        <input
+          type="checkbox"
+        />
+        <span className="checkmark"></span>
+      </label>
+        </div>
+        </div>
         <table className="text-left">
           <thead>
             <tr>
               <th>Address</th>
               <th>Amount Committed</th>
-              <th>Tokens Claimable</th>
+              <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
               <th>Block Number</th>
               {props.auctionStatus === 'completed' ? <th>Claim</th> : ''}
@@ -138,17 +149,17 @@ function Table(props) {
                           src={require('../../../assets/icons/bitcoinBlack.svg').default}
                           alt=""
                         /> */}
-                        <div>{item.userId ? item.userId.address : ''} </div>
+                        <div>{item.userId ? item.userId.address.substring(0,5)+'...' : ''} </div>
                       </div>
                     </td>
                     <td>
-                      <div>{item.auctionDivBuyAmount}</div>
+                      <div>{item.auctionDivBuyAmount} {item.biddingSymbol}</div>
                     </td>
                     <td>
                       <div>0</div>
                     </td>
                     <td>
-                      <div className="text-primary">{trimAddress(item.txHash)}</div>
+                      <div className="text-primary"><a href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`} target="_blank">{trimAddress(item.txHash)}</a></div>
                     </td>
                     <td>
                       <div>{item.blockNumber}</div>
@@ -156,7 +167,7 @@ function Table(props) {
                     {props.auctionStatus === 'completed' ? (
                       <td>
                         <button
-                          className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 bg-white rounded-lg bgPrimaryGradient rounded-lg"
+                          className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
                           disabled={
                             loading || !props.isAlreadySettle || item.bidder.status !== 'ACTIVE'
                           }

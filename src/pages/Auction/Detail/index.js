@@ -198,7 +198,7 @@ function Detail(props) {
         let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
           .dividedBy(auctionDecimal)
           .toString();
-        orders.push({ ...order, auctionDivBuyAmount });
+        orders.push({ ...order, auctionDivBuyAmount,auctionSymbol,biddingSymbol });
       });
       setState({
         ...state,
