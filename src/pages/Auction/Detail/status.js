@@ -364,6 +364,11 @@ const AuctionProgress = (props) => {
           </div>
           <div className="flex justify-between">
             <div className="mb-3 w-full pr-2">
+              <div className="tooltip relative">
+                <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+                <span className="label">helo</span>
+              </div>
+            
               <input
                 placeholder="Min Buy Amount"
                 id="minBuyAmount"
@@ -372,8 +377,13 @@ const AuctionProgress = (props) => {
                 type="number"
                 onChange={handleInputChange}
               />
+
             </div>
             <div className="mb-3 w-full">
+             <div className="tooltip relative">
+                <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+                <span className="label">helo</span>
+              </div>
               <input
                 placeholder="Sell Amount"
                 id="sellAmount"

@@ -289,6 +289,20 @@ const Styles = styled.div`
       margin-right: 5px;
     }
   }
+.tooltip {
+    margin-bottom: 5px;
+    .label {
+    display: none;
+    position: absolute;
+    top: -6px;
+    left: 30px;
+    color: #e2e2e2;
+  }
+}
+ 
+.tooltip img:hover + .label {
+    display: block;
+}
 `;
 
 function Auction() {
