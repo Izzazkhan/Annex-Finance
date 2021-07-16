@@ -29,6 +29,7 @@ const DelegationTypeModal = ({
             .then((res) => {
                 setTxnHash(res.transactionHash);
                 setIsLoading(false);
+                setChild('');
                 onCancel();
             })
             .catch(() => {
@@ -106,7 +107,7 @@ const DelegationTypeModal = ({
                     </div>
                     <div className="text-white text-xl mt-4">
                         This option allows you to delegate your votes to another Ethereum address.
-                        You never send Venus, only your voting rights, and can undelegate at any time.
+                        You never send Annex, only your voting rights, and can undelegate at any time.
                     </div>
                 </div>
             </div>

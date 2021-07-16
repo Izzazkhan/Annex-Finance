@@ -110,7 +110,7 @@ const Leaderboard = ({ history, getVoterAccounts }) => {
                 columns={columns}
                 data={voterAccounts}
                 onRowClick={(row, i) => {
-                    history.push(RouteMap.vote.proposerOverview.replace(":address", row.address))
+                    history.push(RouteMap.vote.proposerOverview.replace(":address", row?.original?.address))
                 }}
             />
 

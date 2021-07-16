@@ -34,7 +34,7 @@ function Vault() {
             </div>
           </div>
           <div className="">
-            <div className="">Venus Balance</div>
+            <div className="">ANN Balance</div>
             <div className="flex space-x-2 mt-2">
               <img src={yellowAnn} alt="ANN" />
               <div className="font-bold">0 ANN</div>
