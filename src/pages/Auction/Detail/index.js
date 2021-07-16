@@ -8,41 +8,20 @@ import subGraphContext from '../../../contexts/subgraph';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
+import { getAuctionContract } from '../../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
-
+import { useActiveWeb3React } from '../../../hooks';
+const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
   const [state, setState] = useState({
     auctionEndDate: moment().add(1, 'minutes').toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
-    // detail: {
-    //   chartType: 'line',
-    //   type: 'Batch',
-    //   data: [
-    //     {
-    //       name: '',
-    //       uv: 4000,
-    //       pv: 2400,
-    //       amt: 2400,
-    //     },
-    //     {
-    //       name: '',
-    //       uv: 3000,
-    //       pv: 398,
-    //       amt: 2210,
-    //     },
-    //   ],
-    //   status: 'Live',
-    //   statusClass: 'live',
-    //   title: 'Non-Fungible Bible',
-    //   id: '1DPRD',
-    //   contract: 'OXICFO...IFBC74C57D',
-    //   token: 'OXI032...CC1FFE315B',
-    //   website: 'https://google.com',
-    //   description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
-    //     Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
-    // },
     detail: {},
+    orders: [],
+    auctionStatus: '',
+    type: 'batch',
   });
+  const { account } = useActiveWeb3React();
   const subGraphInstance = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const { error, loading, data } = useQuery(gql`
@@ -66,29 +45,60 @@ function Detail(props) {
           symbol
           decimals
         }
+        about {
+          id
+          telegram
+          discord
+          medium
+          twitter
+          description
+        }
         minimumPrice 
         maxAvailable 
         currentPrice 
         minimumBiddingAmountPerOrder
         orderCancellationEndDate
+        auctionStartDate
         auctionEndDate
         auctionedSellAmount
         minBuyAmount
         liquidity
         soldAuctioningTokens
         clearingPriceOrder
-        finished
       }
+      orders(where: { auctionId : "${props.match.params.id}" }){
+        id
+        userId {
+          id,
+          address
+        }
+        auctionId {
+          id
+        }
+        buyAmount
+        sellAmount
+        status
+        claimableLP
+        txHash
+        blockNumber
+        timestamp
+        bidder{
+          status
+        }
+        }
     }
   `);
+  const auctionContract = getAuctionContract(state.type);
   useEffect(() => {
     if (data && data.auctions) {
       let elem = data.auctions[0];
       let type = elem['type'];
+      let auctionStatus = '';
       let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
-      let totalAuction = new BigNumber(elem['soldAuctioningTokens'])
-        .dividedBy(auctionDecimal)
-        .toString();
+      let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
+      let totalAuction = elem['soldAuctioningTokens']
+        ? new BigNumber(elem['soldAuctioningTokens']).dividedBy(auctionDecimal).toString()
+        : 0;
       let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(auctionDecimal).toString();
       let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toString();
       let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(auctionDecimal).toString();
@@ -97,7 +107,19 @@ function Detail(props) {
       let auctionTokenName = elem['auctioningToken']['name'];
       let biddingSymbol = `${elem['biddingToken']['symbol']}`;
       let biddingTokenName = elem['biddingToken']['name'];
-      let auctionEndDate = moment.unix(elem['auctionEndDate']).toDate().getTime();
+      let auctionEndDate = elem['auctionEndDate'];
+      let auctionStartDate = elem['auctionStartDate'];
+      let endDateDiff = getDateDiff(auctionEndDate);
+      let isAllowCancellation = false;
+      if (endDateDiff < 0) {
+        auctionStatus = 'completed';
+      } else {
+        auctionStatus = 'inprogress';
+      }
+      let cancelDateDiff = getDateDiff(elem['orderCancellationEndDate']);
+      if (cancelDateDiff > 0) {
+        isAllowCancellation = true;
+      }
       let detail = {
         minimumPrice,
         maxAvailable,
@@ -108,8 +130,10 @@ function Detail(props) {
         minBuyAmount,
         auctionTokenName,
         auctionSymbol,
+        auctionDecimal,
         biddingSymbol,
         biddingTokenName,
+        biddingDecimal,
         chartType: 'block',
         data: [
           {
@@ -155,22 +179,42 @@ function Detail(props) {
             isSuccessfull: true,
           },
         ],
+        telegramLink: elem['about']['telegram'],
+        discordLink: elem['about']['discord'],
+        mediumLink: elem['about']['medium'],
+        twitterLink: elem['about']['twitter'],
         status: 'Live',
         statusClass: 'live',
         title: type + ' Auction',
         contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
         token: elem['auctioningToken']['id'],
         website: 'https://google.com',
-        description: `Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu lectus.
-          Aenean a urna vitae risus ullamcorper feugiat sed non quam. Fusce in rhoncus nibh.`,
+        description: elem['about']['description'],
+        isAlreadySettle: elem['clearingPriceOrder'] !== emptyAddr,
+        isAllowCancellation,
       };
+      let orders = [];
+      data.orders.forEach((order) => {
+        let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
+          .dividedBy(auctionDecimal)
+          .toString();
+        orders.push({ ...order, auctionDivBuyAmount });
+      });
       setState({
         ...state,
         detail,
-        auctionEndDate: auctionEndDate,
+        auctionStartDate,
+        auctionEndDate,
+        orders,
+        auctionStatus,
       });
     }
   }, [data]);
+  const getDateDiff = (endDate) => {
+    endDate = moment.unix(endDate);
+    let currentDate = moment();
+    return endDate.diff(currentDate, 'seconds');
+  };
   return (
     <div>
       <div className="col-span-12 p-6 flex flex-col">
@@ -240,12 +284,12 @@ function Detail(props) {
         <div className="col-span-12 text-center">
           <div className="relative xl:absolute timer flex flex-col justify-between items-center">
             <Countdown
-              date={state.auctionEndDate}
+              date={state.auctionEndDate * 1000}
               renderer={(props) => (
                 <ProgressBar
                   {...props}
-                  auctionEndDate={state.auctionEndDate}
-                  auctionStartDate={state.auctionStartDate}
+                  auctionEndDate={state.auctionEndDate * 1000}
+                  auctionStartDate={state.auctionStartDate * 1000}
                 />
               )}
             />
@@ -282,10 +326,10 @@ function Detail(props) {
             <div className="flex flex-col  mb-7">
               <div className="text-lg font-medium mb-3">About</div>
               <div className="flex flex-wrap justify-between space-x-2 ">
-                <MediaIcon name="Telegram" src="telegram" />
-                <MediaIcon name="Discord" src="discord" />
-                <MediaIcon name="Medium" src="medium" />
-                <MediaIcon name="Twitter" src="telegram" />
+                <MediaIcon name="Telegram" src="telegram" url={state.detail.telegramLink} />
+                <MediaIcon name="Discord" src="discord" url={state.detail.discordLink} />
+                <MediaIcon name="Medium" src="medium" url={state.detail.mediumLink} />
+                <MediaIcon name="Twitter" src="telegram" url={state.detail.twitterLink} />
               </div>
             </div>
           </div>
@@ -305,13 +349,28 @@ function Detail(props) {
           <AuctionStatus
             auctionEndDate={state.auctionEndDate}
             detail={state.detail}
-            label="Auction Progress"
             minBuyAmount={state.detail.minBuyAmount}
             maxAvailable={state.detail.maxAvailable}
+            biddingSymbol={state.detail.biddingSymbol}
+            account={account}
+            auctionId={state.detail.id}
+            biddingDecimal={state.detail.biddingDecimal}
+            auctionDecimal={state.detail.auctionDecimal}
+            auctionStatus={state.auctionStatus}
+            auctionContract={auctionContract}
+            auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
           />
         </div>
       </div>
-      <Table />
+      <Table
+        data={state.orders}
+        loading={loading}
+        isAlreadySettle={state.detail['isAlreadySettle']}
+        isAllowCancellation={state.detail['isAllowCancellation']}
+        auctionContract={auctionContract}
+        account={account}
+        auctionStatus={state.auctionStatus}
+      />
     </div>
   );
 }
@@ -325,9 +384,21 @@ const ProgressBar = ({
   auctionEndDate,
   auctionStartDate,
 }) => {
-  let currentTimeStamp = Date.now();
-  let percentage =
-    ((currentTimeStamp - auctionStartDate) / (auctionEndDate - auctionStartDate)) * 100;
+  // let percentage =
+  //   ((currentTimeStamp - auctionStartDate) / (auctionEndDate - auctionStartDate)) * 100;
+
+  const calculatePercentage = (auctionStartDate, auctionEndDate) => {
+    let currentTimeStamp = Date.now();
+    var total = auctionEndDate - auctionStartDate;
+    var current = currentTimeStamp - auctionStartDate;
+    // console.log('start', auctionStartDate);
+    // console.log('end', auctionEndDate);
+    // console.log('today', currentTimeStamp);
+    // console.log('current', current);
+    // console.log('total', total);
+    return Math.round((current / total) * 100);
+  };
+  let percentage = calculatePercentage(auctionStartDate, auctionEndDate);
   return (
     <div className="relative ">
       <Progress
@@ -364,11 +435,11 @@ const ProgressBar = ({
   );
 };
 
-const MediaIcon = ({ name, src }) => {
+const MediaIcon = ({ name, src, url }) => {
   return (
     <div className="flex items-center text-xl font-medium underline mb-3">
       <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
-      {name}
+      <a href={url}>{name}</a>
     </div>
   );
 };

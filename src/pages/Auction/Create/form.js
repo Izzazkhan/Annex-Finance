@@ -45,7 +45,7 @@ const ArrowDown = styled.button`
 export default function Form(props) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [auctionThreshold, setAuctionThreshold] = useState(false);
+  const [auctionThreshold, setAuctionThreshold] = useState('');
   const [approveAuctionToken, setApproveAuctionToken] = useState({
     status: false,
     isLoading: false,
@@ -56,7 +56,7 @@ export default function Form(props) {
     isLoading: false,
     label: '',
   });
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
@@ -103,28 +103,28 @@ export default function Form(props) {
         value: new Date(),
       },
       {
-        type: 'text',
+        type: 'number',
         id: 'sellAmount',
         placeholder: 'Auction sell amount',
         description: 'The amount to sell the auction token.',
         value: '',
       },
       {
-        type: 'text',
+        type: 'number',
         id: 'buyAmount',
         placeholder: 'Minimum buy amount',
         description: 'The minimium amount to buy the auction.',
         value: '',
       },
       {
-        type: 'text',
+        type: 'number',
         id: 'minBidAmount',
         placeholder: 'Minimum bidding amount per order',
         description: 'The minimium amount to bid on the auction.',
         value: '',
       },
       {
-        type: 'text',
+        type: 'number',
         id: 'minFundThreshold',
         placeholder: 'Minimum funding threshold',
         description: 'Minimum buy amount against all auctioned tokens and total auctioned tokens.',
@@ -205,14 +205,18 @@ export default function Form(props) {
     if (showModal) {
       const threshold = await methods.call(auctionContract.methods.threshold, []);
       setAuctionThreshold(threshold);
-      handleApproveANNToken();
-      handleApproveAuctionToken();
       setModalError({
         message: '',
         type: '',
       });
     }
   }, [showModal]);
+  useEffect(async () => {
+    if (showModal) {
+      await handleApproveANNToken();
+      await handleApproveAuctionToken();
+    }
+  }, [auctionThreshold]);
   const validateForm = () => {
     let arr = state.inputs.concat(state.advanceInputs);
     let isValid = true;
@@ -262,12 +266,13 @@ export default function Form(props) {
     return isValid;
   };
   const handleInputChange = (e, type, index, isAdvance) => {
+    console.log('enter', index);
     let key = isAdvance ? 'advanceInputs' : 'inputs';
     let inputs = isAdvance ? [...state.advanceInputs] : [...state.inputs];
     let input = inputs[index];
     if (input) {
       let value = '';
-      if (type === 'text' || type === 'textarea' || type === 'url') {
+      if (type === 'text' || type === 'textarea' || type === 'url' || type === 'number') {
         value = e.target.value;
       } else if (type === 'select') {
         value = e;
@@ -278,7 +283,6 @@ export default function Form(props) {
       }
       input['value'] = value;
     }
-    console.log(inputs);
     setState({
       ...state,
       [key]: inputs,
@@ -303,6 +307,7 @@ export default function Form(props) {
           formatedStateData.biddingToken,
           formatedStateData.accessContractAddr,
           formatedStateData.cancellationDate,
+          formatedStateData.startDate,
           formatedStateData.endDate,
           formatedStateData.minBidAmount,
           formatedStateData.minFundThreshold,
@@ -311,7 +316,17 @@ export default function Form(props) {
           formatedStateData.isAccessAuto,
           formatedStateData.accessData,
           0,
+          [
+            formatedStateData.websiteLink,
+            formatedStateData.description,
+            formatedStateData.telegramLink,
+            formatedStateData.discordLink,
+            formatedStateData.mediumLink,
+            formatedStateData.twitterLink,
+          ],
         ];
+
+        console.log('Data', data);
         let auctionTxDetail = await methods.send(
           auctionContract.methods.initiateAuction,
           [data],
@@ -332,8 +347,8 @@ export default function Form(props) {
       } else {
         console.log('buy ann');
         setModalError({
-          message: 'error',
-          type: 'Please buy ANN Token',
+          type: 'error',
+          message: 'Please buy ANN Token',
           payload: {},
         });
         setLoading(false);
@@ -380,12 +395,12 @@ export default function Form(props) {
       );
       setApproveANNToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
+      console.log(error);
       setApproveANNToken({ status: false, isLoading: false, label: 'Error' });
     }
   };
   const handleApproveAuctionToken = async () => {
     try {
-      console.log('checking');
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
       let { auctionToken } = getFormState();
       let auctionAddr = CONTRACT_ANNEX_AUCTION[state.type]['address'];
@@ -397,6 +412,7 @@ export default function Form(props) {
       );
       setApproveAuctionToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
+      console.log(error);
       setApproveAuctionToken({ status: false, isLoading: false, label: 'Error' });
     }
   };
@@ -434,8 +450,11 @@ export default function Form(props) {
         element.value === ''
       ) {
         obj[element.id] = emptyAddr;
-      } else if (element.id === 'cancellationDate' || element.id === 'endDate') {
-        obj[element.id] = moment(element.value).valueOf();
+      } else if (['cancellationDate', 'endDate', 'startDate'].indexOf(element.id) !== -1) {
+        console.log(element.id, element.value);
+        let timeStamp = moment(element.value).valueOf();
+        timeStamp = timeStamp / 1000;
+        obj[element.id] = timeStamp;
       } else {
         obj[element.id] = element.value;
       }
@@ -458,7 +477,7 @@ export default function Form(props) {
     updateShowModal(val);
     setLoading(false);
   };
-  function validURL(str) {
+  const validURL = (str) => {
     var pattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -469,7 +488,7 @@ export default function Form(props) {
       'i',
     ); // fragment locator
     return !!pattern.test(str);
-  }
+  };
   return (
     <Fragment>
       <form className="needs-validation" onSubmit={auctionCreationChecks} noValidate>
@@ -486,7 +505,7 @@ export default function Form(props) {
             ) : input.type === 'date' ? (
               <DateInput
                 key={index}
-                id={index}
+                index={index}
                 {...input}
                 isAdvance={false}
                 handleInputChange={handleInputChange}
@@ -667,14 +686,14 @@ const SelectInput = ({
   );
 };
 
-const DateInput = ({ id, type, value, isAdvance, description, handleInputChange }) => {
+const DateInput = ({ index, type, value, isAdvance, description, handleInputChange }) => {
   return (
     <div className="col-span-6 flex flex-col mt-8">
       <Flatpickr
         className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         data-enable-time={true}
         value={value}
-        onChange={(e) => handleInputChange(e, type, id, isAdvance)}
+        onChange={(e) => handleInputChange(e, type, index, isAdvance)}
       />
       <div className="text-gray text-sm font-normal mt-3">{description}</div>
     </div>

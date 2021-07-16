@@ -30,7 +30,6 @@ function Upcoming(props) {
         liquidity
         soldAuctioningTokens
         clearingPriceOrder
-        finished
       }
     }
   `);

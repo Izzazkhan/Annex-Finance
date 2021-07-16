@@ -1,23 +1,174 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 import BarChart from '../../../components/common/BarChart';
 import LineChart from '../../../components/common/LineChart';
 import Slider from 'react-rangeslider';
+import BigNumber from 'bignumber.js';
+import { getTokenContract, methods } from '../../../utilities/ContractService';
+import Modal from './modal';
 
-const AuctionStatus = ({ auctionEndDate, label, detail, minBuyAmount, maxAvailable }) => {
+const AuctionStatus = ({
+  auctionEndDate,
+  detail,
+  minBuyAmount,
+  maxAvailable,
+  biddingSymbol,
+  account,
+  auctionId,
+  biddingDecimal,
+  auctionDecimal,
+  auctionStatus,
+  auctionContract,
+  auctionAddr,
+}) => {
+  const [showModal, updateShowModal] = useState(false);
+  const [modalType, updateModalType] = useState('inprogress');
+  const [modalError, setModalError] = useState({
+    message: '',
+    type: '',
+    payload: {},
+  });
+  const [loading, setLoading] = useState(false);
+  const [approveBiddingToken, setApproveBiddingToken] = useState({
+    status: false,
+    isLoading: false,
+    label: '',
+  });
+  const [auctionThreshold, setAuctionThreshold] = useState('');
+  useEffect(async () => {
+    if (showModal) {
+      const threshold = await methods.call(auctionContract.methods.threshold, []);
+      setAuctionThreshold(threshold);
+    }
+  }, [showModal]);
+  const showCommitModal = async (minBuyAmount, sellAmount) => {
+    updateShowModal(true);
+    let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
+    let biddingTokenBalance = await methods.call(biddingTokenContract.methods.balanceOf, [account]);
+    console.log('biddingTokenBalance', biddingTokenBalance);
+    if (Number(biddingTokenBalance) < Number(sellAmount)) {
+      setModalError({
+        type: 'error',
+        message: 'Insufficient Bidding Token Balance',
+        payload: { minBuyAmount, sellAmount },
+      });
+    } else {
+      setModalError({
+        type: '',
+        message: '',
+        payload: { minBuyAmount, sellAmount },
+      });
+    }
+    await handleApproveBiddingToken();
+  };
+  const handleApproveBiddingToken = async () => {
+    try {
+      setApproveBiddingToken({ status: false, isLoading: true, label: 'Loading...' });
+      let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
+      await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
+      setApproveBiddingToken({ status: true, isLoading: false, label: 'Done' });
+    } catch (error) {
+      console.log(error);
+      setApproveBiddingToken({ status: false, isLoading: false, label: 'Error' });
+    }
+  };
+  const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
+    let allowance = await methods.call(contractMethods.allowance, [account, spenderAddr]);
+    if (allowance < threshold) {
+      let maxValue = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+      await methods.send(contractMethods.approve, [spenderAddr, maxValue], account);
+      allowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+    }
+    return allowance;
+  };
+  const commitAuction = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      let sellAmount = modalError.payload.sellAmount;
+      let buyAmount = modalError.payload.minBuyAmount;
+      sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString();
+      buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString();
+      let data = [
+        auctionId,
+        [buyAmount],
+        [sellAmount],
+        ['0x0000000000000000000000000000000000000000000000000000000000000001'],
+        '0x',
+      ];
+      console.log('data', data);
+      let auctionTxDetail = await methods.send(
+        auctionContract.methods.placeSellOrders,
+        data,
+        account,
+      );
+      setLoading(false);
+      updateShowModal(true);
+      updateModalType('success');
+      setModalError({
+        message: '',
+        type: '',
+        payload: {},
+      });
+    } catch (error) {
+      console.log(error);
+      setModalError({
+        ...modalError,
+        message: error.message,
+      });
+      setLoading(false);
+    }
+  };
+  const settlAuction = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      console.log('settleAuction')
+      await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
         <div className="flex flex-col items-start justify-start ">
-          <div className="text-white text-2xl ">{label}</div>
+          <div className="text-white text-2xl ">
+            {auctionStatus === 'inprogress'
+              ? 'Auction Progress'
+              : auctionStatus === 'completed'
+              ? 'Auction Completed'
+              : ''}
+          </div>
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      <AuctionProgress
-        auctionEndDate={auctionEndDate}
-        detail={detail}
-        minBuyAmount={minBuyAmount}
-        maxAvailable={maxAvailable}
+      {auctionStatus === 'inprogress' ? (
+        <AuctionProgress
+          auctionEndDate={auctionEndDate}
+          detail={detail}
+          minBuyAmount={minBuyAmount}
+          maxAvailable={maxAvailable}
+          handleSubmit={showCommitModal}
+        />
+      ) : auctionStatus === 'completed' ? (
+        <AuctionCompleted settlAuction={settlAuction} isAlreadySettle={detail['isAlreadySettle']} />
+      ) : (
+        ''
+      )}
+      {/* */}
+
+      <Modal
+        open={showModal}
+        type={modalType}
+        loading={loading}
+        modalError={modalError}
+        handleSubmit={commitAuction}
+        approveBiddingToken={approveBiddingToken}
+        handleApproveBiddingToken={handleApproveBiddingToken}
+        onSetOpen={() => updateShowModal(true)}
+        onCloseModal={() => updateShowModal(false)}
       />
     </Fragment>
   );
@@ -58,19 +209,29 @@ const AuctionCountDown = ({ auctionEndDate }) => {
   );
 };
 
-const AuctionCompleted = () => {
+const AuctionCompleted = ({ settlAuction, isAlreadySettle }) => {
   return (
     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
       <div className="w-full flex flex-col items-center justify-center ">
         <img className="ml-3" src={require('../../../assets/images/check.svg').default} alt="" />
-        <div className="text-white text-4xl mt-10 mb-3">Auction Finished Successfully</div>
-        <div className="text-white text-base mb-10">you are able to claim 1 Non-Fungible Bible</div>
-        <button
-          className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
+
+        {!isAlreadySettle ? (
+          <Fragment>
+            <div className="text-white text-4xl mt-10 mb-3">Auction Finished Successfully</div>
+            <div className="text-white text-base mb-10">
+              you are able to claim 1 Non-Fungible Bible
+            </div>
+            <button
+              className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
          h-14 bg-white rounded-lg bgPrimaryGradient rounded-lg"
-        >
-          Claim
-        </button>
+              onClick={settlAuction}
+            >
+              Settle Auction
+            </button>
+          </Fragment>
+        ) : (
+          <div className="text-white text-4xl mt-10 mb-3">Auction Settled Successfully</div>
+        )}
       </div>
     </div>
   );
@@ -98,23 +259,37 @@ const AuctionProgress = (props) => {
     for (let index = 0; index < inputs.length; index++) {
       let key = inputs[index]['id'];
       let placeholder = inputs[index]['placeholder'];
-      let value = state[key];
-      if (value === '') {
+      let value = Number(state[key]);
+      let minBuyAmount = Number(props.minBuyAmount);
+      let maxAvailable = Number(props.maxAvailable);
+      if (value === '' || value === 0) {
         errorMessage = `${placeholder} required`;
         isValid = false;
         break;
-      } else if (
-        (key === 'minBuyAmount' && value < props.minBuyAmount) ||
-        value > props.maxAvailable
-      ) {
-        errorMessage = `${placeholder} required`;
+      } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
+        errorMessage = `${placeholder} must be greater than Minimum Token Amount`;
         isValid = false;
         break;
-      } else if (key === 'sellAmount' && value) {
-        errorMessage = `${placeholder} required`;
+      } else if (key === 'sellAmount' && value > maxAvailable) {
+        errorMessage = `${placeholder} must be smaller than Max Available`;
         isValid = false;
         break;
       }
+    }
+    // if (!isValid) {
+    //   Swal.fire({
+    //     title: 'Error',
+    //     text: errorMessage,
+    //     icon: 'error',
+    //     showCancelButton: false,
+    //   });
+    // }
+    return true; //isValid;
+  };
+  const showCommitModal = () => {
+    let isValid = validateForm();
+    if (isValid) {
+      props.handleSubmit(state.minBuyAmount, state.sellAmount);
     }
   };
   return (
@@ -213,6 +388,7 @@ const AuctionProgress = (props) => {
             <button
               className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
          h-14 bg-primary rounded-lg"
+              onClick={showCommitModal}
             >
               Commit
             </button>

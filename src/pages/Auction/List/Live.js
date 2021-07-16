@@ -30,7 +30,6 @@ function Live(props) {
         liquidity
         soldAuctioningTokens
         clearingPriceOrder
-        finished
       }
     }
   `);

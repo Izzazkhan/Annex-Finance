@@ -30,7 +30,6 @@ function Past(props) {
         liquidity
         soldAuctioningTokens
         clearingPriceOrder
-        finished
       }
     }
   `);
