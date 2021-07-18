@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
+import people from '../../assets/icons/people.svg';
 import coins from '../../assets/icons/coins.svg';
 import MiniLogo from '../../components/UI/MiniLogo';
+import { useQuery } from '../../hooks/useQuery';
 import ConnectWalletModal from './ConnectWalletModal';
 import {useActiveWeb3React} from "../../hooks";
 import {shortenAddress} from "../../utils/address";
 import commaNumber from "comma-number";
+import {getBigNumber} from "../../utilities/common";
 import BigNumber from "bignumber.js";
 import {nFormatter} from "../../utils/data";
 import {useCountUp} from "react-countup";
-import HeaderLogo from '../../assets/icons/headerLogo.svg';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -69,7 +71,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, 
             <ConnectWallet />
           </li>
           <li className="">
-              <img src={HeaderLogo} alt={'Annex'} className={'w-12 h-12 rounded-full block'}/>
+            <MiniLogo size="md" />
           </li>
         </ul>
       )}

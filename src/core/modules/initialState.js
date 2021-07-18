@@ -1,6 +1,5 @@
 import {Field} from "./swap/actions";
 import {Field as MintField} from "./mint/actions";
-import {Field as BurnField} from "./burn/actions";
 import {DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL} from "../../constants/lists";
 import DEFAULT_LIST from "../../constants/tokens/annex.json";
 import {DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE} from "../../constants/swap";
@@ -98,11 +97,6 @@ const mint = {
   otherTypedValue: "",
 }
 
-const burn = {
-  independentField: BurnField.LIQUIDITY_PERCENT,
-  typedValue: "0",
-}
-
 export const initialState = {
   auth,
   account,
@@ -112,6 +106,5 @@ export const initialState = {
   application,
   transaction,
   user,
-  mint,
-  burn
+  mint
 };

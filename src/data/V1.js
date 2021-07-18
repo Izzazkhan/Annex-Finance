@@ -20,7 +20,7 @@ import {
 	NEVER_RELOAD,
 	useSingleCallResult,
 	useSingleContractMultipleData
-} from "../core";
+} from "../core/modules/multicall/hooks";
 import { useETHBalances, useTokenBalance, useTokenBalances } from "../hooks/wallet";
 import { useActiveWeb3React } from "../hooks";
 

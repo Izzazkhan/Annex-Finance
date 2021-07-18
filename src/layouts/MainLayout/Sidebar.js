@@ -181,7 +181,7 @@ function Sidebar({ isOpen, onClose, settings }) {
               totalXaiMinted={totalXaiMinted}
           />
           <div className="mt-auto mb-10 pl-8">
-            <div className="font-bold text-white">Annex Finance</div>
+            <div className="font-bold text-white">Annex Trading</div>
             <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
           </div>
         </Wrapper>

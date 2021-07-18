@@ -17,7 +17,7 @@ export function useAllTokens() {
 		return allTokens[chainId];
 	}, [chainId, allTokens]);
 }
-// @todo: Useradded tokens
+
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;
