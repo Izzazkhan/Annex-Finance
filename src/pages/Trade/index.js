@@ -7,7 +7,10 @@ import HistoryModal from '../../components/common/HistoryModal';
 import Swap from './Swap';
 import Liquidity from './Liquidity';
 import AddLiquidity from "./AddLiquidity";
+import PoolFinder from "./PoolFinder";
 import {RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure} from "./redirects/addLiquidity";
+import RedirectOldRemoveLiquidityPathStructure from "./redirects/removeLiquidity";
+import RemoveLiquidity from "./RemoveLiquidity";
 
 function Trade() {
     const { pathname, search } = useLocation();
@@ -57,14 +60,15 @@ function Trade() {
                                 onHistoryOpen={() => setHistoryOpen(true)}
                             />
                         </Route>
-                        {/*<Route exact strict path={`${path}/remove`} component={RemoveLiquidity} />*/}
-                        {/*<Route*/}
-                        {/*    exact*/}
-                        {/*    strict*/}
-                        {/*    path={`${path}/remove/:tokens`}*/}
-                        {/*    component={RedirectOldRemoveLiquidityPathStructure}*/}
-                        {/*/>*/}
+                        <Route exact strict path={`${path}/liquidity/remove`} component={RemoveLiquidity} />
+                        <Route
+                            exact
+                            strict
+                            path={`${path}/liquidity/remove/:tokens`}
+                            component={RedirectOldRemoveLiquidityPathStructure}
+                        />
                         <Route exact path={`${path}/liquidity/add`} component={AddLiquidity} />
+                        <Route exact path={`${path}/liquidity/find`} component={PoolFinder} />
                         <Route
                             exact
                             path={`${path}/liquidity/add/:currencyIdA`}

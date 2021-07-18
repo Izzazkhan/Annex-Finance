@@ -6,6 +6,7 @@ import {
 	ADD_MULTICALL_LISTENERS, toCallKey
 } from './actions';
 import { initialState } from '../initialState';
+import {notNull} from "../../../utils/notNull";
 
 export default function multicall(state = initialState.multicall, action = {}) {
 	const { type, payload } = action;
@@ -19,12 +20,12 @@ export default function multicall(state = initialState.multicall, action = {}) {
 			const listeners = state.callListeners
 				? state.callListeners
 				: (state.callListeners = {});
-			listeners[payload.chainId] = listeners[payload.chainId] || {};
+			listeners[payload.chainId] = notNull(listeners[payload.chainId], {});
 			payload.calls.forEach((call) => {
 				const callKey = toCallKey(call);
-				listeners[payload.chainId][callKey] = listeners[payload.chainId][callKey] || {};
+				listeners[payload.chainId][callKey] = notNull(listeners[payload.chainId][callKey], {});
 				listeners[payload.chainId][callKey][blocksPerFetch] =
-					(listeners[payload.chainId][callKey][blocksPerFetch] || 0) + 1;
+					(notNull(listeners[payload.chainId][callKey][blocksPerFetch], 0)) + 1;
 			});
 
 			return state;
@@ -54,7 +55,7 @@ export default function multicall(state = initialState.multicall, action = {}) {
 			return state;
 		}
 		case FETCHING_MULTICALL_RESULTS: {
-			state.callResults[payload.chainId] = state.callResults[payload.chainId] || {};
+			state.callResults[payload.chainId] = notNull(state.callResults[payload.chainId], {});
 			payload.calls.forEach((call) => {
 				const callKey = toCallKey(call);
 				const current = state.callResults[payload.chainId][callKey];
@@ -63,7 +64,7 @@ export default function multicall(state = initialState.multicall, action = {}) {
 						fetchingBlockNumber: payload.fetchingBlockNumber,
 					};
 				} else {
-					if ((current.fetchingBlockNumber || 0) >= payload.fetchingBlockNumber) return;
+					if ((notNull(current.fetchingBlockNumber, 0)) >= payload.fetchingBlockNumber) return;
 					// eslint-disable-next-line max-len
 					state.callResults[payload.chainId][callKey].fetchingBlockNumber = payload.fetchingBlockNumber;
 				}
@@ -72,7 +73,7 @@ export default function multicall(state = initialState.multicall, action = {}) {
 			return state;
 		}
 		case ERROR_FETCHING_MULTICALL_RESULTS: {
-			state.callResults[payload.chainId] = state.callResults[payload.chainId] || {};
+			state.callResults[payload.chainId] = notNull(state.callResults[payload.chainId], {});
 			payload.calls.forEach((call) => {
 				const callKey = toCallKey(call);
 				const current = state.callResults[payload.chainId][callKey];
@@ -87,10 +88,10 @@ export default function multicall(state = initialState.multicall, action = {}) {
 			return state;
 		}
 		case UPDATE_MULTICALL_RESULTS: {
-			state.callResults[payload.chainId] = state.callResults[payload.chainId] || {};
+			state.callResults[payload.chainId] = notNull(state.callResults[payload.chainId], {});
 			Object.keys(payload.results).forEach((callKey) => {
 				const current = state.callResults[payload.chainId][callKey];
-				if ((current?.blockNumber || 0) > payload.blockNumber) return;
+				if ((notNull(current?.blockNumber, 0)) > payload.blockNumber) return;
 				state.callResults[payload.chainId][callKey] = {
 					data: payload.results[callKey],
 					blockNumber: payload.blockNumber,
