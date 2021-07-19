@@ -11,10 +11,12 @@ import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import { getAuctionContract } from '../../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
+import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
+
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
   const [state, setState] = useState({
-    auctionEndDate: moment().add(1, 'minutes').toDate().getTime(),
+    auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
     detail: {},
     orders: [],
@@ -97,13 +99,24 @@ function Detail(props) {
       let auctionStatus = '';
       let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
       let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
-      let totalAuction = elem['soldAuctioningTokens']
-        ? new BigNumber(elem['soldAuctioningTokens']).dividedBy(auctionDecimal).toString()
+      let currentPriceDecimal = getCurrentPriceDecimal(
+        elem['auctioningToken']['decimals'],
+        elem['biddingToken']['decimals'],
+      );
+      let totalAuction = elem['auctionedSellAmount']
+        ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
         : 0;
-      let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(auctionDecimal).toString();
-      let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toString();
-      let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(auctionDecimal).toString();
-      let minBuyAmount = new BigNumber(elem['minBuyAmount']).dividedBy(auctionDecimal).toString();
+      console.log('currentPriceDecimal', currentPriceDecimal);
+      let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(currentPriceDecimal).toNumber();
+      let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toNumber();
+      let currentPrice = new BigNumber(elem['currentPrice'])
+        .dividedBy(currentPriceDecimal)
+        .toNumber();
+      let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder']).dividedBy(biddingDecimal).toNumber();
+      minimumPrice = convertExponentToNum(minimumPrice);
+      maxAvailable = convertExponentToNum(maxAvailable);
+      currentPrice = convertExponentToNum(currentPrice);
+      minBuyAmount = convertExponentToNum(minBuyAmount);
       let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
       let auctionTokenName = elem['auctioningToken']['name'];
       let biddingSymbol = `${elem['biddingToken']['symbol']}`;
@@ -121,6 +134,36 @@ function Detail(props) {
       if (cancelDateDiff > 0) {
         isAllowCancellation = true;
       }
+      let graphData = getGraphData({
+        ordersList: data.orders,
+        auctionDecimal: elem['auctioningToken']['decimals'],
+        biddingDecimal: elem['biddingToken']['decimals'],
+      });
+      let orders = [];
+      let placeHolderMinBuyAmount = 0;
+      let placeholderSellAmount = 0;
+      let orderLength = data.orders.length;
+      data.orders.forEach((order, index) => {
+        let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
+          .dividedBy(auctionDecimal)
+          .toString();
+        if (orderLength - 1 === index) {
+          let auctionDivSellAmount = new BigNumber(order['sellAmount'])
+            .dividedBy(biddingDecimal)
+            .toString();
+          placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
+          placeholderSellAmount = Number(auctionDivSellAmount) + 1;
+          if (placeHolderMinBuyAmount > maxAvailable || placeholderSellAmount > maxAvailable) {
+            placeHolderMinBuyAmount = maxAvailable;
+            placeholderSellAmount = maxAvailable;
+          }
+        }
+        orders.push({ ...order, auctionDivBuyAmount, auctionSymbol, biddingSymbol });
+      });
+      if (orderLength === 0) {
+        placeHolderMinBuyAmount = minBuyAmount;
+        placeholderSellAmount = minBuyAmount;
+      }
       let detail = {
         minimumPrice,
         maxAvailable,
@@ -136,50 +179,7 @@ function Detail(props) {
         biddingTokenName,
         biddingDecimal,
         chartType: 'block',
-        data: [
-          {
-            name: '1',
-            uv: 4000,
-            pv: 2400,
-            amt: 2400,
-            isSuccessfull: false,
-          },
-          {
-            name: '2',
-            uv: 3000,
-            pv: 1398,
-            amt: 2210,
-            isSuccessfull: false,
-          },
-          {
-            name: '3',
-            uv: 2000,
-            pv: 9800,
-            amt: 2290,
-            isSuccessfull: false,
-          },
-          {
-            name: '4',
-            uv: 4000,
-            pv: 2400,
-            amt: 2400,
-            isSuccessfull: true,
-          },
-          {
-            name: '5',
-            uv: 3000,
-            pv: 1398,
-            amt: 2210,
-            isSuccessfull: true,
-          },
-          {
-            name: '6',
-            uv: 2000,
-            pv: 9800,
-            amt: 2290,
-            isSuccessfull: true,
-          },
-        ],
+        data: graphData,
         telegramLink: elem['about']['telegram'],
         discordLink: elem['about']['discord'],
         mediumLink: elem['about']['medium'],
@@ -193,14 +193,9 @@ function Detail(props) {
         description: elem['about']['description'],
         isAlreadySettle: elem['clearingPriceOrder'] !== emptyAddr,
         isAllowCancellation,
+        placeHolderMinBuyAmount,
+        placeholderSellAmount,
       };
-      let orders = [];
-      data.orders.forEach((order) => {
-        let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
-          .dividedBy(auctionDecimal)
-          .toString();
-        orders.push({ ...order, auctionDivBuyAmount,auctionSymbol,biddingSymbol });
-      });
       setState({
         ...state,
         detail,
@@ -215,6 +210,49 @@ function Detail(props) {
     endDate = moment.unix(endDate);
     let currentDate = moment();
     return endDate.diff(currentDate, 'seconds');
+  };
+  const getGraphData = ({ ordersList, auctionDecimal, biddingDecimal }) => {
+    let graphData = [];
+    let { orders, clearingPriceOrder } = calculateClearingPrice(
+      ordersList,
+      auctionDecimal,
+      biddingDecimal,
+    );
+    orders &&
+      orders.forEach((item) => {
+        graphData.push({
+          ...item,
+          isSuccessfull: item.price >= clearingPriceOrder.price,
+        });
+      });
+    return graphData;
+  };
+  const convertExponentToNum = (x) => {
+    if (Math.abs(x) < 1.0) {
+      let e = parseInt(x.toString().split('e-')[1]);
+      if (e) {
+        x *= Math.pow(10, e - 1);
+        x = '0.' + new Array(e).join('0') + x.toString().substring(2);
+      }
+    } else {
+      let e = parseInt(x.toString().split('+')[1]);
+      if (e > 20) {
+        e -= 20;
+        x /= Math.pow(10, e);
+        x += new Array(e + 1).join('0');
+      }
+    }
+    return x;
+  };
+  const getCurrentPriceDecimal = (auctionDecimal, biddingDecimal) => {
+    // let decimal = 0;
+    // if (auctionDecimal !== biddingDecimal) {
+    //   decimal = auctionDecimal - biddingDecimal;
+    // } else {
+    //   decimal = biddingDecimal;
+    // }
+    // return Number('1e' + biddingDecimal);
+    return 1;
   };
   return (
     <div>
@@ -263,11 +301,24 @@ function Detail(props) {
         <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+            {state.detail.auctionSymbol ? (
+              <img
+                width="40"
+                className="mr-2"
+                src={
+                  require(`../../../assets/images/coins/${state.detail.auctionSymbol.toLowerCase()}.png`)
+                    .default
+                }
+                alt=""
+              />
+            ) : (
+              ''
+            )}{' '}
             {`${state.detail.totalAuction} ${state.detail.auctionSymbol}`}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
-            Total Auctions{' '}
+            Total Auctioned{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
           </div>
         </div>
@@ -284,16 +335,20 @@ function Detail(props) {
         </div>
         <div className="col-span-12 text-center">
           <div className="relative xl:absolute timer flex flex-col justify-between items-center">
-            <Countdown
-              date={state.auctionEndDate * 1000}
-              renderer={(props) => (
-                <ProgressBar
-                  {...props}
-                  auctionEndDate={state.auctionEndDate * 1000}
-                  auctionStartDate={state.auctionStartDate * 1000}
-                />
-              )}
-            />
+            {!loading ? (
+              <Countdown
+                date={state.auctionEndDate * 1000}
+                renderer={(props) => (
+                  <ProgressBar
+                    {...props}
+                    auctionEndDate={state.auctionEndDate * 1000}
+                    auctionStartDate={state.auctionStartDate * 1000}
+                  />
+                )}
+              />
+            ) : (
+              ''
+            )}
           </div>
         </div>
       </div>

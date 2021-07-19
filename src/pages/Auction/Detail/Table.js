@@ -38,6 +38,7 @@ const Styles = styled.div`
 
 function Table(props) {
   const [loading, setLoading] = useState(false);
+  const [isShowMyOrder, updateMyOrder] = useState(false);
   const trimAddress = (address) => {
     let length = address.length;
     if (length > 20) {
@@ -100,19 +101,21 @@ function Table(props) {
   return (
     <div className="relative w-full">
       <div className="bg-fadeBlack w-full p-6 mt-16">
-      <div className="flex justify-between items-center">
-        <h2 className="text-white py-6 text-4xl font-normal mb-5">
-          Auction User Transaction History
-        </h2>
-        <div className="flex text-white text-sm items-center custom-check">
-        <label className="container text-base ml-2 font-normal">
-        Show my orders only
-        <input
-          type="checkbox"
-        />
-        <span className="checkmark"></span>
-      </label>
-        </div>
+        <div className="flex justify-between items-center">
+          <h2 className="text-white py-6 text-4xl font-normal mb-5">
+            Auction User Transaction History
+          </h2>
+          <div className="flex text-white text-sm items-center custom-check">
+            <label className="container text-base ml-2 font-normal">
+              Show my orders only
+              <input
+                type="checkbox"
+                checked={isShowMyOrder}
+                onChange={() => updateMyOrder(!isShowMyOrder)}
+              />
+              <span className="checkmark"></span>
+            </label>
+          </div>
         </div>
         <table className="text-left">
           <thead>
@@ -122,8 +125,8 @@ function Table(props) {
               <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
               <th>Block Number</th>
-              {props.auctionStatus === 'completed' ? <th>Claim</th> : ''}
-              {props.isAllowCancellation ? <th>Cancel Order</th> : ''}
+              {props.auctionStatus === 'completed' ? <th></th> : ''}
+              {props.isAllowCancellation ? <th></th> : ''}
             </tr>
           </thead>
           <tbody>
@@ -141,7 +144,10 @@ function Table(props) {
               </tr>
             ) : (
               props.data.map((item, index) => {
-                return (
+                let userId = item.userId.address.toLowerCase();
+                let account = props.account ? props.account.toLowerCase() : '0x';
+                console.log(userId === account);
+                return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
                   <tr key={index}>
                     <td>
                       <div className="flex justify-start items-center space-x-2">
@@ -149,31 +155,49 @@ function Table(props) {
                           src={require('../../../assets/icons/bitcoinBlack.svg').default}
                           alt=""
                         /> */}
-                        <div>{item.userId ? item.userId.address.substring(0,5)+'...' : ''} </div>
+                        <div className="text-primary">
+                          <a
+                            href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                            target="_blank"
+                          >
+                            {item.userId ? item.userId.address.substring(0, 5) + '...' : ''}
+                          </a>
+                        </div>
                       </div>
                     </td>
                     <td>
-                      <div>{item.auctionDivBuyAmount} {item.biddingSymbol}</div>
+                      <div>
+                        {item.auctionDivBuyAmount} {item.biddingSymbol}
+                      </div>
                     </td>
                     <td>
                       <div>0</div>
                     </td>
                     <td>
-                      <div className="text-primary"><a href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`} target="_blank">{trimAddress(item.txHash)}</a></div>
+                      <div className="text-primary">
+                        <a
+                          href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                          target="_blank"
+                        >
+                          {trimAddress(item.txHash)}
+                        </a>
+                      </div>
                     </td>
                     <td>
                       <div>{item.blockNumber}</div>
                     </td>
-                    {props.auctionStatus === 'completed' ? (
+                    {account === userId && props.auctionStatus === 'completed' ? (
                       <td>
                         <button
                           className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
                           disabled={
-                            loading || !props.isAlreadySettle || item.bidder.status !== 'ACTIVE'
+                            loading ||
+                            !props.isAlreadySettle ||
+                            ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
                           }
                           onClick={() => claimAuction(item)}
                         >
-                          {item.bidder.status === 'ACTIVE'
+                          {item.bidder.status === 'ACTIVE' || item.bidder.status === 'NOTCLAIMED'
                             ? 'Claim'
                             : item.bidder.status === 'SUCCESS'
                             ? 'Claimed'
@@ -184,10 +208,10 @@ function Table(props) {
                       ''
                     )}
 
-                    {props.isAllowCancellation ? (
+                    {account === userId && props.isAllowCancellation ? (
                       <td>
                         <button
-                          className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24 bg-white rounded-lg bgPrimaryGradient rounded-lg"
+                          className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
                           disabled={loading || item.status === 'CANCELLED'}
                           onClick={() => cancelAuction(item)}
                         >
@@ -198,6 +222,8 @@ function Table(props) {
                       ''
                     )}
                   </tr>
+                ) : (
+                  ''
                 );
               })
             )}

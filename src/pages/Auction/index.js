@@ -271,7 +271,7 @@ const Styles = styled.div`
       /* color: #565656; */
     }
     .info.success span {
-      background: #565656;
+      background: #c4c4c4;
       width: 12px;
       height: 12px;
       display: inline-block;
@@ -282,7 +282,7 @@ const Styles = styled.div`
       /* color: #c4c4c4; */
     }
     .label.info.unsuccess span {
-      background: #c4c4c4;
+      background: #565656;
       width: 12px;
       height: 12px;
       display: inline-block;

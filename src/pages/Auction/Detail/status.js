@@ -6,6 +6,7 @@ import Slider from 'react-rangeslider';
 import BigNumber from 'bignumber.js';
 import { getTokenContract, methods } from '../../../utilities/ContractService';
 import Modal from './modal';
+import Swal from 'sweetalert2';
 
 const AuctionStatus = ({
   auctionEndDate,
@@ -123,7 +124,7 @@ const AuctionStatus = ({
     try {
       e.preventDefault();
       setLoading(true);
-      console.log('settleAuction')
+      console.log('settleAuction');
       await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       setLoading(false);
     } catch (error) {
@@ -276,15 +277,15 @@ const AuctionProgress = (props) => {
         break;
       }
     }
-    // if (!isValid) {
-    //   Swal.fire({
-    //     title: 'Error',
-    //     text: errorMessage,
-    //     icon: 'error',
-    //     showCancelButton: false,
-    //   });
-    // }
-    return true; //isValid;
+    if (!isValid) {
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        showCancelButton: false,
+      });
+    }
+    return isValid;
   };
   const showCommitModal = () => {
     let isValid = validateForm();
@@ -310,7 +311,21 @@ const AuctionProgress = (props) => {
             <span className="label info unsuccess text-sm font-normal">
               <span></span>UnSuccessfull
             </span>
-            <BarChart width="100%" height="211px" data={props.detail.data} />
+            {/*  */}
+            {props.detail && props.detail.data.length > 0 ? (
+              <BarChart width="100%" height="211px" data={props.detail.data} />
+            ) : (
+              <div
+                className="relative pt-5"
+                style={{
+                  width: '100%',
+                  height: '211px',
+                  marginBottom: '-29px',
+                }}
+              >
+                <div>No Graph Data found</div>
+              </div>
+            )}
           </div>
           <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal">
             <span className="border first "></span>
@@ -356,36 +371,43 @@ const AuctionProgress = (props) => {
               <div className="flex flex-col">
                 <div className="text-md text-primary font-bold mb-2 ">Commitment</div>
                 <div className="text-md ">
-                  Sed a condimentum nisl. Nulla mi libero, pretium sit amet posuere in, iaculis eu
-                  lectus. Aenean a urna vitae risus ullamcorpe.
+                To calculate the price: 
                 </div>
+                <div className="text-md "> Sell amount/ Min Buy amount. </div>
               </div>
             </div>
           </div>
           <div className="flex justify-between">
             <div className="mb-3 w-full pr-2">
               <div className="tooltip relative">
-                <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
-                <span className="label">helo</span>
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Min Buy Amount</span>
               </div>
-            
+
               <input
-                placeholder="Min Buy Amount"
+                placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
                 id="minBuyAmount"
                 className="border border-solid border-gray bg-transparent
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
                 type="number"
                 onChange={handleInputChange}
               />
-
             </div>
             <div className="mb-3 w-full">
-             <div className="tooltip relative">
-                <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
-                <span className="label">helo</span>
+              <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Sell Amount</span>
               </div>
               <input
-                placeholder="Sell Amount"
+                placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
                 id="sellAmount"
                 onChange={handleInputChange}
                 className="border border-solid border-gray bg-transparent

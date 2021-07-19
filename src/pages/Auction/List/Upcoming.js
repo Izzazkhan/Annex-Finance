@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AuctionItem from './item';
 import subGraphContext from '../../../contexts/subgraph';
+import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 
 function Upcoming(props) {
+  const currentTimeStamp = Math.floor(Date.now() / 1000);
   const subGraphInstance = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [auction, setAuction] = useState([]);
   const { error, loading, data } = useQuery(gql`
     {
-      auctions(first: 1000) {
+      auctions(where: { auctionStartDate_gt: "${currentTimeStamp}"}) {
         id
         type
         userId {
@@ -19,79 +21,65 @@ function Upcoming(props) {
         }
         auctioningToken {
           id
+          decimals
         }
         biddingToken {
           id
+          decimals
         }
         orderCancellationEndDate
         auctionEndDate
-        auctionedSellAmount
-        minBuyAmount
-        liquidity
-        soldAuctioningTokens
-        clearingPriceOrder
+        orders {
+          id
+          buyAmount
+          sellAmount
+          claimableLP
+          status
+          userId {
+            id
+          }
+          auctionId {
+            id
+          }
+          bidder {
+            id
+            status
+          }
+        }
       }
     }
   `);
   useEffect(() => {
     if (data && data.auctions) {
       let arr = [];
-      let graphData = [
-        {
-          name: 'page 1',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-          isSuccessfull: false,
-        },
-        {
-          name: 'page 2.1',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-          isSuccessfull: false,
-        },
-        {
-          name: 'page 3.1',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-          isSuccessfull: false,
-        },
-        {
-          name: 'page 4.1',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-          isSuccessfull: true,
-        },
-        {
-          name: 'page 5.1',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-          isSuccessfull: true,
-        },
-        {
-          name: 'page 6.1',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-          isSuccessfull: true,
-        },
-      ];
       data.auctions.forEach((element) => {
+        let auctionDecimal = element['auctioningToken']['decimals'];
+        let biddingDecimal = element['biddingToken']['decimals'];
+        let { orders, clearingPriceOrder } = calculateClearingPrice(
+          element.orders,
+          auctionDecimal,
+          biddingDecimal,
+        );
+        let graphData = [];
+        orders &&
+          orders.forEach((item) => {
+            graphData.push({
+              ...item,
+              isSuccessfull: item.price >= clearingPriceOrder.price,
+            });
+          });
+        // console.log('clearingPrice', clearingPriceOrder);
+        // console.log('orders', orders);
         arr.push({
           ...element,
           chartType: 'block',
           data: graphData,
           status: 'Upcoming',
-          statusClass:'upcoming',
+          statusClass: 'upcoming',
           title: element.type + ' Auction',
         });
       });
       setAuction(arr);
-      console.log(data);
     }
   }, [data]);
 
@@ -103,10 +91,12 @@ function Upcoming(props) {
           <div>Loading...</div>
         ) : error ? (
           <div>{error}</div>
-        ) : (
+        ) : auction.length > 0 ? (
           auction.map((item, index) => {
             return <AuctionItem key={index} {...item} />;
           })
+        ) : (
+          <div>No data found</div>
         )}
       </div>
     </div>

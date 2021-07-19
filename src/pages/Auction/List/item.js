@@ -31,23 +31,35 @@ function AuctionItem(props) {
                 <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
                   <span className="border first"></span>
                   <span className="label my-2 font-normal">
-                    No. of share <b>50</b>
+                    No. of orders <b>{props.data ? props.data.length : 0}</b>
                   </span>
                   <span className=" border last"></span>
                 </div>
-                <span className="label info success text-sm font-normal">
+                <span className="label info unsuccess text-sm font-normal">
                   <span></span>UnSuccessfull
                 </span>
-                <span className="label info unsuccess  text-sm font-normal">
+                <span className="label info success   text-sm font-normal">
                   <span></span>Successfull
                 </span>
-
-                <BarChart
-                  width="310px"
-                  height="211px"
-                  style={{ marginTop: '-25px' }}
-                  data={props.data}
-                />
+                {props.data && props.data.length > 0 ? (
+                  <BarChart
+                    width="310px"
+                    height="211px"
+                    style={{ marginTop: '-25px' }}
+                    data={props.data}
+                  />
+                ) : (
+                  <div
+                    className="relative pt-5"
+                    style={{
+                      width: '100%',
+                      height: '211px',
+                      marginBottom: '-29px',
+                    }}
+                  >
+                    <div>No Graph Data found</div>
+                  </div>
+                )}
               </div>
               <div className="w-full graph-bottom-label flex items-center text-white text-sm mt-8 justify-center font-normal h-10">
                 <span className="border first "></span>

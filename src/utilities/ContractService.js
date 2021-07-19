@@ -8,6 +8,7 @@ const TOKEN_ABI = {
   usdt: constants.CONTRACT_USDT_TOKEN_ABI,
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   ann: constants.CONTRACT_ANN_TOKEN_ABI,
+  wbtc: constants.CONTRACT_WBTC_TOKEN_ABI
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,

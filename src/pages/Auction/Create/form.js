@@ -451,9 +451,8 @@ export default function Form(props) {
       ) {
         obj[element.id] = emptyAddr;
       } else if (['cancellationDate', 'endDate', 'startDate'].indexOf(element.id) !== -1) {
-        console.log(element.id, element.value);
         let timeStamp = moment(element.value).valueOf();
-        timeStamp = timeStamp / 1000;
+        timeStamp = Math.floor(timeStamp / 1000);
         obj[element.id] = timeStamp;
       } else {
         obj[element.id] = element.value;

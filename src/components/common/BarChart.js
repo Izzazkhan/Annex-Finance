@@ -1,4 +1,4 @@
-import { BarChart, Bar, ResponsiveContainer, Cell, XAxis, Legend } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, Cell, XAxis, YAxis, Tooltip } from 'recharts';
 
 export default function Chart(props) {
   return (
@@ -18,7 +18,9 @@ export default function Chart(props) {
               return <Cell fill={color} key={index} />;
             })}
           </Bar>
-          <XAxis fontSize="12" key="name" />
+          <Tooltip />
+          <XAxis fontSize="12" dataKey="price" />
+          <YAxis fontSize="12" dataKey="sellAmount" />
         </BarChart>
       </ResponsiveContainer>
     </div>

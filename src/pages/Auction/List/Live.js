@@ -4,15 +4,15 @@ import subGraphContext from '../../../contexts/subgraph';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
-import { BigNumber } from '@ethersproject/bignumber';
 
 function Live(props) {
+  const currentTimeStamp = Math.floor(Date.now() / 1000);
   const subGraphInstance = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [auction, setAuction] = useState([]);
   const { error, loading, data } = useQuery(gql`
     {
-      auctions(first: 1000) {
+      auctions(where: { auctionEndDate_gt: "${currentTimeStamp}"}) {
         id
         type
         userId {
@@ -52,72 +52,34 @@ function Live(props) {
   useEffect(() => {
     if (data && data.auctions) {
       let arr = [];
-      let graphData = [
-        {
-          name: 'page 1',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-          isSuccessfull: false,
-        },
-        {
-          name: 'page 2.1',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-          isSuccessfull: false,
-        },
-        {
-          name: 'page 3.1',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-          isSuccessfull: false,
-        },
-        {
-          name: 'page 4.1',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-          isSuccessfull: true,
-        },
-        {
-          name: 'page 5.1',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-          isSuccessfull: true,
-        },
-        {
-          name: 'page 6.1',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-          isSuccessfull: true,
-        },
-      ];
       data.auctions.forEach((element) => {
         let auctionDecimal = element['auctioningToken']['decimals'];
         let biddingDecimal = element['biddingToken']['decimals'];
+        if (element.id === '7') {
+          console.log('start creating graphData');
+        }
         let { orders, clearingPriceOrder } = calculateClearingPrice(
           element.orders,
           auctionDecimal,
           biddingDecimal,
         );
-        let updatedGraphData = [];
+
+        let graphData = [];
         orders &&
           orders.forEach((item) => {
-            updatedGraphData.push({
+            graphData.push({
               ...item,
               isSuccessfull: item.price >= clearingPriceOrder.price,
             });
           });
-        console.log('clearingPrice', clearingPriceOrder);
-        console.log('orders', orders);
+        // console.log('clearingPrice', clearingPriceOrder);
+        if (element.id === '7') {
+          console.log('graphData', graphData);
+        }
         arr.push({
           ...element,
           chartType: 'block',
-          data: updatedGraphData,
+          data: graphData,
           status: 'Live',
           statusClass: 'live',
           title: element.type + ' Auction',
@@ -135,10 +97,12 @@ function Live(props) {
           <div>Loading...</div>
         ) : error ? (
           <div>{error}</div>
-        ) : (
+        ) : auction.length > 0 ? (
           auction.map((item, index) => {
             return <AuctionItem key={index} {...item} />;
           })
+        ) : (
+          <div>No data found</div>
         )}
       </div>
     </div>
