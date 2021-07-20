@@ -7,6 +7,7 @@ import {
 	toCallKey,
 } from "./actions";
 import { useActiveWeb3React } from "../../../hooks";
+import {notNull} from "../../../utils/notNull";
 
 const {
 	addMulticallListeners,
@@ -43,10 +44,10 @@ function useCallsData(calls, options) {
 	const serializedCallKeys = useMemo(
 		() =>
 			JSON.stringify(
-				calls
+				notNull(calls
 					?.filter((c) => Boolean(c))
-			?.map(toCallKey)
-					?.sort() || []
+					?.map(toCallKey)
+					?.sort(), [])
 			),
 	[calls]
 );
@@ -105,7 +106,7 @@ function toCallState(
 	if (valid && !blockNumber) return LOADING_CALL_STATE;
 	if (!contractInterface || !fragment || !latestBlockNumber) return LOADING_CALL_STATE;
 	const success = data && data.length > 2;
-	const syncing = (blockNumber || 0) < latestBlockNumber;
+	const syncing = (notNull(blockNumber, 0)) < latestBlockNumber;
 	let result;
 	if (success && data) {
 		try {
