@@ -178,7 +178,7 @@ function Table(props) {
                       </div>
                     </td>
                     <td>
-                      <div>0</div>
+                      <div>{item.lpToken}</div>
                     </td>
                     <td>
                       <div className="text-primary">
