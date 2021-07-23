@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import toHex from 'to-hex';
 import { methods } from '../../../utilities/ContractService';
+import Loading from '../../../components/UI/Loading';
+
 
 const Styles = styled.div`
   width: 100%;
@@ -137,10 +139,10 @@ function Table(props) {
             {props.loading ? (
               <tr>
                 <td colSpan="12">
-                  <div className="h-13 flex items-center justify-center px-4 py-2">
-                    <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                  <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+                    <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
                   </div>
-                </td>{' '}
+                </td>
               </tr>
             ) : props.data.length === 0 ? (
               <tr>
@@ -149,15 +151,14 @@ function Table(props) {
                 </td>{' '}
               </tr>
             ) : (
-              props.data.map((item, index) => {
-                let userId = item.userId.address.toLowerCase();
-                let account = props.account ? props.account.toLowerCase() : '0x';
-                console.log(userId === account);
-                return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
-                  <tr key={index}>
-                    <td>
-                      <div className="flex justify-start items-center space-x-2">
-                        {/* <img
+                  props.data.map((item, index) => {
+                    let userId = item.userId.address.toLowerCase();
+                    let account = props.account ? props.account.toLowerCase() : '0x';
+                    return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
+                      <tr key={index}>
+                        <td>
+                          <div className="flex justify-start items-center space-x-2">
+                            {/* <img
                           src={require('../../../assets/icons/bitcoinBlack.svg').default}
                           alt=""
                         /> */}
