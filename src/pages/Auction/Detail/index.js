@@ -91,7 +91,7 @@ function Detail(props) {
   const { account } = useActiveWeb3React();
   const { subGraphInstance, apolloClient } = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
-  const { error, loading, data } = useQuery();
+  const { error, loading, data } = useQuery(query);
   const auctionContract = getAuctionContract(state.type);
   useEffect(() => {
     if (data && data.auctions) {
@@ -288,10 +288,10 @@ function Detail(props) {
               <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
             </div>
           ) : (
-            <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-              {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
-            </h2>
-          )}
+              <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+                {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+              </h2>
+            )}
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
@@ -299,7 +299,9 @@ function Detail(props) {
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
-            {state.detail.biddingSymbol ? (
+            {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div> : (state.detail.biddingSymbol ? (
               <img
                 width="40"
                 className="mr-2"
@@ -310,8 +312,9 @@ function Detail(props) {
                 alt=""
               />
             ) : (
-              ''
-            )}{' '}
+                ''
+              ))}
+            {' '}
             {state.detail.biddingSymbol}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
@@ -334,9 +337,12 @@ function Detail(props) {
                 alt=""
               />
             ) : (
-              ''
-            )}{' '}
-            {`${state.detail.totalAuction} ${state.detail.auctionSymbol}`}
+                ''
+              )}{' '}
+            {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div> : (`${state.detail.totalAuction} ${state.detail.auctionSymbol}`)}
+
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
@@ -346,7 +352,10 @@ function Detail(props) {
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            {state.detail.minimumPrice} {state.detail.auctionSymbol}/
+            {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div> : (`${state.detail.minimumPrice} ${state.detail.auctionSymbol}/`)}
+
             <span className="text-blue">{state.detail.biddingSymbol}</span>
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
@@ -369,8 +378,8 @@ function Detail(props) {
                 )}
               />
             ) : (
-              ''
-            )}
+                ''
+              )}
           </div>
         </div>
       </div>
