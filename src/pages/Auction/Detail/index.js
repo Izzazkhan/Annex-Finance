@@ -6,7 +6,6 @@ import AuctionStatus from './status';
 import moment from 'moment';
 import subGraphContext from '../../../contexts/subgraph';
 import { gql } from '@apollo/client';
-import { useSubgraph } from 'thegraph-react';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import { getAuctionContract } from '../../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
@@ -23,6 +22,8 @@ function Detail(props) {
     auctionStatus: '',
     type: 'batch',
   });
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   let query = gql`
   {
     auctions(where: { id : ${props.match.params.id} }) {
@@ -89,10 +90,11 @@ function Detail(props) {
   }
 `;
   const { account } = useActiveWeb3React();
-  const { subGraphInstance, apolloClient } = useContext(subGraphContext);
-  const { useQuery } = useSubgraph(subGraphInstance);
-  const { error, loading, data } = useQuery();
+  const { apolloClient } = useContext(subGraphContext);
   const auctionContract = getAuctionContract(state.type);
+  useEffect(() => {
+    getData();
+  }, []);
   useEffect(() => {
     if (data && data.auctions) {
       let elem = data.auctions[0];
@@ -107,7 +109,6 @@ function Detail(props) {
       let totalAuction = elem['auctionedSellAmount']
         ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
         : 0;
-      console.log('currentPriceDecimal', currentPriceDecimal);
       let minimumPrice = new BigNumber(elem['minimumPrice'])
         .dividedBy(currentPriceDecimal)
         .toNumber();
@@ -129,9 +130,12 @@ function Detail(props) {
       let auctionEndDate = elem['auctionEndDate'];
       let auctionStartDate = elem['auctionStartDate'];
       let endDateDiff = getDateDiff(auctionEndDate);
+      let startDateDiff = getDateDiff(auctionStartDate);
       let isAllowCancellation = false;
-      if (endDateDiff < 0) {
-        auctionStatus = 'inprogress'; //'completed';
+      if (startDateDiff > 0) {
+        auctionStatus = 'upcoming';
+      } else if (endDateDiff < 0) {
+        auctionStatus = 'completed';
       } else {
         auctionStatus = 'inprogress';
       }
@@ -189,8 +193,8 @@ function Detail(props) {
         discordLink: elem['about']['discord'],
         mediumLink: elem['about']['medium'],
         twitterLink: elem['about']['twitter'],
-        status: 'Live',
-        statusClass: 'live',
+        status: auctionStatus,
+        statusClass: auctionStatus,
         title: type + ' Auction',
         contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
         token: elem['auctioningToken']['id'],
@@ -259,16 +263,35 @@ function Detail(props) {
     // return Number('1e' + biddingDecimal);
     return 1;
   };
-  const refreshQuery = () => {
-    apolloClient
-      .query({
-        query: query,
-        variables: {},
-      })
-      .then((data) => console.log('Subgraph data: ', data))
-      .catch((err) => {
-        console.log('Error fetching data: ', err);
-      });
+  const getData = () => {
+    try {
+      setLoading(true);
+      setData([]);
+      apolloClient
+        .query({
+          query: query,
+          variables: {},
+        })
+        .then((response) => {
+          let { data } = response;
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setData([]);
+          setLoading(false);
+        });
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  const updateAuctionStatus = (auctionStatus) => {
+    setState({
+      ...state,
+      detail: { ...state.detail, status: auctionStatus, statusClass: auctionStatus },
+      auctionStatus,
+    });
+    getData();
   };
   return (
     <div>
@@ -437,6 +460,8 @@ function Detail(props) {
             auctionStatus={state.auctionStatus}
             auctionContract={auctionContract}
             auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
+            getData={getData}
+            updateAuctionStatus={updateAuctionStatus}
           />
         </div>
       </div>
@@ -448,6 +473,7 @@ function Detail(props) {
         auctionContract={auctionContract}
         account={account}
         auctionStatus={state.auctionStatus}
+        getData={getData}
       />
     </div>
   );

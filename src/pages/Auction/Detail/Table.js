@@ -63,6 +63,7 @@ function Table(props) {
         [auctionId, [orderData]],
         props.account,
       );
+      props.getData();
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -84,6 +85,7 @@ function Table(props) {
         [auctionId, [orderData]],
         props.account,
       );
+      props.getData();
       setLoading(false);
     } catch (error) {
       setLoading(false);

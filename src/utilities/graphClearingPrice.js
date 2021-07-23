@@ -136,7 +136,6 @@ function findClearingPrice(sellOrders, initialAuctionOrder) {
 
 export function calculateClearingPrice(orders, auctionDecimal, biddingDecimal) {
   orders = getConvertedOrders(orders, auctionDecimal, biddingDecimal);
-  console.log('order converted');
   const initialOrder = orders[0]
     ? orders[0]
     : {

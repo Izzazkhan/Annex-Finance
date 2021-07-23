@@ -21,6 +21,8 @@ const AuctionStatus = ({
   auctionStatus,
   auctionContract,
   auctionAddr,
+  getData,
+  updateAuctionStatus
 }) => {
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
@@ -106,6 +108,7 @@ const AuctionStatus = ({
       setLoading(false);
       updateShowModal(true);
       updateModalType('success');
+      getData();
       setModalError({
         message: '',
         type: '',
@@ -126,6 +129,7 @@ const AuctionStatus = ({
       setLoading(true);
       console.log('settleAuction');
       await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
+      getData();
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -136,7 +140,9 @@ const AuctionStatus = ({
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
         <div className="flex flex-col items-start justify-start ">
           <div className="text-white text-2xl ">
-            {auctionStatus === 'inprogress'
+            {auctionStatus === 'upcoming'
+              ? 'Countdown'
+              : auctionStatus === 'inprogress'
               ? 'Auction Progress'
               : auctionStatus === 'completed'
               ? 'Auction Completed'
@@ -145,7 +151,9 @@ const AuctionStatus = ({
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      {auctionStatus === 'inprogress' ? (
+      {auctionStatus === 'upcoming' ? (
+        <AuctionCountDown auctionEndDate={auctionEndDate*1000} updateAuctionStatus={updateAuctionStatus}/>
+      ) : auctionStatus === 'inprogress' ? (
         <AuctionProgress
           auctionEndDate={auctionEndDate}
           detail={detail}
@@ -175,7 +183,7 @@ const AuctionStatus = ({
   );
 };
 
-const AuctionCountDown = ({ auctionEndDate }) => {
+const AuctionCountDown = ({ auctionEndDate ,updateAuctionStatus}) => {
   return (
     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
       <div className="w-full flex flex-col items-center justify-center ">
@@ -183,6 +191,7 @@ const AuctionCountDown = ({ auctionEndDate }) => {
         <div className="counter bg-primary flex flex-row items-center py-10 rounded-2xl">
           <Countdown
             date={auctionEndDate}
+            onComplete={() => updateAuctionStatus('inprogress')}
             renderer={({ days, hours, minutes, seconds }) => (
               <Fragment>
                 <div className="flex flex-col items-center px-6 border-r border-lightprimary">
@@ -370,10 +379,17 @@ const AuctionProgress = (props) => {
             <div className="label flex flex-row justify-between items-center mb-4">
               <div className="flex flex-col">
                 <div className="text-md text-primary font-bold mb-2 ">Commitment</div>
-                <div className="text-md ">
-                To calculate the price: 
-                </div>
+                <div className="text-md ">To calculate the price:</div>
                 <div className="text-md "> Sell amount/ Min Buy amount. </div>
+                {state.sellAmount && state.minBuyAmount ? (
+                  <div className="text-md ">
+                    {' '}
+                    <b>Price:</b>
+                    {state.sellAmount / state.minBuyAmount}
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
           </div>
