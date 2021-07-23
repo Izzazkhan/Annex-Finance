@@ -311,10 +311,10 @@ function Detail(props) {
               <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
             </div>
           ) : (
-              <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-                {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
-              </h2>
-            )}
+            <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+              {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+            </h2>
+          )}
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
@@ -322,9 +322,11 @@ function Detail(props) {
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
-            {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
-              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-            </div> : (state.detail.biddingSymbol ? (
+            {loading ? (
+              <div className="h-13 flex items-center justify-center px-4 py-2">
+                <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+              </div>
+            ) : state.detail.biddingSymbol ? (
               <img
                 width="40"
                 className="mr-2"
@@ -335,9 +337,8 @@ function Detail(props) {
                 alt=""
               />
             ) : (
-                ''
-              ))}
-            {' '}
+              ''
+            )}{' '}
             {state.detail.biddingSymbol}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
@@ -360,12 +361,15 @@ function Detail(props) {
                 alt=""
               />
             ) : (
-                ''
-              )}{' '}
-            {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
-              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-            </div> : (`${state.detail.totalAuction} ${state.detail.auctionSymbol}`)}
-
+              ''
+            )}{' '}
+            {loading ? (
+              <div className="h-13 flex items-center justify-center px-4 py-2">
+                <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+              </div>
+            ) : (
+              `${state.detail.totalAuction} ${state.detail.auctionSymbol}`
+            )}
             <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
@@ -375,9 +379,13 @@ function Detail(props) {
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
           <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
-              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-            </div> : (`${state.detail.minimumPrice} ${state.detail.auctionSymbol}/`)}
+            {loading ? (
+              <div className="h-13 flex items-center justify-center px-4 py-2">
+                <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+              </div>
+            ) : (
+              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}/`
+            )}
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
           </h2>
@@ -391,18 +399,24 @@ function Detail(props) {
           <div className="relative xl:absolute timer flex flex-col justify-between items-center">
             {!loading ? (
               <Countdown
-                date={state.auctionEndDate * 1000}
+                date={
+                  (state.detail.auctionStatus === 'upcoming'
+                    ? state.auctionStartDate
+                    : state.auctionEndDate) * 1000
+                }
+                onComplete={() => updateAuctionStatus()}
                 renderer={(props) => (
                   <ProgressBar
                     {...props}
+                    label={state.detail.auctionStatus === 'upcoming' ? 'STARTS IN' :'ENDS IN'}
                     auctionEndDate={state.auctionEndDate * 1000}
                     auctionStartDate={state.auctionStartDate * 1000}
                   />
                 )}
               />
             ) : (
-                ''
-              )}
+              ''
+            )}
           </div>
         </div>
       </div>
@@ -470,7 +484,6 @@ function Detail(props) {
             auctionContract={auctionContract}
             auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
             getData={getData}
-            updateAuctionStatus={updateAuctionStatus}
           />
         </div>
       </div>
@@ -496,6 +509,7 @@ const ProgressBar = ({
   completed,
   auctionEndDate,
   auctionStartDate,
+  label
 }) => {
   // let percentage =
   //   ((currentTimeStamp - auctionStartDate) / (auctionEndDate - auctionStartDate)) * 100;
@@ -539,7 +553,7 @@ const ProgressBar = ({
               {days}:{hours}:{minutes}:{seconds}
             </div>
             <div className="text-white font-bold text-3xl">
-              {completed ? 'Completed' : 'ENDS IN'}
+              {completed ? 'Completed' : label}
             </div>
           </div>
         </div>

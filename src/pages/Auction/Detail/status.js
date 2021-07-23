@@ -22,7 +22,6 @@ const AuctionStatus = ({
   auctionContract,
   auctionAddr,
   getData,
-  updateAuctionStatus
 }) => {
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
@@ -152,7 +151,7 @@ const AuctionStatus = ({
         </div>
       </div>
       {auctionStatus === 'upcoming' ? (
-        <AuctionCountDown auctionEndDate={auctionEndDate*1000} updateAuctionStatus={updateAuctionStatus}/>
+        <AuctionCountDown auctionEndDate={auctionEndDate*1000} />
       ) : auctionStatus === 'inprogress' ? (
         <AuctionProgress
           auctionEndDate={auctionEndDate}
@@ -183,7 +182,7 @@ const AuctionStatus = ({
   );
 };
 
-const AuctionCountDown = ({ auctionEndDate ,updateAuctionStatus}) => {
+const AuctionCountDown = ({ auctionEndDate }) => {
   return (
     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
       <div className="w-full flex flex-col items-center justify-center ">
@@ -191,7 +190,6 @@ const AuctionCountDown = ({ auctionEndDate ,updateAuctionStatus}) => {
         <div className="counter bg-primary flex flex-row items-center py-10 rounded-2xl">
           <Countdown
             date={auctionEndDate}
-            onComplete={() => updateAuctionStatus('inprogress')}
             renderer={({ days, hours, minutes, seconds }) => (
               <Fragment>
                 <div className="flex flex-col items-center px-6 border-r border-lightprimary">
@@ -310,7 +308,7 @@ const AuctionProgress = (props) => {
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
               <span className="border first"></span>
               <span className="label my-2 font-normal">
-                No. of share <b>50</b>
+                No. of orders <b>{props.detail && props.detail.data ?  props.detail.data.length: 0 }</b>
               </span>
               <span className=" border last"></span>
             </div>
