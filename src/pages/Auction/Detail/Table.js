@@ -135,7 +135,9 @@ function Table(props) {
             {props.loading ? (
               <tr>
                 <td colSpan="12">
-                  <div>Loading...</div>
+                  <div className="h-13 flex items-center justify-center px-4 py-2">
+                    <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                  </div>
                 </td>{' '}
               </tr>
             ) : props.data.length === 0 ? (
