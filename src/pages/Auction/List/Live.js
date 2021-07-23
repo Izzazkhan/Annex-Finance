@@ -4,6 +4,7 @@ import subGraphContext from '../../../contexts/subgraph';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
+import Loading from '../../../components/UI/Loading';
 
 function Live(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -92,19 +93,22 @@ function Live(props) {
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
       <h2 className="text-white ml-5 text-4xl font-normal">Live Auctions</h2>
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
-        {loading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>{error}</div>
-        ) : auction.length > 0 ? (
-          auction.map((item, index) => {
+
+      {loading ? (
+        <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+          <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+        </div>
+      ) : error ? (
+        <div>{error}</div>
+      ) : auction.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
+          {auction.map((item, index) => {
             return <AuctionItem key={index} {...item} />;
-          })
-        ) : (
-          <div>No data found</div>
-        )}
-      </div>
+          })}
+        </div>
+      ) : (
+        <div>No data found</div>
+      )}
     </div>
   );
 }

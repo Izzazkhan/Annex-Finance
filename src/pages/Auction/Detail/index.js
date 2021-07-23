@@ -107,12 +107,16 @@ function Detail(props) {
         ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
         : 0;
       console.log('currentPriceDecimal', currentPriceDecimal);
-      let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(currentPriceDecimal).toNumber();
+      let minimumPrice = new BigNumber(elem['minimumPrice'])
+        .dividedBy(currentPriceDecimal)
+        .toNumber();
       let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toNumber();
       let currentPrice = new BigNumber(elem['currentPrice'])
         .dividedBy(currentPriceDecimal)
         .toNumber();
-      let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder']).dividedBy(biddingDecimal).toNumber();
+      let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
+        .dividedBy(biddingDecimal)
+        .toNumber();
       minimumPrice = convertExponentToNum(minimumPrice);
       maxAvailable = convertExponentToNum(maxAvailable);
       currentPrice = convertExponentToNum(currentPrice);
@@ -126,7 +130,7 @@ function Detail(props) {
       let endDateDiff = getDateDiff(auctionEndDate);
       let isAllowCancellation = false;
       if (endDateDiff < 0) {
-        auctionStatus = 'completed';
+        auctionStatus = 'inprogress'; //'completed';
       } else {
         auctionStatus = 'inprogress';
       }
@@ -267,9 +271,15 @@ function Detail(props) {
         text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row  justify-between relative"
       >
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
-          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-            {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
-          </h2>
+          {loading ? (
+            <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div>
+          ) : (
+            <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+              {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+            </h2>
+          )}
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
             <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
