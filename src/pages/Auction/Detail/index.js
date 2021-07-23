@@ -92,6 +92,7 @@ function Detail(props) {
   const { account } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const auctionContract = getAuctionContract(state.type);
+
   useEffect(() => {
     getData();
   }, []);
@@ -156,10 +157,10 @@ function Detail(props) {
         let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
           .dividedBy(auctionDecimal)
           .toString();
+        let auctionDivSellAmount = new BigNumber(order['sellAmount'])
+          .dividedBy(biddingDecimal)
+          .toString();
         if (orderLength - 1 === index) {
-          let auctionDivSellAmount = new BigNumber(order['sellAmount'])
-            .dividedBy(biddingDecimal)
-            .toString();
           placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
           placeholderSellAmount = Number(auctionDivSellAmount) + 1;
           if (placeHolderMinBuyAmount > maxAvailable || placeholderSellAmount > maxAvailable) {
@@ -167,7 +168,13 @@ function Detail(props) {
             placeholderSellAmount = maxAvailable;
           }
         }
-        orders.push({ ...order, auctionDivBuyAmount, auctionSymbol, biddingSymbol });
+        orders.push({
+          ...order,
+          auctionDivBuyAmount,
+          auctionDivSellAmount,
+          auctionSymbol,
+          biddingSymbol,
+        });
       });
       if (orderLength === 0) {
         placeHolderMinBuyAmount = minBuyAmount;
@@ -286,12 +293,19 @@ function Detail(props) {
     }
   };
   const updateAuctionStatus = (auctionStatus) => {
-    setState({
-      ...state,
-      detail: { ...state.detail, status: auctionStatus, statusClass: auctionStatus },
-      auctionStatus,
-    });
+    // setState({
+    //   ...state,
+    //   detail: { ...state.detail, status: auctionStatus, statusClass: auctionStatus },
+    //   auctionStatus,
+    // });
     getData();
+  };
+  const calculateLPTokens = () => {
+    // return new Promise(async (resolve, reject) => {
+    //   try {
+    //     // await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
+    //   } catch (err) {}
+    // });
   };
   return (
     <div>
@@ -408,7 +422,7 @@ function Detail(props) {
                 renderer={(props) => (
                   <ProgressBar
                     {...props}
-                    label={state.detail.auctionStatus === 'upcoming' ? 'STARTS IN' :'ENDS IN'}
+                    label={state.detail.auctionStatus === 'upcoming' ? 'STARTS IN' : 'ENDS IN'}
                     auctionEndDate={state.auctionEndDate * 1000}
                     auctionStartDate={state.auctionStartDate * 1000}
                   />
@@ -438,25 +452,37 @@ function Detail(props) {
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Contract</div>
               <div className="text-xl font-medium">
-                {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
-                  <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-                </div> : state.detail.contract}
+                {loading ? (
+                  <div className="h-13 flex items-center justify-center px-4 py-2">
+                    <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                  </div>
+                ) : (
+                  state.detail.contract
+                )}
               </div>
             </div>
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Token</div>
               <div className="text-xl font-medium">
-                {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
-                  <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-                </div> : state.detail.token}
+                {loading ? (
+                  <div className="h-13 flex items-center justify-center px-4 py-2">
+                    <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                  </div>
+                ) : (
+                  state.detail.token
+                )}
               </div>
             </div>
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Website</div>
               <div className="text-xl font-medium">
-                {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
-                  <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-                </div> : state.detail.website}
+                {loading ? (
+                  <div className="h-13 flex items-center justify-center px-4 py-2">
+                    <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                  </div>
+                ) : (
+                  state.detail.website
+                )}
               </div>
             </div>
             <div className="flex flex-col  mb-7">
@@ -521,7 +547,7 @@ const ProgressBar = ({
   completed,
   auctionEndDate,
   auctionStartDate,
-  label
+  label,
 }) => {
   // let percentage =
   //   ((currentTimeStamp - auctionStartDate) / (auctionEndDate - auctionStartDate)) * 100;
@@ -564,9 +590,7 @@ const ProgressBar = ({
               {' '}
               {days}:{hours}:{minutes}:{seconds}
             </div>
-            <div className="text-white font-bold text-3xl">
-              {completed ? 'Completed' : label}
-            </div>
+            <div className="text-white font-bold text-3xl">{completed ? 'Completed' : label}</div>
           </div>
         </div>
       </div>
