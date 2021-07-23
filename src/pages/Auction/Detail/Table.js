@@ -148,6 +148,7 @@ function Table(props) {
               </tr>
             ) : (
                   props.data.map((item, index) => {
+                    console.log(item, "Item")
                     let userId = item.userId.address.toLowerCase();
                     let account = props.account ? props.account.toLowerCase() : '0x';
                     console.log(userId === account);
