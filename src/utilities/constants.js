@@ -107,13 +107,13 @@ export const CONTRACT_TOKEN_ADDRESS =
           asset: ann,
           aAsset: ann
         },
-        wbtc: {
-          id: 'wbtc',
-          symbol: 'wbtc',
-          address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-          asset: btc,
-          aAsset: btc
-        }
+        // wbtc: {
+        //   id: 'wbtc',
+        //   symbol: 'wbtc',
+        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+        //   asset: btc,
+        //   aAsset: btc
+        // }
       }
     : {
         usdc: {
@@ -149,13 +149,14 @@ export const CONTRACT_TOKEN_ADDRESS =
           address: process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS,
           asset: ann,
           aAsset: ann
-        }, wbtc: {
-          id: 'wbtc',
-          symbol: 'wbtc',
-          address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-          asset: btc,
-          aAsset: btc
-        }
+        },
+        //  wbtc: {
+        //   id: 'wbtc',
+        //   symbol: 'wbtc',
+        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+        //   asset: btc,
+        //   aAsset: btc
+        // }
       };
 
 // eslint-disable-next-line max-len
@@ -206,11 +207,11 @@ export const CONTRACT_ABEP_ADDRESS =
           symbol: 'ANN',
           address: process.env.REACT_APP_TEST_ANN_ABEP_ADDRESS
         },
-        wbtc: {
-          id: 'wbtc',
-          symbol: 'WBTC',
-          address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
-        },
+        // wbtc: {
+        //   id: 'wbtc',
+        //   symbol: 'WBTC',
+        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
+        // },
       }
     : {
         usdc: {
@@ -238,11 +239,11 @@ export const CONTRACT_ABEP_ADDRESS =
           symbol: 'ANN',
           address: process.env.REACT_APP_MAIN_ANN_ABEP_ADDRESS
         },
-         wbtc: {
-          id: 'wbtc',
-          symbol: 'WBTC',
-          address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
-        },
+        //  wbtc: {
+        //   id: 'wbtc',
+        //   symbol: 'WBTC',
+        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
+        // },
       };
 
 // eslint-disable-next-line max-len
@@ -295,14 +296,14 @@ export const BIDDING_AUCTION_TOKEN =  process.env.REACT_APP_ENV === 'dev'
     "address": process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS,
     "contract": "FaucetToken",
   },
-  wbtc: {
-    id: 'wbtc',
-    "name": "Wrapped Bitcoin",
-    "symbol": "WBTC",
-    "decimals": 18,
-    "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-    "contract": "FaucetToken",
-  }
+  // wbtc: {
+  //   id: 'wbtc',
+  //   "name": "Wrapped Bitcoin",
+  //   "symbol": "WBTC",
+  //   "decimals": 18,
+  //   "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+  //   "contract": "FaucetToken",
+  // }
 }:{
   usdc: {
     id: 'usdc',
@@ -320,14 +321,14 @@ export const BIDDING_AUCTION_TOKEN =  process.env.REACT_APP_ENV === 'dev'
     "address": process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
     "contract": "FaucetToken",
   },
-   wbtc: {
-    id: 'wbtc',
-    "name": "Wrapped Bitcoin",
-    "symbol": "WBTC",
-    "decimals": 18,
-    "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-    "contract": "FaucetToken",
-  }
+  //  wbtc: {
+  //   id: 'wbtc',
+  //   "name": "Wrapped Bitcoin",
+  //   "symbol": "WBTC",
+  //   "decimals": 18,
+  //   "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+  //   "contract": "FaucetToken",
+  // }
 } ;
 export const CONTRACT_ANNEX_AUCTION =
   process.env.REACT_APP_ENV === 'dev'

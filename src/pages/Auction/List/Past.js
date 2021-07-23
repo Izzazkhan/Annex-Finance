@@ -8,7 +8,7 @@ import Loading from '../../../components/UI/Loading';
 
 function Past(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
-  const subGraphInstance = useContext(subGraphContext);
+  const {subGraphInstance} = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [auction, setAuction] = useState([]);
   const { error, loading, data } = useQuery(gql`

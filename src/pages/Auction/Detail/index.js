@@ -23,74 +23,75 @@ function Detail(props) {
     auctionStatus: '',
     type: 'batch',
   });
-  const { account } = useActiveWeb3React();
-  const subGraphInstance = useContext(subGraphContext);
-  const { useQuery } = useSubgraph(subGraphInstance);
-  const { error, loading, data } = useQuery(gql`
-    {
-      auctions(where: { id : ${props.match.params.id} }) {
+  let query = gql`
+  {
+    auctions(where: { id : ${props.match.params.id} }) {
+      id
+      type
+      userId {
         id
-        type
-        userId {
-          id
-          address
-        }
-        auctioningToken {
-          id
-          name
-          symbol
-          decimals
-        }
-        biddingToken {
-          id
-          name
-          symbol
-          decimals
-        }
-        about {
-          id
-          telegram
-          discord
-          medium
-          twitter
-          description
-          website
-        }
-        minimumPrice 
-        maxAvailable 
-        currentPrice 
-        minimumBiddingAmountPerOrder
-        orderCancellationEndDate
-        auctionStartDate
-        auctionEndDate
-        auctionedSellAmount
-        minBuyAmount
-        liquidity
-        soldAuctioningTokens
-        clearingPriceOrder
+        address
       }
-      orders(where: { auctionId : "${props.match.params.id}" }){
+      auctioningToken {
         id
-        userId {
-          id,
-          address
-        }
-        auctionId {
-          id
-        }
-        buyAmount
-        sellAmount
-        status
-        claimableLP
-        txHash
-        blockNumber
-        timestamp
-        bidder{
-          status
-        }
-        }
+        name
+        symbol
+        decimals
+      }
+      biddingToken {
+        id
+        name
+        symbol
+        decimals
+      }
+      about {
+        id
+        telegram
+        discord
+        medium
+        twitter
+        description
+        website
+      }
+      minimumPrice 
+      maxAvailable 
+      currentPrice 
+      minimumBiddingAmountPerOrder
+      orderCancellationEndDate
+      auctionStartDate
+      auctionEndDate
+      auctionedSellAmount
+      minBuyAmount
+      liquidity
+      soldAuctioningTokens
+      clearingPriceOrder
     }
-  `);
+    orders(where: { auctionId : "${props.match.params.id}" }){
+      id
+      userId {
+        id,
+        address
+      }
+      auctionId {
+        id
+      }
+      buyAmount
+      sellAmount
+      status
+      claimableLP
+      txHash
+      blockNumber
+      timestamp
+      bidder{
+        status
+      }
+      }
+  }
+`;
+  const { account } = useActiveWeb3React();
+  const { subGraphInstance, apolloClient } = useContext(subGraphContext);
+  const { useQuery } = useSubgraph(subGraphInstance);
+  const { error, loading, data } = useQuery();
   const auctionContract = getAuctionContract(state.type);
   useEffect(() => {
     if (data && data.auctions) {
@@ -257,6 +258,17 @@ function Detail(props) {
     // }
     // return Number('1e' + biddingDecimal);
     return 1;
+  };
+  const refreshQuery = () => {
+    apolloClient
+      .query({
+        query: query,
+        variables: {},
+      })
+      .then((data) => console.log('Subgraph data: ', data))
+      .catch((err) => {
+        console.log('Error fetching data: ', err);
+      });
   };
   return (
     <div>

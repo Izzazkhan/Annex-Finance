@@ -8,48 +8,50 @@ import Loading from '../../../components/UI/Loading';
 
 function Live(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
-  const subGraphInstance = useContext(subGraphContext);
-  const { useQuery } = useSubgraph(subGraphInstance);
-  const [auction, setAuction] = useState([]);
-  const { error, loading, data } = useQuery(gql`
-    {
-      auctions(where: { auctionEndDate_gt: "${currentTimeStamp}"}) {
+  let query = gql`
+  {
+    auctions(where: { auctionEndDate_gt: "${currentTimeStamp}"}) {
+      id
+      type
+      userId {
         id
-        type
+        address
+      }
+      auctioningToken {
+        id
+        decimals
+      }
+      biddingToken {
+        id
+        decimals
+      }
+      orderCancellationEndDate
+      auctionEndDate
+      orders {
+        id
+        buyAmount
+        sellAmount
+        claimableLP
+        status
         userId {
           id
-          address
         }
-        auctioningToken {
+        auctionId {
           id
-          decimals
         }
-        biddingToken {
+        bidder {
           id
-          decimals
-        }
-        orderCancellationEndDate
-        auctionEndDate
-        orders {
-          id
-          buyAmount
-          sellAmount
-          claimableLP
           status
-          userId {
-            id
-          }
-          auctionId {
-            id
-          }
-          bidder {
-            id
-            status
-          }
         }
       }
     }
-  `);
+  }
+`;
+  const { subGraphInstance } = useContext(subGraphContext);
+  const { useQuery } = useSubgraph(subGraphInstance);
+  const [auction, setAuction] = useState([]);
+  const { error, loading, data } = useQuery(query);
+
   useEffect(() => {
     if (data && data.auctions) {
       let arr = [];
