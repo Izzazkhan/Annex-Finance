@@ -437,15 +437,27 @@ function Detail(props) {
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Contract</div>
-              <div className="text-xl font-medium">{state.detail.contract}</div>
+              <div className="text-xl font-medium">
+                {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
+                  <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                </div> : state.detail.contract}
+              </div>
             </div>
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Token</div>
-              <div className="text-xl font-medium">{state.detail.token}</div>
+              <div className="text-xl font-medium">
+                {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
+                  <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                </div> : state.detail.token}
+              </div>
             </div>
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Website</div>
-              <div className="text-xl font-medium">{state.detail.website}</div>
+              <div className="text-xl font-medium">
+                {loading ? <div className="h-13 flex items-center justify-center px-4 py-2">
+                  <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+                </div> : state.detail.website}
+              </div>
             </div>
             <div className="flex flex-col  mb-7">
               <div className="text-lg font-medium mb-3">About</div>
