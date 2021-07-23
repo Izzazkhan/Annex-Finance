@@ -2,7 +2,7 @@ import { Token, TokenAmount } from "@pancakeswap-libs/sdk";
 import { useMemo } from "react";
 
 import { useTokenContract } from "../hooks/useContract";
-import { useSingleCallResult } from "../core/modules/multicall/hooks";
+import { useSingleCallResult } from "../core";
 
 export function useTokenAllowance(token, owner, spender) {
 	const contract = useTokenContract(token?.address, false);

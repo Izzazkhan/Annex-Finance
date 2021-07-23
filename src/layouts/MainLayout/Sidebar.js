@@ -204,32 +204,32 @@ function Sidebar({ isOpen, onClose, settings }) {
         className={`bg-sidebar pt-6 px-2 fixed h-full overflow-auto flex flex-col
                    transform ease-in-out transition-all duration-300 z-30 
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
-      >
-        <div className="flex justify-center items-center mt-14 cursor-pointer" onClick={onClose}>
-          <Logo src={logo} alt="Annex" />
-        </div>
-        <NavItems
-          items={sidebarItems}
-          wrapperClassName="pt-10 pb-5"
-          search={search}
-          history={history}
-          pathname={pathname}
-          activeMenu={activeMenu}
-          toggleDropdown={toggleDropdown}
-        />
-        <Navigation
-          isOpen={isOpen}
-          wrapperClassName="block xl:hidden"
-          onClose={onClose}
-          totalLiquidity={settings.totalLiquidity}
-          totalXaiMinted={totalXaiMinted}
-        />
-        <div className="mt-auto mb-10 pl-8">
-          <div className="font-bold text-white">Annex Trading</div>
-          <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
-        </div>
-      </Wrapper>
-    </>
+        >
+          <div className="flex justify-center items-center mt-14 cursor-pointer" onClick={onClose}>
+            <Logo  src={logo} alt="Annex" />
+          </div>
+          <NavItems
+              items={sidebarItems}
+              wrapperClassName="pt-10"
+              search={search}
+              history={history}
+              pathname={pathname}
+              activeMenu={activeMenu}
+              toggleDropdown={toggleDropdown}
+          />
+          <Navigation
+              isOpen={isOpen}
+              wrapperClassName="block xl:hidden"
+              onClose={onClose}
+              totalLiquidity={settings.totalLiquidity}
+              totalXaiMinted={totalXaiMinted}
+          />
+          <div className="mt-auto mb-10 pl-8">
+            <div className="font-bold text-white">Annex Finance</div>
+            <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
+          </div>
+        </Wrapper>
+      </>
   );
 }
 

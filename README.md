@@ -32,7 +32,7 @@ annex-frontend
 ├── README.md
 ```
 
-## Quick Deployment Script
+## Quick Deployment
 
 ```sh
 npm install
