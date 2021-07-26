@@ -57,11 +57,9 @@ const sidebarItems = [
   // eslint-disable-next-line react/display-name
   { key: 3, icon: (fill) => <AnnexIcon fill={fill} />, title: 'Annex', href: RouteMap.annex },
   // eslint-disable-next-line react/display-name
-  { key: 4, icon: (fill) => <MarketIcon fill={fill} />, title: 'Market', href: RouteMap.market },
-  // eslint-disable-next-line react/display-name
-  { key: 5, icon: (fill) => <VaultIcon fill={fill} />, title: 'Vault', href: RouteMap.vault },
+  { key: 4,  icon: (fill) => <MarketIcon fill={fill} />, title: 'Market', href: RouteMap.market.index,},
   {
-    key: 6,
+    key: 5,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <TradeIcon fill={fill} />,
     title: 'Trade',
@@ -72,11 +70,11 @@ const sidebarItems = [
     ],
   },
   // eslint-disable-next-line react/display-name
-  { key: 7, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+  { key: 6, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
   // eslint-disable-next-line react/display-name
-  { key: 8, icon: (fill) => <PoolsIcon fill={fill} />, title: 'Pools', href: RouteMap.pools },
+  { key: 7, icon: (fill) => <PoolsIcon fill={fill} />, title: 'Pools', href: RouteMap.pools },
   {
-    key: 9,
+    key: 8,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <Auction fill={fill} />,
     title: 'Auction',
@@ -204,32 +202,32 @@ function Sidebar({ isOpen, onClose, settings }) {
         className={`bg-sidebar pt-6 px-2 fixed h-full overflow-auto flex flex-col
                    transform ease-in-out transition-all duration-300 z-30 
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        >
-          <div className="flex justify-center items-center mt-14 cursor-pointer" onClick={onClose}>
-            <Logo  src={logo} alt="Annex" />
-          </div>
-          <NavItems
-              items={sidebarItems}
-              wrapperClassName="pt-10"
-              search={search}
-              history={history}
-              pathname={pathname}
-              activeMenu={activeMenu}
-              toggleDropdown={toggleDropdown}
-          />
-          <Navigation
-              isOpen={isOpen}
-              wrapperClassName="block xl:hidden"
-              onClose={onClose}
-              totalLiquidity={settings.totalLiquidity}
-              totalXaiMinted={totalXaiMinted}
-          />
-          <div className="mt-auto mb-10 pl-8">
-            <div className="font-bold text-white">Annex Finance</div>
-            <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
-          </div>
-        </Wrapper>
-      </>
+      >
+        <div className="flex justify-center items-center mt-14 cursor-pointer" onClick={onClose}>
+          <Logo src={logo} alt="Annex" />
+        </div>
+        <NavItems
+          items={sidebarItems}
+          wrapperClassName="pt-10"
+          search={search}
+          history={history}
+          pathname={pathname}
+          activeMenu={activeMenu}
+          toggleDropdown={toggleDropdown}
+        />
+        <Navigation
+          isOpen={isOpen}
+          wrapperClassName="block xl:hidden"
+          onClose={onClose}
+          totalLiquidity={settings.totalLiquidity}
+          totalXaiMinted={totalXaiMinted}
+        />
+        <div className="mt-auto mb-10 pl-8">
+          <div className="font-bold text-white">Annex Finance</div>
+          <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
+        </div>
+      </Wrapper>
+    </>
   );
 }
 
