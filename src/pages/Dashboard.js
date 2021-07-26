@@ -33,10 +33,10 @@ import {promisify} from "../utilities";
 import sxp from "../assets/images/coins/sxp.png";
 import arrowUp from '../assets/icons/arrowUp.png';
 import arrowDown from '../assets/icons/arrowDown.png';
-import PendingTransaction from "../components/dashboard/PendingTransaction.js";
+// import PendingTransaction from "../components/dashboard/PendingTransaction.js";
 import toast from "../components/UI/Toast";
-import AccountOverview from "../components/dashboard/AccountOverview.js";
-import MarketHistory from "../components/dashboard/MarketHistory.js";
+// import AccountOverview from "../components/dashboard/AccountOverview.js";
+// import MarketHistory from "../components/dashboard/MarketHistory.js";
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -990,7 +990,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           </div>
         </div>
       )}
-      <AccountOverview
+      {/* <AccountOverview
         available={available}
         borrowPercent={borrowPercent}
         balance={annBalance}
@@ -1001,7 +1001,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         setWithANN={setWithANN}
         netAPY={netAPY}
         settings={settings}
-      />
+      /> */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-stretch mt-5">
         <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
           {(suppliedAssets.length === 0 && nonSuppliedAssets.length === 0) && (
@@ -1030,13 +1030,13 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           {borrowedAssets.length > 0 && (
               <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
           )}
-          {
+          {/* {
             settings.pendingInfo &&
             settings.pendingInfo.status &&
             ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
                 <PendingTransaction />
             )
-          }
+          } */}
           {nonBorrowedAssets.length > 0 && (
               <DataTable
                   title="All Borrow Markets"
@@ -1046,7 +1046,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           )}
         </div>
       </div>
-      <MarketHistory
+      {/* <MarketHistory
         options={options}
         handleChangeAsset={handleChangeAsset}
         marketInfo={marketInfo}
@@ -1055,7 +1055,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         currentAsset={currentAsset}
         currentAPY={currentAPY}
         data={data}
-      />
+      /> */}
     </Layout>
   );
 }
