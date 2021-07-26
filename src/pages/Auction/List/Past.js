@@ -5,6 +5,7 @@ import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
+import moment from 'moment';
 
 function Past(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -62,6 +63,7 @@ function Past(props) {
           auctionDecimal,
           biddingDecimal,
         );
+        let formatedAuctionDate = moment.unix(element['auctionEndDate']).format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
         orders &&
           orders.forEach((item) => {
@@ -76,6 +78,7 @@ function Past(props) {
           data: graphData,
           status: 'Finished',
           statusClass: 'past',
+          formatedAuctionDate,
           dateLabel:'End Date',
           title: element.type + ' Auction',
         });

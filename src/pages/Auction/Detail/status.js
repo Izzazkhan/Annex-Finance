@@ -299,10 +299,10 @@ const AuctionProgress = (props) => {
     return isValid;
   };
   const showCommitModal = () => {
-    // let isValid = validateForm();
-    // if (isValid) {
-    props.handleSubmit(state.minBuyAmount, state.sellAmount);
-    // }
+    let isValid = validateForm();
+    if (isValid) {
+      props.handleSubmit(state.minBuyAmount, state.sellAmount);
+    }
   };
   return (
     <>

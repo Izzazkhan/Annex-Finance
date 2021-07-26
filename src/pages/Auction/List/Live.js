@@ -65,7 +65,7 @@ function Live(props) {
           auctionDecimal,
           biddingDecimal,
         );
-        // moment.unix(value).format("MM/DD/YYYY")
+        let formatedAuctionDate = moment.unix(element['auctionEndDate']).format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
         orders &&
           orders.forEach((item) => {
@@ -80,7 +80,8 @@ function Live(props) {
           data: graphData,
           status: 'Live',
           statusClass: 'live',
-          dateLabel:'Completion Date',
+          dateLabel: 'Completion Date',
+          formatedAuctionDate,
           title: element.type + ' Auction',
         });
       });
@@ -105,8 +106,8 @@ function Live(props) {
           })}
         </div>
       ) : (
-              <div className="text-center mb-5 mt-5">No data found</div>
-            )}
+        <div className="text-center mb-5 mt-5">No data found</div>
+      )}
     </div>
   );
 }

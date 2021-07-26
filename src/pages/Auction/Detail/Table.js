@@ -5,7 +5,6 @@ import toHex from 'to-hex';
 import { methods } from '../../../utilities/ContractService';
 import Loading from '../../../components/UI/Loading';
 
-
 const Styles = styled.div`
   width: 100%;
   overflow: auto;
@@ -39,6 +38,8 @@ const Styles = styled.div`
 `;
 
 function Table(props) {
+  const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
+  const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isShowMyOrder, updateMyOrder] = useState(false);
   const trimAddress = (address) => {
@@ -101,6 +102,28 @@ function Table(props) {
       sellAmount.slice(2).padStart(24, '0')
     );
   };
+  const handleClaimCheckbox = (item) => {
+    let arr = [...selectedClaimOrders];
+    let index = arr.findIndex((x) => x.id === item.id);
+    if (index !== -1) {
+      arr.splice(index, 1);
+    } else {
+      arr.push(item);
+    }
+    console.log('selectedClaimOrders',selectedClaimOrders)
+    updateSelectedClaimOrders(arr);
+  };
+  const handleCancelCheckbox = (item) => {
+    let arr = [...selectedCancelOrders];
+    let index = arr.findIndex((x) => x.id === item.id);
+    if (index !== -1) {
+      arr.splice(index, 1);
+    } else {
+      arr.push(item);
+    }
+    console.log('selectedCancelOrders',selectedCancelOrders)
+    updateSelectedCancelOrders(arr);
+  };
   // Render the UI for your table
   return (
     <div className="relative w-full">
@@ -119,7 +142,8 @@ function Table(props) {
               />
               <span className="checkmark"></span>
             </label>
-            <button className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">Claim
+            <button className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">
+              {props.isAllowCancellation ? 'Cancel' : 'Claim'}
             </button>
           </div>
         </div>
@@ -133,9 +157,8 @@ function Table(props) {
               <th>Block Number</th>
               <th>Buy Amount</th>
               <th>Sell Amount</th>
-              {props.auctionStatus === 'completed' ? <th></th> : ''}
-              {props.isAllowCancellation ? <th></th> : ''}
               <th className="text-center">Claim</th>
+              {props.isAllowCancellation ? <th>Cancel</th> : ''}
             </tr>
           </thead>
           <tbody>
@@ -202,7 +225,7 @@ function Table(props) {
                     <td>
                       <div>{item.auctionDivSellAmount}</div>
                     </td>
-                    {account === userId && props.auctionStatus === 'completed' ? (
+                    {/* {account === userId && props.auctionStatus === 'completed' ? (
                       <td>
                         <button
                           className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
@@ -236,17 +259,51 @@ function Table(props) {
                       </td>
                     ) : (
                       ''
+                    )} */}
+                    {account === userId && props.auctionStatus === 'completed' ? (
+                      <td>
+                        <div className="flex items-center custom-check">
+                          <label className="container text-base ml-2 font-normal">
+                            <input
+                              type="checkbox"
+                              disabled={
+                                loading ||
+                                !props.isAlreadySettle ||
+                                ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
+                              }
+                              checked={
+                                item.bidder.status === 'SUCCESS' ||
+                                selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
+                              }
+                              onClick={() => handleClaimCheckbox(item)}
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                        </div>
+                      </td>
+                    ) : (
+                      ''
                     )}
-                    <td>
-                      <div className="flex items-center custom-check">
-                        <label className="container text-base ml-2 font-normal">
-                          <input
-                            type="checkbox"
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                      </div>
-                    </td>
+                    {account === userId && props.isAllowCancellation ? (
+                      <td>
+                        <div className="flex items-center custom-check">
+                          <label className="container text-base ml-2 font-normal">
+                            <input
+                              type="checkbox"
+                              disabled={loading || item.status === 'CANCELLED'}
+                              checked={
+                                item.status === 'CANCELLED' ||
+                                selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
+                              }
+                              onClick={() => handleCancelCheckbox(item)}
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                        </div>
+                      </td>
+                    ) : (
+                      ''
+                    )}
                   </tr>
                 ) : (
                   ''

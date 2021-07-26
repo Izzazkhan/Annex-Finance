@@ -191,7 +191,7 @@ function Detail(props) {
       if (orderLength === 0) {
         placeHolderMinBuyAmount = minBuyAmount;
         placeholderSellAmount = minBuyAmount;
-      }
+      } 
       let detail = {
         minimumPrice,
         maxAvailable,
@@ -363,7 +363,10 @@ function Detail(props) {
               <img
                 width="40"
                 className="mr-2"
-                src={require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`).default}
+                src={
+                  require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`)
+                    .default
+                }
                 alt=""
               />
             ) : (
@@ -384,7 +387,10 @@ function Detail(props) {
               <img
                 width="40"
                 className="mr-2"
-                src={require(`../../../assets/images/coins/${state.detail.auctionSymbol.toLowerCase()}.png`).default}
+                src={
+                  require(`../../../assets/images/coins/${state.detail.auctionSymbol.toLowerCase()}.png`)
+                    .default
+                }
                 alt=""
               />
             ) : (
@@ -615,7 +621,8 @@ const ProgressBar = ({
 const MediaIcon = ({ name, src, url }) => {
   return (
     <div className="flex items-center text-xl font-medium underline mb-3">
-      <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" /> <a href={url}>{name}</a>
+      <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
+      <a href={url}>{name}</a>
     </div>
   );
 };

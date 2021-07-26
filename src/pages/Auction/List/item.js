@@ -34,7 +34,7 @@ function AuctionItem(props) {
                 </div>
                 <div className="flex flex-col text-sm font-normal">
                   <span className="font-bold">{props.dateLabel ? props.dateLabel : 'Date'}</span>
-                  <span>12/07/2022</span>
+                  <span>{props.formatedAuctionDate}</span>
                 </div>
               </div>
               <div className="chart flex items-end relative">

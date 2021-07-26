@@ -5,6 +5,7 @@ import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
+import moment from 'moment';
 
 function Upcoming(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -31,19 +32,19 @@ function Upcoming(props) {
         orderCancellationEndDate
         auctionEndDate
         auctionStartDate
-        orders {d {
-            id
-          }
-          auctionId {
-            id
-          }
-          bi
+        orders {
           id
           buyAmount
           sellAmount
           claimableLP
           status
-          userIdder {
+          userId {
+            id
+          }
+          auctionId {
+            id
+          }
+          bidder {
             id
             status
           }
@@ -62,6 +63,7 @@ function Upcoming(props) {
           auctionDecimal,
           biddingDecimal,
         );
+        let formatedAuctionDate = moment.unix(element['auctionStartDate']).format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
         orders &&
           orders.forEach((item) => {
@@ -76,6 +78,7 @@ function Upcoming(props) {
           data: graphData,
           status: 'Upcoming',
           statusClass: 'upcoming',
+          formatedAuctionDate,
           dateLabel:'Starting Date',
           title: element.type + ' Auction',
         });
