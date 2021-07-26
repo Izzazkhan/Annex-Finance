@@ -57,12 +57,7 @@ const sidebarItems = [
   // eslint-disable-next-line react/display-name
   { key: 3, icon: (fill) => <AnnexIcon fill={fill} />, title: 'Annex', href: RouteMap.annex },
   // eslint-disable-next-line react/display-name
-  {
-    key: 4,
-    icon: (fill) => <MarketIcon fill={fill} />,
-    title: 'Market',
-    href: RouteMap.market.index,
-  },
+  { key: 4,  icon: (fill) => <MarketIcon fill={fill} />, title: 'Market', href: RouteMap.market.index,},
   {
     key: 5,
     // eslint-disable-next-line react/display-name
