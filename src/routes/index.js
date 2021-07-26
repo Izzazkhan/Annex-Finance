@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 
 import routes from './RouteMap';
-import Dashboard from '../pages/Dashboard';
+// import Dashboard from '../pages/Dashboard';
 import Annex from '../pages/Annex';
 import Auction from '../pages/Auction';
 import Farms from '../pages/Farms';
