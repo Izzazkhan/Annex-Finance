@@ -147,7 +147,7 @@ function Table(props) {
             ) : props.data.length === 0 ? (
               <tr>
                 <td colSpan="12">
-                  <div>No Data Found</div>
+                  <div className="text-center">No Data Found</div>
                 </td>{' '}
               </tr>
             ) : (
@@ -162,84 +162,84 @@ function Table(props) {
                           src={require('../../../assets/icons/bitcoinBlack.svg').default}
                           alt=""
                         /> */}
-                        <div className="text-primary">
-                          <a
-                            href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
-                            target="_blank"
-                          >
-                            {item.userId ? item.userId.address.substring(0, 5) + '...' : ''}
-                          </a>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div>
-                        {item.auctionDivBuyAmount} {item.biddingSymbol}
-                      </div>
-                    </td>
-                    <td>
-                      <div>{item.lpToken}</div>
-                    </td>
-                    <td>
-                      <div className="text-primary">
-                        <a
-                          href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
-                          target="_blank"
-                        >
-                          {trimAddress(item.txHash)}
-                        </a>
-                      </div>
-                    </td>
-                    <td>
-                      <div>{item.blockNumber}</div>
-                    </td>
-                    <td>
-                      <div>{item.auctionDivBuyAmount}</div>
-                    </td>
-                    <td>
-                      <div>{item.auctionDivSellAmount}</div>
-                    </td>
-                    {account === userId && props.auctionStatus === 'completed' ? (
-                      <td>
-                        <button
-                          className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
-                          disabled={
-                            loading ||
-                            !props.isAlreadySettle ||
-                            ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
-                          }
-                          onClick={() => claimAuction(item)}
-                        >
-                          {item.bidder.status === 'ACTIVE' || item.bidder.status === 'NOTCLAIMED'
-                            ? 'Claim'
-                            : item.bidder.status === 'SUCCESS'
-                            ? 'Claimed'
-                            : item.bidder.status}
-                        </button>
-                      </td>
-                    ) : (
-                      ''
-                    )}
+                            <div className="text-primary">
+                              <a
+                                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                                target="_blank"
+                              >
+                                {item.userId ? item.userId.address.substring(0, 5) + '...' : ''}
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                            {item.auctionDivBuyAmount} {item.biddingSymbol}
+                          </div>
+                        </td>
+                        <td>
+                          <div>{item.lpToken}</div>
+                        </td>
+                        <td>
+                          <div className="text-primary">
+                            <a
+                              href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                              target="_blank"
+                            >
+                              {trimAddress(item.txHash)}
+                            </a>
+                          </div>
+                        </td>
+                        <td>
+                          <div>{item.blockNumber}</div>
+                        </td>
+                        <td>
+                          <div>{item.auctionDivBuyAmount}</div>
+                        </td>
+                        <td>
+                          <div>{item.auctionDivSellAmount}</div>
+                        </td>
+                        {account === userId && props.auctionStatus === 'completed' ? (
+                          <td>
+                            <button
+                              className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
+                              disabled={
+                                loading ||
+                                !props.isAlreadySettle ||
+                                ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
+                              }
+                              onClick={() => claimAuction(item)}
+                            >
+                              {item.bidder.status === 'ACTIVE' || item.bidder.status === 'NOTCLAIMED'
+                                ? 'Claim'
+                                : item.bidder.status === 'SUCCESS'
+                                  ? 'Claimed'
+                                  : item.bidder.status}
+                            </button>
+                          </td>
+                        ) : (
+                            ''
+                          )}
 
-                    {account === userId && props.isAllowCancellation ? (
-                      <td>
-                        <button
-                          className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
-                          disabled={loading || item.status === 'CANCELLED'}
-                          onClick={() => cancelAuction(item)}
-                        >
-                          {item.status === 'CANCELLED' ? item.status : 'Cancel'}
-                        </button>
-                      </td>
+                        {account === userId && props.isAllowCancellation ? (
+                          <td>
+                            <button
+                              className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
+                              disabled={loading || item.status === 'CANCELLED'}
+                              onClick={() => cancelAuction(item)}
+                            >
+                              {item.status === 'CANCELLED' ? item.status : 'Cancel'}
+                            </button>
+                          </td>
+                        ) : (
+                            ''
+                          )}
+                      </tr>
                     ) : (
-                      ''
-                    )}
-                  </tr>
-                ) : (
-                  ''
-                );
-              })
-            )}
+                        ''
+                      );
+                  })
+                )}
           </tbody>
         </table>
       </div>

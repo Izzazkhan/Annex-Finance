@@ -109,8 +109,8 @@ function Live(props) {
           })}
         </div>
       ) : (
-        <div>No data found</div>
-      )}
+              <div className="text-center">No data found</div>
+            )}
     </div>
   );
 }
