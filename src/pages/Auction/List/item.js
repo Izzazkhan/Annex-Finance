@@ -13,7 +13,7 @@ function AuctionItem(props) {
   return (
     <div className="col-span-12 lg:col-span-4 md:col-span-6 bg-black rounded-2xl p-6 flex flex-col mb-4">
       <Link className="flex flex-col h-full justify-between" to={`detail/${props.id}`}>
-        <div className="text-white flex flex-row items-stretch justify-between items-center mb-8">
+        <div className="text-white flex flex-row items-stretch justify-between items-center mb-5">
           <div className="flex flex-col items-start justify-start ">
             <div className="text-white text-2xl ">{props.title}</div>
             <div className="text-base font-normal">Auction id#{props.id}</div>
@@ -27,7 +27,7 @@ function AuctionItem(props) {
         <div className="graph">
           {props.chartType === 'block' ? (
             <Fragment>
-              <div className="flex justify-between chart-top-label mb-8">
+              <div className="flex justify-between chart-top-label mb-5">
                 <div className="flex flex-col text-sm font-normal">
                   <span className="font-bold">No. of order</span>
                   <span>{props.data ? props.data.length : 0}</span>
