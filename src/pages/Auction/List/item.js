@@ -30,15 +30,14 @@ function AuctionItem(props) {
               <div className="flex justify-between chart-top-label mb-8">
                 <div className="flex flex-col text-sm font-normal">
                   <span className="font-bold">No. of order</span>
-                  <span>50</span>
+                  <span>{props.data ? props.data.length : 0}</span>
                 </div>
                 <div className="flex flex-col text-sm font-normal">
-                  <span className="font-bold">Date</span>
+                  <span className="font-bold">{props.dateLabel ? props.dateLabel : 'Date'}</span>
                   <span>12/07/2022</span>
                 </div>
               </div>
               <div className="chart flex items-end relative">
-
                 <span className="label info unsuccess text-sm font-normal">
                   <span></span>UnSuccessfull
                 </span>

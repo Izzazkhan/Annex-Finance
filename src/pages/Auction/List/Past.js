@@ -30,6 +30,7 @@ function Past(props) {
         }
         orderCancellationEndDate
         auctionEndDate
+        auctionStartDate
         orders {
           id
           buyAmount
@@ -69,14 +70,13 @@ function Past(props) {
               isSuccessfull: item.price >= clearingPriceOrder.price,
             });
           });
-        // console.log('clearingPrice', clearingPriceOrder);
-        // console.log('orders', orders);
         arr.push({
           ...element,
           chartType: 'block',
           data: graphData,
           status: 'Finished',
           statusClass: 'past',
+          dateLabel:'End Date',
           title: element.type + ' Auction',
         });
       });

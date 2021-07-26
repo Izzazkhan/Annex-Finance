@@ -30,19 +30,20 @@ function Upcoming(props) {
         }
         orderCancellationEndDate
         auctionEndDate
-        orders {
-          id
-          buyAmount
-          sellAmount
-          claimableLP
-          status
-          userId {
+        auctionStartDate
+        orders {d {
             id
           }
           auctionId {
             id
           }
-          bidder {
+          bi
+          id
+          buyAmount
+          sellAmount
+          claimableLP
+          status
+          userIdder {
             id
             status
           }
@@ -69,14 +70,13 @@ function Upcoming(props) {
               isSuccessfull: item.price >= clearingPriceOrder.price,
             });
           });
-        // console.log('clearingPrice', clearingPriceOrder);
-        // console.log('orders', orders);
         arr.push({
           ...element,
           chartType: 'block',
           data: graphData,
           status: 'Upcoming',
           statusClass: 'upcoming',
+          dateLabel:'Starting Date',
           title: element.type + ' Auction',
         });
       });

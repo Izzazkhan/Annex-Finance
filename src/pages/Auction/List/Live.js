@@ -5,6 +5,7 @@ import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
+import moment from 'moment';
 
 function Live(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -27,6 +28,7 @@ function Live(props) {
       }
       orderCancellationEndDate
       auctionEndDate
+      auctionStartDate
       orders {
         id
         buyAmount
@@ -58,15 +60,12 @@ function Live(props) {
       data.auctions.forEach((element) => {
         let auctionDecimal = element['auctioningToken']['decimals'];
         let biddingDecimal = element['biddingToken']['decimals'];
-        if (element.id === '7') {
-          console.log('start creating graphData');
-        }
         let { orders, clearingPriceOrder } = calculateClearingPrice(
           element.orders,
           auctionDecimal,
           biddingDecimal,
         );
-
+        // moment.unix(value).format("MM/DD/YYYY")
         let graphData = [];
         orders &&
           orders.forEach((item) => {
@@ -75,16 +74,13 @@ function Live(props) {
               isSuccessfull: item.price >= clearingPriceOrder.price,
             });
           });
-        // console.log('clearingPrice', clearingPriceOrder);
-        if (element.id === '7') {
-          console.log('graphData', graphData);
-        }
         arr.push({
           ...element,
           chartType: 'block',
           data: graphData,
           status: 'Live',
           statusClass: 'live',
+          dateLabel:'Completion Date',
           title: element.type + ' Auction',
         });
       });

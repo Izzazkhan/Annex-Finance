@@ -78,8 +78,16 @@ export default function Form(props) {
         id: 'biddingToken',
         placeholder: 'Bidding token ',
         description: 'The token that will use to bid the auction.',
-        options: props.options,
-        value: props.options[0] ? props.options[0] : [],
+        options: props.biddingTokenOptions,
+        value: props.biddingTokenOptions[0] ? props.biddingTokenOptions[0] : [],
+      },
+      {
+        type: 'select',
+        id: 'swapExchange',
+        placeholder: 'Swap Exchange',
+        description: 'This will use to generate your LP Tokens after settle.',
+        options: props.annexSwapOptions,
+        value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
       },
       {
         type: 'date',
@@ -315,7 +323,7 @@ export default function Form(props) {
           formatedStateData.buyAmount,
           formatedStateData.isAccessAuto,
           formatedStateData.accessData,
-          0,
+          formatedStateData.swapExchange,
           [
             formatedStateData.websiteLink,
             formatedStateData.description,
@@ -326,7 +334,6 @@ export default function Form(props) {
           ],
         ];
 
-        console.log('Data', data);
         let auctionTxDetail = await methods.send(
           auctionContract.methods.initiateAuction,
           [data],
@@ -438,7 +445,11 @@ export default function Form(props) {
     for (let index = 0; index < arr.length; index++) {
       const element = arr[index];
       if (element.type === 'select') {
-        obj[element.id] = element.value.addr;
+        if(element.id === 'biddingToken'){
+          obj[element.id] = element.value.addr;
+        }else{
+          obj[element.id] =element.value.value;
+        }
       } else if (
         element.id === 'minBidAmount' ||
         element.id === 'minFundThreshold' ||
