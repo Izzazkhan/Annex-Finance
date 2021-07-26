@@ -119,6 +119,9 @@ function Table(props) {
               />
               <span className="checkmark"></span>
             </label>
+            <button>
+              
+            </button>
           </div>
         </div>
         <table className="text-left">

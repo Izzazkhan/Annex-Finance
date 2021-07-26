@@ -100,7 +100,7 @@ function Past(props) {
           })}
         </div>
       ) : (
-              <div className="text-center">No data found</div>
+              <div className="text-center mb-5 mt-5">No data found</div>
             )}
     </div>
   );

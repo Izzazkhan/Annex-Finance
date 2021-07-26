@@ -27,14 +27,18 @@ function AuctionItem(props) {
         <div className="graph">
           {props.chartType === 'block' ? (
             <Fragment>
-              <div className="chart flex items-end relative pl-10">
-                <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
-                  <span className="border first"></span>
-                  <span className="label my-2 font-normal">
-                    No. of orders <b>{props.data ? props.data.length : 0}</b>
-                  </span>
-                  <span className=" border last"></span>
+              <div className="flex justify-between chart-top-label mb-8">
+                <div className="flex flex-col text-sm font-normal">
+                  <span className="font-bold">No. of order</span>
+                  <span>50</span>
                 </div>
+                <div className="flex flex-col text-sm font-normal">
+                  <span className="font-bold">Date</span>
+                  <span>12/07/2022</span>
+                </div>
+              </div>
+              <div className="chart flex items-end relative">
+
                 <span className="label info unsuccess text-sm font-normal">
                   <span></span>UnSuccessfull
                 </span>
@@ -44,16 +48,16 @@ function AuctionItem(props) {
                 {props.data && props.data.length > 0 ? (
                   <BarChart
                     width="310px"
-                    height="211px"
+                    height="230px"
                     style={{ marginTop: '-25px' }}
                     data={props.data}
                   />
                 ) : (
                   <div
-                    className="relative pt-5"
+                    className="flex items-center justify-center relative pt-5"
                     style={{
                       width: '100%',
-                      height: '211px',
+                      height: '230px',
                       marginBottom: '-29px',
                     }}
                   >
