@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 
 import routes from './RouteMap';
-// import Dashboard from '../pages/Dashboard';
+import Dashboard from '../pages/Dashboard';
 import Annex from '../pages/Annex';
 import Auction from '../pages/Auction';
 import Farms from '../pages/Farms';
@@ -30,8 +30,8 @@ const Routes = () => {
       <MulticallUpdater />
       <Router>
         <Switch>
-          <Route exact path={routes.annex} render={() => <Redirect to={routes.annex} />} />
-          {/* <Route exact path={routes.dashboard} component={Dashboard} /> */}
+          <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
+          <Route exact path={routes.dashboard} component={Dashboard} />
           <Route exact path={routes.annex} component={Annex} />
           <Route exact path={routes.farms} component={Farms} />
           <Route exact path={routes.market.index} component={Market} />

@@ -36,7 +36,7 @@ import arrowDown from '../assets/icons/arrowDown.png';
 import PendingTransaction from "../components/dashboard/PendingTransaction";
 import toast from "../components/UI/Toast";
 import AccountOverview from "../components/dashboard/AccountOverview";
-import MarketHistory from "../components/dashboard/MarketHistory";
+// import MarketHistory from "../components/dashboard/MarketHistory";
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -1046,7 +1046,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
           )}
         </div>
       </div>
-      <MarketHistory
+      {/* <MarketHistory
         options={options}
         handleChangeAsset={handleChangeAsset}
         marketInfo={marketInfo}
@@ -1055,7 +1055,7 @@ function Dashboard({settings, setSetting, getMarketHistory}) {
         currentAsset={currentAsset}
         currentAPY={currentAPY}
         data={data}
-      />
+      /> */}
     </Layout>
   );
 }
