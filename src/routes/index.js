@@ -30,8 +30,8 @@ const Routes = () => {
       <MulticallUpdater />
       <Router>
         <Switch>
-          <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
-          <Route exact path={routes.dashboard} component={Dashboard} />
+          <Route exact path={routes.annex} render={() => <Redirect to={routes.annex} />} />
+          {/* <Route exact path={routes.dashboard} component={Dashboard} /> */}
           <Route exact path={routes.annex} component={Annex} />
           <Route exact path={routes.farms} component={Farms} />
           <Route exact path={routes.market.index} component={Market} />
