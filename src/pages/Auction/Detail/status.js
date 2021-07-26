@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 
 const AuctionStatus = ({
   auctionEndDate,
+  auctionStartDate,
   detail,
   minBuyAmount,
   maxAvailable,
@@ -47,7 +48,6 @@ const AuctionStatus = ({
     updateShowModal(true);
     let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
     let biddingTokenBalance = await methods.call(biddingTokenContract.methods.balanceOf, [account]);
-    console.log('biddingTokenBalance', biddingTokenBalance);
     if (Number(biddingTokenBalance) < Number(sellAmount)) {
       setModalError({
         type: 'error',
@@ -134,6 +134,10 @@ const AuctionStatus = ({
       setLoading(false);
     }
   };
+  const closeModal = () => {
+    updateShowModal(false);
+    updateModalType('inprogress');
+  };
   return (
     <Fragment>
       <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -151,7 +155,7 @@ const AuctionStatus = ({
         </div>
       </div>
       {auctionStatus === 'upcoming' ? (
-        <AuctionCountDown auctionEndDate={auctionEndDate*1000} />
+        <AuctionCountDown auctionStartDate={auctionStartDate * 1000} />
       ) : auctionStatus === 'inprogress' ? (
         <AuctionProgress
           auctionEndDate={auctionEndDate}
@@ -176,20 +180,20 @@ const AuctionStatus = ({
         approveBiddingToken={approveBiddingToken}
         handleApproveBiddingToken={handleApproveBiddingToken}
         onSetOpen={() => updateShowModal(true)}
-        onCloseModal={() => updateShowModal(false)}
+        onCloseModal={() => closeModal()}
       />
     </Fragment>
   );
 };
 
-const AuctionCountDown = ({ auctionEndDate }) => {
+const AuctionCountDown = ({ auctionStartDate }) => {
   return (
     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
       <div className="w-full flex flex-col items-center justify-center ">
         <div className="text-white text-4xl mb-10">Countdown</div>
         <div className="counter bg-primary flex flex-row items-center py-10 rounded-2xl">
           <Countdown
-            date={auctionEndDate}
+            date={auctionStartDate}
             renderer={({ days, hours, minutes, seconds }) => (
               <Fragment>
                 <div className="flex flex-col items-center px-6 border-r border-lightprimary">
@@ -226,9 +230,9 @@ const AuctionCompleted = ({ settlAuction, isAlreadySettle }) => {
         {!isAlreadySettle ? (
           <Fragment>
             <div className="text-white text-4xl mt-10 mb-3">Auction Finished Successfully</div>
-            <div className="text-white text-base mb-10">
+            {/* <div className="text-white text-base mb-10">
               you are able to claim 1 Non-Fungible Bible
-            </div>
+            </div> */}
             <button
               className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
          h-14 bg-white rounded-lg bgPrimaryGradient rounded-lg"
@@ -295,10 +299,10 @@ const AuctionProgress = (props) => {
     return isValid;
   };
   const showCommitModal = () => {
-    let isValid = validateForm();
-    if (isValid) {
-      props.handleSubmit(state.minBuyAmount, state.sellAmount);
-    }
+    // let isValid = validateForm();
+    // if (isValid) {
+    props.handleSubmit(state.minBuyAmount, state.sellAmount);
+    // }
   };
   return (
     <>
@@ -308,7 +312,8 @@ const AuctionProgress = (props) => {
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
               <span className="border first"></span>
               <span className="label my-2 font-normal">
-                No. of orders <b>{props.detail && props.detail.data ?  props.detail.data.length: 0 }</b>
+                No. of orders{' '}
+                <b>{props.detail && props.detail.data ? props.detail.data.length : 0}</b>
               </span>
               <span className=" border last"></span>
             </div>

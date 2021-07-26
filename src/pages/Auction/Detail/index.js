@@ -7,7 +7,7 @@ import moment from 'moment';
 import subGraphContext from '../../../contexts/subgraph';
 import { gql } from '@apollo/client';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
-import { getAuctionContract } from '../../../utilities/ContractService';
+import { getAuctionContract, methods } from '../../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
@@ -93,10 +93,10 @@ function Detail(props) {
   const { apolloClient } = useContext(subGraphContext);
   const auctionContract = getAuctionContract(state.type);
 
-  useEffect(() => {
+  useEffect(async () => {
     getData();
   }, []);
-  useEffect(() => {
+  useEffect(async () => {
     if (data && data.auctions) {
       let elem = data.auctions[0];
       let type = elem['type'];
@@ -153,6 +153,16 @@ function Detail(props) {
       let placeHolderMinBuyAmount = 0;
       let placeholderSellAmount = 0;
       let orderLength = data.orders.length;
+      let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
+      let lpTokenPromises = [];
+      data.orders.forEach((order) => {
+        lpTokenPromises.push(calculateLPTokens(order));
+      });
+      let lpTokenData = [];
+      if (isAlreadySettle) {
+        lpTokenData = await Promise.all(lpTokenPromises);
+        console.log('lpTokenData', lpTokenData);
+      }
       data.orders.forEach((order, index) => {
         let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
           .dividedBy(auctionDecimal)
@@ -174,8 +184,10 @@ function Detail(props) {
           auctionDivSellAmount,
           auctionSymbol,
           biddingSymbol,
+          lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
         });
       });
+
       if (orderLength === 0) {
         placeHolderMinBuyAmount = minBuyAmount;
         placeholderSellAmount = minBuyAmount;
@@ -207,7 +219,7 @@ function Detail(props) {
         token: elem['auctioningToken']['id'],
         website: elem['about']['website'],
         description: elem['about']['description'],
-        isAlreadySettle: elem['clearingPriceOrder'] !== emptyAddr,
+        isAlreadySettle,
         isAllowCancellation,
         placeHolderMinBuyAmount,
         placeholderSellAmount,
@@ -220,6 +232,7 @@ function Detail(props) {
         orders,
         auctionStatus,
       });
+      setLoading(false);
     }
   }, [data]);
   const getDateDiff = (endDate) => {
@@ -282,7 +295,6 @@ function Detail(props) {
         .then((response) => {
           let { data } = response;
           setData(data);
-          setLoading(false);
         })
         .catch((err) => {
           setData([]);
@@ -300,12 +312,19 @@ function Detail(props) {
     // });
     getData();
   };
-  const calculateLPTokens = () => {
-    // return new Promise(async (resolve, reject) => {
-    //   try {
-    //     // await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
-    //   } catch (err) {}
-    // });
+  const calculateLPTokens = async (auction) => {
+    return new Promise((resolve, reject) => {
+      methods
+        .call(auctionContract.methods.calculateLPTokens, [auction.auctionId.id, auction.sellAmount])
+        .then((res) => {
+          let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
+          lpToken = convertExponentToNum(lpToken);
+          resolve(lpToken);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   };
   return (
     <div>
@@ -414,15 +433,15 @@ function Detail(props) {
             {!loading ? (
               <Countdown
                 date={
-                  (state.detail.auctionStatus === 'upcoming'
-                    ? state.auctionStartDate
-                    : state.auctionEndDate) * 1000
+                  state.auctionStatus === 'upcoming'
+                    ? state.auctionStartDate * 1000
+                    : state.auctionEndDate * 1000
                 }
                 onComplete={() => updateAuctionStatus()}
                 renderer={(props) => (
                   <ProgressBar
                     {...props}
-                    label={state.detail.auctionStatus === 'upcoming' ? 'STARTS IN' : 'ENDS IN'}
+                    label={state.auctionStatus === 'upcoming' ? 'STARTS IN' : 'ENDS IN'}
                     auctionEndDate={state.auctionEndDate * 1000}
                     auctionStartDate={state.auctionStartDate * 1000}
                   />
@@ -510,6 +529,7 @@ function Detail(props) {
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <AuctionStatus
             auctionEndDate={state.auctionEndDate}
+            auctionStartDate={state.auctionStartDate}
             detail={state.detail}
             minBuyAmount={state.detail.minBuyAmount}
             maxAvailable={state.detail.maxAvailable}
@@ -564,6 +584,7 @@ const ProgressBar = ({
     return Math.round((current / total) * 100);
   };
   let percentage = calculatePercentage(auctionStartDate, auctionEndDate);
+  console.log('days',days)
   return (
     <div className="relative ">
       <Progress
