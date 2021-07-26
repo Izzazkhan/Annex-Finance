@@ -213,7 +213,6 @@ const Styles = styled.div`
       display: block;
       position: relative;
       padding-left: 35px;
-      margin-bottom: 12px;
       cursor: pointer;
     }
     .container input {
@@ -259,6 +258,28 @@ const Styles = styled.div`
       -webkit-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
       transform: rotate(45deg);
+    }
+  }
+  td{
+    .custom-check {
+      .container {
+        display: block;
+        position: relative;
+        padding-left: 0;
+        cursor: pointer;
+        .checkmark:after {
+          left: 7px;
+          top: 4px;
+        }
+      }
+      .checkmark {
+        height: 20px;
+        width: 20px;
+        top: -10px;
+        right: 0;
+        margin: 0 auto;
+      }
+  
     }
   }
   .chart {
