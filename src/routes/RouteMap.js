@@ -9,6 +9,7 @@ export default {
   pools: '/pools',
   trade: '/trade',
   vault: '/vault',
+  auction: '/auction',
   vote: {
     index: '/vote',
     allProposals: '/vote/all',

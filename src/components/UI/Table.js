@@ -7,7 +7,7 @@ const Styles = styled.div`
   overflow: auto;
   table {
     width: 100%;
-    background-color: #0A0A0E;
+    background-color: #0a0a0e;
     color: #fff;
     border-spacing: 0;
     border: 1px solid #2b2b2b;
@@ -24,20 +24,20 @@ const Styles = styled.div`
     th,
     td {
       margin: 0;
-        text-align: right;
-        padding: 0;
+      text-align: right;
+      padding: 0;
 
-        :first-child {
-            text-align: left;
-        }
+      :first-child {
+        text-align: left;
+      }
 
       :last-child {
         border-right: 0;
       }
     }
-      
+
     th {
-        padding: 0.5rem 2rem;
+      padding: 0.5rem 2rem;
     }
   }
 `;

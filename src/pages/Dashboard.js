@@ -33,10 +33,10 @@ import {promisify} from "../utilities";
 import sxp from "../assets/images/coins/sxp.png";
 import arrowUp from '../assets/icons/arrowUp.png';
 import arrowDown from '../assets/icons/arrowDown.png';
-import PendingTransaction from "../components/dashboard/PendingTransaction";
+import PendingTransaction from "../components/Dashboard/PendingTransaction.js";
 import toast from "../components/UI/Toast";
-import AccountOverview from "../components/dashboard/AccountOverview";
-import MarketHistory from "../components/dashboard/MarketHistory";
+import AccountOverview from "../components/Dashboard/AccountOverview.js";
+import MarketHistory from "../components/Dashboard/MarketHistory.js";
 
 const format = commaNumber.bindWith(',', '.');
 

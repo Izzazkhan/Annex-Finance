@@ -8,7 +8,7 @@ import ERC20_ABI from "../constants/abis/erc20.json";
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from "../constants/abis/migrator";
 import UNISOCKS_ABI from "../constants/abis/unisocks.json";
 import WETH_ABI from "../constants/abis/weth.json";
-import { MULTICALL_ABI, MULTICALL_NETWORKS } from "../constants/multicall";
+import { MULTICALL_ABI, MULTICALL_NETWORKS } from "../constants/multicall/index";
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from "../constants/v1";
 import { getContract } from "../utils";
 import { useActiveWeb3React } from "./index";
