@@ -157,6 +157,9 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
+    .chart{
+      margin-left: -40px;
+    }
   }
   .input-with-button {
     input {
