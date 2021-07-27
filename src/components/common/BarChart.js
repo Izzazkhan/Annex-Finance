@@ -18,7 +18,7 @@ export default function Chart(props) {
               return <Cell fill={color} key={index} />;
             })}
           </Bar>
-          <Tooltip />
+          <Tooltip cursor={{fill: 'transparent'}}/>
           <XAxis fontSize="12" dataKey="price" />
           <YAxis fontSize="12" dataKey="sellAmount" />
         </BarChart>

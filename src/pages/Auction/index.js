@@ -157,6 +157,9 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
+    .chart{
+      margin-left: -40px;
+    }
   }
   .input-with-button {
     input {
@@ -313,6 +316,17 @@ const Styles = styled.div`
       display: inline-block;
       margin-right: 5px;
     }
+    .recharts-default-tooltip {
+      padding: 0 10px !important;
+      background: #ffffff !important;
+      border-color: #ffffff !important;
+      .recharts-tooltip-label {
+        display: none;
+      }
+      .recharts-tooltip-item {
+        font-size: 12px;
+        color: #ff9800 !important;
+      }
   }
 .tooltip {
     margin-bottom: 5px;
