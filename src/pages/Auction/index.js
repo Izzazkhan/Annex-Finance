@@ -272,6 +272,10 @@ const Styles = styled.div`
           top: 4px;
         }
       }
+      .disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
       .checkmark {
         height: 20px;
         width: 20px;

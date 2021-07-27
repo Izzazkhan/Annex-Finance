@@ -103,20 +103,16 @@ function Detail(props) {
       let auctionStatus = '';
       let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
       let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
-      let currentPriceDecimal = getCurrentPriceDecimal(
-        elem['auctioningToken']['decimals'],
-        elem['biddingToken']['decimals'],
-      );
+      // let currentPriceDecimal = getCurrentPriceDecimal(
+      //   elem['auctioningToken']['decimals'],
+      //   elem['biddingToken']['decimals'],
+      // );
       let totalAuction = elem['auctionedSellAmount']
         ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
         : 0;
-      let minimumPrice = new BigNumber(elem['minimumPrice'])
-        .dividedBy(currentPriceDecimal)
-        .toNumber();
+      let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(biddingDecimal).toNumber();
       let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toNumber();
-      let currentPrice = new BigNumber(elem['currentPrice'])
-        .dividedBy(currentPriceDecimal)
-        .toNumber();
+      let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(biddingDecimal).toNumber();
       let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
         .dividedBy(biddingDecimal)
         .toNumber();
@@ -161,9 +157,13 @@ function Detail(props) {
       let lpTokenData = [];
       if (isAlreadySettle) {
         lpTokenData = await Promise.all(lpTokenPromises);
-        console.log('lpTokenData', lpTokenData);
       }
+      let userOrders = [];
+      let otherUserOrders = [];
+
+      let accountId = account ? account.toLowerCase() : '0x';
       data.orders.forEach((order, index) => {
+        let userId = order.userId.address.toLowerCase();
         let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
           .dividedBy(auctionDecimal)
           .toString();
@@ -178,20 +178,31 @@ function Detail(props) {
             placeholderSellAmount = maxAvailable;
           }
         }
-        orders.push({
-          ...order,
-          auctionDivBuyAmount,
-          auctionDivSellAmount,
-          auctionSymbol,
-          biddingSymbol,
-          lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
-        });
+        if (userId === accountId) {
+          userOrders.push({
+            ...order,
+            auctionDivBuyAmount,
+            auctionDivSellAmount,
+            auctionSymbol,
+            biddingSymbol,
+            lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+          });
+        } else {
+          otherUserOrders.push({
+            ...order,
+            auctionDivBuyAmount,
+            auctionDivSellAmount,
+            auctionSymbol,
+            biddingSymbol,
+            lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+          });
+        }
       });
-
+      orders = userOrders.concat(otherUserOrders);
       if (orderLength === 0) {
         placeHolderMinBuyAmount = minBuyAmount;
         placeholderSellAmount = minBuyAmount;
-      } 
+      }
       let detail = {
         minimumPrice,
         maxAvailable,
@@ -554,6 +565,7 @@ function Detail(props) {
         account={account}
         auctionStatus={state.auctionStatus}
         getData={getData}
+        auctionId={state.detail.id}
       />
     </div>
   );

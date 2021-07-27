@@ -52,45 +52,58 @@ function Table(props) {
   const claimAuction = async (item) => {
     try {
       setLoading(true);
-      let auctionId = item['auctionId']['id'];
-      let userId = item['userId']['id'];
-      let sellAmount = item['sellAmount'];
-      let buyAmount = item['buyAmount'];
-      userId = toHex(userId, { addPrefix: true });
-      sellAmount = toHex(sellAmount, { addPrefix: true });
-      buyAmount = toHex(buyAmount, { addPrefix: true });
-      let orderData = encodeOrder(userId, sellAmount, buyAmount);
-
+      let auctionId = props['auctionId'];
+      let orders = [];
+      for (let index = 0; index < selectedClaimOrders.length; index++) {
+        const element = selectedClaimOrders[index];
+        let userId = element['userId']['id'];
+        let sellAmount = element['sellAmount'];
+        let buyAmount = element['buyAmount'];
+        userId = toHex(userId, { addPrefix: true });
+        sellAmount = toHex(sellAmount, { addPrefix: true });
+        buyAmount = toHex(buyAmount, { addPrefix: true });
+        let orderData = encodeOrder(userId, sellAmount, buyAmount);
+        orders.push(orderData);
+      }
       await methods.send(
         props.auctionContract.methods.claimFromParticipantOrder,
-        [auctionId, [orderData]],
+        [auctionId, orders],
         props.account,
       );
+      // updateSelectedClaimOrders([]);
       props.getData();
       setLoading(false);
     } catch (error) {
+      updateSelectedClaimOrders([]);
       setLoading(false);
     }
   };
-  const cancelAuction = async (item) => {
+  const cancelAuction = async () => {
     try {
       setLoading(true);
-      let auctionId = item['auctionId']['id'];
-      let userId = item['userId']['id'];
-      let sellAmount = item['sellAmount'];
-      let buyAmount = item['buyAmount'];
-      userId = toHex(userId, { addPrefix: true });
-      sellAmount = toHex(sellAmount, { addPrefix: true });
-      buyAmount = toHex(buyAmount, { addPrefix: true });
-      let orderData = encodeOrder(userId, sellAmount, buyAmount);
+      let auctionId = props['auctionId'];
+      let orders = [];
+      for (let index = 0; index < selectedCancelOrders.length; index++) {
+        const element = selectedCancelOrders[index];
+        let userId = element['userId']['id'];
+        let sellAmount = element['sellAmount'];
+        let buyAmount = element['buyAmount'];
+        userId = toHex(userId, { addPrefix: true });
+        sellAmount = toHex(sellAmount, { addPrefix: true });
+        buyAmount = toHex(buyAmount, { addPrefix: true });
+        let orderData = encodeOrder(userId, sellAmount, buyAmount);
+        orders.push(orderData);
+      }
       await methods.send(
         props.auctionContract.methods.cancelSellOrders,
-        [auctionId, [orderData]],
+        [auctionId, orders],
         props.account,
       );
+      // updateSelectedCancelOrders([]);
       props.getData();
       setLoading(false);
     } catch (error) {
+      updateSelectedCancelOrders([]);
       setLoading(false);
     }
   };
@@ -110,7 +123,7 @@ function Table(props) {
     } else {
       arr.push(item);
     }
-    console.log('selectedClaimOrders',selectedClaimOrders)
+    console.log('selectedClaimOrders', selectedClaimOrders);
     updateSelectedClaimOrders(arr);
   };
   const handleCancelCheckbox = (item) => {
@@ -121,7 +134,7 @@ function Table(props) {
     } else {
       arr.push(item);
     }
-    console.log('selectedCancelOrders',selectedCancelOrders)
+    console.log('selectedCancelOrders', selectedCancelOrders);
     updateSelectedCancelOrders(arr);
   };
   // Render the UI for your table
@@ -142,9 +155,24 @@ function Table(props) {
               />
               <span className="checkmark"></span>
             </label>
-            <button className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">
-              {props.isAllowCancellation ? 'Cancel' : 'Claim'}
+            <button
+              disabled={loading || selectedClaimOrders.length === 0}
+              onClick={() => claimAuction()}
+              className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
+            >
+              Claim
             </button>
+            {props.isAllowCancellation ? (
+              <button
+                disabled={loading || selectedCancelOrders.length === 0}
+                onClick={() => cancelAuction()}
+                className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
+              >
+                Cancel
+              </button>
+            ) : (
+              ''
+            )}
           </div>
         </div>
         <table className="text-left">
@@ -260,19 +288,27 @@ function Table(props) {
                     ) : (
                       ''
                     )} */}
-                    {account === userId && props.auctionStatus === 'completed' ? (
-                      <td>
+                    <td>
+                      {account === userId && props.auctionStatus === 'completed' ? (
                         <div className="flex items-center custom-check">
-                          <label className="container text-base ml-2 font-normal">
+                          <label
+                            className={`container text-base ml-2 font-normal ${
+                              loading ||
+                              !props.isAlreadySettle ||
+                              ['ACTIVE', 'NOTCLAIMED'].indexOf(item.status) === -1
+                                ? 'disabled'
+                                : ''
+                            }`}
+                          >
                             <input
                               type="checkbox"
                               disabled={
                                 loading ||
                                 !props.isAlreadySettle ||
-                                ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
+                                ['ACTIVE', 'NOTCLAIMED'].indexOf(item.status) === -1
                               }
                               checked={
-                                item.bidder.status === 'SUCCESS' ||
+                                item.status === 'PROCESSED' ||
                                 selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
                               }
                               onClick={() => handleClaimCheckbox(item)}
@@ -280,14 +316,18 @@ function Table(props) {
                             <span className="checkmark"></span>
                           </label>
                         </div>
-                      </td>
-                    ) : (
-                      ''
-                    )}
-                    {account === userId && props.isAllowCancellation ? (
-                      <td>
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td>
+                      {account === userId && props.isAllowCancellation ? (
                         <div className="flex items-center custom-check">
-                          <label className="container text-base ml-2 font-normal">
+                          <label
+                            className={`container text-base ml-2 font-normal ${
+                              loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                            }`}
+                          >
                             <input
                               type="checkbox"
                               disabled={loading || item.status === 'CANCELLED'}
@@ -300,10 +340,10 @@ function Table(props) {
                             <span className="checkmark"></span>
                           </label>
                         </div>
-                      </td>
-                    ) : (
-                      ''
-                    )}
+                      ) : (
+                        ''
+                      )}
+                    </td>
                   </tr>
                 ) : (
                   ''
