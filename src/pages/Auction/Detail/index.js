@@ -97,154 +97,160 @@ function Detail(props) {
     getData();
   }, []);
   useEffect(async () => {
-    if (data && data.auctions) {
-      let elem = data.auctions[0];
-      let type = elem['type'];
-      let auctionStatus = '';
-      let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
-      let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
-      // let currentPriceDecimal = getCurrentPriceDecimal(
-      //   elem['auctioningToken']['decimals'],
-      //   elem['biddingToken']['decimals'],
-      // );
-      let totalAuction = elem['auctionedSellAmount']
-        ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
-        : 0;
-      let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(biddingDecimal).toNumber();
-      let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toNumber();
-      let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(biddingDecimal).toNumber();
-      let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
-        .dividedBy(biddingDecimal)
-        .toNumber();
-      minimumPrice = convertExponentToNum(minimumPrice);
-      maxAvailable = convertExponentToNum(maxAvailable);
-      currentPrice = convertExponentToNum(currentPrice);
-      minBuyAmount = convertExponentToNum(minBuyAmount);
-      let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
-      let auctionTokenName = elem['auctioningToken']['name'];
-      let biddingSymbol = `${elem['biddingToken']['symbol']}`;
-      let biddingTokenName = elem['biddingToken']['name'];
-      let auctionEndDate = elem['auctionEndDate'];
-      let auctionStartDate = elem['auctionStartDate'];
-      let endDateDiff = getDateDiff(auctionEndDate);
-      let startDateDiff = getDateDiff(auctionStartDate);
-      let isAllowCancellation = false;
-      if (startDateDiff > 0) {
-        auctionStatus = 'upcoming';
-      } else if (endDateDiff < 0) {
-        auctionStatus = 'completed';
-      } else {
-        auctionStatus = 'inprogress';
-      }
-      let cancelDateDiff = getDateDiff(elem['orderCancellationEndDate']);
-      if (cancelDateDiff > 0) {
-        isAllowCancellation = true;
-      }
-      let graphData = getGraphData({
-        ordersList: data.orders,
-        auctionDecimal: elem['auctioningToken']['decimals'],
-        biddingDecimal: elem['biddingToken']['decimals'],
-      });
-      let orders = [];
-      let placeHolderMinBuyAmount = 0;
-      let placeholderSellAmount = 0;
-      let orderLength = data.orders.length;
-      let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
-      let lpTokenPromises = [];
-      data.orders.forEach((order) => {
-        lpTokenPromises.push(calculateLPTokens(order));
-      });
-      let lpTokenData = [];
-      if (isAlreadySettle) {
-        lpTokenData = await Promise.all(lpTokenPromises);
-      }
-      let userOrders = [];
-      let otherUserOrders = [];
+    try {
+      if (data && data.auctions) {
 
-      let accountId = account ? account.toLowerCase() : '0x';
-      data.orders.forEach((order, index) => {
-        let userId = order.userId.address.toLowerCase();
-        let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
-          .dividedBy(auctionDecimal)
-          .toString();
-        let auctionDivSellAmount = new BigNumber(order['sellAmount'])
+        let elem = data.auctions[0];
+        let type = elem['type'];
+        let auctionStatus = '';
+        let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
+        let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
+        // let currentPriceDecimal = getCurrentPriceDecimal(
+        //   elem['auctioningToken']['decimals'],
+        //   elem['biddingToken']['decimals'],
+        // );
+        let totalAuction = elem['auctionedSellAmount']
+          ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
+          : 0;
+        let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(biddingDecimal).toNumber();
+        let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toNumber();
+        let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(biddingDecimal).toNumber();
+        let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
           .dividedBy(biddingDecimal)
-          .toString();
-        if (orderLength - 1 === index) {
-          placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
-          placeholderSellAmount = Number(auctionDivSellAmount) + 1;
-          if (placeHolderMinBuyAmount > maxAvailable || placeholderSellAmount > maxAvailable) {
-            placeHolderMinBuyAmount = maxAvailable;
-            placeholderSellAmount = maxAvailable;
-          }
-        }
-        if (userId === accountId) {
-          userOrders.push({
-            ...order,
-            auctionDivBuyAmount,
-            auctionDivSellAmount,
-            auctionSymbol,
-            biddingSymbol,
-            lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
-          });
+          .toNumber();
+        minimumPrice = convertExponentToNum(minimumPrice);
+        maxAvailable = convertExponentToNum(maxAvailable);
+        currentPrice = convertExponentToNum(currentPrice);
+        minBuyAmount = convertExponentToNum(minBuyAmount);
+        let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
+        let auctionTokenName = elem['auctioningToken']['name'];
+        let biddingSymbol = `${elem['biddingToken']['symbol']}`;
+        let biddingTokenName = elem['biddingToken']['name'];
+        let auctionEndDate = elem['auctionEndDate'];
+        let auctionStartDate = elem['auctionStartDate'];
+        let endDateDiff = getDateDiff(auctionEndDate);
+        let startDateDiff = getDateDiff(auctionStartDate);
+        let isAllowCancellation = false;
+        if (startDateDiff > 0) {
+          auctionStatus = 'upcoming';
+        } else if (endDateDiff < 0) {
+          auctionStatus = 'completed';
         } else {
-          otherUserOrders.push({
-            ...order,
-            auctionDivBuyAmount,
-            auctionDivSellAmount,
-            auctionSymbol,
-            biddingSymbol,
-            lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
-          });
+          auctionStatus = 'inprogress';
         }
-      });
-      orders = userOrders.concat(otherUserOrders);
-      if (orderLength === 0) {
-        placeHolderMinBuyAmount = minBuyAmount;
-        placeholderSellAmount = minBuyAmount;
+        let cancelDateDiff = getDateDiff(elem['orderCancellationEndDate']);
+        if (cancelDateDiff > 0) {
+          isAllowCancellation = true;
+        }
+        let graphData = getGraphData({
+          ordersList: data.orders,
+          auctionDecimal: elem['auctioningToken']['decimals'],
+          biddingDecimal: elem['biddingToken']['decimals'],
+        });
+        let orders = [];
+        let placeHolderMinBuyAmount = 0;
+        let placeholderSellAmount = 0;
+        let orderLength = data.orders.length;
+        let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
+        let lpTokenPromises = [];
+        data.orders.forEach((order) => {
+          lpTokenPromises.push(calculateLPTokens(order));
+        });
+        let lpTokenData = [];
+        if (isAlreadySettle) {
+          lpTokenData = await Promise.all(lpTokenPromises);
+        }
+        let userOrders = [];
+        let otherUserOrders = [];
+
+        let accountId = account ? account.toLowerCase() : '0x';
+        data.orders.forEach((order, index) => {
+          let userId = order.userId.address.toLowerCase();
+          let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
+            .dividedBy(auctionDecimal)
+            .toString();
+          let auctionDivSellAmount = new BigNumber(order['sellAmount'])
+            .dividedBy(biddingDecimal)
+            .toString();
+          if (orderLength - 1 === index) {
+            placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
+            placeholderSellAmount = Number(auctionDivSellAmount) + 1;
+            if (placeHolderMinBuyAmount > maxAvailable || placeholderSellAmount > maxAvailable) {
+              placeHolderMinBuyAmount = maxAvailable;
+              placeholderSellAmount = maxAvailable;
+            }
+          }
+          if (userId === accountId) {
+            userOrders.push({
+              ...order,
+              auctionDivBuyAmount,
+              auctionDivSellAmount,
+              auctionSymbol,
+              biddingSymbol,
+              lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+            });
+          } else {
+            otherUserOrders.push({
+              ...order,
+              auctionDivBuyAmount,
+              auctionDivSellAmount,
+              auctionSymbol,
+              biddingSymbol,
+              lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+            });
+          }
+        });
+        orders = userOrders.concat(otherUserOrders);
+        if (orderLength === 0) {
+          placeHolderMinBuyAmount = minBuyAmount;
+          placeholderSellAmount = minBuyAmount;
+        }
+        let detail = {
+          minimumPrice,
+          maxAvailable,
+          currentPrice,
+          type,
+          id: elem.id,
+          totalAuction,
+          minBuyAmount,
+          auctionTokenName,
+          auctionSymbol,
+          auctionDecimal,
+          biddingSymbol,
+          biddingTokenName,
+          biddingDecimal,
+          chartType: 'block',
+          data: graphData,
+          telegramLink: elem['about']['telegram'],
+          discordLink: elem['about']['discord'],
+          mediumLink: elem['about']['medium'],
+          twitterLink: elem['about']['twitter'],
+          status: auctionStatus,
+          statusClass: auctionStatus,
+          title: type + ' Auction',
+          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          token: elem['auctioningToken']['id'],
+          website: elem['about']['website'],
+          description: elem['about']['description'],
+          isAlreadySettle,
+          isAllowCancellation,
+          placeHolderMinBuyAmount,
+          placeholderSellAmount,
+        };
+        setState({
+          ...state,
+          detail,
+          auctionStartDate,
+          auctionEndDate,
+          orders,
+          auctionStatus,
+        });
+        setLoading(false);
       }
-      let detail = {
-        minimumPrice,
-        maxAvailable,
-        currentPrice,
-        type,
-        id: elem.id,
-        totalAuction,
-        minBuyAmount,
-        auctionTokenName,
-        auctionSymbol,
-        auctionDecimal,
-        biddingSymbol,
-        biddingTokenName,
-        biddingDecimal,
-        chartType: 'block',
-        data: graphData,
-        telegramLink: elem['about']['telegram'],
-        discordLink: elem['about']['discord'],
-        mediumLink: elem['about']['medium'],
-        twitterLink: elem['about']['twitter'],
-        status: auctionStatus,
-        statusClass: auctionStatus,
-        title: type + ' Auction',
-        contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
-        token: elem['auctioningToken']['id'],
-        website: elem['about']['website'],
-        description: elem['about']['description'],
-        isAlreadySettle,
-        isAllowCancellation,
-        placeHolderMinBuyAmount,
-        placeholderSellAmount,
-      };
-      setState({
-        ...state,
-        detail,
-        auctionStartDate,
-        auctionEndDate,
-        orders,
-        auctionStatus,
-      });
-      setLoading(false);
+    }catch (error) {
+      console.log('error', error)
     }
+    
   }, [data]);
   const getDateDiff = (endDate) => {
     endDate = moment.unix(endDate);
@@ -300,18 +306,18 @@ function Detail(props) {
       setData([]);
       setTimeout(() => {
         apolloClient
-        .query({
-          query: query,
-          variables: {},
-        })
-        .then((response) => {
-          let { data } = response;
-          setData(data);
-        })
-        .catch((err) => {
-          setData([]);
-          setLoading(false);
-        });
+          .query({
+            query: query,
+            variables: {},
+          })
+          .then((response) => {
+            let { data } = response;
+            setData(data);
+          })
+          .catch((err) => {
+            setData([]);
+            setLoading(false);
+          });
       }, 1000);
     } catch (error) {
       setLoading(false);

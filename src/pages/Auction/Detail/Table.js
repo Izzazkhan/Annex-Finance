@@ -251,14 +251,13 @@ function Table(props) {
                     </td>
                     <td>
                       {account === userId &&
-                      props.auctionStatus === 'completed' &&
-                      props.isAlreadySettle &&
-                      item.status !== 'CANCELLED' ? (
+                        props.auctionStatus === 'completed' &&
+                        props.isAlreadySettle &&
+                        item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label
-                            className={`container text-base ml-2 font-normal ${
-                              loading || !props.isAlreadySettle ? 'disabled' : ''
-                            }`}
+                            className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
+                              }`}
                           >
                             <input
                               type="checkbox"
@@ -273,7 +272,10 @@ function Table(props) {
                             />
                             <span
                               className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''}`}
-                            ></span>
+                            >
+                              <span style={{ 'display': 'none' }} className="text">hovers</span>
+
+                            </span>
                           </label>
                         </div>
                       ) : props.isAllowCancellation &&
@@ -281,9 +283,8 @@ function Table(props) {
                         item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label
-                            className={`container text-base ml-2 font-normal ${
-                              loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                            }`}
+                            className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                              }`}
                           >
                             <input
                               type="checkbox"
@@ -294,7 +295,9 @@ function Table(props) {
                               }
                               onClick={() => handleCancelCheckbox(item)}
                             />
-                            <span className="checkmark"></span>
+                            <span className="checkmark">
+                              <span style={{ 'display': 'none' }} className="text">hovers</span>
+                            </span>
                           </label>
                         </div>
                       ) : item.status === 'CANCELLED' ? (
@@ -305,7 +308,9 @@ function Table(props) {
                               disabled={true}
                               checked={true}
                             />
-                            <span className="checkmark red"></span>
+                            <span className="checkmark red">
+                              <span style={{ 'display': 'none' }} className="text">hovers</span>
+                            </span>
                           </label>
                         </div>
                       ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (

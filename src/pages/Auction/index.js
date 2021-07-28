@@ -234,6 +234,19 @@ const Styles = styled.div`
       width: 25px;
       background-color: #101016;
       border: 1px solid #717579;
+      &:hover{
+        .text {
+          display: block !important;
+        }
+      }
+      .text {
+        position: absolute;
+        top: -33px;
+        background: #3e3d3d;
+        padding: 3px 6px;
+        right: -18px;
+        font-size: 12px;
+      }
     }
 
     .container input:checked ~ .checkmark {
