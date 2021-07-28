@@ -157,7 +157,7 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
-    .chart{
+    .chart {
       margin-left: -40px;
     }
   }
@@ -234,7 +234,7 @@ const Styles = styled.div`
       width: 25px;
       background-color: #101016;
       border: 1px solid #717579;
-      &:hover{
+      &:hover {
         .text {
           display: block !important;
         }
@@ -252,20 +252,20 @@ const Styles = styled.div`
     .container input:checked ~ .checkmark {
       background-color: #ff9800;
       border: 1px solid #ff9800;
-      &.green{
-      background-color: #50bf50;
-      border: 1px solid #50bf50;
-      .text {
+      &.green {
         background-color: #50bf50;
-      }
-      }
-      &.red{
-        background-color: #F0350E;
-        border: 1px solid #F0350E;
+        border: 1px solid #50bf50;
         .text {
-          background-color: #F0350E;
+          background-color: #50bf50;
         }
+      }
+      &.red {
+        background-color: #f0350e;
+        border: 1px solid #f0350e;
+        .text {
+          background-color: #f0350e;
         }
+      }
     }
 
     .checkmark:after {
@@ -290,7 +290,7 @@ const Styles = styled.div`
       transform: rotate(45deg);
     }
   }
-  td{
+  td {
     .custom-check {
       .container {
         display: block;
@@ -313,7 +313,6 @@ const Styles = styled.div`
         right: 0;
         margin: 0 auto;
       }
-  
     }
   }
   .chart {
@@ -354,21 +353,22 @@ const Styles = styled.div`
         font-size: 12px;
         color: #ff9800 !important;
       }
+    }
   }
-.tooltip {
+  .tooltip {
     margin-bottom: 5px;
     .label {
-    display: none;
-    position: absolute;
-    top: -6px;
-    left: 30px;
-    color: #e2e2e2;
+      display: none;
+      position: absolute;
+      top: -6px;
+      left: 30px;
+      color: #e2e2e2;
+    }
   }
-}
- 
-.tooltip img:hover + .label {
+
+  .tooltip img:hover + .label {
     display: block;
-}
+  }
 `;
 
 function Auction() {

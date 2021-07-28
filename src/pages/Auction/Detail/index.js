@@ -7,7 +7,11 @@ import moment from 'moment';
 import subGraphContext from '../../../contexts/subgraph';
 import { gql } from '@apollo/client';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
-import { getAuctionContract, methods } from '../../../utilities/ContractService';
+import {
+  getAuctionContract,
+  methods,
+  getTokenContractWithDynamicAbi,
+} from '../../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
@@ -99,7 +103,6 @@ function Detail(props) {
   useEffect(async () => {
     try {
       if (data && data.auctions) {
-
         let elem = data.auctions[0];
         let type = elem['type'];
         let auctionStatus = '';
@@ -109,6 +112,8 @@ function Detail(props) {
         //   elem['auctioningToken']['decimals'],
         //   elem['biddingToken']['decimals'],
         // );
+        let auctionBalance = await getTokenBalance(elem['auctioningToken']['id'], auctionDecimal);
+        let biddingBalance = await getTokenBalance(elem['biddingToken']['id'], biddingDecimal);
         let totalAuction = elem['auctionedSellAmount']
           ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
           : 0;
@@ -206,6 +211,8 @@ function Detail(props) {
           placeholderSellAmount = minBuyAmount;
         }
         let detail = {
+          auctionBalance,
+          biddingBalance,
           minimumPrice,
           maxAvailable,
           currentPrice,
@@ -247,10 +254,9 @@ function Detail(props) {
         });
         setLoading(false);
       }
-    }catch (error) {
-      console.log('error', error)
+    } catch (error) {
+      console.log('error', error);
     }
-    
   }, [data]);
   const getDateDiff = (endDate) => {
     endDate = moment.unix(endDate);
@@ -345,6 +351,12 @@ function Detail(props) {
         });
     });
   };
+  const getTokenBalance = async (token, decimal) => {
+    const tokenContract = getTokenContractWithDynamicAbi(token);
+    let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
+    balanceOf = new BigNumber(balanceOf).dividedBy(decimal).toNumber();
+    return balanceOf;
+  };
   return (
     <div>
       <div className="col-span-12 p-6 flex flex-col">
@@ -369,7 +381,14 @@ function Detail(props) {
           )}
           <div className="flex items-center text-white text-xl md:text-lg ">
             Current Price{' '}
-            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+            <div className="tooltip relative">
+              <img
+                className="ml-3"
+                src={require('../../../assets/images/info.svg').default}
+                alt=""
+              />
+              <span className="label">Current Auctioned Token Price</span>
+            </div>
           </div>
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
@@ -396,7 +415,14 @@ function Detail(props) {
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Bidding With{' '}
-            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+            <div className="tooltip relative">
+              <img
+                className="ml-3"
+                src={require('../../../assets/images/info.svg').default}
+                alt=""
+              />
+              <span className="label">Bidding Token</span>
+            </div>
           </div>
         </div>
         <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
@@ -426,7 +452,14 @@ function Detail(props) {
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Total Auctioned{' '}
-            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+            <div className="tooltip relative">
+              <img
+                className="ml-3"
+                src={require('../../../assets/images/info.svg').default}
+                alt=""
+              />
+              <span className="label">Total Auctioned Token</span>
+            </div>
           </div>
         </div>
         <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
@@ -444,7 +477,14 @@ function Detail(props) {
           <div className="flex items-center text-white text-xl md:text-lg ">
             {' '}
             Min Bid Price{' '}
-            <img className="ml-3" src={require('../../../assets/images/info.svg').default} alt="" />
+            <div className="tooltip relative">
+              <img
+                className="ml-3"
+                src={require('../../../assets/images/info.svg').default}
+                alt=""
+              />
+              <span className="label">Minimum Bid Price</span>
+            </div>
           </div>
         </div>
         <div className="col-span-12 text-center">
