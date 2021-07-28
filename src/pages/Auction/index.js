@@ -255,10 +255,16 @@ const Styles = styled.div`
       &.green{
       background-color: #50bf50;
       border: 1px solid #50bf50;
+      .text {
+        background-color: #50bf50;
+      }
       }
       &.red{
         background-color: #F0350E;
         border: 1px solid #F0350E;
+        .text {
+          background-color: #F0350E;
+        }
         }
     }
 
