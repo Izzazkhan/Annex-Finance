@@ -4,6 +4,10 @@ import Table from './Table';
 import arrow from '../../assets/icons/arrow.svg';
 import expandBox from '../../assets/icons/expandBox.svg';
 import tick from '../../assets/icons/tick.svg';
+import ListIcon from '../../assets/images/card-list-btn.png';
+import GridIcon from '../../assets/images/card-grid-btn.png';
+import Select from '../../components/UI/Select';
+
 
 function Farms() {
   const subComponent = (
@@ -280,11 +284,49 @@ function Farms() {
       action: 'detail',
     },
   ];
-
+  const sortOptions = [
+    { name: 'Hot' },
+    { name: 'APR' },
+    { name: 'Multiplier' },
+    { name: 'Earned' },
+    { name: 'Liquidity' },
+  ];
   const data = React.useMemo(() => database, []);
 
   return (
     <Layout mainClassName="min-h-screen py-8">
+      <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-3 md:gap-x-3 px-10 pt-0 py-6
+ pl-6 lg:pr-8 ">
+        <div className="flex items-center">
+          <div className="list-icon">
+            <img src={ListIcon} alt="" className="" />
+          </div>
+          <div className="grid-icon ml-3">
+            <img src={GridIcon} alt="" className="" />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <a href="" className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white w-40 text-center">Live</a>
+          <a href="" className="focus:outline-none bg-transparent border border-primary py-2 px-4 
+          rounded-3xl text-white ml-5 w-40 text-center">Finished</a>
+
+        </div>
+        <div className="flex items-center">
+          <div className="mr-5">
+          <Select className="border-primary" type="basic" options={sortOptions} />
+          </div>
+          <div className="search">
+            <input
+              className="border border-solid border-primary bg-transparent
+                 rounded-xl w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
+              type="text"
+              placeholder="Search"
+            />
+          </div>
+
+        </div>
+
+      </div>
       <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />
     </Layout>
   );
