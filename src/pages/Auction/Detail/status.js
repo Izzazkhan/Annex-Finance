@@ -385,10 +385,10 @@ const AuctionProgress = (props) => {
                 {props.detail && props.detail.biddingBalance && props.detail.auctionBalance && (
                   <div className="flex justify-between mb-3">
                     <div className="text-md mr-3">
-                      <b>Bidding Token Balance:</b> {props.detail && props.detail.biddingBalance}
+                      <b>Bidding Token :</b> {props.detail && props.detail.biddingBalance}
                     </div>
                     <div className="text-md ">
-                      <b>Auction Token Balance:</b> {props.detail && props.detail.auctionBalance}
+                      <b>Auction Token :</b> {props.detail && props.detail.auctionBalance}
                     </div>
                   </div>
                 )}
