@@ -273,7 +273,7 @@ function Table(props) {
                             <span
                               className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''}`}
                             >
-                              <span style={{ 'display': 'none' }} className="text">hovers</span>
+                              <span style={{ 'display': 'none' }} className="text">{item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}</span>
 
                             </span>
                           </label>
@@ -296,7 +296,7 @@ function Table(props) {
                               onClick={() => handleCancelCheckbox(item)}
                             />
                             <span className="checkmark">
-                              <span style={{ 'display': 'none' }} className="text">hovers</span>
+                              <span style={{ 'display': 'none' }} className="text">Cancel</span>
                             </span>
                           </label>
                         </div>
@@ -309,7 +309,7 @@ function Table(props) {
                               checked={true}
                             />
                             <span className="checkmark red">
-                              <span style={{ 'display': 'none' }} className="text">hovers</span>
+                              <span style={{ 'display': 'none' }} className="text"> Cancelled</span>
                             </span>
                           </label>
                         </div>
