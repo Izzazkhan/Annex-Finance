@@ -298,7 +298,8 @@ function Detail(props) {
     try {
       setLoading(true);
       setData([]);
-      apolloClient
+      setTimeout(() => {
+        apolloClient
         .query({
           query: query,
           variables: {},
@@ -311,6 +312,7 @@ function Detail(props) {
           setData([]);
           setLoading(false);
         });
+      }, 1000);
     } catch (error) {
       setLoading(false);
     }

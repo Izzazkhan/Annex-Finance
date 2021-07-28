@@ -239,6 +239,14 @@ const Styles = styled.div`
     .container input:checked ~ .checkmark {
       background-color: #ff9800;
       border: 1px solid #ff9800;
+      &.green{
+      background-color: #50bf50;
+      border: 1px solid #50bf50;
+      }
+      &.red{
+        background-color: #F0350E;
+        border: 1px solid #F0350E;
+        }
     }
 
     .checkmark:after {

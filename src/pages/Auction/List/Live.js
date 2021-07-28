@@ -65,7 +65,9 @@ function Live(props) {
           auctionDecimal,
           biddingDecimal,
         );
-        let formatedAuctionDate = moment.unix(element['auctionEndDate']).format('MM/DD/YYYY HH:mm:ss');
+        let formatedAuctionDate = moment
+          .unix(element['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
         orders &&
           orders.forEach((item) => {
