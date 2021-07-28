@@ -354,6 +354,7 @@ const Styles = styled.div`
         font-size: 12px;
         color: #ff9800 !important;
       }
+    }
   }
 .tooltip {
     margin-bottom: 5px;
