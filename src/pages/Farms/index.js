@@ -312,7 +312,7 @@ function Farms() {
           rounded-3xl text-white ml-5 w-40 text-center">Finished</a>
           <div className="">
             <Switch/>
-            <label>Staked only</label>
+            <div>Staked only</div>
           </div>
         </div>
         <div className="flex items-center">
