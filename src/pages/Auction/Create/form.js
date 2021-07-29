@@ -534,8 +534,9 @@ export default function Form(props) {
           {state.inputs.map((input, index) => {
             return (
               <Fragment key={index}>
-                {index === 0 && input.label ? (
-                  <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
+                { input.label ? (
+                  <div className="col-span-12 flex flex-col text-primary  text-3xl pb-2
+                  font-normal my-5 form-section-title border-b border-solid border-lightGray mt-10">
                     {input.label}
                   </div>
                 ) : (
@@ -579,16 +580,16 @@ export default function Form(props) {
                 ) : (
                   ''
                 )}
-                {index !== 0 && input.label ? (
+                {/* {index !== 0 && input.label ? (
                   <Fragment>
-                    <hr />
+                    <div className=" col-span-12 flex flex-col my-5"></div>
                     <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
                       {input.label}
                     </div>
                   </Fragment>
                 ) : (
                   ''
-                )}
+                )} */}
               </Fragment>
             );
           })}
@@ -699,7 +700,7 @@ const Textarea = ({
   handleInputChange,
 }) => {
   return (
-    <div className={`col-span-6 flex flex-col mt-8`}>
+    <div className={`col-span-12 flex flex-col mt-8`}>
       <textarea
         className="border border-solid border-gray bg-transparent
                rounded-xl w-full focus:outline-none font-normal px-4 py-2 h-20 text-white text-lg"
