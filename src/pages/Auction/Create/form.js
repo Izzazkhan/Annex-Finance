@@ -73,6 +73,7 @@ export default function Form(props) {
         description: 'The token that will auction.',
         value: '',
         colspan: 6,
+        label: 'Auction',
       },
       {
         type: 'select',
@@ -99,6 +100,7 @@ export default function Form(props) {
         description: 'The amount to sell the auction token.',
         value: '',
         colspan: 12,
+        label: 'Auction',
       },
       {
         type: 'number',
@@ -107,6 +109,7 @@ export default function Form(props) {
         description: 'The minimium amount to buy the auction.',
         value: '',
         colspan: 6,
+        label: 'Auction',
       },
       {
         type: 'number',
@@ -131,6 +134,7 @@ export default function Form(props) {
         description: 'The date on which auction start.',
         value: new Date(),
         colspan: 6,
+        label: 'Date',
       },
       {
         type: 'date',
@@ -149,7 +153,6 @@ export default function Form(props) {
         colspan: 12,
       },
 
-
       {
         type: 'url',
         id: 'websiteLink',
@@ -157,6 +160,7 @@ export default function Form(props) {
         description: 'Website URL',
         value: '',
         colspan: 6,
+        label: 'Others',
       },
       {
         type: 'url',
@@ -511,11 +515,11 @@ export default function Form(props) {
   const validURL = (str) => {
     var pattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$',
       'i',
     ); // fragment locator
     return !!pattern.test(str);
@@ -525,10 +529,18 @@ export default function Form(props) {
       <form className="needs-validation" onSubmit={auctionCreationChecks} noValidate>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
           {/* section */}
-          <div className="col-span-12 flex flex-col text-white text-2xl font-normal"> Auction</div>
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 col-span-12 form-section">
-            {state.inputs.map((input, index) => {
-              return (<Fragment key={index}>
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 col-span-12 form-section"> */}
+          {state.inputs.map((input, index) => {
+            return (
+              <Fragment key={index}>
+                {index === 0 && input.label ? (
+                  <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
+                    {input.label}
+                  </div>
+                ) : (
+                  ''
+                )}
                 {input.type === 'select' ? (
                   <SelectInput
                     {...input}
@@ -561,13 +573,27 @@ export default function Form(props) {
                     isAdvance={false}
                     handleInputChange={handleInputChange}
                   />
-                )
-                }
-                {input.colspan === 12 ? <div className={`col-span-6 flex flex-col mt-8`}></div> : ''}
-              </Fragment>)
-            })}
+                )}
+                {input.colspan === 12 ? (
+                  <div className={`col-span-6 flex flex-col mt-8`}></div>
+                ) : (
+                  ''
+                )}
+                {index !== 0 && input.label ? (
+                  <Fragment>
+                    <hr />
+                    <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
+                      {input.label}
+                    </div>
+                  </Fragment>
+                ) : (
+                  ''
+                )}
+              </Fragment>
+            );
+          })}
 
-          </div>
+          {/* </div> */}
           {/* section end */}
         </div>
         <div className="text-right">
@@ -645,17 +671,8 @@ export default function Form(props) {
   );
 }
 
-const Input = ({
-  index,
-  type,
-  placeholder,
-  value,
-  isAdvance,
-  description,
-  handleInputChange,
-}) => {
+const Input = ({ index, type, placeholder, value, isAdvance, description, handleInputChange }) => {
   return (
-
     <div className={`col-span-6 flex flex-col mt-8`}>
       <input
         className="border border-solid border-gray bg-transparent
