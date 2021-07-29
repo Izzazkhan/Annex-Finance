@@ -148,8 +148,8 @@ export default function Form(props) {
         value: new Date(),
         colspan: 12,
       },
-     
-     
+
+
       {
         type: 'url',
         id: 'websiteLink',
@@ -511,11 +511,11 @@ export default function Form(props) {
   const validURL = (str) => {
     var pattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$',
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$',
       'i',
     ); // fragment locator
     return !!pattern.test(str);
@@ -524,41 +524,51 @@ export default function Form(props) {
     <Fragment>
       <form className="needs-validation" onSubmit={auctionCreationChecks} noValidate>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
-          {state.inputs.map((input, index) => {
-            return input.type === 'select' ? (
-              <SelectInput
-                {...input}
-                index={index}
-                key={index}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            ) : input.type === 'date' ? (
-              <DateInput
-                key={index}
-                index={index}
-                {...input}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            ) : input.type === 'textarea' ? (
-              <Textarea
-                {...input}
-                key={index}
-                index={index}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            ) : (
-              <Input
-                key={index}
-                index={index}
-                {...input}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            );
-          })}
+          {/* section */}
+          <div className="col-span-12 flex flex-col text-white text-2xl font-normal"> Auction</div>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 col-span-12 form-section">
+            {state.inputs.map((input, index) => {
+              return (<Fragment key={index}>
+                {input.type === 'select' ? (
+                  <SelectInput
+                    {...input}
+                    index={index}
+                    key={index}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                ) : input.type === 'date' ? (
+                  <DateInput
+                    key={index}
+                    index={index}
+                    {...input}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                ) : input.type === 'textarea' ? (
+                  <Textarea
+                    {...input}
+                    key={index}
+                    index={index}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                ) : (
+                  <Input
+                    key={index}
+                    index={index}
+                    {...input}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                )
+                }
+                {input.colspan === 12 ? <div className={`col-span-6 flex flex-col mt-8`}></div> : ''}
+              </Fragment>)
+            })}
+
+          </div>
+          {/* section end */}
         </div>
         <div className="text-right">
           <ArrowDown
@@ -643,10 +653,10 @@ const Input = ({
   isAdvance,
   description,
   handleInputChange,
-  colspan,
 }) => {
   return (
-    <div className={`col-span-${colspan} flex flex-col mt-8`}>
+
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <input
         className="border border-solid border-gray bg-transparent
                  rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
@@ -670,10 +680,9 @@ const Textarea = ({
   isAdvance,
   description,
   handleInputChange,
-  colspan,
 }) => {
   return (
-    <div className={`col-span-${colspan} flex flex-col mt-8`}>
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <textarea
         className="border border-solid border-gray bg-transparent
                rounded-xl w-full focus:outline-none font-normal px-4 py-2 h-20 text-white text-lg"
@@ -688,9 +697,9 @@ const Textarea = ({
   );
 };
 
-const Checkbox = ({ index, type, description, value, isAdvance, handleInputChange,colspan}) => {
+const Checkbox = ({ index, type, description, value, isAdvance, handleInputChange, colspan }) => {
   return (
-    <div className={`col-span-${colspan} flex mt-8 items-center custom-check`}>
+    <div className={`col-span-6 flex mt-8 items-center custom-check`}>
       <label className="container text-base ml-2 font-normal">
         {description}
         <input
@@ -712,10 +721,9 @@ const SelectInput = ({
   isAdvance,
   handleInputChange,
   description,
-  colspan
 }) => {
   return (
-    <div className={`col-span-${colspan} flex flex-col mt-8`}>
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <Select
         options={options}
         onChange={(val) => handleInputChange(val, type, index, isAdvance)}
@@ -728,9 +736,9 @@ const SelectInput = ({
   );
 };
 
-const DateInput = ({ index, type, value, isAdvance, description, handleInputChange,colspan }) => {
+const DateInput = ({ index, type, value, isAdvance, description, handleInputChange }) => {
   return (
-    <div className={`col-span-${colspan} flex flex-col mt-8`}>
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <Flatpickr
         className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         data-enable-time={true}

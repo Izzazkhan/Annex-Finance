@@ -390,6 +390,10 @@ const Styles = styled.div`
     display: inline-block;
     border-radius: 50%;
   }
+  .form-section {
+    border-bottom: 1px solid #696969;
+    margin-bottom: 20px;
+}
 `;
 
 function Auction() {
