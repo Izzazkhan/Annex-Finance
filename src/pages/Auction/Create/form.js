@@ -73,7 +73,7 @@ export default function Form(props) {
         description: 'The token that will auction.',
         value: '',
         colspan: 6,
-        label: 'Auction',
+        label: 'Token Information',
       },
       {
         type: 'select',
@@ -92,6 +92,7 @@ export default function Form(props) {
         options: props.annexSwapOptions,
         value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
         colspan: 12,
+        label: 'Exchange',
       },
       {
         type: 'number',
@@ -100,7 +101,7 @@ export default function Form(props) {
         description: 'The amount to sell the auction token.',
         value: '',
         colspan: 12,
-        label: 'Auction',
+        label: 'Details ',
       },
       {
         type: 'number',
@@ -109,7 +110,6 @@ export default function Form(props) {
         description: 'The minimium amount to buy the auction.',
         value: '',
         colspan: 6,
-        label: 'Auction',
       },
       {
         type: 'number',
