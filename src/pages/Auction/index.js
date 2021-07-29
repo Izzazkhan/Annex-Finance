@@ -369,6 +369,27 @@ const Styles = styled.div`
   .tooltip img:hover + .label {
     display: block;
   }
+  .completed-icon {
+    background: #04af04;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .upcoming-icon {
+    background: #2b98d6;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .inprogress-icon {
+    background: #ffab2d;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+  }
 `;
 
 function Auction() {

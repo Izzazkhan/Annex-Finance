@@ -106,14 +106,16 @@ function Detail(props) {
         let elem = data.auctions[0];
         let type = elem['type'];
         let auctionStatus = '';
+        let auctionTokenId = elem['auctioningToken']['id'];
+        let biddingTokenId = elem['biddingToken']['id'];
+        let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
+        let auctionTokenName = elem['auctioningToken']['name'];
+        let biddingSymbol = `${elem['biddingToken']['symbol']}`;
+        let biddingTokenName = elem['biddingToken']['name'];
         let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
         let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
-        // let currentPriceDecimal = getCurrentPriceDecimal(
-        //   elem['auctioningToken']['decimals'],
-        //   elem['biddingToken']['decimals'],
-        // );
-        let auctionBalance = await getTokenBalance(elem['auctioningToken']['id'], auctionDecimal);
-        let biddingBalance = await getTokenBalance(elem['biddingToken']['id'], biddingDecimal);
+        let auctionBalance = await getTokenBalance(auctionTokenId, auctionDecimal);
+        let biddingBalance = await getTokenBalance(biddingTokenId, biddingDecimal);
         let totalAuction = elem['auctionedSellAmount']
           ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
           : 0;
@@ -127,10 +129,7 @@ function Detail(props) {
         maxAvailable = convertExponentToNum(maxAvailable);
         currentPrice = convertExponentToNum(currentPrice);
         minBuyAmount = convertExponentToNum(minBuyAmount);
-        let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
-        let auctionTokenName = elem['auctioningToken']['name'];
-        let biddingSymbol = `${elem['biddingToken']['symbol']}`;
-        let biddingTokenName = elem['biddingToken']['name'];
+
         let auctionEndDate = elem['auctionEndDate'];
         let auctionStartDate = elem['auctionStartDate'];
         let endDateDiff = getDateDiff(auctionEndDate);
@@ -211,6 +210,8 @@ function Detail(props) {
           placeholderSellAmount = minBuyAmount;
         }
         let detail = {
+          auctionTokenId,
+          biddingTokenId,
           auctionBalance,
           biddingBalance,
           minimumPrice,
@@ -411,7 +412,19 @@ function Detail(props) {
               ''
             )}{' '}
             {state.detail.biddingSymbol}
-            <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
+            <a
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
+                state.detail && state.detail.biddingTokenId
+              }`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                className="ml-3"
+                src={require('../../../assets/images/link.svg').default}
+                alt=""
+              />
+            </a>
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Bidding With{' '}
@@ -448,7 +461,19 @@ function Detail(props) {
             ) : (
               `${state.detail.totalAuction} ${state.detail.auctionSymbol}`
             )}
-            <img className="ml-3" src={require('../../../assets/images/link.svg').default} alt="" />
+            <a
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
+                state.detail && state.detail.auctionTokenId
+              }`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                className="ml-3"
+                src={require('../../../assets/images/link.svg').default}
+                alt=""
+              />
+            </a>
           </h2>
           <div className="flex items-center text-white text-xl md:text-lg ">
             Total Auctioned{' '}
@@ -523,7 +548,9 @@ function Detail(props) {
               <div className="">
                 <span className={`${state.detail.statusClass}-icon`}></span>
               </div>
-              <div className="text-sm">{state.detail.status}</div>
+              <div className="text-sm">
+                {state.detail.status}
+              </div>
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
