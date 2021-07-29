@@ -7,6 +7,7 @@ import tick from '../../assets/icons/tick.svg';
 import ListIcon from '../../assets/images/card-list-btn.png';
 import GridIcon from '../../assets/images/card-grid-btn.png';
 import Select from '../../components/UI/Select';
+import Switch from "../../components/UI/Switch";
 
 
 function Farms() {
@@ -309,7 +310,10 @@ function Farms() {
           <a href="" className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white w-40 text-center">Live</a>
           <a href="" className="focus:outline-none bg-transparent border border-primary py-2 px-4 
           rounded-3xl text-white ml-5 w-40 text-center">Finished</a>
-
+          <div className="">
+            <Switch/>
+            <label>Staked only</label>
+          </div>
         </div>
         <div className="flex items-center">
           <div className="mr-5">
