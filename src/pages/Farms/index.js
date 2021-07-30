@@ -8,6 +8,8 @@ import tick from '../../assets/icons/tick.svg';
 import Greentick from '../../assets/icons/green-tick.png';
 import ListIcon from '../../assets/images/card-list-btn.png';
 import GridIcon from '../../assets/images/card-grid-btn.png';
+import ListIconActive from '../../assets/images/card-list-btn-active.png';
+import GridIconActive from '../../assets/images/card-grid-btn-active.png';
 import Select from '../../components/UI/Select';
 import Switch from "../../components/UI/Switch";
 
@@ -302,10 +304,10 @@ function Farms() {
  pl-6 lg:pr-5 ">
         <div className="col-span-2 flex items-center">
           <div className="list-icon">
-            <img src={ListIcon} alt="" className="" />
+            <a href="#"><img src={ListIconActive} alt="" className="" /></a>
           </div>
           <div className="grid-icon ml-3">
-            <img src={GridIcon} alt="" className="" />
+            <a href="#"><img src={GridIcon} alt="" className="" /></a>
           </div>
         </div>
         <div className="col-span-5 flex items-center">
