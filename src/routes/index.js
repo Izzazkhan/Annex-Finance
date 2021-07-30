@@ -13,7 +13,7 @@ import AllProposals from '../pages/Vote/AllProposals';
 import VoteOverview from '../pages/Vote/VoteOverview';
 import ProposerOverview from '../pages/Vote/ProposerOverview';
 import Leaderboard from '../pages/Vote/Leaderboard';
-import Pools from '../pages/Pools';
+import Pools from '../pages/Pools/index';
 import Trade from '../pages/Trade';
 import NotFound from '../pages/NotFound';
 import Web3ReactManager from '../components/common/Web3ReactManager';
