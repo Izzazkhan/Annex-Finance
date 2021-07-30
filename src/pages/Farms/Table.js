@@ -211,7 +211,7 @@ function Table({ columns, data, renderRowSubComponent }) {
                   </tr>
                   {row.isExpanded ? (
                     <tr>
-                      <td colSpan={visibleColumns.length}>
+                      <td className="bg-fadeBlue" colSpan={visibleColumns.length}>
                         {/*
                           Inside it, call our renderRowSubComponent function. In reality,
                           you could pass whatever you want as props to

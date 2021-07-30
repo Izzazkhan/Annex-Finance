@@ -47,6 +47,8 @@ function Select({
                focus-visible:border-indigo-500 sm:text-sm bg-transparent border border-solid ${
                  type === 'primary'
                    ? 'border-primary rounded-4xl'
+                   : type === 'custom-primary'
+                   ? 'border-primary rounded-lg '
                    : type === 'basic'
                    ? 'border-gray rounded-md py-2'
                    : type === 'mini'
@@ -72,6 +74,8 @@ function Select({
                       className={`block truncate ${
                         type === 'primary'
                           ? 'text-primary font-bold'
+                          : type === 'custom-primary'
+                          ? 'text-white text-lg'
                           : type === 'basic'
                           ? 'text-white'
                           : type === 'mini'
@@ -85,6 +89,8 @@ function Select({
                   <ChevronDownIcon
                     className={`w-6 hover:text-violet-100 mr-2 ${
                       type === 'primary'
+                        ? 'text-primary'
+                        : type === 'custom-primary'
                         ? 'text-primary'
                         : type === 'basic'
                         ? 'text-white'
