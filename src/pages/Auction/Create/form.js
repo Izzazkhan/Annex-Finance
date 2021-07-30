@@ -72,6 +72,8 @@ export default function Form(props) {
         id: 'auctionToken',
         description: 'The token that will auction.',
         value: '',
+        colspan: 6,
+        label: 'Token Information',
       },
       {
         type: 'select',
@@ -80,6 +82,7 @@ export default function Form(props) {
         description: 'The token that will use to bid the auction.',
         options: props.biddingTokenOptions,
         value: props.biddingTokenOptions[0] ? props.biddingTokenOptions[0] : [],
+        colspan: 6,
       },
       {
         type: 'select',
@@ -88,27 +91,8 @@ export default function Form(props) {
         description: 'This will use to generate your LP Tokens after settle.',
         options: props.annexSwapOptions,
         value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
-      },
-      {
-        type: 'date',
-        id: 'startDate',
-        placeholder: 'Auction start date',
-        description: 'The date on which auction start.',
-        value: new Date(),
-      },
-      {
-        type: 'date',
-        id: 'endDate',
-        placeholder: 'Auction end date',
-        description: 'The date on which auction end.',
-        value: new Date(),
-      },
-      {
-        type: 'date',
-        id: 'cancellationDate',
-        placeholder: 'Order cancellation date',
-        description: 'The date for order cancellation.',
-        value: new Date(),
+        colspan: 12,
+        label: 'Exchange',
       },
       {
         type: 'number',
@@ -116,6 +100,8 @@ export default function Form(props) {
         placeholder: 'Auction sell amount',
         description: 'The amount to sell the auction token.',
         value: '',
+        colspan: 12,
+        label: 'Details ',
       },
       {
         type: 'number',
@@ -123,6 +109,7 @@ export default function Form(props) {
         placeholder: 'Minimum buy amount',
         description: 'The minimium amount to buy the auction.',
         value: '',
+        colspan: 6,
       },
       {
         type: 'number',
@@ -130,6 +117,7 @@ export default function Form(props) {
         placeholder: 'Minimum bidding amount per order',
         description: 'The minimium amount to bid on the auction.',
         value: '',
+        colspan: 6,
       },
       {
         type: 'number',
@@ -137,13 +125,42 @@ export default function Form(props) {
         placeholder: 'Minimum funding threshold',
         description: 'Minimum buy amount against all auctioned tokens and total auctioned tokens.',
         value: '',
+        colspan: 12,
       },
+      {
+        type: 'date',
+        id: 'startDate',
+        placeholder: 'Auction start date',
+        description: 'The date on which auction start.',
+        value: new Date(),
+        colspan: 6,
+        label: 'Date',
+      },
+      {
+        type: 'date',
+        id: 'endDate',
+        placeholder: 'Auction end date',
+        description: 'The date on which auction end.',
+        value: new Date(),
+        colspan: 6,
+      },
+      {
+        type: 'date',
+        id: 'cancellationDate',
+        placeholder: 'Order cancellation date',
+        description: 'The date for order cancellation.',
+        value: new Date(),
+        colspan: 12,
+      },
+
       {
         type: 'url',
         id: 'websiteLink',
         placeholder: 'Website URL',
         description: 'Website URL',
         value: '',
+        colspan: 6,
+        label: 'Others',
       },
       {
         type: 'url',
@@ -151,6 +168,7 @@ export default function Form(props) {
         placeholder: 'Telegram Link',
         description: 'Telegram Link',
         value: '',
+        colspan: 6,
       },
       {
         type: 'url',
@@ -158,6 +176,7 @@ export default function Form(props) {
         placeholder: 'Discord Link',
         description: 'Discord Link',
         value: '',
+        colspan: 6,
       },
       {
         type: 'url',
@@ -165,6 +184,7 @@ export default function Form(props) {
         placeholder: 'Medium Link',
         description: 'Medium Link',
         value: '',
+        colspan: 6,
       },
       {
         type: 'url',
@@ -172,6 +192,7 @@ export default function Form(props) {
         placeholder: 'Twitter Link',
         description: 'Twitter Link',
         value: '',
+        colspan: 6,
       },
       {
         type: 'textarea',
@@ -179,6 +200,7 @@ export default function Form(props) {
         placeholder: 'Auction Description',
         description: 'Auction Description',
         value: '',
+        colspan: 12,
       },
     ],
     advanceInputs: [
@@ -188,6 +210,7 @@ export default function Form(props) {
         placeholder: '',
         description: 'To settle the auction automatically.',
         value: false,
+        colspan: 6,
       },
       {
         type: 'text',
@@ -195,6 +218,7 @@ export default function Form(props) {
         placeholder: 'Access manager contract address',
         description: 'Access manager contract address.',
         value: '',
+        colspan: 6,
       },
       {
         type: 'textarea',
@@ -202,6 +226,7 @@ export default function Form(props) {
         placeholder: 'Access manager data',
         description: 'Access manager contract data.',
         value: '',
+        colspan: 6,
       },
     ],
     type: 'batch',
@@ -445,10 +470,10 @@ export default function Form(props) {
     for (let index = 0; index < arr.length; index++) {
       const element = arr[index];
       if (element.type === 'select') {
-        if(element.id === 'biddingToken'){
+        if (element.id === 'biddingToken') {
           obj[element.id] = element.value.addr;
-        }else{
-          obj[element.id] =element.value.value;
+        } else {
+          obj[element.id] = element.value.value;
         }
       } else if (
         element.id === 'minBidAmount' ||
@@ -503,41 +528,74 @@ export default function Form(props) {
     <Fragment>
       <form className="needs-validation" onSubmit={auctionCreationChecks} noValidate>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-10">
+          {/* section */}
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 col-span-12 form-section"> */}
           {state.inputs.map((input, index) => {
-            return input.type === 'select' ? (
-              <SelectInput
-                {...input}
-                index={index}
-                key={index}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            ) : input.type === 'date' ? (
-              <DateInput
-                key={index}
-                index={index}
-                {...input}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            ) : input.type === 'textarea' ? (
-              <Textarea
-                {...input}
-                key={index}
-                index={index}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
-            ) : (
-              <Input
-                key={index}
-                index={index}
-                {...input}
-                isAdvance={false}
-                handleInputChange={handleInputChange}
-              />
+            return (
+              <Fragment key={index}>
+                { input.label ? (
+                  <div className="col-span-12 flex flex-col text-primary  text-3xl pb-2
+                  font-normal my-5 form-section-title border-b border-solid border-lightGray mt-10">
+                    {input.label}
+                  </div>
+                ) : (
+                  ''
+                )}
+                {input.type === 'select' ? (
+                  <SelectInput
+                    {...input}
+                    index={index}
+                    key={index}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                ) : input.type === 'date' ? (
+                  <DateInput
+                    key={index}
+                    index={index}
+                    {...input}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                ) : input.type === 'textarea' ? (
+                  <Textarea
+                    {...input}
+                    key={index}
+                    index={index}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                ) : (
+                  <Input
+                    key={index}
+                    index={index}
+                    {...input}
+                    isAdvance={false}
+                    handleInputChange={handleInputChange}
+                  />
+                )}
+                {input.colspan === 12 ? (
+                  <div className={`col-span-6 flex flex-col mt-8`}></div>
+                ) : (
+                  ''
+                )}
+                {/* {index !== 0 && input.label ? (
+                  <Fragment>
+                    <div className=" col-span-12 flex flex-col my-5"></div>
+                    <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
+                      {input.label}
+                    </div>
+                  </Fragment>
+                ) : (
+                  ''
+                )} */}
+              </Fragment>
             );
           })}
+
+          {/* </div> */}
+          {/* section end */}
         </div>
         <div className="text-right">
           <ArrowDown
@@ -616,7 +674,7 @@ export default function Form(props) {
 
 const Input = ({ index, type, placeholder, value, isAdvance, description, handleInputChange }) => {
   return (
-    <div className="col-span-6 flex flex-col mt-8">
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <input
         className="border border-solid border-gray bg-transparent
                  rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
@@ -642,7 +700,7 @@ const Textarea = ({
   handleInputChange,
 }) => {
   return (
-    <div className="col-span-6 flex flex-col mt-8">
+    <div className={`col-span-12 flex flex-col mt-8`}>
       <textarea
         className="border border-solid border-gray bg-transparent
                rounded-xl w-full focus:outline-none font-normal px-4 py-2 h-20 text-white text-lg"
@@ -657,9 +715,9 @@ const Textarea = ({
   );
 };
 
-const Checkbox = ({ index, type, description, value, isAdvance, handleInputChange }) => {
+const Checkbox = ({ index, type, description, value, isAdvance, handleInputChange, colspan }) => {
   return (
-    <div className="col-span-6 flex mt-8 items-center custom-check">
+    <div className={`col-span-6 flex mt-8 items-center custom-check`}>
       <label className="container text-base ml-2 font-normal">
         {description}
         <input
@@ -683,7 +741,7 @@ const SelectInput = ({
   description,
 }) => {
   return (
-    <div className="col-span-6 flex flex-col mt-8">
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <Select
         options={options}
         onChange={(val) => handleInputChange(val, type, index, isAdvance)}
@@ -698,7 +756,7 @@ const SelectInput = ({
 
 const DateInput = ({ index, type, value, isAdvance, description, handleInputChange }) => {
   return (
-    <div className="col-span-6 flex flex-col mt-8">
+    <div className={`col-span-6 flex flex-col mt-8`}>
       <Flatpickr
         className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         data-enable-time={true}

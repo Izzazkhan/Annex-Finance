@@ -145,9 +145,9 @@ function Table({ columns, data, renderRowSubComponent }) {
   // Render the UI for your table
   return (
     <div className="relative">
-      <div className="absolute -top-8 right-60 pr-8">
+      {/* <div className="absolute -top-8 right-60 pr-8">
         <Select type="basic" options={sortOptions} />
-      </div>
+      </div> */}
       <div className="bg-fadeBlack p-6 mt-10">
         <table {...getTableProps()}>
           <thead>
@@ -182,9 +182,9 @@ function Table({ columns, data, renderRowSubComponent }) {
                           )}
                         </span>
                       )}
-                      <div className="absolute -top-8 right-6">
+                      {/* <div className="absolute -top-8 right-6">
                         {column.canFilter ? column.render('Filter') : null}
-                      </div>
+                      </div> */}
                     </th>
                   );
                 })}
@@ -211,7 +211,7 @@ function Table({ columns, data, renderRowSubComponent }) {
                   </tr>
                   {row.isExpanded ? (
                     <tr>
-                      <td colSpan={visibleColumns.length}>
+                      <td className="bg-fadeBlue" colSpan={visibleColumns.length}>
                         {/*
                           Inside it, call our renderRowSubComponent function. In reality,
                           you could pass whatever you want as props to

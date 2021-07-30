@@ -52,45 +52,58 @@ function Table(props) {
   const claimAuction = async (item) => {
     try {
       setLoading(true);
-      let auctionId = item['auctionId']['id'];
-      let userId = item['userId']['id'];
-      let sellAmount = item['sellAmount'];
-      let buyAmount = item['buyAmount'];
-      userId = toHex(userId, { addPrefix: true });
-      sellAmount = toHex(sellAmount, { addPrefix: true });
-      buyAmount = toHex(buyAmount, { addPrefix: true });
-      let orderData = encodeOrder(userId, sellAmount, buyAmount);
-
+      let auctionId = props['auctionId'];
+      let orders = [];
+      for (let index = 0; index < selectedClaimOrders.length; index++) {
+        const element = selectedClaimOrders[index];
+        let userId = element['userId']['id'];
+        let sellAmount = element['sellAmount'];
+        let buyAmount = element['buyAmount'];
+        userId = toHex(userId, { addPrefix: true });
+        sellAmount = toHex(sellAmount, { addPrefix: true });
+        buyAmount = toHex(buyAmount, { addPrefix: true });
+        let orderData = encodeOrder(userId, sellAmount, buyAmount);
+        orders.push(orderData);
+      }
       await methods.send(
         props.auctionContract.methods.claimFromParticipantOrder,
-        [auctionId, [orderData]],
+        [auctionId, orders],
         props.account,
       );
+      // updateSelectedClaimOrders([]);
       props.getData();
       setLoading(false);
     } catch (error) {
+      updateSelectedClaimOrders([]);
       setLoading(false);
     }
   };
-  const cancelAuction = async (item) => {
+  const cancelAuction = async () => {
     try {
       setLoading(true);
-      let auctionId = item['auctionId']['id'];
-      let userId = item['userId']['id'];
-      let sellAmount = item['sellAmount'];
-      let buyAmount = item['buyAmount'];
-      userId = toHex(userId, { addPrefix: true });
-      sellAmount = toHex(sellAmount, { addPrefix: true });
-      buyAmount = toHex(buyAmount, { addPrefix: true });
-      let orderData = encodeOrder(userId, sellAmount, buyAmount);
+      let auctionId = props['auctionId'];
+      let orders = [];
+      for (let index = 0; index < selectedCancelOrders.length; index++) {
+        const element = selectedCancelOrders[index];
+        let userId = element['userId']['id'];
+        let sellAmount = element['sellAmount'];
+        let buyAmount = element['buyAmount'];
+        userId = toHex(userId, { addPrefix: true });
+        sellAmount = toHex(sellAmount, { addPrefix: true });
+        buyAmount = toHex(buyAmount, { addPrefix: true });
+        let orderData = encodeOrder(userId, sellAmount, buyAmount);
+        orders.push(orderData);
+      }
       await methods.send(
         props.auctionContract.methods.cancelSellOrders,
-        [auctionId, [orderData]],
+        [auctionId, orders],
         props.account,
       );
+      // updateSelectedCancelOrders([]);
       props.getData();
       setLoading(false);
     } catch (error) {
+      updateSelectedCancelOrders([]);
       setLoading(false);
     }
   };
@@ -110,7 +123,7 @@ function Table(props) {
     } else {
       arr.push(item);
     }
-    console.log('selectedClaimOrders',selectedClaimOrders)
+    console.log('selectedClaimOrders', selectedClaimOrders);
     updateSelectedClaimOrders(arr);
   };
   const handleCancelCheckbox = (item) => {
@@ -121,7 +134,7 @@ function Table(props) {
     } else {
       arr.push(item);
     }
-    console.log('selectedCancelOrders',selectedCancelOrders)
+    console.log('selectedCancelOrders', selectedCancelOrders);
     updateSelectedCancelOrders(arr);
   };
   // Render the UI for your table
@@ -142,9 +155,25 @@ function Table(props) {
               />
               <span className="checkmark"></span>
             </label>
-            <button className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">
-              {props.isAllowCancellation ? 'Cancel' : 'Claim'}
-            </button>
+            {props.isAllowCancellation && props.auctionStatus !== 'completed' ? (
+              <button
+                disabled={loading || selectedCancelOrders.length === 0}
+                onClick={() => cancelAuction()}
+                className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
+              >
+                Cancel
+              </button>
+            ) : props.auctionStatus === 'completed' && props.isAlreadySettle ? (
+              <button
+                disabled={loading || selectedClaimOrders.length === 0}
+                onClick={() => claimAuction()}
+                className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
+              >
+                Claim
+              </button>
+            ) : (
+              ''
+            )}
           </div>
         </div>
         <table className="text-left">
@@ -157,8 +186,7 @@ function Table(props) {
               <th>Block Number</th>
               <th>Buy Amount</th>
               <th>Sell Amount</th>
-              <th className="text-center">Claim</th>
-              {props.isAllowCancellation ? <th>Cancel</th> : ''}
+              <th className="text-center"></th>
             </tr>
           </thead>
           <tbody>
@@ -184,10 +212,6 @@ function Table(props) {
                   <tr key={index}>
                     <td>
                       <div className="flex justify-start items-center space-x-2">
-                        {/* <img
-                          src={require('../../../assets/icons/bitcoinBlack.svg').default}
-                          alt=""
-                        /> */}
                         <div className="text-primary">
                           <a
                             href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
@@ -225,69 +249,43 @@ function Table(props) {
                     <td>
                       <div>{item.auctionDivSellAmount}</div>
                     </td>
-                    {/* {account === userId && props.auctionStatus === 'completed' ? (
-                      <td>
-                        <button
-                          className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
-                          disabled={
-                            loading ||
-                            !props.isAlreadySettle ||
-                            ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
-                          }
-                          onClick={() => claimAuction(item)}
-                        >
-                          {item.bidder.status === 'ACTIVE' || item.bidder.status === 'NOTCLAIMED'
-                            ? 'Claim'
-                            : item.bidder.status === 'SUCCESS'
-                              ? 'Claimed'
-                              : item.bidder.status}
-                        </button>
-                      </td>
-                    ) : (
-                      ''
-                    )}
-
-                    {account === userId && props.isAllowCancellation ? (
-                      <td>
-                        <button
-                          className="focus:outline-none py-2 px-4 text-black text-sm 2xl:text-12 bg-white rounded-sm bgPrimaryGradient rounded-sm"
-                          disabled={loading || item.status === 'CANCELLED'}
-                          onClick={() => cancelAuction(item)}
-                        >
-                          {item.status === 'CANCELLED' ? item.status : 'Cancel'}
-                        </button>
-                      </td>
-                    ) : (
-                      ''
-                    )} */}
-                    {account === userId && props.auctionStatus === 'completed' ? (
-                      <td>
+                    <td>
+                      {account === userId &&
+                        props.auctionStatus === 'completed' &&
+                        props.isAlreadySettle &&
+                        item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
-                          <label className="container text-base ml-2 font-normal">
+                          <label
+                            className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
+                              }`}
+                          >
                             <input
                               type="checkbox"
                               disabled={
-                                loading ||
-                                !props.isAlreadySettle ||
-                                ['ACTIVE', 'NOTCLAIMED'].indexOf(item.bidder.status) === -1
+                                loading || !props.isAlreadySettle || item.status === 'PROCESSED'
                               }
                               checked={
-                                item.bidder.status === 'SUCCESS' ||
+                                item.status === 'PROCESSED' ||
                                 selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
                               }
                               onClick={() => handleClaimCheckbox(item)}
                             />
-                            <span className="checkmark"></span>
+                            <span
+                              className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''}`}
+                            >
+                              <span style={{ 'display': 'none' }} className="text">{item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}</span>
+
+                            </span>
                           </label>
                         </div>
-                      </td>
-                    ) : (
-                      ''
-                    )}
-                    {account === userId && props.isAllowCancellation ? (
-                      <td>
+                      ) : props.isAllowCancellation &&
+                        props.auctionStatus !== 'completed' &&
+                        item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
-                          <label className="container text-base ml-2 font-normal">
+                          <label
+                            className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                              }`}
+                          >
                             <input
                               type="checkbox"
                               disabled={loading || item.status === 'CANCELLED'}
@@ -297,13 +295,30 @@ function Table(props) {
                               }
                               onClick={() => handleCancelCheckbox(item)}
                             />
-                            <span className="checkmark"></span>
+                            <span className="checkmark">
+                              <span style={{ 'display': 'none' }} className="text">Cancel</span>
+                            </span>
                           </label>
                         </div>
-                      </td>
-                    ) : (
-                      ''
-                    )}
+                      ) : item.status === 'CANCELLED' ? (
+                        <div className="flex items-center custom-check">
+                          <label className={`container text-base ml-2 font-normal `}>
+                            <input
+                              type="checkbox"
+                              disabled={true}
+                              checked={true}
+                            />
+                            <span className="checkmark red">
+                              <span style={{ 'display': 'none' }} className="text"> Cancelled</span>
+                            </span>
+                          </label>
+                        </div>
+                      ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
+                        <div>'Waiting to settle</div>
+                      ) : (
+                        ''
+                      )}
+                    </td>
                   </tr>
                 ) : (
                   ''
@@ -325,4 +340,17 @@ function App(props) {
   );
 }
 
+const Checkbox = (disabled, checked, item) => {
+  <div className="flex items-center custom-check">
+    <label className={`container text-base ml-2 font-normal ${disabled}`}>
+      <input
+        type="checkbox"
+        disabled={disabled}
+        checked={checked}
+        onClick={() => handleCancelCheckbox(item)}
+      />
+      <span className="checkmark"></span>
+    </label>
+  </div>;
+};
 export default App;

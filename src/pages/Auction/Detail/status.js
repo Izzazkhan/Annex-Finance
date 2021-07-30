@@ -382,12 +382,27 @@ const AuctionProgress = (props) => {
             <div className="label flex flex-row justify-between items-center mb-4">
               <div className="flex flex-col">
                 <div className="text-md text-primary font-bold mb-2 ">Commitment</div>
-                <div className="text-md ">To calculate the price:</div>
-                <div className="text-md "> Sell amount/ Min Buy amount. </div>
+                {props.detail && props.detail.biddingBalance && props.detail.auctionBalance && (
+                  <div className="flex justify-between mb-3">
+                    <div className="text-md mr-3">
+                      <b>{props.detail.auctionSymbol} Bidding Token :</b> {props.detail.biddingBalance}
+                    </div>
+                    <div className="text-md ">
+                      <b>{props.detail.auctionSymbol} Auction Token :</b>{' '}
+                      {props.detail.auctionBalance}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-between mb-3">
+                  <div className="text-md ">
+                    <b>To calculate the price:</b> Sell amount/ Min Buy amount.
+                  </div>
+                </div>
                 {state.sellAmount && state.minBuyAmount ? (
                   <div className="text-md ">
                     {' '}
-                    <b>Price:</b>
+                    <b>Price: </b>
                     {state.sellAmount / state.minBuyAmount}
                   </div>
                 ) : (
@@ -397,34 +412,8 @@ const AuctionProgress = (props) => {
             </div>
           </div>
           <div className="flex justify-between">
-            <div className="mb-3 w-full pr-2">
-              <div className="tooltip relative">
-                <img
-                  className="ml-3"
-                  src={require('../../../assets/images/info.svg').default}
-                  alt=""
-                />
-                <span className="label">Min Buy Amount</span>
-              </div>
-
-              <input
-                placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
-                id="minBuyAmount"
-                className="border border-solid border-gray bg-transparent
-                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
-                type="number"
-                onChange={handleInputChange}
-              />
-            </div>
             <div className="mb-3 w-full">
-              <div className="tooltip relative">
-                <img
-                  className="ml-3"
-                  src={require('../../../assets/images/info.svg').default}
-                  alt=""
-                />
-                <span className="label">Sell Amount</span>
-              </div>
+              <span className="label">Sell Amount</span>
               <input
                 placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
                 id="sellAmount"
@@ -432,6 +421,17 @@ const AuctionProgress = (props) => {
                 className="border border-solid border-gray bg-transparent
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
                 type="number"
+              />
+            </div>
+            <div className="mb-3 w-full pr-2">
+              <span className="label">Min Buy Amount</span>
+              <input
+                placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
+                id="minBuyAmount"
+                className="border border-solid border-gray bg-transparent
+                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                type="number"
+                onChange={handleInputChange}
               />
             </div>
           </div>

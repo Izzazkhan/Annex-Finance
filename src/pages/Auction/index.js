@@ -157,6 +157,9 @@ const Styles = styled.div`
     canvas {
       max-width: 100%;
     }
+    .chart {
+      margin-left: -40px;
+    }
   }
   .input-with-button {
     input {
@@ -231,11 +234,38 @@ const Styles = styled.div`
       width: 25px;
       background-color: #101016;
       border: 1px solid #717579;
+      &:hover {
+        .text {
+          display: block !important;
+        }
+      }
+      .text {
+        position: absolute;
+        top: -33px;
+        background: #3e3d3d;
+        padding: 3px 6px;
+        right: -18px;
+        font-size: 12px;
+      }
     }
 
     .container input:checked ~ .checkmark {
       background-color: #ff9800;
       border: 1px solid #ff9800;
+      &.green {
+        background-color: #50bf50;
+        border: 1px solid #50bf50;
+        .text {
+          background-color: #50bf50;
+        }
+      }
+      &.red {
+        background-color: #f0350e;
+        border: 1px solid #f0350e;
+        .text {
+          background-color: #f0350e;
+        }
+      }
     }
 
     .checkmark:after {
@@ -260,7 +290,7 @@ const Styles = styled.div`
       transform: rotate(45deg);
     }
   }
-  td{
+  td {
     .custom-check {
       .container {
         display: block;
@@ -272,6 +302,10 @@ const Styles = styled.div`
           top: 4px;
         }
       }
+      .disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
       .checkmark {
         height: 20px;
         width: 20px;
@@ -279,7 +313,6 @@ const Styles = styled.div`
         right: 0;
         margin: 0 auto;
       }
-  
     }
   }
   .chart {
@@ -309,20 +342,57 @@ const Styles = styled.div`
       display: inline-block;
       margin-right: 5px;
     }
+    .recharts-default-tooltip {
+      padding: 0 10px !important;
+      background: #ffffff !important;
+      border-color: #ffffff !important;
+      .recharts-tooltip-label {
+        display: none;
+      }
+      .recharts-tooltip-item {
+        font-size: 12px;
+        color: #ff9800 !important;
+      }
+    }
   }
-.tooltip {
+  .tooltip {
     margin-bottom: 5px;
     .label {
-    display: none;
-    position: absolute;
-    top: -6px;
-    left: 30px;
-    color: #e2e2e2;
+      display: none;
+      position: absolute;
+      top: -6px;
+      left: 30px;
+      color: #e2e2e2;
+    }
   }
-}
- 
-.tooltip img:hover + .label {
+
+  .tooltip img:hover + .label {
     display: block;
+  }
+  .completed-icon {
+    background: #04af04;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .upcoming-icon {
+    background: #2b98d6;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .inprogress-icon {
+    background: #ffab2d;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .form-section {
+    border-bottom: 1px solid #696969;
+    margin-bottom: 20px;
 }
 `;
 
