@@ -14,9 +14,25 @@ import GridIconActive from '../../assets/images/card-grid-btn-active.png';
 import Select from '../../components/UI/Select';
 import Switch from "../../components/UI/Switch";
 import { Grid } from 'react-virtualized';
+import styled from 'styled-components';
 
 
+const Styles = styled.div`
+ .border-custom{
+   border-color: #2E2E2E;
+ }
+`;
 function Pools() {
+  const [showGrid, setShowGrid] = React.useState(false)
+  const [showList, setShowList] = React.useState(true)
+  const GridViews = () => {
+    setShowGrid(true)
+    setShowList(false)
+  }
+  const ListViews = () => {
+    setShowGrid(false)
+    setShowList(true)
+  }
   const subComponent = (
     <div className="flex justify-between w-full text-white p-6 lg:px-16">
       <div className="w-full flex flex-col items-start ">
@@ -302,43 +318,45 @@ function Pools() {
 
   return (
     <Layout mainClassName="min-h-screen py-8">
-      <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
+      <Styles>
+        <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
  pl-6 lg:pr-5 ">
-        <div className="col-span-2 flex items-center">
-          <div className="list-icon">
-            <a href="#"><img src={ListIconActive} alt="" className="" /></a>
+          <div className="col-span-2 flex items-center">
+            <div className="list-icon">
+              <a onClick={ListViews}>{showList? <img src={ListIconActive} alt="" className="" />: <img src={ListIcon} alt="" className="" />}</a>
+            </div>
+            <div className="grid-icon ml-3">
+              <a onClick={GridViews}>{showGrid? <img src={GridIconActive} alt="" className="" />:<img src={GridIcon} alt="" className="" />}</a>
+            </div>
           </div>
-          <div className="grid-icon ml-3">
-            <a href="#"><img src={GridIcon} alt="" className="" /></a>
-          </div>
-        </div>
-        <div className="col-span-5 flex items-center">
-          <a href="" className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white w-40 text-center">Live</a>
-          <a href="" className="focus:outline-none bg-transparent border border-primary py-2 px-4 
+          <div className="col-span-5 flex items-center">
+            <a href="" className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white w-40 text-center">Live</a>
+            <a href="" className="focus:outline-none bg-transparent border border-primary py-2 px-4 
           rounded-3xl text-white ml-5 w-40 text-center">Finished</a>
-          <div className="flex items-center text-white ml-5 pt-2">
-            <Switch />
-            <div className="ml-2 mb-2">Staked only</div>
+            <div className="flex items-center text-white ml-5 pt-2">
+              <Switch />
+              <div className="ml-2 mb-2">Staked only</div>
+            </div>
           </div>
-        </div>
-        <div className="col-span-5 flex items-center">
-          <div className="mr-5">
-            <Select className="border-primary" type="custom-primary" options={sortOptions} />
-          </div>
-          <div className="search flex-1">
-            <input
-              className="border border-solid border-primary bg-transparent
+          <div className="col-span-5 flex items-center">
+            <div className="mr-5">
+              <Select className="border-primary" type="custom-primary" options={sortOptions} />
+            </div>
+            <div className="search flex-1">
+              <input
+                className="border border-solid border-primary bg-transparent
                  rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
-              type="text"
-              placeholder="Search"
-            />
+                type="text"
+                placeholder="Search"
+              />
+            </div>
+
           </div>
 
         </div>
-
-      </div>
-      <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />
-      <GridView/>
+        {/* <GridView /> */}
+        { showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} /> }
+      </Styles>
     </Layout>
   );
 }
