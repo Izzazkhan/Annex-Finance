@@ -10,20 +10,21 @@ import SVG from "react-inlinesvg";
 
 
 function Grid() {
-  
-  const ArrowContainer = styled.div`
+    const ArrowContainer = styled.div`
     transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: 0.3s ease all;
     will-change: transform;
   `
-  
+  const [live, setlive] = React.useState(false)
+  const [finished, setfinished] = React.useState(true)
 
     const [showDetails, setShowDetails] = useState(false);
 
     return (
         <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
             <div className="bg-black rounded-3xl col-span-4">
-                <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between">
+                <div className={`${live? 'bgPrimaryGradient' : finished ? 'bg-gray relative overflow-hidden' : ''}
+                 py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between`}>
                     <div className="flex flex-col">
                         <div className="text-white font-bold text-xl">Auto ANN</div>
                         <div className="text-white">Automatic restaking</div>
@@ -31,26 +32,42 @@ function Grid() {
                     <div className="bg-blue rounded-full relative w-9 h-9 ">
                         <img src={AnnexLogo} alt="" className="" />
                     </div>
+                    {finished ? <div className="finished-label bgPrimaryGradient text-xl font-bold px-10 py-2 text-center">Finished</div> :''}
+                    
                 </div>
                 <div className="p-5">
                     <div className="flex items-center justify-between mb-4">
                         <div className="text-white">ANN:</div>
                         <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
                     </div>
-                    <div className="text-white">Recent ANN Profit:</div>
-                    <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div>
+                   
+                        {finished ?  <div className="flex items-center justify-between mb-4">
+                             <div className="flex flex-col">
+                        <div className="text-white text-sm">ANN Earned:</div>
+                        <div className="text-white text-sm font-bold">0</div>
+                        <div className="text-white text-sm">~0 USD</div>
+                        </div>
+                        <div className="text-white font-bold flex items-center">
+                            <button className="flex items-center focus:outline-none bg-gray py-2 px-4 
+                        rounded-lg text-black text-center font-bold text-sm"> Harvest</button></div>
+                    </div> :live ? <><div className="text-white">Recent ANN Profit:</div>
+                    <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div></>: ''}
+                        
+                        
                     <div className="text-white text-sm">STACK ANN</div>
                     <div className="text-center mt-2">
-                        <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl text-black w-40 text-center text-sm">Enable</button>
+                        <button className={` ${live ? 'bg-primary' : finished? 'bg-gray': ''}
+                         focus:outline-none  py-2 px-4 rounded-3xl text-black w-40 text-center text-sm`}>Enable</button>
                     </div>
                 </div>
                 <div className="border-t border-solid border-custom p-5">
                     <div className="flex items-center justify-between">
                         <div className="">
-                            <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
+                            <button className={`${live ? 'bg-primary' : finished? 'bg-gray': ''}
+                             flex items-center focus:outline-none py-2 px-4 rounded-3xl text-black text-center text-sm`}>
+                                 <img src={Refresh} className="mr-1" alt="" /> {live ? 'Auto' : finished? 'Manual': ''}</button>
                         </div>
-                        <div onClick={() => setShowDetails(s => !s)}  className="text-primary text-sm flex items-center cursor-pointer" >Details
+                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
                             <div className="ml-2 order-4 hidden sm:flex">
                                 <ArrowContainer active={showDetails}>
                                     <img src={ArrowIconOrange} alt="" />
@@ -108,7 +125,7 @@ function Grid() {
                             <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
                         rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
                         </div>
-                        <div onClick={() => setShowDetails(s => !s)}  className="text-primary text-sm flex items-center cursor-pointer" >Details
+                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
                             <div className="ml-2 order-4 hidden sm:flex">
                                 <ArrowContainer active={showDetails}>
                                     <img src={ArrowIconOrange} alt="" />
@@ -166,7 +183,7 @@ function Grid() {
                             <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
                         rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
                         </div>
-                        <div onClick={() => setShowDetails(s => !s)}  className="text-primary text-sm flex items-center cursor-pointer" >Details
+                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
                             <div className="ml-2 order-4 hidden sm:flex">
                                 <ArrowContainer active={showDetails}>
                                     <img src={ArrowIconOrange} alt="" />
@@ -224,7 +241,7 @@ function Grid() {
                             <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
                         rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
                         </div>
-                        <div onClick={() => setShowDetails(s => !s)}  className="text-primary text-sm flex items-center cursor-pointer" >Details
+                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
                             <div className="ml-2 order-4 hidden sm:flex">
                                 <ArrowContainer active={showDetails}>
                                     <img src={ArrowIconOrange} alt="" />
@@ -282,7 +299,7 @@ function Grid() {
                             <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
                         rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
                         </div>
-                        <div onClick={() => setShowDetails(s => !s)}  className="text-primary text-sm flex items-center cursor-pointer" >Details
+                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
                             <div className="ml-2 order-4 hidden sm:flex">
                                 <ArrowContainer active={showDetails}>
                                     <img src={ArrowIconOrange} alt="" />
@@ -340,7 +357,7 @@ function Grid() {
                             <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
                         rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
                         </div>
-                        <div onClick={() => setShowDetails(s => !s)}  className="text-primary text-sm flex items-center cursor-pointer" >Details
+                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
                             <div className="ml-2 order-4 hidden sm:flex">
                                 <ArrowContainer active={showDetails}>
                                     <img src={ArrowIconOrange} alt="" />

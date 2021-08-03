@@ -21,10 +21,18 @@ const Styles = styled.div`
  .border-custom{
    border-color: #2E2E2E;
  }
+ .finished-label {
+  position: absolute;
+  right: -20px;
+  transform: rotate(45deg);
+  width: 200px;
+}
 `;
 function Pools() {
   const [showGrid, setShowGrid] = React.useState(false)
   const [showList, setShowList] = React.useState(true)
+  const [live, setlive] = React.useState(true)
+  const [finished, setfinished] = React.useState(false)
   const GridViews = () => {
     setShowGrid(true)
     setShowList(false)
@@ -323,16 +331,20 @@ function Pools() {
  pl-6 lg:pr-5 ">
           <div className="col-span-2 flex items-center">
             <div className="list-icon">
-              <a onClick={ListViews}>{showList? <img src={ListIconActive} alt="" className="" />: <img src={ListIcon} alt="" className="" />}</a>
+              <a onClick={ListViews}>{showList? <img src={ListIconActive} alt="" className="" width="28px"  height="25px"/>
+              : <img src={ListIcon} alt="" className="" width="28px" height="25px"/>}</a>
             </div>
             <div className="grid-icon ml-3">
-              <a onClick={GridViews}>{showGrid? <img src={GridIconActive} alt="" className="" />:<img src={GridIcon} alt="" className="" />}</a>
+              <a onClick={GridViews}>{showGrid? <img src={GridIconActive} alt="" className="" width="25px" height="25px" />
+              :<img src={GridIcon} alt="" className="" width="25px" height="25px"/>}</a>
             </div>
           </div>
           <div className="col-span-5 flex items-center">
-            <a href="" className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white w-40 text-center">Live</a>
-            <a href="" className="focus:outline-none bg-transparent border border-primary py-2 px-4 
-          rounded-3xl text-white ml-5 w-40 text-center">Finished</a>
+            <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
+             ${live ? "bgPrimaryGradient" :  "bg-transparent border border-primary"} `}
+            >Live</a>
+            <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
+             ${finished ? "bgPrimaryGradient" :  "bg-transparent border border-primary"} `}>Finished</a>
             <div className="flex items-center text-white ml-5 pt-2">
               <Switch />
               <div className="ml-2 mb-2">Staked only</div>
