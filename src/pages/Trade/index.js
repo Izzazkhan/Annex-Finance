@@ -71,7 +71,7 @@ function Trade() {
                 <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
                 <div className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl 
             grid grid-cols-1 gap-y-6 lg:grid-cols-8 lg:gap-x-6 mt-8 p-5">
-                    <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar mx-auto">
+                    <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar">
                         <div className="text-white text-xl font-bold p-5 pt-6">Liquidity By </div>
                         <div className=" scroll pr-2">
                             <div className="rounded-3xl border border-white mb-4">
@@ -80,13 +80,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -115,13 +115,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -150,13 +150,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -185,13 +185,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -220,13 +220,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -255,13 +255,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -290,13 +290,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -325,13 +325,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -360,13 +360,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -395,13 +395,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -483,7 +483,7 @@ function Trade() {
                         </Switch>
 
                     </div>
-                    <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right mx-auto">
+                    <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right ">
                         <div className="text-white text-xl font-bold p-5 pt-6">24hrs Change</div>
                         <div className=" scroll pl-2">
                             <div className="rounded-3xl border border-white mb-4">
@@ -492,13 +492,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -527,13 +527,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -562,13 +562,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -597,13 +597,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -632,13 +632,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -667,13 +667,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -702,13 +702,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -737,13 +737,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -772,13 +772,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 border-t border-b border-white
+                                <div className="flex items-center justify-between py-3 px-2 border-t border-b border-white
                             text-white text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTC} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -807,13 +807,13 @@ function Trade() {
                                     <div className="text-white font-bold text-sm mx-5">BTC - ANN</div>
                                     <img width="14px" src={ANN} alt="" />
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 bgPrimaryGradient
+                                <div className="flex items-center justify-between py-3 px-2 bgPrimaryGradient
                             text-black text-xs" style={{ 'borderColor': '#2E2E2E' }}>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
+                                        <img className="mr-1" width="14px" src={BTCB} alt="" /> 1 BTC = 4.11 ANN
                                     </div>
                                     <div className="flex items-center">
-                                        <img className="mr-2" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
+                                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1 ANN = 0.001 BTC
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
