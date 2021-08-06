@@ -46,7 +46,7 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 	const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair) => Boolean(v2Pair));
 
 	return (
-		<div className="py-10 w-full max-w-2xl">
+		<div className="py-10 w-full max-w-2xl mx-auto">
 			<div className="w-full max-w-2xl py-8 px-6 sm:px-10 bg-black rounded-xl">
 				<div className="">
 					<div className="flex justify-between">
