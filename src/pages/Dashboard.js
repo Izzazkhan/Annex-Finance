@@ -69,6 +69,9 @@ const Styles = styled.div`
         display:none;
       }
     }
+    .label{
+      margin-bottom: -20px;
+    }
   }
   .custom-progressbar {
     max-width: 850px;
@@ -1151,6 +1154,10 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
                 <div className="text-white text-xl p-2">30</div>
               </div>
               <div className="custom-range">
+                <div className="label flex justify-between font-bold text-primary text-xl">
+                  <div className="">0%</div>
+                  <div className="">100%</div>
+                </div>
                 <Slider min={850} max={5000} value={2000} />
               </div>
             </div>
