@@ -40,8 +40,10 @@ import MarketHistory from "../components/Dashboard/MarketHistory.js";
 import Slider from 'react-rangeslider';
 import styled from "styled-components";
 import SliderIcon from '../assets/images/slider-icon.png';
+import SliderBg from '../assets/images/slider-bg.png';
 import coinsBar from '../assets/images/coins.png';
 import ActiveBg from '../assets/images/active-bg.png';
+import AprBg from '../assets/images/apr-bg.png';
 import ArrowIcon from '../assets/icons/lendingArrow.svg';
 import SVG from "react-inlinesvg";
 
@@ -67,6 +69,42 @@ const Styles = styled.div`
       background-repeat: no-repeat;
       &:after{
         display:none;
+      }
+      .rangeslider__handle-tooltip{
+        background: url(${SliderBg});
+        background-size: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        top: unset;
+        bottom: -35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        span{
+          margin-top: 4px;
+          font-weight: bold;
+        }
+        &:after{
+          display:none;
+        }
+      }
+      .rangeslider__handle-label{
+        background: url(${SliderBg});
+        background-size: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        top: unset;
+        bottom: -35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        width: 50px;
+        height: 40px;
+        color: #fff;
+        padding-top: 5px;
+        font-weight: bold;
+        font-size: 14px;
       }
     }
     .label{
@@ -101,6 +139,62 @@ const Styles = styled.div`
       background-size: 100%;
       background-repeat: no-repeat;
     }
+  }
+  .text-border{
+    span {
+      height: 2px;
+      width: 80%;
+      color: #fff;
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      border-bottom: 2.25px dotted #F1992080;
+      border-style: dashed;
+    }
+  }
+  .holding-apr{
+    left: 20%;
+    .left-bottom{
+      background: url(${AprBg});
+      background-size: 100%;
+      background-repeat: no-repeat;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      padding-top: 4px;
+      font-weight: bold;
+      margin-top: 45px;
+      margin-left: -15px;
+    }
+    .top-right{
+      background: url(${AprBg});
+      background-size: 100%;
+      background-repeat: no-repeat;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      padding-top: 4px;
+      font-weight: bold;
+      transform: rotate(180deg);
+      margin-top: -35px;
+      span{
+        transform: rotate(-180deg);
+      }
+    }
+  }
+  .custom-top {
+    position: relative;
+    top: 70px;
+  }
+  .title-text{
+    left:0;
+    right:0;
+    margin: 0 auto;
+    max-width:200px;
   }
     
 
@@ -1094,16 +1188,25 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
       )}
       <Styles>
-        <div className=" landing bg-lightGray rounded-md p-4 text-primary ">
+        <div className=" landing bg-lightGray rounded-md p-8 text-primary pb-8">
           <div className="flex items-center justify-between pl-6 pr-10 relative">
-            <div className="flex items-center">
-              <div className="font-bold text-md text-right">ANN Balance <br />10,000 ANN</div>
+            <div className={` ${showDetails && ( "custom-top" )} flex items-center`}>
+              <div className="font-bold text-lg text-right">ANN Balance <br />10,000 ANN</div>
               <div className="image"><img src={coinsBar} alt="" /></div>
             </div>
-            <div className="text-center font-bold text-2xl">360 epoch </div>
-            <div className="flex items-center font-bold ">
-              <div className="text-md">ANN Holding Rewards : </div>
-              <div className="text-sm ml-1"> 1.12345678 ANN</div>
+            {showDetails && (
+              <div className="flex items-center holding-apr absolute">
+                <div className="font-bold text-md text-center">Holdding <br />APR</div>
+                <div className="left-bottom text-white text-xs">6%</div>
+                <div className="top-right text-white text-xs"><span>+<br />0.2%</span></div>
+                <div className="font-bold text-sm text-right">per epoch</div>
+
+              </div>
+            )}
+            <div className="text-center font-bold text-4xl text-border absolute title-text">360 epoch <span className=""></span></div>
+            <div className={` ${showDetails && ( "custom-top" )} flex items-center font-bold`}>
+              <div className="text-xl">ANN Holding Rewards : </div>
+              <div className="text-lg ml-1"> 1.12345678 ANN</div>
             </div>
             <div className="absolute right-0">
               <ArrowDown onClick={() => setShowDetails(s => !s)} className={'order-4 flex'}>
@@ -1115,7 +1218,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
           </div>
           {showDetails && (
-            <div className="pt-5">
+            <div className="pt-8">
               <div className="custom-progressbar flex font-bold items-center relative py-8">
                 <div className="active-label flex font-bold items-center justify-center text-black">9</div>
                 <div className="text-white text-xl p-2">0</div>
@@ -1158,7 +1261,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
                   <div className="">0%</div>
                   <div className="">100%</div>
                 </div>
-                <Slider min={850} max={5000} value={2000} />
+                <Slider labels={2000} handleLabel={2000} tooltip={true} min={850} max={5000} value={2000} />
               </div>
             </div>
 
