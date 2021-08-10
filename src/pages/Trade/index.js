@@ -109,9 +109,19 @@ function Trade() {
       console.log('response', response);
       setSwapData(response.pairs);
 
+      let pairDayMapped = [];
+      response.pairDayDatas.forEach((item) => {
+        response.pairs.forEach((pairItem) => {
+          if (item.id.includes(pairItem.id)) {
+            pairDayMapped.push(pairItem);
+          }
+        });
+      });
+
+      console.log('pairDayMapped', pairDayMapped);
       let pairHourMapped = [];
       response.pairHourDatas.forEach((item) => {
-        response.pairs.forEach((pairItem) => {
+        pairDayMapped.forEach((pairItem) => {
           if (item.id.includes(pairItem.id)) {
             pairHourMapped.push({
               ...pairItem,
@@ -121,17 +131,8 @@ function Trade() {
         });
       });
 
-      console.log('pairHourMapped', pairHourMapped)
-      let pairDayMapped = [];
-      response.pairDayDatas.forEach((item) => {
-        response.pairs.forEach((pairItem) => {
-          if (item.id.includes(pairItem.id)) {
-            pairDayMapped.push(pairItem);
-          }
-        });
-      });
-      console.log('pairDayMapped', pairDayMapped);
-      setLiquidityData(pairDayMapped);
+      console.log('pairHourMapped', pairHourMapped);
+      setLiquidityData(pairHourMapped);
     } catch (error) {
       console.error(error);
       return [];
@@ -180,6 +181,10 @@ function Trade() {
     { key: 2, title: 'Liquidity', tab: 'liquidity', route: `${path}/liquidity` },
   ];
 
+  const onBoxHandler = (item) => {
+    console.log('clicked', item)
+  }
+
   return (
     <Styles>
       <Layout mainClassName="pt-10" title={'LIQUIDITY'}>
@@ -194,7 +199,7 @@ function Trade() {
             <div className=" scroll pr-2">
               {swapData.map((item, index) => {
                 return (
-                  <div className="rounded-3xl border border-white mb-4" key={index}>
+                  <div className="rounded-3xl border border-white mb-4" key={index} onClick={() => onBoxHandler(item)}>
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
                       <div className="text-white font-bold text-sm mx-5">{item.name}</div>
@@ -237,9 +242,9 @@ function Trade() {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2" style={{ width: '14px' }}>
-                            <img className="" src={UpArrow} alt="" />
+                            <img className="" src={Math.sign(item.calcultedUSD) === -1 ? DownArrow : UpArrow } alt="" />
                           </div>
-                          143.94%
+                          {item.calcultedUSD}
                         </div>
                       </div>
                       <div className="flex flex-col">
@@ -313,7 +318,7 @@ function Trade() {
             <div className=" scroll pl-2">
               {liquidity.map((item, index) => {
                 return (
-                  <div className="rounded-3xl border border-white mb-4" key={index}>
+                  <div className="rounded-3xl border border-white mb-4" key={index} >
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
                       <div className="text-white font-bold text-sm mx-5">{item.name}</div>
@@ -356,9 +361,9 @@ function Trade() {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2" style={{ width: '14px' }}>
-                            <img className="" src={UpArrow} alt="" />
+                            <img className="" src={Math.sign(item.calcultedUSD) === -1 ? DownArrow : UpArrow } alt="" />
                           </div>
-                          143.94%
+                          {item.calcultedUSD}
                         </div>
                       </div>
                       <div className="flex flex-col">
