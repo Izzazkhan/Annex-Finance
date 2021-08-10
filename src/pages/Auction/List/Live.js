@@ -1,60 +1,73 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AuctionItem from './item';
 import subGraphContext from '../../../contexts/subgraph';
+import { request } from 'graphql-request'
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
 
+
 function Live(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
   let query = gql`
   {
-    auctions(where: { auctionEndDate_gt: "${currentTimeStamp}"}) {
-      id
-      type
-      userId {
-        id
-        address
+    pairs(first: 5) {
+  name
+      token0{
+        symbol
+  decimals
       }
-      auctioningToken {
-        id
+      token1{
+        symbol
         decimals
       }
-      biddingToken {
-        id
-        decimals
-      }
-      orderCancellationEndDate
-      auctionEndDate
-      auctionStartDate
-      orders {
-        id
-        buyAmount
-        sellAmount
-        claimableLP
-        status
-        userId {
-          id
-        }
-        auctionId {
-          id
-        }
-        bidder {
-          id
-          status
-        }
-      }
+      reserveUSD
+  token0Price
+  token1Price
     }
   }
 `;
+
+const testFunction = async () => {
+  try {
+    const response = await request(
+      'https://api.thegraph.com/subgraphs/name/iadeeldev/annex-swap-exchange',
+      gql`
+      {
+        pairs(first: 5) {
+      name
+          token0{
+            symbol
+      decimals
+          }
+          token1{
+            symbol
+            decimals
+          }
+          reserveUSD
+      token0Price
+      token1Price
+        }
+      }
+      `,
+    )
+    console.log('response', response)
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
   const { subGraphInstance } = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [auction, setAuction] = useState([]);
   const { error, loading, data } = useQuery(query);
 
   useEffect(() => {
+    console.log('data: ', data)
+    testFunction()
     if (data && data.auctions) {
       let arr = [];
       data.auctions.forEach((element) => {

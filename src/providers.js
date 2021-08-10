@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import getLibrary from './utils/getLibrary';
 import { NetworkContextName } from './constants';
 import { store } from './core';
-import { SubGraphProvider } from './SubGraphProvider';
+import { SubGraphProvider } from './common/SubGraphProvider';
 import APIProvider from './APIProvider';
 import React from 'react';
 

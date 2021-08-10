@@ -53,6 +53,7 @@ function Past(props) {
     }
   `);
   useEffect(() => {
+    console.log('data', data)
     if (data && data.auctions) {
       let arr = [];
       data.auctions.forEach((element) => {
