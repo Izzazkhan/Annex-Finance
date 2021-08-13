@@ -16,7 +16,6 @@ const defaultOptions = {
 };
 
 const getSubGraphDataSource = (path) => {
-  console.log('pathname', path);
   switch (path) {
     case '/auction/past': {
       return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
@@ -31,7 +30,6 @@ const getSubGraphDataSource = (path) => {
 };
 export const SubGraphProvider = (props) => {
   const location = useLocation();
-  console.log('path', location);
   const SUBGRAPH_DATASOURCE = getSubGraphDataSource(location.pathname);
   const subGraphInstance = useCreateSubgraph({
     [Chains.MAINNET]: SUBGRAPH_DATASOURCE,
