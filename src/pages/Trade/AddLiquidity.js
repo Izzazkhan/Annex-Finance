@@ -3,7 +3,7 @@ import help from '../../assets/icons/help.svg';
 import blackPlus from '../../assets/icons/blackPlus.svg';
 import {useActiveWeb3React} from "../../hooks";
 import {useCurrency} from "../../hooks/Tokens";
-import {currencyEquals, ETHER, WETH} from "@pancakeswap-libs/sdk";
+import {currencyEquals, ETHER, WETH} from "@annex/sdk";
 import {
 	useDerivedMintInfo,
 	useMintActionHandlers,
@@ -403,19 +403,19 @@ function AddLiquidity({
 							Connect to wallet
 						</button>
 					) : (
-						<AutoColumn gap="md">
+						<AutoColumn gap="md" className={'w-full'}>
 
 							{(approvalA === ApprovalState.NOT_APPROVED ||
 								approvalA === ApprovalState.PENDING ||
 								approvalB === ApprovalState.NOT_APPROVED ||
 								approvalB === ApprovalState.PENDING) &&
 							isValid && (
-								<RowBetween>
+								<RowBetween className={'space-x-3 w-full'}>
 									{approvalA !== ApprovalState.APPROVED && (
 										<button
 											onClick={approveACallback}
 											disabled={approvalA === ApprovalState.PENDING}
-											className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
+											className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
 											style={{
 												width:
 													approvalB !== ApprovalState.APPROVED ? "48%" : "100%",
@@ -434,7 +434,7 @@ function AddLiquidity({
 										<button
 											onClick={approveBCallback}
 											disabled={approvalB === ApprovalState.PENDING}
-											className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
+											className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
 											style={{
 												width:
 													approvalA !== ApprovalState.APPROVED ? "48%" : "100%",

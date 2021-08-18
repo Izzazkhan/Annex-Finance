@@ -11,7 +11,7 @@ import {
 	Trade,
 	TradeType,
 	WETH,
-} from "@pancakeswap-libs/sdk";
+} from "@annex/sdk";
 import { useMemo } from "react";
 import { useAllTokens } from "../hooks/Tokens";
 import { useV1FactoryContract } from "../hooks/useContract";

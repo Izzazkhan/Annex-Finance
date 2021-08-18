@@ -2,7 +2,7 @@ import React from "react";
 import {useLastTruthy} from "../../hooks/useLast";
 import {useUserSlippageTolerance} from "../../core";
 import {computeSlippageAdjustedAmounts, computeTradePriceBreakdown} from "../../utils/prices";
-import {TradeType} from "@pancakeswap-libs/sdk";
+import {TradeType} from "@annex/sdk";
 import {Field} from "../../core/modules/swap/actions";
 import {ONE_BIPS} from "../../constants/swap";
 

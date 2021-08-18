@@ -1,4 +1,4 @@
-import { ChainId, WETH } from "@pancakeswap-libs/sdk";
+import { ChainId, WETH } from "@annex/sdk";
 import { abi as IUniswapV2PairABI } from "@uniswap/v2-core/build/IUniswapV2Pair.json";
 import { useMemo } from "react";
 import ENS_ABI from "../constants/abis/ens-registrar.json";
@@ -8,7 +8,7 @@ import ERC20_ABI from "../constants/abis/erc20.json";
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from "../constants/abis/migrator";
 import UNISOCKS_ABI from "../constants/abis/unisocks.json";
 import WETH_ABI from "../constants/abis/weth.json";
-import { MULTICALL_ABI, MULTICALL_NETWORKS } from "../constants/multicall/index";
+import { MULTICALL_ABI, MULTICALL_NETWORKS } from "../constants/multicall";
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from "../constants/v1";
 import { getContract } from "../utils";
 import { useActiveWeb3React } from "./index";

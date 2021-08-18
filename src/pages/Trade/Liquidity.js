@@ -92,11 +92,13 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 							<Dots>Loading</Dots>
 						</div>
 					) : allV2PairsWithLiquidity?.length > 0 ? (
-						<>
+						<div className={'mt-6'}>
 							{allV2PairsWithLiquidity.map((v2Pair) => (
-								<FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
+								<>
+									<FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
+								</>
 							))}
-						</>
+						</div>
 					) : (
 						<div className="text-white mt-6 text-center">
 							No liquidity found.

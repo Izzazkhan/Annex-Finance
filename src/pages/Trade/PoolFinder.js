@@ -1,7 +1,7 @@
 import {useActiveWeb3React} from "../../hooks";
 import React, {useCallback, useEffect, useState} from "react";
 import styled from "styled-components";
-import {ETHER, JSBI} from "@pancakeswap-libs/sdk";
+import {ETHER, JSBI} from "@annex/sdk";
 import {PairState, usePair} from "../../data/Reserves";
 import {useTokenBalance} from "../../hooks/wallet";
 import {AutoColumn, ColumnCenter} from "../../components/UI/Column";
