@@ -52,7 +52,7 @@
         {
             "name": "BUSD Token",
             "symbol": "BUSD",
-            "address": "0x615446C0Fd5eA8A5FD7fb763f3FC2C58774474F3",
+            "address": "0x8301F2213c0eeD49a7E28Ae4c3e91722919B8B47",
             "chainId": 97,
             "decimals": 18,
             "logoURI": "/images/coins/BTC.png"

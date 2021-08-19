@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+// import Promise from 'es6-promise';
 import Countdown from 'react-countdown';
 import Table from './Table';
 import Progress from '../../../components/UI/Progress';
@@ -102,7 +103,7 @@ function Detail(props) {
   }, []);
   useEffect(async () => {
     try {
-      if (data && data.auctions) {
+      if (data && typeof data.auctions !== 'undefined') {
         let elem = data.auctions[0];
         let type = elem['type'];
         let auctionStatus = '';
@@ -157,11 +158,13 @@ function Detail(props) {
         let orderLength = data.orders.length;
         let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
         let lpTokenPromises = [];
-        data.orders.forEach((order) => {
-          lpTokenPromises.push(calculateLPTokens(order));
-        });
+        if (auctionStatus == 'completed') {
+          data.orders.forEach((order) => {
+            lpTokenPromises.push(calculateLPTokens(order));
+          });
+        }
         let lpTokenData = [];
-        if (isAlreadySettle) {
+        if (isAlreadySettle && auctionStatus == 'completed') {
           lpTokenData = await Promise.all(lpTokenPromises);
         }
         let userOrders = [];
@@ -348,6 +351,7 @@ function Detail(props) {
           resolve(lpToken);
         })
         .catch((err) => {
+          console.log(err);
           reject(err);
         });
     });

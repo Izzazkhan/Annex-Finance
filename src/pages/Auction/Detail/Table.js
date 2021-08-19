@@ -180,6 +180,7 @@ function Table(props) {
           <thead>
             <tr>
               <th>Address</th>
+              <th>Price</th>
               <th>Amount Committed</th>
               <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
@@ -217,14 +218,19 @@ function Table(props) {
                             href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
                             target="_blank"
                           >
-                            {item.userId ? item.userId.address.substring(0, 5) + '...' : ''}
+                            {item.userId ? item.userId.address.substring(0, 5) + '...' : 'xxx'}
                           </a>
                         </div>
                       </div>
                     </td>
                     <td>
                       <div>
-                        {item.auctionDivBuyAmount} {item.biddingSymbol}
+                        {(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        {item.auctionDivSellAmount} {item.biddingSymbol}
                       </div>
                     </td>
                     <td>
