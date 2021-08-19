@@ -2,14 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import dashboard from '../../assets/icons/dashboard.svg';
-import vote from '../../assets/icons/vote.svg';
-import annex from '../../assets/icons/annex.svg';
-import market from '../../assets/icons/market.svg';
-import vault from '../../assets/icons/vault.svg';
-import trade from '../../assets/icons/trade.svg';
-import farms from '../../assets/icons/farms.svg';
-import pools from '../../assets/icons/pools.svg';
 import underscore from '../../assets/icons/underscore.svg';
 import filledArrow from '../../assets/icons/filledArrow.svg';
 import logo from '../../assets/icons/logo.svg';
