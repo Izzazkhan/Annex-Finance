@@ -395,6 +395,14 @@ const Styles = styled.div`
     border-bottom: 1px solid #696969;
     margin-bottom: 20px;
 }
+.percentage-bar {
+  width: 35px;
+  height: 35px;
+  border: 4px solid rgb(35, 110, 97);
+  border-radius: 50%;
+  font-size: 10px;
+}
+
 `;
 
 function Auction() {

@@ -573,7 +573,7 @@ function Detail(props) {
         </div>
 
         <div className="show-icon flex items-center justify-end text-right text-white absolute"
-         style={{'right' : '10px', 'bottom': '-40px','zIndex' : '9'}}>
+          style={{ 'right': '10px', 'bottom': '-40px', 'zIndex': '9' }}>
           <span className="mr-2">{showDetails ? 'Less' : 'More Details'} </span>
           <ArrowDown onClick={() => setShowDetails(s => !s)} className={'order-4 hidden sm:flex'}>
             <ArrowContainer active={showDetails}>
@@ -607,27 +607,35 @@ function Detail(props) {
             </div>
           </div>
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
-            <div className="flex flex-col mb-5">
-              <div className="text-white text-lg md:text-md font-bold">0</div>
-              <div className="flex items-center text-white text-md md:text-sm">Minimum funding<div className="tooltip relative">
-                <img
-                  className="ml-3"
-                  src={require('../../../assets/images/info.svg').default}
-                  alt=""
-                />
-                <span className="label">Current Auctioned Token Price</span>
-              </div></div>
+            <div className="flex items-center mb-5">
+              <div className="percentage-bar relative flex items-center justify-center mr-2">
+                <div className="absolute" style={{ 'width': '5%' }}></div> 5%</div>
+              <div className="flex flex-col">
+                <div className="text-white text-lg md:text-md font-bold">0</div>
+                <div className="flex items-center text-white text-md md:text-sm">Minimum funding<div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Current Auctioned Token Price</span>
+                </div></div>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <div className="text-white text-lg md:text-md font-bold">0  BYOB</div>
-              <div className="flex items-center text-white text-md md:text-sm">Estimated tokens sold <div className="tooltip relative">
-                <img
-                  className="ml-3"
-                  src={require('../../../assets/images/info.svg').default}
-                  alt=""
-                />
-                <span className="label">Current Auctioned Token Price</span>
-              </div></div>
+            <div className="flex items-center mb-5">
+              <div className="percentage-bar relative flex items-center justify-center mr-2">
+                <div className="absolute" style={{ 'width': '5%' }}></div> 5%</div>
+              <div className="flex flex-col">
+                <div className="text-white text-lg md:text-md font-bold">0  BYOB</div>
+                <div className="flex items-center text-white text-md md:text-sm">Estimated tokens sold <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Current Auctioned Token Price</span>
+                </div></div>
+              </div>
             </div>
           </div>
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
