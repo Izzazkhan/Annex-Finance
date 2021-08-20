@@ -23,9 +23,9 @@ const getSubGraphDataSource = (path) => {
     case '/auction/live': {
       return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
     }
-    // default: {
-    //   return process.env.REACT_APP_SUBGRAPH_DATASOURCE_FOR_TRADE;
-    // }
+    default: {
+      return process.env.REACT_APP_SUBGRAPH_DATASOURCE_FOR_TRADE;
+    }
   }
 };
 export const SubGraphProvider = (props) => {

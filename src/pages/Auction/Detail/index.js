@@ -206,6 +206,9 @@ function Detail(props) {
 
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
+          console.log('@@@@@@@@@@@@@@@@@@@');
+          console.log('####################');
+          console.log(order);
           let userId = order.userId.address.toLowerCase();
           let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
             .dividedBy(auctionDecimal)
@@ -591,7 +594,7 @@ function Detail(props) {
         >
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
             <div className="flex flex-col mb-5">
-              <div className="text-white text-lg md:text-md font-bold">8/1/2021, 10:15:00 PM</div>
+              <div className="text-white text-lg md:text-md font-bold">{'state.detail.orderCancellationEndDate'}</div>
               <div className="flex items-center text-white text-md md:text-sm">Last order cancelation date <div className="tooltip relative">
                 <img
                   className="ml-3"
