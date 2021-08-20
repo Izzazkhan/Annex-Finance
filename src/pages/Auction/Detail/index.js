@@ -620,7 +620,7 @@ function Detail(props) {
                 <CircularProgressbar value={66} text={`${percentage}%`} styles={{
                   root: {},
                   path: {
-                    stroke: `rgb(35,110,97, ${percentage / 100})`,
+                    stroke: `rgb(35,110,97)`,
                     strokeLinecap: 'butt',
                     transition: 'stroke-dashoffset 0.5s ease 0s',
                     transform: 'rotate(0.25turn)',
@@ -658,7 +658,7 @@ function Detail(props) {
                 <CircularProgressbar value={66} text={`${percentage}%`} styles={{
                   root: {},
                   path: {
-                    stroke: `rgb(35,110,97, ${percentage / 100})`,
+                    stroke: `rgb(35,110,97)`,
                     strokeLinecap: 'butt',
                     transition: 'stroke-dashoffset 0.5s ease 0s',
                     transform: 'rotate(0.25turn)',
