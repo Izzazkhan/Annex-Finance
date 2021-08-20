@@ -15,6 +15,42 @@ import {
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
+import styled from "styled-components";
+import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
+import SVG from "react-inlinesvg";
+
+
+const ArrowDown = styled.button`
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: #000000;
+  border: 1px solid #2B2B2B;
+  transition: 0.3s ease all;
+  will-change: background-color, border, transform;
+  width: 30px;
+  height: 30px;
+  
+  &:focus,
+  &:hover,
+  &:active {
+    outline: none;
+  }
+  
+  &:hover {
+    background-color: #101016;
+  }
+`
+
+const Wrapper = styled.div`
+  background-color: #000;
+`
+
+const ArrowContainer = styled.div`
+  transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
+  transition: 0.3s ease all;
+  will-change: transform;
+`
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
@@ -96,6 +132,7 @@ function Detail(props) {
   const { account } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const auctionContract = getAuctionContract(state.type);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
     getData();
@@ -360,27 +397,27 @@ function Detail(props) {
   };
   return (
     <div>
-      <div className="col-span-12 p-6 flex flex-col">
+      <div className="col-span-12 p-6 flex items-center">
         <h2 className="text-white mb-2 text-4xl font-normal">Auction Details</h2>
-        <div className="text-gray text-2xl ">
+        <div className="text-gray text-xl ml-2">
           {state.detail.title} - Auction id# {state.detail.id}
         </div>
       </div>
       <div
         className="grid grid-cols-12 xl:grid-cols-10
-        text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row  justify-between relative"
+        text-white bg-black mt-8  py-8 border border-lightGray rounded-md flex flex-row  justify-between relative"
       >
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col border-r border-lightGray ">
           {loading ? (
             <div className="h-13 flex items-center justify-center px-4 py-2">
               <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
             </div>
           ) : (
-            <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+            <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
               {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
             </h2>
           )}
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             Current Price{' '}
             <div className="tooltip relative">
               <img
@@ -392,15 +429,15 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
-          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col ">
+          <h2 className="flex items-center text-white mb-1 xl:text-xl md:text-lg font-bold text-blue">
             {loading ? (
               <div className="h-13 flex items-center justify-center px-4 py-2">
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : state.detail.biddingSymbol ? (
               <img
-                width="40"
+                width="30"
                 className="mr-2"
                 src={
                   require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`)
@@ -413,9 +450,8 @@ function Detail(props) {
             )}{' '}
             {state.detail.biddingSymbol}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                state.detail && state.detail.biddingTokenId
-              }`}
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.biddingTokenId
+                }`}
               target="_blank"
               rel="noreferrer"
             >
@@ -426,7 +462,7 @@ function Detail(props) {
               />
             </a>
           </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             Bidding With{' '}
             <div className="tooltip relative">
               <img
@@ -438,12 +474,12 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
-          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+        <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-5 px-8 flex flex-col "></div>
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col border-r border-lightGray">
+          <h2 className="flex items-center text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
             {state.detail.auctionSymbol ? (
               <img
-                width="40"
+                width="30"
                 className="mr-2"
                 src={
                   require(`../../../assets/images/coins/${state.detail.auctionSymbol.toLowerCase()}.png`)
@@ -462,9 +498,8 @@ function Detail(props) {
               `${state.detail.totalAuction} ${state.detail.auctionSymbol}`
             )}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                state.detail && state.detail.auctionTokenId
-              }`}
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.auctionTokenId
+                }`}
               target="_blank"
               rel="noreferrer"
             >
@@ -475,7 +510,7 @@ function Detail(props) {
               />
             </a>
           </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             Total Auctioned{' '}
             <div className="tooltip relative">
               <img
@@ -487,8 +522,8 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
-          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col ">
+          <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
             {loading ? (
               <div className="h-13 flex items-center justify-center px-4 py-2">
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
@@ -499,7 +534,7 @@ function Detail(props) {
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
           </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             {' '}
             Min Bid Price{' '}
             <div className="tooltip relative">
@@ -536,7 +571,137 @@ function Detail(props) {
             )}
           </div>
         </div>
+
+        <div className="show-icon flex items-center justify-end text-right text-white absolute"
+         style={{'right' : '10px', 'bottom': '-40px','zIndex' : '9'}}>
+          <span className="mr-2">{showDetails ? 'Less' : 'More Details'} </span>
+          <ArrowDown onClick={() => setShowDetails(s => !s)} className={'order-4 hidden sm:flex'}>
+            <ArrowContainer active={showDetails}>
+              <SVG src={ArrowIcon} />
+            </ArrowContainer>
+          </ArrowDown>
+        </div>
       </div>
+
+
+      {showDetails && (
+        <div
+          className="grid grid-cols-4
+        text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
+        >
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col mb-5">
+              <div className="text-white text-lg md:text-md font-bold">8/1/2021, 10:15:00 PM</div>
+              <div className="flex items-center text-white text-md md:text-sm">Last order cancelation date <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">9/30/2021, 7:00:00 PM</div>
+              <div className="flex items-center text-white text-md md:text-sm">Auction End Date</div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col mb-5">
+              <div className="text-white text-lg md:text-md font-bold">0</div>
+              <div className="flex items-center text-white text-md md:text-sm">Minimum funding<div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">0  BYOB</div>
+              <div className="flex items-center text-white text-md md:text-sm">Estimated tokens sold <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col mb-5">
+              <div className="text-white text-lg md:text-md font-bold">Disabled</div>
+              <div className="flex items-center text-white text-md md:text-sm">Atomic closure  <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">99 USDT</div>
+              <div className="flex items-center text-white text-md md:text-sm">Min bidding amount per order <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col mb-5">
+              <div className="flex items-center  text-white text-lg md:text-md font-bold">None <a
+                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.biddingTokenId
+                  }`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/link.svg').default}
+                  alt=""
+                />
+              </a></div>
+              <div className="flex items-center text-white text-md md:text-sm">Allow List Contract <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center text-white text-lg md:text-md font-bold">None  <a
+                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.biddingTokenId
+                  }`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/link.svg').default}
+                  alt=""
+                />
+              </a></div>
+              <div className="flex items-center text-white text-md md:text-sm ">Signer Address <div className="tooltip relative">
+                <img
+                  className="ml-3"
+                  src={require('../../../assets/images/info.svg').default}
+                  alt=""
+                />
+                <span className="label">Current Auctioned Token Price</span>
+              </div></div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-8 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-15">
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -676,7 +841,7 @@ const ProgressBar = ({
       <Progress
         wrapperClassName=""
         type="circle"
-        width={250}
+        width={200}
         percent={completed ? 100 : percentage || 0}
         strokeWidth={4}
         color="#FFAB2D"
@@ -684,20 +849,20 @@ const ProgressBar = ({
       />
       <div
         className={`flex flex-col items-center absolute top-1/2 left-1/2 
-                    w-full h-full pt-18 md:pt-14 pb-14 md:pb-10 px-4
+                    w-full h-full pt-14 md:pt-12 pb-12 md:pb-8 px-4
                     transform -translate-x-1/2 -translate-y-1/2 justify-center`}
       >
         <div
           className={`flex flex-col items-center absolute top-1/2 left-1/2 
-                            w-full h-full pt-18 md:pt-14 pb-14 md:pb-10 px-4
+                            w-full h-full pt-14 md:pt-12 pb-12 md:pb-8 px-4
                             transform -translate-x-1/2 -translate-y-1/2 justify-center`}
         >
           <div className="flex flex-col items-center flex-grow text-center justify-center">
-            <div className="text-primary font-bold text-3xl ">
+            <div className="text-primary font-bold text-2xl ">
               {' '}
               {days}:{hours}:{minutes}:{seconds}
             </div>
-            <div className="text-white font-bold text-3xl">{completed ? 'Completed' : label}</div>
+            <div className="text-white font-bold text-2xl">{completed ? 'Completed' : label}</div>
           </div>
         </div>
       </div>

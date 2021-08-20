@@ -99,10 +99,11 @@ const Styles = styled.div`
     left: 0;
     right: 0;
     margin: 0 auto;
-    width: 250px;
-    top: calc(50% - 125px);
+    width: 200px;
+    top: calc(50% - 100px);
     background: black;
     border-radius: 50%;
+    z-index: 9;
   }
   .upcoming-icon {
     color: rgba(255, 152, 0, 1);

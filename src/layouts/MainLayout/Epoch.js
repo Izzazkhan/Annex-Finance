@@ -106,6 +106,8 @@ const Styles = styled.div`
         top: -10px;
         background-size: 100%;
         background-repeat: no-repeat;
+        line-height: 12px;
+        text-align: center;
       }
     }
     .text-border {
@@ -136,6 +138,7 @@ const Styles = styled.div`
         font-weight: bold;
         margin-top: 45px;
         margin-left: -15px;
+        word-break: break-all;
       }
       .top-right {
         background: url(${AprBg});
