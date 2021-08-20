@@ -305,12 +305,12 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                 pendingInfo: {
                     type: 'Withdraw',
                     status: true,
-                    amount: amount.dp(8, 1).toString(10),
+                    amount: withdrawAmount.dp(8, 1).toString(10),
                     symbol: record.symbol
                 }
             });
             try {
-                if (amount.eq(record.supplyBalance)) {
+                if (withdrawAmount.eq(record.supplyBalance)) {
                     const aTokenBalance = await methods.call(
                         appContract.methods.balanceOf,
                         [account]
@@ -324,7 +324,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                     await methods.send(
                         appContract.methods.redeemUnderlying,
                         [
-                            amount
+                            withdrawAmount
                                 .times(new BigNumber(10).pow(settings.decimals[assetId].token))
                                 .integerValue()
                                 .toString(10)
