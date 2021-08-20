@@ -296,6 +296,14 @@ export const BIDDING_AUCTION_TOKEN =  process.env.REACT_APP_ENV === 'dev'
     "address": process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS,
     "contract": "FaucetToken",
   },
+  busd: {
+    id: 'busd',
+    "name": "Binance USD",
+    "symbol": "BUSD",
+    "decimals": 18,
+    "address": process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS,
+    "contract": "FaucetToken",
+  },
   // wbtc: {
   //   id: 'wbtc',
   //   "name": "Wrapped Bitcoin",

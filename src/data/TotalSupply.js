@@ -1,4 +1,4 @@
-import { TokenAmount } from "@pancakeswap-libs/sdk";
+import { TokenAmount } from "@annex/sdk";
 import { useTokenContract } from "../hooks/useContract";
 import { useSingleCallResult } from "../core";
 

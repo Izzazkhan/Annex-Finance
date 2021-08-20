@@ -1,6 +1,6 @@
-import { ChainId, JSBI, Percent, Token, WETH } from "@pancakeswap-libs/sdk";
+import { ChainId, JSBI, Percent, Token, WETH } from "@annex/sdk";
 
-export const ROUTER_ADDRESS = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1";
+export const ROUTER_ADDRESS = "0x6ec44D20c8f1c746D88547f2c5c3E168D5fE74B0";
 
 export const CHAIN_ID = 97;
 
@@ -71,8 +71,8 @@ export const PINNED_PAIRS = {
 				ChainId.MAINNET,
 				"0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
 				18,
-				"CAKE",
-				"PancakeSwap Token"
+				"Annex",
+				"Annex Token"
 			),
 			new Token(ChainId.MAINNET, "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", 18, "WBNB", "Wrapped BNB"),
 		],

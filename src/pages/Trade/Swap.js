@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {JSBI, Token} from '@pancakeswap-libs/sdk';
+import {JSBI, Token} from '@annex/sdk';
 import settings from '../../assets/icons/settings.svg';
 import settingsBlack from '../../assets/icons/settingsBlack.svg';
 import history from '../../assets/icons/history.svg';
@@ -58,7 +58,6 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 	// swap state
 	const { independentField, typedValue, recipient } = useSwapState();
 	const {
-		v1Trade,
 		v2Trade,
 		currencyBalances,
 		parsedAmount,
@@ -72,20 +71,10 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 	);
 	const showWrap = wrapType !== WrapType.NOT_APPLICABLE;
 
-	const toggledVersion = useToggledVersion();
 	const trade = showWrap
 		? undefined
-		: {
-			[Version.v1]: v1Trade,
-			[Version.v2]: v2Trade,
-		}[toggledVersion];
+		: v2Trade;
 
-	const betterTradeLinkVersion =
-		toggledVersion === Version.v2 && isTradeBetter(v2Trade, v1Trade, BETTER_TRADE_LINK_THRESHOLD)
-			? Version.v1
-			: toggledVersion === Version.v1 && isTradeBetter(v1Trade, v2Trade)
-			? Version.v2
-			: undefined;
 
 
 	const parsedAmounts = showWrap
@@ -375,10 +364,10 @@ function Swap({ onSettingsOpen, onHistoryOpen }) {
 											trade ? 'text-black text-base' : 'text-white text-base'
 										}
 									>
-										{trade?.executionPrice?.toSignificant(6)}
-										{trade?.executionPrice?.quoteCurrency?.symbol}
-										per
-										{trade?.executionPrice?.baseCurrency?.symbol}
+										{trade?.executionPrice?.toSignificant(6)}{" "}
+										{trade?.executionPrice?.quoteCurrency?.symbol}{" "}
+										per{" "}
+										{trade?.executionPrice?.baseCurrency?.symbol}{" "}
 									</div>
 								</div>
 							)}

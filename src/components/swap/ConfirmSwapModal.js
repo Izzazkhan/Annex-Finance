@@ -1,4 +1,4 @@
-import {currencyEquals} from "@pancakeswap-libs/sdk";
+import {currencyEquals} from "@annex/sdk";
 import {useCallback, useMemo} from "react";
 import TransactionErrorContent from "./TransactionConfirmationModal/TransactionErrorContent";
 import ConfirmationModalContent from "./TransactionConfirmationModal/ConfirmationModalContent";

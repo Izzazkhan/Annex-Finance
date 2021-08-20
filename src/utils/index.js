@@ -1,7 +1,7 @@
 import { getAddress } from "@ethersproject/address";
 import {Contract} from "@ethersproject/contracts";
 import {ROUTER_ADDRESS} from "../constants/swap";
-import {ETHER, Percent, JSBI, Token} from "@pancakeswap-libs/sdk";
+import {ETHER, Percent, JSBI, Token} from "@annex/sdk";
 import { abi as IUniswapV2Router02ABI } from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
 import {AddressZero} from "@ethersproject/constants";
 import { BigNumber } from "@ethersproject/bignumber";

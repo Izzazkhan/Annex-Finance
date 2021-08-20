@@ -8,7 +8,7 @@ import {
 import {AutoRow, RowBetween, RowFixed} from "../UI/Row";
 import {AutoColumn} from "../UI/Column";
 import {Repeat} from "react-feather";
-import {TradeType} from "@pancakeswap-libs/sdk";
+import {TradeType} from "@annex/sdk";
 import {Field} from "../../core/modules/swap/actions";
 
 export default function SwapModalFooter({
@@ -30,7 +30,7 @@ export default function SwapModalFooter({
 	return (
 		<>
 			<AutoColumn gap="0px">
-				<RowBetween align="center">
+				<RowBetween padding={"0.5rem 0"} align="center">
 					<span className={'text-white text-sm'}>Price</span>
 					<span
 						className={'text-white text-sm'}
@@ -53,7 +53,7 @@ export default function SwapModalFooter({
 					</span>
 				</RowBetween>
 
-				<RowBetween>
+				<RowBetween padding={"0.5rem 0"}>
 					<RowFixed>
 						<span
 							className={'text-white text-sm'}>
@@ -75,7 +75,7 @@ export default function SwapModalFooter({
 						</span>
 					</RowFixed>
 				</RowBetween>
-				<RowBetween>
+				<RowBetween padding={"0.5rem 0"}>
 					<RowFixed>
 						<span
 							className={'text-white text-sm'}>
@@ -96,7 +96,7 @@ export default function SwapModalFooter({
 					onClick={onConfirm}
 					disabled={disabledConfirm}
 					id="confirm-swap-or-send"
-					className="bg-primaryLight py-2 rounded px-32 transition-all disabled:opacity-50
+					className="bg-primaryLight py-2 font-bold rounded px-32 w-full transition-all disabled:opacity-50
                         h-12 text-black flex items-center justify-center"
 				>
 					{severity > 2 ? "Swap Anyway" : "Confirm Swap"}
