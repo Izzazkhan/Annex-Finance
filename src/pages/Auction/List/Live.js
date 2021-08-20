@@ -13,52 +13,45 @@ function Live(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
   let query = gql`
   {
-    pairs(first: 5) {
-  name
-      token0{
-        symbol
-  decimals
+    auctions(where: { auctionEndDate_gt: "${currentTimeStamp}"}) {
+      id
+      type
+      userId {
+        id
+        address
       }
-      token1{
-        symbol
+      auctioningToken {
+        id
         decimals
       }
-      reserveUSD
-  token0Price
-  token1Price
+      biddingToken {
+        id
+        decimals
+      }
+      orderCancellationEndDate
+      auctionEndDate
+      auctionStartDate
+      orders {
+        id
+        buyAmount
+        sellAmount
+        claimableLP
+        status
+        userId {
+          id
+        }
+        auctionId {
+          id
+        }
+        bidder {
+          id
+          status
+        }
+      }
     }
   }
 `;
 
-const testFunction = async () => {
-  try {
-    const response = await request(
-      'https://api.thegraph.com/subgraphs/name/iadeeldev/annex-swap-exchange',
-      gql`
-      {
-        pairs(first: 5) {
-      name
-          token0{
-            symbol
-      decimals
-          }
-          token1{
-            symbol
-            decimals
-          }
-          reserveUSD
-      token0Price
-      token1Price
-        }
-      }
-      `,
-    )
-    console.log('response', response)
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
 
   const { subGraphInstance } = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
@@ -66,8 +59,6 @@ const testFunction = async () => {
   const { error, loading, data } = useQuery(query);
 
   useEffect(() => {
-    console.log('data: ', data)
-    testFunction()
     if (data && data.auctions) {
       let arr = [];
       data.auctions.forEach((element) => {
