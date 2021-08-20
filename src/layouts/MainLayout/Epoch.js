@@ -302,9 +302,9 @@ const Epoch = ({ settings, setSetting }) => {
                 APR
               </div>
               <div className="left-bottom text-white text-xs text-center">
-                <span style={{'whiteSpace': 'nowrap',  'overflow': 'hidden', 'textOverflow': 'ellipsis','width': '75%'}}>{holdingAPI}%</span></div>
+                <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'width': '75%' }}>{holdingAPI}%</span></div>
               <div className="top-right text-white text-xs text-center">
-                <span style={{'whiteSpace': 'nowrap',  'overflow': 'hidden', 'textOverflow': 'ellipsis','width': '75%'}}>
+                <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'width': '75%' }}>
                   +<br />
                   {currentEpochROI}%
                 </span>
@@ -329,38 +329,40 @@ const Epoch = ({ settings, setSetting }) => {
         </div>
         {showDetails && (
           <div className="pt-12">
-            <div className="custom-progressbar flex font-bold items-center relative py-8">
-              <div
-                className="active-label flex font-bold items-center justify-center text-black"
-                style={{
-                  left: `calc(${
-                    Number(currentEpoch) > Number(eligibleEpochs) ? 30 : currentEpoch
-                  } * 3%)`,
-                }}
-              >
-                {currentEpoch}
-              </div>
-              <div className="text-white text-xl p-2">0</div>
-              <div className="border-4 border-white rounded-xl flex items-list justify-between flex-1">
-                {Number(currentEpoch) > Number(eligibleEpochs) ? (
-                  [...Array(Number(eligibleEpochs))].map((e, i) => {
-                    return <div key={i} className="item-bar active"></div>;
-                  })
-                ) : (
-                  <>
-                    {[...Array(Number(eligibleEpochs))].slice(1, currentEpoch + 1).map((e, i) => {
+            <div className="custom-progressbar flex font-bold items-center">
+              <div className="flex w-full relative py-8">
+                <div
+                  className="active-label flex font-bold items-center justify-center text-black"
+                  style={{
+                    left: `calc(${Number(currentEpoch) > Number(eligibleEpochs) ? 30 : currentEpoch
+                      } * 3%)`,
+                  }}
+                >
+                  {currentEpoch}
+                </div>
+                <div className="text-white text-xl p-2">0</div>
+                <div className="border-4 border-white rounded-xl flex items-list justify-between flex-1">
+                  {Number(currentEpoch) > Number(eligibleEpochs) ? (
+                    [...Array(Number(eligibleEpochs))].map((e, i) => {
                       return <div key={i} className="item-bar active"></div>;
-                    })}
-                    {[...Array(Number(eligibleEpochs))]
-                      .slice(currentEpoch, [...Array(Number(eligibleEpochs))].length + 1)
-                      .map((e, i) => {
-                        return <div key={i} className="item-bar"></div>;
+                    })
+                  ) : (
+                    <>
+                      {[...Array(Number(eligibleEpochs))].slice(1, currentEpoch + 1).map((e, i) => {
+                        return <div key={i} className="item-bar active"></div>;
                       })}
-                  </>
-                )}
+                      {[...Array(Number(eligibleEpochs))]
+                        .slice(currentEpoch, [...Array(Number(eligibleEpochs))].length + 1)
+                        .map((e, i) => {
+                          return <div key={i} className="item-bar"></div>;
+                        })}
+                    </>
+                  )}
+                </div>
+                <div className="text-white text-xl p-2">{eligibleEpochs}</div>
               </div>
-              <div className="text-white text-xl p-2">{eligibleEpochs}</div>
-              <button className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">Claim</button>
+              <button className="ml-2 focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">Claim</button>
+
             </div>
             <div className="custom-range">
               <div className="label flex justify-between font-bold text-primary text-xl">
