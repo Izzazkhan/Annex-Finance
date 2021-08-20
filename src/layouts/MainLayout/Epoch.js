@@ -210,7 +210,7 @@ const Epoch = ({ settings, setSetting }) => {
   const [holdingAPI, setHoldingAPI] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
-  console.log('settings', settings)
+  // console.log('settings', settings)
 
   useEffect(() => {
     balanceOf();
