@@ -361,9 +361,15 @@ const Styles = styled.div`
     .label {
       display: none;
       position: absolute;
-      top: -6px;
-      left: 30px;
+      position: absolute;
+      bottom: 17px;
+      left: calc(50% - 90px);
       color: #e2e2e2;
+      font-size: 12px;
+      width: 180px;
+      text-align: center;
+      background: #000;
+      padding: 2px 0;
     }
   }
 
