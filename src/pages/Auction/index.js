@@ -361,9 +361,14 @@ const Styles = styled.div`
     .label {
       display: none;
       position: absolute;
-      top: -6px;
-      left: 30px;
+      bottom: 17px;
+      left: calc(50% - 90px);
       color: #e2e2e2;
+      font-size: 12px;
+      width: 180px;
+      text-align: center;
+      background: #000;
+      padding: 2px 0;
     }
   }
 
@@ -394,15 +399,14 @@ const Styles = styled.div`
   .form-section {
     border-bottom: 1px solid #696969;
     margin-bottom: 20px;
-}
-.percentage-bar {
-  width: 35px;
-  height: 35px;
-  border: 4px solid rgb(35, 110, 97);
-  border-radius: 50%;
-  font-size: 10px;
-}
-
+  }
+  .percentage-bar {
+    width: 35px;
+    height: 35px;
+    border: 4px solid rgb(35, 110, 97);
+    border-radius: 50%;
+    font-size: 10px;
+  }
 `;
 
 function Auction() {

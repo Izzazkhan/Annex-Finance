@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import Countdown from 'react-countdown';
-import Table from './Table';
+import Table from './Table2';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
@@ -58,7 +58,6 @@ function Detail(props) {
   const [state, setState] = useState({
     auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
-    orderCancellationEndDate: moment().toDate().getTime(),
     detail: {},
     orders: [],
     auctionStatus: '',
@@ -113,6 +112,7 @@ function Detail(props) {
       estimatedTokenSold
       minimumBiddingAmountPerOrder
     }
+    
     orders(where: { auctionId : "${props.match.params.id}" }){
       id
       userId {
@@ -140,6 +140,8 @@ function Detail(props) {
   const { apolloClient } = useContext(subGraphContext);
   const auctionContract = getAuctionContract(state.type);
   const [showDetails, setShowDetails] = useState(false);
+
+  console.log('data', data);
 
   useEffect(async () => {
     getData();
@@ -169,10 +171,11 @@ function Detail(props) {
         let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
           .dividedBy(biddingDecimal)
           .toNumber();
-        minimumPrice = convertExponentToNum(minimumPrice).toFixed(2);
-        maxAvailable = convertExponentToNum(maxAvailable).toFixed(2);
-        currentPrice = convertExponentToNum(currentPrice).toFixed(2);
-        minBuyAmount = convertExponentToNum(minBuyAmount).toFixed(2);
+        minimumPrice = convertExponentToNum(minimumPrice);
+        maxAvailable = convertExponentToNum(maxAvailable);
+        currentPrice = convertExponentToNum(currentPrice);
+        minBuyAmount = convertExponentToNum(minBuyAmount);
+
         let minFundingThreshold = new BigNumber(elem['minFundingThreshold'])
           .dividedBy(auctionDecimal)
           .toNumber();
@@ -187,12 +190,16 @@ function Detail(props) {
         estimatedTokenSold.toFixed();
 
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
-        let auctionEndDate = moment.unix(elem['auctionEndDate']).format('MM/DD/YYYY HH:mm:ss');
-        let auctionStartDate = elem['auctionStartDate'];
+
         let orderCancellationEndDate = moment
           .unix(elem['orderCancellationEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
-        let auctionDateEnd = moment.unix(auctionEndDate).format('MM/DD/YYYY HH:mm:ss');
+        let auctionEndDateFormatted = moment
+          .unix(elem['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+
+        let auctionEndDate = elem['auctionEndDate'];
+        let auctionStartDate = elem['auctionStartDate'];
         let endDateDiff = getDateDiff(auctionEndDate);
         let startDateDiff = getDateDiff(auctionStartDate);
         let isAllowCancellation = false;
@@ -240,8 +247,7 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount'])
             .dividedBy(biddingDecimal)
             .toString();
-
-          let auctionPrice = new BigNumber(order['price']).dividedBy(auctionDecimal).toString();
+          let price = new BigNumber(order['price']).dividedBy(biddingDecimal).toString();
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -257,8 +263,8 @@ function Detail(props) {
               auctionDivSellAmount,
               auctionSymbol,
               biddingSymbol,
-              auctionPrice,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+              price: price,
             });
           } else {
             otherUserOrders.push({
@@ -267,8 +273,8 @@ function Detail(props) {
               auctionDivSellAmount,
               auctionSymbol,
               biddingSymbol,
-              auctionPrice,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+              price: price,
             });
           }
         });
@@ -312,22 +318,18 @@ function Detail(props) {
           isAllowCancellation,
           placeHolderMinBuyAmount,
           placeholderSellAmount,
-          orderCancellationEndDate,
           minFundingThreshold,
-          isAtomicClosureAllowed,
-          estimatedTokenSold,
           minimumBiddingAmountPerOrder,
+          estimatedTokenSold,
+          isAtomicClosureAllowed,
+          orderCancellationEndDate,
+          auctionEndDateFormatted,
         };
         setState({
           ...state,
           detail,
           auctionStartDate,
           auctionEndDate,
-          orderCancellationEndDate,
-          minFundingThreshold,
-          isAtomicClosureAllowed,
-          estimatedTokenSold,
-          minimumBiddingAmountPerOrder,
           orders,
           auctionStatus,
         });
@@ -450,7 +452,6 @@ function Detail(props) {
           {
             Header: 'Price',
             accessor: 'price',
-            disableFilters: true,
           },
           {
             Header: 'Amount Commited',
@@ -692,7 +693,7 @@ function Detail(props) {
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
             <div className="flex flex-col mb-5">
               <div className="text-white text-lg md:text-md font-bold">
-                {state.orderCancellationEndDate}
+                {state.detail.orderCancellationEndDate}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Last order cancelation date{' '}
@@ -707,7 +708,9 @@ function Detail(props) {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-white text-lg md:text-md font-bold">{state.auctionEndDate}</div>
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.auctionEndDateFormatted}
+              </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Auction End Date
               </div>
@@ -717,8 +720,8 @@ function Detail(props) {
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
                 <CircularProgressbar
-                  value={state.minFundingThreshold}
-                  text={`${state.minFundingThreshold}%`}
+                  value={state.detail.minFundingThreshold}
+                  text={`${state.detail.minFundingThreshold}%`}
                   styles={{
                     root: {},
                     path: {
@@ -746,7 +749,7 @@ function Detail(props) {
               </div>
               <div className="flex flex-col">
                 <div className="text-white text-lg md:text-md font-bold">
-                  {state.minFundingThreshold}
+                  {state.detail.minFundingThreshold}
                 </div>
                 <div className="flex items-center text-white text-md md:text-sm">
                   Minimum funding
@@ -764,8 +767,8 @@ function Detail(props) {
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
                 <CircularProgressbar
-                  value={state.minFundingThreshold}
-                  text={`${state.minFundingThreshold}%`}
+                  value={state.detail.estimatedTokenSold}
+                  text={`${state.detail.estimatedTokenSold}%`}
                   styles={{
                     root: {},
                     path: {
@@ -793,7 +796,7 @@ function Detail(props) {
               </div>
               <div className="flex flex-col">
                 <div className="text-white text-lg md:text-md font-bold">
-                  {state.minFundingThreshold} {state.detail.auctionSymbol}
+                  {state.detail.estimatedTokenSold} {state.detail.auctionSymbol}
                 </div>
                 <div className="flex items-center text-white text-md md:text-sm">
                   Estimated tokens sold{' '}
@@ -812,7 +815,7 @@ function Detail(props) {
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
             <div className="flex flex-col mb-5">
               <div className="text-white text-lg md:text-md font-bold">
-                {state.isAtomicClosureAllowed ? 'Enabled' : 'Disabled'}
+                {state.detail.isAtomicClosureAllowed === true ? 'Enabled' : 'Disabled'}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Atomic closure{' '}
@@ -828,7 +831,7 @@ function Detail(props) {
             </div>
             <div className="flex flex-col">
               <div className="text-white text-lg md:text-md font-bold">
-                {state.minimumBiddingAmountPerOrder} {state.detail.biddingSymbol}
+                {state.detail.minimumBiddingAmountPerOrder} {state.detail.biddingSymbol}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Min bidding amount per order{' '}
