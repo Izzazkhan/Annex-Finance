@@ -146,13 +146,8 @@ function Detail(props) {
   }, []);
   useEffect(async () => {
     try {
-      console.log('###################');
-      // console.log(data);
       if (data && data.auctions) {
         let elem = data.auctions[0];
-        console.log('@@@@@@@@@@@@@@@@@@@@@@');
-        console.log('######### ELEMENT #############');
-        console.log(elem);
         let type = elem['type'];
         let auctionStatus = '';
         let auctionTokenId = elem['auctioningToken']['id'];
@@ -652,7 +647,7 @@ function Detail(props) {
             <div className="flex items-center mb-5">
 
               <div className="mr-2" style={{ width: 35, height: 35 }}>
-                <CircularProgressbar value={66} text={`${percentage}%`} styles={{
+                <CircularProgressbar value={state.minFundingThreshold} text={`${state.minFundingThreshold}%`} styles={{
                   root: {},
                   path: {
                     stroke: `rgb(35,110,97)`,
@@ -677,7 +672,7 @@ function Detail(props) {
                 }} />
               </div>
               <div className="flex flex-col">
-                <div className="text-white text-lg md:text-md font-bold">0</div>
+                <div className="text-white text-lg md:text-md font-bold">{state.minFundingThreshold}</div>
                 <div className="flex items-center text-white text-md md:text-sm">Minimum funding<div className="tooltip relative">
                   <img
                     className="ml-3"
@@ -690,7 +685,7 @@ function Detail(props) {
             </div>
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
-                <CircularProgressbar value={66} text={`${percentage}%`} styles={{
+                <CircularProgressbar value={state.minFundingThreshold} text={`${state.minFundingThreshold}%`} styles={{
                   root: {},
                   path: {
                     stroke: `rgb(35,110,97)`,
@@ -715,7 +710,7 @@ function Detail(props) {
                 }} />
               </div>
               <div className="flex flex-col">
-                <div className="text-white text-lg md:text-md font-bold">0  BYOB</div>
+                <div className="text-white text-lg md:text-md font-bold">{state.minFundingThreshold}  {state.detail.auctionSymbol}</div>
                 <div className="flex items-center text-white text-md md:text-sm">Estimated tokens sold <div className="tooltip relative">
                   <img
                     className="ml-3"
