@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import Countdown from 'react-countdown';
-import Table from './Table2';
+import Table from './Table';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
@@ -240,10 +240,8 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount'])
             .dividedBy(biddingDecimal)
             .toString();
-          
-          let auctionPrice = new BigNumber(order['price'])
-            .dividedBy(auctionDecimal)
-            .toString();
+
+          let auctionPrice = new BigNumber(order['price']).dividedBy(auctionDecimal).toString();
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -448,6 +446,11 @@ function Detail(props) {
           {
             Header: 'Address',
             accessor: 'address',
+          },
+          {
+            Header: 'Price',
+            accessor: 'price',
+            disableFilters: true,
           },
           {
             Header: 'Amount Commited',
