@@ -180,6 +180,7 @@ function Table(props) {
           <thead>
             <tr>
               <th>Address</th>
+              <th>Price</th>
               <th>Amount Committed</th>
               <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
@@ -220,6 +221,11 @@ function Table(props) {
                             {item.userId ? item.userId.address.substring(0, 5) + '...' : ''}
                           </a>
                         </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        {item.price}
                       </div>
                     </td>
                     <td>
