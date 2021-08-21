@@ -58,7 +58,7 @@ function Table({ columns, data, ...props }) {
     useSortBy,
     useExpanded,
   );
-  console.log('data', rows);
+  console.log('props', rows);
 
   const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
   const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
@@ -360,52 +360,35 @@ function Table({ columns, data, ...props }) {
               // eslint-disable-next-line react/jsx-key
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, index) => {
-                  if (column === '') {
-                    return (
-                      // eslint-disable-next-line react/jsx-key
-                      <th
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                        key={column.Header}
-                        className="text-center"
-                      >
-                        {column.render('Header')}
-                      </th>
-                    );
-                  } else {
-                    return (
-                      // eslint-disable-next-line react/jsx-key
-                      <th
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                        key={column.Header}
-                      >
-                        {column.render('Header')}
-                        {index === 4 && (
-                          <span>
-                            {column.isSorted ? (
-                              column.isSortedDesc ? (
-                                <img
-                                  className="inline relative left-1"
-                                  src={sortDown}
-                                  alt="sort down"
-                                />
-                              ) : (
-                                <img
-                                  className="inline relative left-1"
-                                  src={sortUp}
-                                  alt="sort up"
-                                />
-                              )
+                  return (
+                    // eslint-disable-next-line react/jsx-key
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      key={column.Header}
+                    >
+                      {column.render('Header')}
+                      {index === 4 && (
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <img
+                                className="inline relative left-1"
+                                src={sortDown}
+                                alt="sort down"
+                              />
                             ) : (
-                              <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                                <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                              </div>
-                            )}
-                          </span>
-                        )}
-                      </th>
-                    );
-                  }
+                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                            )
+                          ) : (
+                            <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                            </div>
+                          )}
+                        </span>
+                      )}
+                    </th>
+                  );
                 })}
               </tr>
             ))}
@@ -427,7 +410,7 @@ function Table({ columns, data, ...props }) {
               </tr>
             ) : (
               rows.map((row, i) => {
-                console.log('row', row, i);
+                console.log('row', row);
                 prepareRow(row);
                 return (
                   // eslint-disable-next-line react/jsx-key
@@ -482,89 +465,6 @@ function Table({ columns, data, ...props }) {
                                 <div>{cell.render('Cell')}</div>
                               </td>
                             );
-                          } else {
-                            <td>
-                              {account === userId &&
-                              props.auctionStatus === 'completed' &&
-                              props.isAlreadySettle &&
-                              cell.value !== 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label
-                                    className={`container text-base ml-2 font-normal ${
-                                      loading || !props.isAlreadySettle ? 'disabled' : ''
-                                    }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled={
-                                        loading ||
-                                        !props.isAlreadySettle ||
-                                        cell.value === 'PROCESSED'
-                                      }
-                                      checked={
-                                        cell.value === 'PROCESSED' ||
-                                        selectedClaimOrders.findIndex(
-                                          (x) => x.id === cell.value,
-                                        ) !== -1
-                                      }
-                                      onClick={() => handleClaimCheckbox(cell)}
-                                    />
-                                    <span
-                                      className={`checkmark ${
-                                        cell.value === 'PROCESSED' ? 'green' : ''
-                                      }`}
-                                    >
-                                      <span style={{ display: 'none' }} className="text">
-                                        {cell.value === 'PROCESSED' ? 'Claimed' : 'Claim'}
-                                      </span>
-                                    </span>
-                                  </label>
-                                </div>
-                              ) : props.isAllowCancellation &&
-                                props.auctionStatus !== 'completed' &&
-                                cell.value !== 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label
-                                    className={`container text-base ml-2 font-normal ${
-                                      loading || cell.value === 'CANCELLED' ? 'disabled' : ''
-                                    }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled={loading || cell.value === 'CANCELLED'}
-                                      checked={
-                                        cell.value === 'CANCELLED' ||
-                                        selectedCancelOrders.findIndex(
-                                          (x) => x.id === cell.value,
-                                        ) !== -1
-                                      }
-                                      onClick={() => handleCancelCheckbox(cell)}
-                                    />
-                                    <span className="checkmark">
-                                      <span style={{ display: 'none' }} className="text">
-                                        Cancel
-                                      </span>
-                                    </span>
-                                  </label>
-                                </div>
-                              ) : cell.status === 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label className={`container text-base ml-2 font-normal `}>
-                                    <input type="checkbox" disabled={true} checked={true} />
-                                    <span className="checkmark red">
-                                      <span style={{ display: 'none' }} className="text">
-                                        {' '}
-                                        Cancelled
-                                      </span>
-                                    </span>
-                                  </label>
-                                </div>
-                              ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
-                                <div>'Waiting to settle</div>
-                              ) : (
-                                ''
-                              )}
-                            </td>;
                           }
                         } else {
                           return '';
