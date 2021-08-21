@@ -24,7 +24,7 @@ const getSubGraphDataSource = (path) => {
       return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
     }
     default: {
-      return process.env.REACT_APP_SUBGRAPH_DATASOURCE_FOR_TRADE;
+      return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
     }
   }
 };

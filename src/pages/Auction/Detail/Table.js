@@ -1,9 +1,12 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import styled from 'styled-components';
 import toHex from 'to-hex';
 import { methods } from '../../../utilities/ContractService';
 import Loading from '../../../components/UI/Loading';
+import { useTable, useSortBy, useExpanded } from 'react-table';
+import sortUp from '../../../assets/icons/sortUp.svg';
+import sortDown from '../../../assets/icons/sortDown.svg';
 
 const Styles = styled.div`
   width: 100%;
@@ -37,12 +40,32 @@ const Styles = styled.div`
   }
 `;
 
-function Table(props) {
+function Table({ columns, data, ...props }) {
+  data.map(
+    (item) => (
+      (item.address = item.userId.address),
+      (item.amountCommited = item.auctionDivBuyAmount + ' ' + item.biddingSymbol)
+    ),
+  );
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+    {
+      columns,
+      data,
+      defaultColumn: 'rank',
+      autoResetSortBy: false,
+    },
+    useSortBy,
+    useExpanded,
+  );
+  console.log('props', rows);
+
   const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
   const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isShowMyOrder, updateMyOrder] = useState(false);
   const trimAddress = (address) => {
+    console.log('address', address);
     let length = address.length;
     if (length > 20) {
       address = address.substring(0, 6) + '...' + address.substring(length - 5, length);
@@ -176,7 +199,7 @@ function Table(props) {
             )}
           </div>
         </div>
-        <table className="text-left">
+        {/* <table className="text-left">
           <thead>
             <tr>
               <th>Address</th>
@@ -251,13 +274,14 @@ function Table(props) {
                     </td>
                     <td>
                       {account === userId &&
-                        props.auctionStatus === 'completed' &&
-                        props.isAlreadySettle &&
-                        item.status !== 'CANCELLED' ? (
+                      props.auctionStatus === 'completed' &&
+                      props.isAlreadySettle &&
+                      item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label
-                            className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
-                              }`}
+                            className={`container text-base ml-2 font-normal ${
+                              loading || !props.isAlreadySettle ? 'disabled' : ''
+                            }`}
                           >
                             <input
                               type="checkbox"
@@ -273,8 +297,9 @@ function Table(props) {
                             <span
                               className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''}`}
                             >
-                              <span style={{ 'display': 'none' }} className="text">{item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}</span>
-
+                              <span style={{ display: 'none' }} className="text">
+                                {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
+                              </span>
                             </span>
                           </label>
                         </div>
@@ -283,8 +308,9 @@ function Table(props) {
                         item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label
-                            className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                              }`}
+                            className={`container text-base ml-2 font-normal ${
+                              loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                            }`}
                           >
                             <input
                               type="checkbox"
@@ -296,20 +322,21 @@ function Table(props) {
                               onClick={() => handleCancelCheckbox(item)}
                             />
                             <span className="checkmark">
-                              <span style={{ 'display': 'none' }} className="text">Cancel</span>
+                              <span style={{ display: 'none' }} className="text">
+                                Cancel
+                              </span>
                             </span>
                           </label>
                         </div>
                       ) : item.status === 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label className={`container text-base ml-2 font-normal `}>
-                            <input
-                              type="checkbox"
-                              disabled={true}
-                              checked={true}
-                            />
+                            <input type="checkbox" disabled={true} checked={true} />
                             <span className="checkmark red">
-                              <span style={{ 'display': 'none' }} className="text"> Cancelled</span>
+                              <span style={{ display: 'none' }} className="text">
+                                {' '}
+                                Cancelled
+                              </span>
                             </span>
                           </label>
                         </div>
@@ -322,6 +349,130 @@ function Table(props) {
                   </tr>
                 ) : (
                   ''
+                );
+              })
+            )}
+          </tbody>
+        </table> */}
+        <table {...getTableProps()}>
+          <thead>
+            {[headerGroups[1]].map((headerGroup) => (
+              // eslint-disable-next-line react/jsx-key
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => {
+                  return (
+                    // eslint-disable-next-line react/jsx-key
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      key={column.Header}
+                    >
+                      {column.render('Header')}
+                      {(index === 1 || index === 5) && (
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <img
+                                className="inline relative left-1"
+                                src={sortDown}
+                                alt="sort down"
+                              />
+                            ) : (
+                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                            )
+                          ) : (
+                            <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                            </div>
+                          )}
+                        </span>
+                      )}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {props.loading ? (
+              <tr>
+                <td colSpan="12">
+                  <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+                    <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+                  </div>
+                </td>
+              </tr>
+            ) : rows.length === 0 ? (
+              <tr>
+                <td colSpan="12">
+                  <div className="text-center">No Data Found</div>
+                </td>{' '}
+              </tr>
+            ) : (
+              rows.map((row, i) => {
+                console.log('row', row);
+                prepareRow(row);
+                return (
+                  // eslint-disable-next-line react/jsx-key
+                  <Fragment key={i}>
+                    <tr {...row.getRowProps()} className="cursor-pointer">
+                      {console.log('row.getRowProps()', row.cells)}
+                      {row.cells.map((cell) => {
+                        console.log('cell', cell);
+                        let userId = cell.column.Header === 'Address' && cell.value.toLowerCase();
+                        let account = props.account ? props.account.toLowerCase() : '0x';
+
+                        if (!isShowMyOrder || (isShowMyOrder && userId === account)) {
+                          if (cell.column.Header === 'Address') {
+                            return (
+                              <td>
+                                <div className="flex justify-start items-center space-x-2">
+                                  <div className="text-primary">
+                                    <a
+                                      href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${cell.value}`}
+                                      target="_blank"
+                                    >
+                                      {cell.value ? cell.value.substring(0, 5) + '...' : ''}
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          } else if (cell.column.Header === 'TX Hash') {
+                            return (
+                              // eslint-disable-next-line react/jsx-key
+                              <td>
+                                <div className="text-primary">
+                                  <a
+                                    href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${cell.value}`}
+                                    target="_blank"
+                                  >
+                                    {trimAddress(cell.value)}
+                                  </a>
+                                </div>
+                              </td>
+                            );
+                          } else if (
+                            cell.column.Header === 'Amount Commited' ||
+                            cell.column.Header === 'LP Tokens Claimable' ||
+                            cell.column.Header === 'Block Number' ||
+                            cell.column.Header === 'Buy Amount' ||
+                            cell.column.Header === 'Sell Amount' ||
+                            cell.column.Header === 'Price'
+                          ) {
+                            return (
+                              // eslint-disable-next-line react/jsx-key
+                              <td {...cell.getCellProps()} className="">
+                                <div>{cell.render('Cell')}</div>
+                              </td>
+                            );
+                          }
+                        } else {
+                          return '';
+                        }
+                      })}
+                    </tr>
+                  </Fragment>
                 );
               })
             )}
