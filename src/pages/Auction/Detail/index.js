@@ -18,7 +18,8 @@ import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import styled from "styled-components";
 import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
 import SVG from "react-inlinesvg";
-
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 const ArrowDown = styled.button`
   align-items: center;
@@ -51,6 +52,7 @@ const ArrowContainer = styled.div`
   transition: 0.3s ease all;
   will-change: transform;
 `
+
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
@@ -433,6 +435,8 @@ function Detail(props) {
     balanceOf = new BigNumber(balanceOf).dividedBy(decimal).toNumber();
     return balanceOf;
   };
+  const percentage = 66;
+
   return (
     <div>
       <div className="col-span-12 p-6 flex items-center">
@@ -611,7 +615,7 @@ function Detail(props) {
         </div>
 
         <div className="show-icon flex items-center justify-end text-right text-white absolute"
-         style={{'right' : '10px', 'bottom': '-40px','zIndex' : '9'}}>
+          style={{ 'right': '10px', 'bottom': '-40px', 'zIndex': '9' }}>
           <span className="mr-2">{showDetails ? 'Less' : 'More Details'} </span>
           <ArrowDown onClick={() => setShowDetails(s => !s)} className={'order-4 hidden sm:flex'}>
             <ArrowContainer active={showDetails}>
@@ -645,27 +649,82 @@ function Detail(props) {
             </div>
           </div>
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
-            <div className="flex flex-col mb-5">
-              <div className="text-white text-lg md:text-md font-bold">{state.minFundingThreshold}</div>
-              <div className="flex items-center text-white text-md md:text-sm">Minimum funding<div className="tooltip relative">
-                <img
-                  className="ml-3"
-                  src={require('../../../assets/images/info.svg').default}
-                  alt=""
-                />
-                <span className="label">Current Auctioned Token Price</span>
-              </div></div>
+            <div className="flex items-center mb-5">
+
+              <div className="mr-2" style={{ width: 35, height: 35 }}>
+                <CircularProgressbar value={66} text={`${percentage}%`} styles={{
+                  root: {},
+                  path: {
+                    stroke: `rgb(35,110,97)`,
+                    strokeLinecap: 'butt',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0.25turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: '#d6d6d6',
+                    strokeLinecap: 'butt',
+                    transform: 'rotate(0.25turn)',
+                    transformOrigin: 'center center',
+                  },
+                  text: {
+                    fill: '#fff',
+                    fontSize: '28px',
+                  },
+                  background: {
+                    fill: '#3e98c7',
+                  },
+                }} />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-white text-lg md:text-md font-bold">0</div>
+                <div className="flex items-center text-white text-md md:text-sm">Minimum funding<div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Current Auctioned Token Price</span>
+                </div></div>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <div className="text-white text-lg md:text-md font-bold">{state.estimatedTokenSold} {state.detail.auctionSymbol}</div>
-              <div className="flex items-center text-white text-md md:text-sm">Estimated tokens sold <div className="tooltip relative">
-                <img
-                  className="ml-3"
-                  src={require('../../../assets/images/info.svg').default}
-                  alt=""
-                />
-                <span className="label">Current Auctioned Token Price</span>
-              </div></div>
+            <div className="flex items-center mb-5">
+              <div className="mr-2" style={{ width: 35, height: 35 }}>
+                <CircularProgressbar value={66} text={`${percentage}%`} styles={{
+                  root: {},
+                  path: {
+                    stroke: `rgb(35,110,97)`,
+                    strokeLinecap: 'butt',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0.25turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: '#d6d6d6',
+                    strokeLinecap: 'butt',
+                    transform: 'rotate(0.25turn)',
+                    transformOrigin: 'center center',
+                  },
+                  text: {
+                    fill: '#fff',
+                    fontSize: '28px',
+                  },
+                  background: {
+                    fill: '#3e98c7',
+                  },
+                }} />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-white text-lg md:text-md font-bold">0  BYOB</div>
+                <div className="flex items-center text-white text-md md:text-sm">Estimated tokens sold <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Current Auctioned Token Price</span>
+                </div></div>
+              </div>
             </div>
           </div>
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">

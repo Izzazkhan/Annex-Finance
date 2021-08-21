@@ -73,11 +73,12 @@ const Styles = styled.div`
           color: #fff;
           padding-top: 5px;
           font-weight: bold;
-          font-size: 14px;
+          font-size: 10px;
+          word-break: break-all;
         }
       }
       .label {
-        margin-bottom: -20px;
+        margin-bottom: -12px;
       }
     }
     .custom-progressbar {
@@ -108,6 +109,8 @@ const Styles = styled.div`
         background-repeat: no-repeat;
         line-height: 12px;
         text-align: center;
+        word-break: break-all;
+        font-size: 10px;
       }
     }
     .text-border {
@@ -152,6 +155,7 @@ const Styles = styled.div`
         font-weight: bold;
         transform: rotate(180deg);
         margin-top: -35px;
+        align-items: end;
         span {
           transform: rotate(-180deg);
         }
@@ -159,7 +163,7 @@ const Styles = styled.div`
     }
     .custom-top {
       position: relative;
-      top: 70px;
+      top: 50px;
     }
     .title-text {
       left: 0;
@@ -281,9 +285,9 @@ const Epoch = ({ settings, setSetting }) => {
   return (
     <Styles>
       <div className=" landing bg-lightGray rounded-md p-8 text-primary pb-8">
-        <div className="flex items-center justify-between pl-6 pr-10 relative">
+        <div className="flex items-center justify-between pr-10 relative">
           <div className={` ${showDetails && 'custom-top'} flex items-center`}>
-            <div className="font-bold text-lg text-right">
+            <div className="font-bold text-md text-right">
               ANN Balance <br />
               {annBalance} ANN
             </div>
@@ -297,9 +301,10 @@ const Epoch = ({ settings, setSetting }) => {
                 Holdding <br />
                 APR
               </div>
-              <div className="left-bottom text-white text-xs">{holdingAPI}%</div>
-              <div className="top-right text-white text-xs">
-                <span>
+              <div className="left-bottom text-white text-xs text-center">
+                <span style={{'whiteSpace': 'nowrap',  'overflow': 'hidden', 'textOverflow': 'ellipsis','width': '75%'}}>{holdingAPI}%</span></div>
+              <div className="top-right text-white text-xs text-center">
+                <span style={{'whiteSpace': 'nowrap',  'overflow': 'hidden', 'textOverflow': 'ellipsis','width': '75%'}}>
                   +<br />
                   {currentEpochROI}%
                 </span>
@@ -307,12 +312,12 @@ const Epoch = ({ settings, setSetting }) => {
               <div className="font-bold text-sm text-right">per epoch</div>
             </div>
           )}
-          <div className="text-center font-bold text-4xl text-border absolute title-text">
+          <div className="text-center font-bold text-3xl text-border absolute title-text">
             {currentEpoch} epoch <span className=""></span>
           </div>
           <div className={` ${showDetails && 'custom-top'} flex items-center font-bold`}>
-            <div className="text-xl">ANN Holding Rewards : </div>
-            <div className="text-lg ml-1"> {holdingReward} ANN</div>
+            <div className="text-lg">ANN Holding Rewards : </div>
+            <div className="text-md ml-1"> {holdingReward} ANN</div>
           </div>
           <div className="absolute right-0">
             <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
@@ -323,7 +328,7 @@ const Epoch = ({ settings, setSetting }) => {
           </div>
         </div>
         {showDetails && (
-          <div className="pt-8">
+          <div className="pt-12">
             <div className="custom-progressbar flex font-bold items-center relative py-8">
               <div
                 className="active-label flex font-bold items-center justify-center text-black"
@@ -355,6 +360,7 @@ const Epoch = ({ settings, setSetting }) => {
                 )}
               </div>
               <div className="text-white text-xl p-2">{eligibleEpochs}</div>
+              <button className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">Claim</button>
             </div>
             <div className="custom-range">
               <div className="label flex justify-between font-bold text-primary text-xl">
@@ -363,7 +369,7 @@ const Epoch = ({ settings, setSetting }) => {
               </div>
 
               <Slider
-                labels={checkCurrentEligibleEpoch ? holdingAPI.toString() : '0'}
+                // labels={checkCurrentEligibleEpoch ? holdingAPI.toString() : '0'}
                 handleLabel={checkCurrentEligibleEpoch ? holdingAPI.toString() : '0'}
                 min={0}
                 max={100}
