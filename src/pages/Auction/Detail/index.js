@@ -58,6 +58,7 @@ function Detail(props) {
   const [state, setState] = useState({
     auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
+    orderCancellationEndDate: moment().toDate().getTime(),
     detail: {},
     orders: [],
     auctionStatus: '',
@@ -107,6 +108,10 @@ function Detail(props) {
       liquidity
       soldAuctioningTokens
       clearingPriceOrder
+      minFundingThreshold
+      isAtomicClosureAllowed
+      estimatedTokenSold
+      minimumBiddingAmountPerOrder
     }
     orders(where: { auctionId : "${props.match.params.id}" }){
       id
@@ -163,13 +168,30 @@ function Detail(props) {
         let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
           .dividedBy(biddingDecimal)
           .toNumber();
-        minimumPrice = convertExponentToNum(minimumPrice);
-        maxAvailable = convertExponentToNum(maxAvailable);
-        currentPrice = convertExponentToNum(currentPrice);
-        minBuyAmount = convertExponentToNum(minBuyAmount);
+        minimumPrice = convertExponentToNum(minimumPrice).toFixed(2);
+        maxAvailable = convertExponentToNum(maxAvailable).toFixed(2);
+        currentPrice = convertExponentToNum(currentPrice).toFixed(2);
+        minBuyAmount = convertExponentToNum(minBuyAmount).toFixed(2);
+        let minFundingThreshold = new BigNumber(elem['minFundingThreshold'])
+          .dividedBy(auctionDecimal)
+          .toNumber();
+        let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder'])
+          .dividedBy(biddingDecimal)
+          .toNumber();
+        let estimatedTokenSold = new BigNumber(elem['estimatedTokenSold'])
+          .dividedBy(biddingDecimal)
+          .toNumber();
+        minFundingThreshold.toFixed();
+        minimumBiddingAmountPerOrder.toFixed();
+        estimatedTokenSold.toFixed();
 
-        let auctionEndDate = elem['auctionEndDate'];
+        let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
+        let auctionEndDate = moment.unix(elem['auctionEndDate']).format('MM/DD/YYYY HH:mm:ss');
         let auctionStartDate = elem['auctionStartDate'];
+        let orderCancellationEndDate = moment
+          .unix(elem['orderCancellationEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+        let auctionDateEnd = moment.unix(auctionEndDate).format('MM/DD/YYYY HH:mm:ss');
         let endDateDiff = getDateDiff(auctionEndDate);
         let startDateDiff = getDateDiff(auctionStartDate);
         let isAllowCancellation = false;
@@ -285,12 +307,22 @@ function Detail(props) {
           isAllowCancellation,
           placeHolderMinBuyAmount,
           placeholderSellAmount,
+          orderCancellationEndDate,
+          minFundingThreshold,
+          isAtomicClosureAllowed,
+          estimatedTokenSold,
+          minimumBiddingAmountPerOrder,
         };
         setState({
           ...state,
           detail,
           auctionStartDate,
           auctionEndDate,
+          orderCancellationEndDate,
+          minFundingThreshold,
+          isAtomicClosureAllowed,
+          estimatedTokenSold,
+          minimumBiddingAmountPerOrder,
           orders,
           auctionStatus,
         });
@@ -644,13 +676,13 @@ function Detail(props) {
 
       {showDetails && (
         <div
-          className="grid grid-cols-4
+          className="grid grid-cols-3
         text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
         >
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
             <div className="flex flex-col mb-5">
               <div className="text-white text-lg md:text-md font-bold">
-                {'state.detail.orderCancellationEndDate'}
+                {state.orderCancellationEndDate}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Last order cancelation date{' '}
@@ -665,7 +697,7 @@ function Detail(props) {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-white text-lg md:text-md font-bold">9/30/2021, 7:00:00 PM</div>
+              <div className="text-white text-lg md:text-md font-bold">{state.auctionEndDate}</div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Auction End Date
               </div>
@@ -675,8 +707,8 @@ function Detail(props) {
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
                 <CircularProgressbar
-                  value={66}
-                  text={`${percentage}%`}
+                  value={state.minFundingThreshold}
+                  text={`${state.minFundingThreshold}%`}
                   styles={{
                     root: {},
                     path: {
@@ -703,7 +735,9 @@ function Detail(props) {
                 />
               </div>
               <div className="flex flex-col">
-                <div className="text-white text-lg md:text-md font-bold">0</div>
+                <div className="text-white text-lg md:text-md font-bold">
+                  {state.minFundingThreshold}
+                </div>
                 <div className="flex items-center text-white text-md md:text-sm">
                   Minimum funding
                   <div className="tooltip relative">
@@ -720,8 +754,8 @@ function Detail(props) {
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
                 <CircularProgressbar
-                  value={66}
-                  text={`${percentage}%`}
+                  value={state.minFundingThreshold}
+                  text={`${state.minFundingThreshold}%`}
                   styles={{
                     root: {},
                     path: {
@@ -748,7 +782,9 @@ function Detail(props) {
                 />
               </div>
               <div className="flex flex-col">
-                <div className="text-white text-lg md:text-md font-bold">0 BYOB</div>
+                <div className="text-white text-lg md:text-md font-bold">
+                  {state.minFundingThreshold} {state.detail.auctionSymbol}
+                </div>
                 <div className="flex items-center text-white text-md md:text-sm">
                   Estimated tokens sold{' '}
                   <div className="tooltip relative">
@@ -765,7 +801,9 @@ function Detail(props) {
           </div>
           <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
             <div className="flex flex-col mb-5">
-              <div className="text-white text-lg md:text-md font-bold">Disabled</div>
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.isAtomicClosureAllowed ? 'Enabled' : 'Disabled'}
+              </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Atomic closure{' '}
                 <div className="tooltip relative">
@@ -779,69 +817,11 @@ function Detail(props) {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-white text-lg md:text-md font-bold">99 USDT</div>
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.minimumBiddingAmountPerOrder} {state.detail.biddingSymbol}
+              </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Min bidding amount per order{' '}
-                <div className="tooltip relative">
-                  <img
-                    className="ml-3"
-                    src={require('../../../assets/images/info.svg').default}
-                    alt=""
-                  />
-                  <span className="label">Current Auctioned Token Price</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
-            <div className="flex flex-col mb-5">
-              <div className="flex items-center  text-white text-lg md:text-md font-bold">
-                None{' '}
-                <a
-                  href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                    state.detail && state.detail.biddingTokenId
-                  }`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img
-                    className="ml-3"
-                    src={require('../../../assets/images/link.svg').default}
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div className="flex items-center text-white text-md md:text-sm">
-                Allow List Contract{' '}
-                <div className="tooltip relative">
-                  <img
-                    className="ml-3"
-                    src={require('../../../assets/images/info.svg').default}
-                    alt=""
-                  />
-                  <span className="label">Current Auctioned Token Price</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center text-white text-lg md:text-md font-bold">
-                None{' '}
-                <a
-                  href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                    state.detail && state.detail.biddingTokenId
-                  }`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img
-                    className="ml-3"
-                    src={require('../../../assets/images/link.svg').default}
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div className="flex items-center text-white text-md md:text-sm ">
-                Signer Address{' '}
                 <div className="tooltip relative">
                   <img
                     className="ml-3"
