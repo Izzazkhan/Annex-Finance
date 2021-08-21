@@ -122,6 +122,7 @@ function Detail(props) {
       auctionId {
         id
       }
+      price
       buyAmount
       sellAmount
       status
@@ -239,6 +240,10 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount'])
             .dividedBy(biddingDecimal)
             .toString();
+          
+          let auctionPrice = new BigNumber(order['price'])
+            .dividedBy(auctionDecimal)
+            .toString();
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -254,6 +259,7 @@ function Detail(props) {
               auctionDivSellAmount,
               auctionSymbol,
               biddingSymbol,
+              auctionPrice,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
             });
           } else {
@@ -263,6 +269,7 @@ function Detail(props) {
               auctionDivSellAmount,
               auctionSymbol,
               biddingSymbol,
+              auctionPrice,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
             });
           }
