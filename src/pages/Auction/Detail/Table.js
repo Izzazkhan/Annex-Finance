@@ -420,7 +420,7 @@ function Table(props) {
                     </td>
                   </tr>
                 ) : (
-                  <tr><td>No Data</td></tr>
+                  ''
                 );
               })
             )}
