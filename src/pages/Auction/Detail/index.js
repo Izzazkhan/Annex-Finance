@@ -704,7 +704,7 @@ function Detail(props) {
                     src={require('../../../assets/images/info.svg').default}
                     alt=""
                   />
-                  <span className="label">Current Auctioned Token Price</span>
+                  <span className="label">Last order cancelation date</span>
                 </div>
               </div>
             </div>
@@ -714,6 +714,14 @@ function Detail(props) {
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Auction End Date
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Auction End Date</span>
+                </div>
               </div>
             </div>
           </div>
@@ -760,7 +768,7 @@ function Detail(props) {
                       src={require('../../../assets/images/info.svg').default}
                       alt=""
                     />
-                    <span className="label">Current Auctioned Token Price</span>
+                    <span className="label">Minimum funding</span>
                   </div>
                 </div>
               </div>
@@ -807,7 +815,7 @@ function Detail(props) {
                       src={require('../../../assets/images/info.svg').default}
                       alt=""
                     />
-                    <span className="label">Current Auctioned Token Price</span>
+                    <span className="label">Estimated tokens sold</span>
                   </div>
                 </div>
               </div>
@@ -826,7 +834,7 @@ function Detail(props) {
                     src={require('../../../assets/images/info.svg').default}
                     alt=""
                   />
-                  <span className="label">Current Auctioned Token Price</span>
+                  <span className="label">Atomic closure</span>
                 </div>
               </div>
             </div>
@@ -842,7 +850,7 @@ function Detail(props) {
                     src={require('../../../assets/images/info.svg').default}
                     alt=""
                   />
-                  <span className="label">Current Auctioned Token Price</span>
+                  <span className="label">Min bidding amount per order</span>
                 </div>
               </div>
             </div>
