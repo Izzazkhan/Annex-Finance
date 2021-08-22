@@ -1,5 +1,5 @@
 import { parseBytes32String } from "@ethersproject/strings";
-import { ETHER, Token } from "@pancakeswap-libs/sdk";
+import { ETHER, Token } from "@annex/sdk";
 import { useMemo } from "react";
 import { useSelectedTokenList } from "../core/modules/lists/hooks";
 import { NEVER_RELOAD, useSingleCallResult } from "../core";
@@ -17,7 +17,6 @@ export function useAllTokens() {
 		return allTokens[chainId];
 	}, [chainId, allTokens]);
 }
-// @todo: Useradded tokens
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;

@@ -1,4 +1,4 @@
-import { Currency, ETHER, Token } from "@pancakeswap-libs/sdk";
+import { Currency, ETHER, Token } from "@annex/sdk";
 
 export function currencyId(currency) {
 	if (currency === ETHER) return "ETH";

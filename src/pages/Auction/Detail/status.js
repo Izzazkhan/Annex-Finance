@@ -282,11 +282,13 @@ const AuctionProgress = (props) => {
         errorMessage = `${placeholder} required`;
         isValid = false;
         break;
-      } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
+      // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
+      } else if (key === 'minBuyAmount' && (value < minBuyAmount)) {
         errorMessage = `${placeholder} must be greater than Minimum Token Amount`;
         isValid = false;
         break;
-      } else if (key === 'sellAmount' && value > maxAvailable) {
+      // } else if (key === 'sellAmount' && value > maxAvailable) {
+      } else if (key === 'sellAmount' && value < 10) {
         errorMessage = `${placeholder} must be smaller than Max Available`;
         isValid = false;
         break;

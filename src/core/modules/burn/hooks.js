@@ -5,7 +5,7 @@ import {useTokenBalances} from "../../../hooks/wallet";
 import {wrappedCurrency} from "../../../utils/wrappedCurrency";
 import {burnActionCreators, Field} from "./actions";
 import useTotalSupply from "../../../data/TotalSupply";
-import {JSBI, Percent, TokenAmount} from "@pancakeswap-libs/sdk";
+import {JSBI, Percent, TokenAmount} from "@annex/sdk";
 import {tryParseAmount} from "../swap";
 import {useCallback} from "react";
 

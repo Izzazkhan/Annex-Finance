@@ -1,4 +1,4 @@
-import { JSBI, Percent, Router, TradeType } from "@pancakeswap-libs/sdk";
+import { JSBI, Percent, Router, TradeType } from "@annex/sdk";
 import { useMemo } from "react";
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from "../constants/swap";
 import { getTradeVersion, useV1TradeExchangeAddress } from "../data/V1";

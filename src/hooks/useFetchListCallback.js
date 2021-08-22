@@ -1,5 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { ChainId } from "@pancakeswap-libs/sdk";
+import { ChainId } from "@annex/sdk";
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { listActionCreators } from "../core/modules/lists/actions";

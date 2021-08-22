@@ -1,4 +1,4 @@
-import { ChainId } from "@pancakeswap-libs/sdk";
+import { ChainId } from "@annex/sdk";
 import MULTICALL_ABI from "./abi.json";
 
 const MULTICALL_NETWORKS = {

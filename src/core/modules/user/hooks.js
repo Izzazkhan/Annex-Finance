@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useCallback, useMemo} from "react";
-import { Token, Pair } from "@pancakeswap-libs/sdk";
+import { Token, Pair } from "@annex/sdk";
 import _ from 'lodash'
 import { userActionCreators } from "./actions";
 import {useActiveWeb3React} from "../../../hooks";
