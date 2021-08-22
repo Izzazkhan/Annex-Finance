@@ -151,6 +151,7 @@ function Table(props) {
               <input
                 type="checkbox"
                 checked={isShowMyOrder}
+                onChange={() => {}}
                 onChange={() => updateMyOrder(!isShowMyOrder)}
               />
               <span className="checkmark"></span>
@@ -274,6 +275,7 @@ function Table(props) {
                                 item.status === 'PROCESSED' ||
                                 selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
                               }
+                              onChange={() => {}}
                               onClick={() => handleClaimCheckbox(item)}
                             />
                             <span
@@ -299,6 +301,7 @@ function Table(props) {
                                 item.status === 'CANCELLED' ||
                                 selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
                               }
+                              onChange={() => {}}
                               onClick={() => handleCancelCheckbox(item)}
                             />
                             <span className="checkmark">
@@ -313,6 +316,7 @@ function Table(props) {
                               type="checkbox"
                               disabled={true}
                               checked={true}
+                              onChange={() => {}}
                             />
                             <span className="checkmark red">
                               <span style={{ 'display': 'none' }} className="text"> Cancelled</span>
@@ -327,7 +331,7 @@ function Table(props) {
                     </td>
                   </tr>
                 ) : (
-                  ''
+                  <tr><td>No Data</td></tr>
                 );
               })
             )}
@@ -353,6 +357,7 @@ const Checkbox = (disabled, checked, item) => {
         type="checkbox"
         disabled={disabled}
         checked={checked}
+        onChange={() => {}}
         onClick={() => handleCancelCheckbox(item)}
       />
       <span className="checkmark"></span>
