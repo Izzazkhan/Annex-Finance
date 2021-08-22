@@ -254,7 +254,7 @@ const AuctionProgress = (props) => {
     sellAmount: '',
   });
 
-  const [value, setValue] = useState(2000);
+  const [value, setValue] = useState(props.minBuyAmount);
   const handleInputChange = (e) => {
     let value = e.target.value;
     let id = e.target.id;
@@ -310,6 +310,7 @@ const AuctionProgress = (props) => {
   };
 
   const onChangeSlider = (newValue) => {
+    console.log('newvalue', newValue);
     setValue(newValue);
   };
   return (
@@ -382,7 +383,12 @@ const AuctionProgress = (props) => {
               </div>
             </div>
             <div className="custom-range">
-              <Slider min={850} max={5000} value={value} onChange={onChangeSlider} />
+              <Slider
+                min={props.minBuyAmount}
+                max={props.detail.biddingBalance}
+                value={value}
+                onChange={onChangeSlider}
+              />
               {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
             </div>
           </div>

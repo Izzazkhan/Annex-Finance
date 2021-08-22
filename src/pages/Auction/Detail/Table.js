@@ -44,9 +44,9 @@ function Table(props) {
   const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
   const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [blockNumberSorted, setBlockNumberSorted] = useState(true);
+  const [blockNumberSorted, setBlockNumberSorted] = useState(false);
   const [upDownValue, setUpDownValue] = useState(true);
-  const [sortPrice, setSortPrice] = useState(true);
+  const [sortPrice, setSortPrice] = useState(false);
   const [priceUpDownValue, setPriceUpDownValue] = useState(true);
 
   const [isShowMyOrder, updateMyOrder] = useState(false);
@@ -146,9 +146,9 @@ function Table(props) {
     updateSelectedCancelOrders(arr);
   };
 
-  // props.data.sort(function (a, b) {
-  //   return a.blockNumber - b.blockNumber;
-  // });
+  props.data.sort(function (a, b) {
+    return b.blockNumber - a.blockNumber;
+  });
 
   const sortBlockNumber = (newValue) => {
     setBlockNumberSorted(!blockNumberSorted);
@@ -227,7 +227,7 @@ function Table(props) {
               <th>Address</th>
               <th>
                 Price{' '}
-                {priceUpDownValue ? (
+                {/* {priceUpDownValue ? (
                   <span
                     className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1"
                     onClick={() => upDownArrowPriceHandler()}
@@ -242,14 +242,14 @@ function Table(props) {
                     alt="sort up"
                     onClick={() => sortPriceHandler(sortPrice)}
                   />
-                )}
+                )} */}
               </th>
               <th>Amount Committed</th>
               <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
               <th>
                 Block Number{' '}
-                {upDownValue ? (
+                {/* {upDownValue ? (
                   <span
                     className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1"
                     onClick={() => upDownArrowBlockHandler()}
@@ -264,7 +264,7 @@ function Table(props) {
                     alt="sort up"
                     onClick={() => sortBlockNumber(blockNumberSorted)}
                   />
-                )}
+                )} */}
               </th>
               <th>Buy Amount</th>
               <th>Sell Amount</th>

@@ -185,9 +185,9 @@ function Detail(props) {
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold']).dividedBy(auctionDecimal).toNumber(),
         );
-        // minFundingThreshold.toFixed(2);
-        minimumBiddingAmountPerOrder.toFixed();
-        // estimatedTokenSold.toFixed();
+        // minFundingThreshold.toFixed(8);
+        minimumBiddingAmountPerOrder.toFixed(8);
+        // estimatedTokenSold.toFixed(8);
 
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
 
@@ -247,8 +247,8 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount'])
             .dividedBy(biddingDecimal)
             .toString();
-          let price = new BigNumber(order['price']).dividedBy(auctionDecimal).toFixed(2).toString();
-          // let price = order['price'].dividedBy(biddingDecimal).toFixed(2).toString();
+          let price = new BigNumber(order['price']).dividedBy(auctionDecimal).toFixed(8).toString();
+          // let price = order['price'].dividedBy(biddingDecimal).toFixed(8).toString();
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -840,7 +840,7 @@ function Detail(props) {
             </div>
             <div className="flex flex-col">
               <div className="text-white text-lg md:text-md font-bold">
-                {state.detail.minimumBiddingAmountPerOrder} {state.detail.biddingSymbol}
+                {state.detail.minimumBiddingAmountPerOrder.toFixed(8)} {state.detail.biddingSymbol}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Min bidding amount per order{' '}
