@@ -6,6 +6,7 @@ import LineChart from '../../../components/common/LineChart';
 import { useHistory } from 'react-router-dom';
 
 function AuctionItem(props) {
+  console.log('###', props);
   const history = useHistory();
   const redirectToUrl = (url) => {
     history.push(url);

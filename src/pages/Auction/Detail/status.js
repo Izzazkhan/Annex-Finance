@@ -253,6 +253,8 @@ const AuctionProgress = (props) => {
     minBuyAmount: '',
     sellAmount: '',
   });
+
+  const [value, setValue] = useState(2000);
   const handleInputChange = (e) => {
     let value = e.target.value;
     let id = e.target.id;
@@ -261,6 +263,8 @@ const AuctionProgress = (props) => {
       [id]: value,
     });
   };
+
+  console.log('***', props);
   const validateForm = () => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
@@ -303,6 +307,10 @@ const AuctionProgress = (props) => {
     if (isValid) {
       props.handleSubmit(state.minBuyAmount, state.sellAmount);
     }
+  };
+
+  const onChangeSlider = (newValue) => {
+    setValue(newValue);
   };
   return (
     <>
@@ -370,11 +378,11 @@ const AuctionProgress = (props) => {
               </div>
               <div className="flex flex-col text-right">
                 <div className="text-sm ">Max Available</div>
-                <div className="text-lg font-bold">{props.maxAvailable}</div>
+                <div className="text-lg font-bold">{props.detail.biddingBalance}</div>
               </div>
             </div>
             <div className="custom-range">
-              <Slider min={850} max={5000} value={2000} />
+              <Slider min={850} max={5000} value={value} onChange={onChangeSlider} />
               {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
             </div>
           </div>
@@ -385,7 +393,8 @@ const AuctionProgress = (props) => {
                 {props.detail && props.detail.biddingBalance && props.detail.auctionBalance && (
                   <div className="flex justify-between mb-3">
                     <div className="text-md mr-3">
-                      <b>{props.detail.auctionSymbol} Bidding Token :</b> {props.detail.biddingBalance}
+                      <b>{props.detail.auctionSymbol} Bidding Token :</b>{' '}
+                      {props.detail.biddingBalance}
                     </div>
                     <div className="text-md ">
                       <b>{props.detail.auctionSymbol} Auction Token :</b>{' '}

@@ -230,7 +230,7 @@ const Epoch = ({ settings, setSetting }) => {
       let annBalance = await methods.call(epochContract.methods.balanceOf, [accountAddress]);
       let decimals = await methods.call(epochContract.methods.decimals, []);
       if (annBalance) {
-        setAnnBalance(annBalance / Math.pow(10, decimals));
+        setAnnBalance((annBalance / Math.pow(10, decimals)).toFixed(2));
       }
       let currentEpochROI = await methods.call(epochContract.methods.getCurrentEpochROI, []);
       setCurrentEpochROI(currentEpochROI / 100);
@@ -239,7 +239,7 @@ const Epoch = ({ settings, setSetting }) => {
       ]);
 
       if (holdingReward) {
-        setHoldingReward(holdingReward / Math.pow(10, decimals));
+        setHoldingReward((holdingReward / Math.pow(10, decimals)).toFixed(2));
       }
 
       let eligibleEpochs = await methods.call(epochContract.methods.eligibleEpochs, []);
@@ -264,11 +264,23 @@ const Epoch = ({ settings, setSetting }) => {
       }
       setCurrentEpoch(Number(getEpoch) - Number(transferPoint[0]));
       setSetting({
-        annBalance: annBalance / Math.pow(10, decimals)
+        annBalance: annBalance / Math.pow(10, decimals),
       });
     } catch (error) {
       console.log('error', error);
     }
+  };
+
+  const handleSubmitClaim = () => {
+    const epochContract = getEpochContract();
+    methods
+      .send(epochContract.methods.claimReward, [], account)
+      .then((data) => {
+        console.log('data', data);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
   };
 
   useEffect(() => {
@@ -302,9 +314,26 @@ const Epoch = ({ settings, setSetting }) => {
                 APR
               </div>
               <div className="left-bottom text-white text-xs text-center">
-                <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'width': '75%' }}>{holdingAPI}%</span></div>
+                <span
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: '75%',
+                  }}
+                >
+                  {holdingAPI}%
+                </span>
+              </div>
               <div className="top-right text-white text-xs text-center">
-                <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'width': '75%' }}>
+                <span
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: '75%',
+                  }}
+                >
                   +<br />
                   {currentEpochROI}%
                 </span>
@@ -334,8 +363,9 @@ const Epoch = ({ settings, setSetting }) => {
                 <div
                   className="active-label flex font-bold items-center justify-center text-black"
                   style={{
-                    left: `calc(${Number(currentEpoch) > Number(eligibleEpochs) ? 30 : currentEpoch
-                      } * 3%)`,
+                    left: `calc(${
+                      Number(currentEpoch) > Number(eligibleEpochs) ? 30 : currentEpoch
+                    } * 3%)`,
                   }}
                 >
                   {currentEpoch}
@@ -361,8 +391,12 @@ const Epoch = ({ settings, setSetting }) => {
                 </div>
                 <div className="text-white text-xl p-2">{eligibleEpochs}</div>
               </div>
-              <button className="ml-2 focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black">Claim</button>
-
+              <button
+                className="ml-2 focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
+                onClick={handleSubmitClaim}
+              >
+                Claim
+              </button>
             </div>
             <div className="custom-range">
               <div className="label flex justify-between font-bold text-primary text-xl">
