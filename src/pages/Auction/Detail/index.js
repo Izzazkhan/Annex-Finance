@@ -176,18 +176,18 @@ function Detail(props) {
         currentPrice = convertExponentToNum(currentPrice);
         minBuyAmount = convertExponentToNum(minBuyAmount);
 
-        let minFundingThreshold = new BigNumber(elem['minFundingThreshold'])
-          .dividedBy(auctionDecimal)
-          .toNumber();
+        let minFundingThreshold = convertExponentToNum(
+          new BigNumber(elem['minFundingThreshold']).dividedBy(auctionDecimal).toNumber(),
+        );
         let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder'])
           .dividedBy(biddingDecimal)
           .toNumber();
-        let estimatedTokenSold = new BigNumber(elem['estimatedTokenSold'])
-          .dividedBy(biddingDecimal)
-          .toNumber();
-        minFundingThreshold.toFixed();
+        let estimatedTokenSold = convertExponentToNum(
+          new BigNumber(elem['estimatedTokenSold']).dividedBy(auctionDecimal).toNumber(),
+        );
+        // minFundingThreshold.toFixed(2);
         minimumBiddingAmountPerOrder.toFixed();
-        estimatedTokenSold.toFixed();
+        // estimatedTokenSold.toFixed();
 
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
 
