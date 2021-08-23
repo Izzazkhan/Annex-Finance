@@ -49,7 +49,7 @@ export default function CurrencySearch({
 	const tokenComparator = useTokenComparator(invertSearchOrder);
 
 	const filteredTokens = useMemo(() => {
-		console.log(allTokens);
+		// console.log(allTokens);
 		if(!allTokens) return [];
 		if (isAddressSearch) return searchToken ? [searchToken] : [];
 		return filterTokens(Object.values(allTokens), searchQuery);

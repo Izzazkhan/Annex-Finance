@@ -2,32 +2,32 @@ import { rgba } from 'polished';
 import { BarChart, Bar, ResponsiveContainer, Cell, XAxis, YAxis, Tooltip } from 'recharts';
 import moment from 'moment';
 
-// function CustomTooltip({ payload, label, active }) {
-//   if (active) {
-//     return (
-//       <div
-//         className="custom-tooltip"
-//         style={{
-//           background: 'rgba(255, 152, 0,.8)',
-//           color: '#000',
-//           padding: 10,
-//           borderRadius: 8
-//         }}
-//       >
-//         <p className="info">
-//           <b>Buy Amount: </b>
-//           <span>{payload[0].value}</span>
-//         </p>
-//         <p className="info">
-//           <b>Price: </b>
-//           <span>{label}</span>
-//         </p>
-//       </div>
-//     );
-//   }
+function CustomTooltip({ payload, label, active }) {
+  if (active) {
+    return (
+      <div
+        className="custom-tooltip"
+        style={{
+          background: 'rgba(255, 152, 0,.8)',
+          color: '#000',
+          padding: 10,
+          borderRadius: 8
+        }}
+      >
+        <p className="info">
+          <b>Buy Amount: </b>
+          <span>{payload[0].value}</span>
+        </p>
+        <p className="info">
+          <b>Price: </b>
+          <span>{label}</span>
+        </p>
+      </div>
+    );
+  }
 
-//   return null;
-// }
+  return null;
+}
 
 export default function Chart(props) {
   return (
@@ -51,7 +51,7 @@ export default function Chart(props) {
               return <Cell fill={color} key={index} />;
             })}
           </Bar>
-          {/* <Tooltip content={<CustomTooltip />} /> */}
+          <Tooltip content={<CustomTooltip />} />
           <XAxis fontSize="12" dataKey="price" />
           <YAxis fontSize="12" dataKey="buyAmount" />
         </BarChart>

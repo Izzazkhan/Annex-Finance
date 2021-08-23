@@ -4,7 +4,7 @@ import toHex from 'to-hex';
 const BASE_POINT = new BigNumber(10).pow(18);
 // encoding
 
-function encodeOrder(order) {
+export function encodeOrder(order) {
   return (
     '0x' +
     order.userId.toHexString().slice(2).padStart(16, '0') +
