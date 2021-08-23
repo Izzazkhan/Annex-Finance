@@ -524,9 +524,9 @@ export default function Form(props) {
     // value = web3.eth.abi.encodeParameter('uint256', value);
     // '0x' +
     //   new BigNumber(userId).toString(16).padStart(16, '0') +
-    // let hexValue = '0x' + new BigNumber(value).times(new BigNumber(10).pow(decimal)).toString(16).padStart(64, '0');
-    let hexValue = toHex(new BigNumber(value).times(new BigNumber(10).pow(decimal)), { addPrefix: true });
-    value = web3.eth.abi.encodeParameter('uint256', hexValue);
+    value = '0x' + (new BigNumber(value).times(new BigNumber(10).pow(decimal))).toString(16).padStart(64, '0');
+    // let hexValue = toHex(new BigNumber(value).times(new BigNumber(10).pow(decimal)), { addPrefix: true });
+    // value = web3.eth.abi.encodeParameter('uint256', hexValue);
     console.log('hex value: ', value);
     return value;
   };
