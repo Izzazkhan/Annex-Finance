@@ -209,6 +209,7 @@ function Table(props) {
               <input
                 type="checkbox"
                 checked={isShowMyOrder}
+                onChange={() => {}}
                 onChange={() => updateMyOrder(!isShowMyOrder)}
               />
               <span className="checkmark"></span>
@@ -312,19 +313,19 @@ function Table(props) {
                             href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
                             target="_blank"
                           >
-                            {item.userId ? item.userId.address.substring(0, 5) + '...' : ''}
+                            {item.userId ? item.userId.address.substring(0, 5) + '...' : 'xxx'}
                           </a>
                         </div>
                       </div>
                     </td>
                     <td>
                       <div>
-                        {item.price} {item.biddingSymbol}
+                        {(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}
                       </div>
                     </td>
                     <td>
                       <div>
-                        {item.auctionDivBuyAmount} {item.biddingSymbol}
+                        {item.auctionDivSellAmount} {item.biddingSymbol}
                       </div>
                     </td>
                     <td>
@@ -369,6 +370,7 @@ function Table(props) {
                                 item.status === 'PROCESSED' ||
                                 selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
                               }
+                              onChange={() => {}}
                               onClick={() => handleClaimCheckbox(item)}
                             />
                             <span
@@ -396,6 +398,7 @@ function Table(props) {
                                 item.status === 'CANCELLED' ||
                                 selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
                               }
+                              onChange={() => {}}
                               onClick={() => handleCancelCheckbox(item)}
                             />
                             <span className="checkmark">
@@ -408,7 +411,12 @@ function Table(props) {
                       ) : item.status === 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label className={`container text-base ml-2 font-normal `}>
-                            <input type="checkbox" disabled={true} checked={true} />
+                            <input
+                              type="checkbox"
+                              disabled={true}
+                              checked={true}
+                              onChange={() => {}}
+                            />
                             <span className="checkmark red">
                               <span style={{ display: 'none' }} className="text">
                                 {' '}
@@ -451,6 +459,7 @@ const Checkbox = (disabled, checked, item) => {
         type="checkbox"
         disabled={disabled}
         checked={checked}
+        onChange={() => {}}
         onClick={() => handleCancelCheckbox(item)}
       />
       <span className="checkmark"></span>

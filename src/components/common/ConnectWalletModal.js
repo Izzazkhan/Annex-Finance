@@ -105,8 +105,8 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
       </div>
   ) : (
     <div className="flex flex-col justify-center items-center space-y-6 mt-10">
-      <div className="rounded-full bg-darkBlue p-4 border border-solid border-gray-600">
-        <img className="" src={logoMini} alt="logo" />
+      <div className="rounded-full w-16 h-16">
+        <img src={logoMini} alt="logo" className={'w-16 h-16'} />
       </div>
       <div className="text-2xl font-bold">Connect Wallet</div>
       <div className="text-sm">To start using AToken</div>

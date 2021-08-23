@@ -7,10 +7,8 @@ function MiniLogo({ size, src }) {
       <img
         className={
           size === 'sm'
-            ? 'w-6 h-6 absolute top-1 left-1.5'
-            : size === 'md'
-            ? 'w-8 h-8 absolute top-1 left-1.5'
-            : 'w-10 h-10'
+            ? 'w-9 h-9'
+            : 'w-12 h-12'
         }
         src={src || logoMini}
         alt="logoMini"

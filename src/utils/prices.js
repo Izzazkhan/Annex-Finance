@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Percent, TokenAmount } from "@pancakeswap-libs/sdk";
+import { CurrencyAmount, JSBI, Percent, TokenAmount } from "@annex/sdk";
 import {
 	BLOCKED_PRICE_IMPACT_NON_EXPERT,
 	ALLOWED_PRICE_IMPACT_HIGH,

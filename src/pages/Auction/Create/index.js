@@ -17,13 +17,17 @@ export default function CreateAuction(props) {
 
   const annexSwapOptions = [
     {
-      name: 'Annex Swap',
-      value: '1',
-    },
-    {
-      name: 'Pancake Swap',
+      name: 'Annex Finance Swap',
       value: '0',
     },
+    // {
+    //   name: 'Annex Swap',
+    //   value: '1',
+    // },
+    // {
+    //   name: 'Pancake Swap',
+    //   value: '0',
+    // },
   ];
   return (
     <div className="create-auction bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
