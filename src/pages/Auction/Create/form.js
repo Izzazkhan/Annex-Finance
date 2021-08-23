@@ -333,10 +333,10 @@ export default function Form(props) {
       const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
       const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
       if (balanceOf > auctionThreshold) {
-        formatedStateData.sellAmount = enocodeParamToUint(
-          formatedStateData.sellAmount,
-          auctionTokenDecimal,
-        );
+        // formatedStateData.sellAmount = enocodeParamToUint(
+        //   formatedStateData.sellAmount,
+        //   auctionTokenDecimal,
+        // );
         let data = [
           formatedStateData.auctionToken,
           formatedStateData.biddingToken,
