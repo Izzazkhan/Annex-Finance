@@ -1,9 +1,12 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import toHex from 'to-hex';
 import { methods } from '../../../utilities/ContractService';
 import Loading from '../../../components/UI/Loading';
+import { sortTypes } from './sortTypes';
+import sortUp from '../../../assets/icons/sortUp.svg';
+import sortDown from '../../../assets/icons/sortDown.svg';
 
 const Styles = styled.div`
   width: 100%;
@@ -41,6 +44,13 @@ function Table(props) {
   const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
   const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [blockNumberSorted, setBlockNumberSorted] = useState(true);
+  const [upDownValue, setUpDownValue] = useState(true);
+  const [sortPrice, setSortPrice] = useState(true);
+  const [priceUpDownValue, setPriceUpDownValue] = useState(true);
+  const [propsData, setPropsData] = useState([]);
+  const [currentSort, setCurrentSort] = useState('default');
+
   const [isShowMyOrder, updateMyOrder] = useState(false);
   const trimAddress = (address) => {
     let length = address.length;
@@ -137,7 +147,30 @@ function Table(props) {
     console.log('selectedCancelOrders', selectedCancelOrders);
     updateSelectedCancelOrders(arr);
   };
-  // Render the UI for your table
+
+  useEffect(() => {
+    let DescendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
+    setPropsData(DescendingSort);
+  }, [props.data]);
+
+  const onSortChange = (sortColum) => {
+    if (sortColum === 'BlockNumber') {
+      let nextSort;
+      if (currentSort === 'down') nextSort = 'up';
+      else if (currentSort === 'up') nextSort = 'default';
+      else if (currentSort === 'default') nextSort = 'down';
+      else nextSort = 'down';
+      setCurrentSort(nextSort);
+    } else {
+      let nextSort;
+      if (currentSort === 'priceDown') nextSort = 'priceUp';
+      else if (currentSort === 'priceUp') nextSort = 'priceDefault';
+      else if (currentSort === 'priceDefault') nextSort = 'priceDown';
+      else nextSort = 'priceDown';
+      setCurrentSort(nextSort);
+    }
+  };
+
   return (
     <div className="relative w-full">
       <div className="bg-fadeBlack w-full p-6 mt-16">
@@ -181,11 +214,39 @@ function Table(props) {
           <thead>
             <tr>
               <th>Address</th>
-              <th>Price</th>
+              <th>
+                Price{' '}
+                <button onClick={() => onSortChange('Price')}>
+                  {sortTypes[currentSort].class === 'price-sort-up' ? (
+                    <img className="inline relative left-1" src={sortDown} alt="price-sort-up" />
+                  ) : sortTypes[currentSort].class === 'price-sort-down' ? (
+                    <img className="inline relative left-1" src={sortUp} alt="price-sort down" />
+                  ) : (
+                    <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                      <img className="inline w-2.5" src={sortUp} alt="price-sort up" />
+                      <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                    </span>
+                  )}
+                </button>
+              </th>
               <th>Amount Committed</th>
               <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
-              <th>Block Number</th>
+              <th>
+                Block Number{' '}
+                <button onClick={() => onSortChange('BlockNumber')}>
+                  {sortTypes[currentSort].class === 'sort-down' ? (
+                    <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                  ) : sortTypes[currentSort].class === 'sort-up' ? (
+                    <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                  ) : (
+                    <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                      <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                      <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                    </span>
+                  )}
+                </button>
+              </th>
               <th>Buy Amount</th>
               <th>Sell Amount</th>
               <th className="text-center"></th>
@@ -200,14 +261,14 @@ function Table(props) {
                   </div>
                 </td>
               </tr>
-            ) : props.data.length === 0 ? (
+            ) : propsData.length === 0 ? (
               <tr>
                 <td colSpan="12">
                   <div className="text-center">No Data Found</div>
                 </td>{' '}
               </tr>
             ) : (
-              props.data.map((item, index) => {
+              propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
                 let userId = item.userId.address.toLowerCase();
                 let account = props.account ? props.account.toLowerCase() : '0x';
                 return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
@@ -225,9 +286,7 @@ function Table(props) {
                       </div>
                     </td>
                     <td>
-                      <div>
-                        {(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}
-                      </div>
+                      <div>{(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}</div>
                     </td>
                     <td>
                       <div>
@@ -258,13 +317,14 @@ function Table(props) {
                     </td>
                     <td>
                       {account === userId &&
-                        props.auctionStatus === 'completed' &&
-                        props.isAlreadySettle &&
-                        item.status !== 'CANCELLED' ? (
+                      props.auctionStatus === 'completed' &&
+                      props.isAlreadySettle &&
+                      item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label
-                            className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
-                              }`}
+                            className={`container text-base ml-2 font-normal ${
+                              loading || !props.isAlreadySettle ? 'disabled' : ''
+                            }`}
                           >
                             <input
                               type="checkbox"
@@ -281,8 +341,9 @@ function Table(props) {
                             <span
                               className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''}`}
                             >
-                              <span style={{ 'display': 'none' }} className="text">{item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}</span>
-
+                              <span style={{ display: 'none' }} className="text">
+                                {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
+                              </span>
                             </span>
                           </label>
                         </div>
@@ -291,8 +352,9 @@ function Table(props) {
                         item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
                           <label
-                            className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                              }`}
+                            className={`container text-base ml-2 font-normal ${
+                              loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                            }`}
                           >
                             <input
                               type="checkbox"
@@ -305,7 +367,9 @@ function Table(props) {
                               onClick={() => handleCancelCheckbox(item)}
                             />
                             <span className="checkmark">
-                              <span style={{ 'display': 'none' }} className="text">Cancel</span>
+                              <span style={{ display: 'none' }} className="text">
+                                Cancel
+                              </span>
                             </span>
                           </label>
                         </div>
@@ -319,7 +383,10 @@ function Table(props) {
                               onChange={() => {}}
                             />
                             <span className="checkmark red">
-                              <span style={{ 'display': 'none' }} className="text"> Cancelled</span>
+                              <span style={{ display: 'none' }} className="text">
+                                {' '}
+                                Cancelled
+                              </span>
                             </span>
                           </label>
                         </div>
@@ -331,7 +398,7 @@ function Table(props) {
                     </td>
                   </tr>
                 ) : (
-                  <tr><td>No Data</td></tr>
+                  ''
                 );
               })
             )}

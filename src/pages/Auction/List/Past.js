@@ -53,23 +53,31 @@ function Past(props) {
     }
   `);
   useEffect(() => {
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    // console.log('##############################');
+    // console.log('data', data);
     if (data && data.auctions) {
       let arr = [];
       data.auctions.forEach((element) => {
         let auctionDecimal = element['auctioningToken']['decimals'];
         let biddingDecimal = element['biddingToken']['decimals'];
+        let auctionEndDate = element['auctionEndDate'];
         let { orders, clearingPriceOrder } = calculateClearingPrice(
           element.orders,
           auctionDecimal,
           biddingDecimal,
+          auctionEndDate,
         );
-        let formatedAuctionDate = moment.unix(element['auctionEndDate']).format('MM/DD/YYYY HH:mm:ss');
+        let formatedAuctionDate = moment
+          .unix(element['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
         orders &&
           orders.forEach((item) => {
             graphData.push({
               ...item,
               isSuccessfull: item.price >= clearingPriceOrder.price,
+              auctionEndDate: auctionEndDate,
             });
           });
         arr.push({
@@ -79,7 +87,7 @@ function Past(props) {
           status: 'Finished',
           statusClass: 'past',
           formatedAuctionDate,
-          dateLabel:'End Date',
+          dateLabel: 'End Date',
           title: element.type + ' Auction',
         });
       });
@@ -103,8 +111,8 @@ function Past(props) {
           })}
         </div>
       ) : (
-              <div className="text-center mb-5 mt-5">No data found</div>
-            )}
+        <div className="text-center mb-5 mt-5">No data found</div>
+      )}
     </div>
   );
 }

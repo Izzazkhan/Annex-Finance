@@ -89,8 +89,8 @@ const AuctionStatus = ({
       setLoading(true);
       let sellAmount = modalError.payload.sellAmount;
       let buyAmount = modalError.payload.minBuyAmount;
-      sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString();
-      buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString();
+      sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10);
+      buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10);
       let data = [
         auctionId,
         [buyAmount],
@@ -98,7 +98,7 @@ const AuctionStatus = ({
         ['0x0000000000000000000000000000000000000000000000000000000000000001'],
         '0x',
       ];
-      console.log('data', data);
+      console.log('data: ', data);
       let auctionTxDetail = await methods.send(
         auctionContract.methods.placeSellOrders,
         data,
@@ -126,7 +126,7 @@ const AuctionStatus = ({
     try {
       e.preventDefault();
       setLoading(true);
-      console.log('settleAuction');
+      // console.log('settleAuction');
       await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       getData();
       setLoading(false);
@@ -154,21 +154,21 @@ const AuctionStatus = ({
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      {auctionStatus === 'upcoming' ? (
+      {/* {auctionStatus === 'upcoming' ? (
         <AuctionCountDown auctionStartDate={auctionStartDate * 1000} />
-      ) : auctionStatus === 'inprogress' ? (
-        <AuctionProgress
-          auctionEndDate={auctionEndDate}
-          detail={detail}
-          minBuyAmount={minBuyAmount}
-          maxAvailable={maxAvailable}
-          handleSubmit={showCommitModal}
-        />
-      ) : auctionStatus === 'completed' ? (
+      ) : auctionStatus === 'inprogress' ? ( */}
+      <AuctionProgress
+        auctionEndDate={auctionEndDate}
+        detail={detail}
+        minBuyAmount={minBuyAmount}
+        maxAvailable={maxAvailable}
+        handleSubmit={showCommitModal}
+      />
+      {/* ) : auctionStatus === 'completed' ? (
         <AuctionCompleted settlAuction={settlAuction} isAlreadySettle={detail['isAlreadySettle']} />
       ) : (
         ''
-      )}
+      )} */}
       {/* */}
 
       <Modal
@@ -253,14 +253,22 @@ const AuctionProgress = (props) => {
     minBuyAmount: '',
     sellAmount: '',
   });
+
+  const [value, setValue] = useState(props.minBuyAmount);
   const handleInputChange = (e) => {
+    console.log('e.target', e.target);
     let value = e.target.value;
     let id = e.target.id;
     setState({
       ...state,
       [id]: value,
     });
+    setValue(value);
   };
+
+  console.log('state.sellAmount', state.sellAmount);
+
+  // console.log('***', props);
   const validateForm = () => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
@@ -278,13 +286,13 @@ const AuctionProgress = (props) => {
         errorMessage = `${placeholder} required`;
         isValid = false;
         break;
-      // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
-      } else if (key === 'minBuyAmount' && (value < minBuyAmount)) {
+        // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
+      } else if (key === 'minBuyAmount' && value < minBuyAmount) {
         errorMessage = `${placeholder} must be greater than Minimum Token Amount`;
         isValid = false;
         break;
-      // } else if (key === 'sellAmount' && value > maxAvailable) {
-      } else if (key === 'sellAmount' && value < 10) {
+      } else if (key === 'sellAmount' && value > maxAvailable) {
+        // } else if (key === 'sellAmount' && value < 10) {
         errorMessage = `${placeholder} must be smaller than Max Available`;
         isValid = false;
         break;
@@ -306,9 +314,18 @@ const AuctionProgress = (props) => {
       props.handleSubmit(state.minBuyAmount, state.sellAmount);
     }
   };
+
+  const onChangeSlider = (newValue) => {
+    console.log('newvalue', newValue);
+    setValue(newValue);
+    setState({
+      ...state,
+      ['sellAmount']: newValue,
+    });
+  };
   return (
     <>
-      {props.detail.chartType === 'block' ? (
+      {console.log(props.detail) && props.detail.chartType === 'block' ? (
         <Fragment>
           <div className="chart flex items-end relative mt-5 pl-10 mr-2">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
@@ -372,11 +389,16 @@ const AuctionProgress = (props) => {
               </div>
               <div className="flex flex-col text-right">
                 <div className="text-sm ">Max Available</div>
-                <div className="text-lg font-bold">{props.maxAvailable}</div>
+                <div className="text-lg font-bold">{props.detail.biddingBalance}</div>
               </div>
             </div>
             <div className="custom-range">
-              <Slider min={850} max={5000} value={2000} />
+              <Slider
+                min={props.minBuyAmount}
+                max={props.detail.biddingBalance}
+                value={value}
+                onChange={onChangeSlider}
+              />
               {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
             </div>
           </div>
@@ -387,7 +409,8 @@ const AuctionProgress = (props) => {
                 {props.detail && props.detail.biddingBalance && props.detail.auctionBalance && (
                   <div className="flex justify-between mb-3">
                     <div className="text-md mr-3">
-                      <b>{props.detail.auctionSymbol} Bidding Token :</b> {props.detail.biddingBalance}
+                      <b>{props.detail.auctionSymbol} Bidding Token :</b>{' '}
+                      {props.detail.biddingBalance}
                     </div>
                     <div className="text-md ">
                       <b>{props.detail.auctionSymbol} Auction Token :</b>{' '}
@@ -423,6 +446,7 @@ const AuctionProgress = (props) => {
                 className="border border-solid border-gray bg-transparent
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
                 type="number"
+                value={state.sellAmount}
               />
             </div>
             <div className="mb-3 w-full pr-2">

@@ -18,6 +18,7 @@ import moment from 'moment';
 import toHex from 'to-hex';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -237,6 +238,7 @@ export default function Form(props) {
   useEffect(async () => {
     if (showModal) {
       const threshold = await methods.call(auctionContract.methods.threshold, []);
+      // console.log('threshold: ', threshold);
       setAuctionThreshold(threshold);
       setModalError({
         message: '',
@@ -299,7 +301,7 @@ export default function Form(props) {
     return isValid;
   };
   const handleInputChange = (e, type, index, isAdvance) => {
-    console.log('enter', index);
+    // console.log('enter', index);
     let key = isAdvance ? 'advanceInputs' : 'inputs';
     let inputs = isAdvance ? [...state.advanceInputs] : [...state.inputs];
     let input = inputs[index];
@@ -325,16 +327,16 @@ export default function Form(props) {
     try {
       e.preventDefault();
       setLoading(true);
-      let formatedStateData = getFormState();
+      let formatedStateData = await getFormState();
       const accountId = props.account;
       const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
       const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
       const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
       if (balanceOf > auctionThreshold) {
-        formatedStateData.sellAmount = enocodeParamToUint(
-          formatedStateData.sellAmount,
-          auctionTokenDecimal,
-        );
+        // formatedStateData.sellAmount = enocodeParamToUint(
+        //   formatedStateData.sellAmount,
+        //   auctionTokenDecimal,
+        // );
         let data = [
           formatedStateData.auctionToken,
           formatedStateData.biddingToken,
@@ -358,7 +360,8 @@ export default function Form(props) {
             formatedStateData.twitterLink,
           ],
         ];
-
+        console.log('************ auction data ************: ', data);
+        // console.log('auction contract: ', auctionContract);
         let auctionTxDetail = await methods.send(
           auctionContract.methods.initiateAuction,
           [data],
@@ -377,7 +380,7 @@ export default function Form(props) {
         });
         // history.push('/auction/live');
       } else {
-        console.log('buy ann');
+        // console.log('buy ann');
         setModalError({
           type: 'error',
           message: 'Please buy ANN Token',
@@ -434,7 +437,7 @@ export default function Form(props) {
   const handleApproveAuctionToken = async () => {
     try {
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
-      let { auctionToken } = getFormState();
+      let { auctionToken } = await getFormState();
       let auctionAddr = CONTRACT_ANNEX_AUCTION[state.type]['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
       let auctionTokenAllowance = await getTokenAllowance(
@@ -448,6 +451,7 @@ export default function Form(props) {
       setApproveAuctionToken({ status: false, isLoading: false, label: 'Error' });
     }
   };
+
   const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
     const accountId = props.account;
     let allowance = await methods.call(contractMethods.allowance, [accountId, spenderAddr]);
@@ -458,9 +462,21 @@ export default function Form(props) {
     }
     return allowance;
   };
-  const getFormState = () => {
+
+  const getFormState = async () => {
     let arr = state.inputs.concat(state.advanceInputs);
+    console.log('element id: ', arr);
     let obj = {};
+    
+    let auctionToken = '';
+    let auctionIndex = state.inputs.findIndex((x) => x.id === 'auctionToken');
+    if (auctionIndex !== -1) {
+      auctionToken = state.inputs[auctionIndex]['value'];
+    }
+    const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
+    let auctionDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
+    
+
     let biddingDecimal = 0;
     let biddingIndex = state.inputs.findIndex((x) => x.id === 'biddingToken');
     if (biddingIndex !== -1) {
@@ -481,6 +497,8 @@ export default function Form(props) {
         element.id === 'buyAmount'
       ) {
         obj[element.id] = enocodeParamToUint(element.value, biddingDecimal);
+      } else if (element.id === 'sellAmount') {
+        obj[element.id] = enocodeParamToUint(element.value, auctionDecimal);
       } else if (
         (element.id === 'accessData' || element.id === 'accessContractAddr') &&
         element.value === ''
@@ -497,14 +515,19 @@ export default function Form(props) {
     return obj;
   };
   const enocodeParamToUint = (value, decimal) => {
+    console.log('value decimals: ', value, decimal);
     const web3 = new Web3(window.web3.currentProvider);
     // value = new BigNumber(value).div(decimal).toString();
     // // value = value.replace('-', '');
     // // value = Number(value);
     // console.log(value);
     // value = web3.eth.abi.encodeParameter('uint256', value);
-    value = toHex(value * Number('1e' + decimal), { addPrefix: true });
-    value = web3.eth.abi.encodeParameter('uint256', value);
+    // '0x' +
+    //   new BigNumber(userId).toString(16).padStart(16, '0') +
+    value = '0x' + (new BigNumber(value).times(new BigNumber(10).pow(decimal))).toString(16).padStart(64, '0');
+    // let hexValue = toHex(new BigNumber(value).times(new BigNumber(10).pow(decimal)), { addPrefix: true });
+    // value = web3.eth.abi.encodeParameter('uint256', hexValue);
+    console.log('hex value: ', value);
     return value;
   };
   const hanldeShowModal = (val) => {

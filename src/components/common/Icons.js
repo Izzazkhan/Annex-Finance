@@ -24,8 +24,8 @@ export const DashboardIcon = ({ fill }) => (
             y2="7.08525"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#C97629" />
-            <stop offset="1" stop-color="#FF9801" />
+            <stop stopColor="#C97629" />
+            <stop offset="1" stopColor="#FF9801" />
           </linearGradient>
         </defs>
       </svg>

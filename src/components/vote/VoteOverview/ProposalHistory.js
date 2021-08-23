@@ -11,7 +11,7 @@ const ProposalHistory = ({ proposalInfo }) => {
         return STATUSES.findIndex(s => s === proposalInfo.state);
     };
 
-    console.log(getStepNumber());
+    // console.log(getStepNumber());
     return (
         <div className="col-span-3 bg-fadeBlack rounded-2xl py-10 px-6">
             <div className="text-primary text-xl font-bold">Proposal History</div>

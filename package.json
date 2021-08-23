@@ -14,7 +14,7 @@
     "tiny-warning": "^1.0.3",
     "toformat": "^2.0.0",
     "@apollo/client": "^3.3.20",
-    "@craco/craco": "^6.1.1",
+    "@craco/craco": "^6.2.0",
     "@ethersproject/abi": "^5.2.0",
     "@ethersproject/abstract-provider": "^5.2.0",
     "@ethersproject/address": "^5.1.0",
@@ -52,6 +52,7 @@
     "flatpickr": "^4.6.9",
     "formik": "^2.2.9",
     "graphql": "^15.5.1",
+    "graphql-request": "^3.5.0",
     "lodash": "^4.17.21",
     "markdown-it": "^12.0.6",
     "match-sorter": "^6.3.0",
@@ -64,9 +65,11 @@
     "rc-pagination": "^3.1.7",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.0.3",
+    "react-circular-progressbar": "^2.0.4",
     "react-copy-to-clipboard": "^5.0.3",
     "react-countdown": "^2.3.2",
     "react-countup": "^4.3.3",
+    "react-data-table-component": "^6.11.8",
     "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
@@ -138,6 +141,6 @@
     "namor": "^2.0.2",
     "postcss": "^7.0.35",
     "prettier": "^2.2.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.0"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7"
   }
 }

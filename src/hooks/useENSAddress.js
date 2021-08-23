@@ -20,7 +20,7 @@ export default function useENSAddress(ensName) {
 	}, [debouncedName]);
 	const registrarContract = useENSRegistrarContract(false);
 	const resolverAddress = useSingleCallResult(registrarContract, "resolver", ensNodeArgument);
-	console.log(resolverAddress);
+	// console.log(resolverAddress);
 	const resolverAddressResult = resolverAddress.result?.[0];
 	const resolverContract = useENSResolverContract(
 		resolverAddressResult && !isZero(resolverAddressResult) ? resolverAddressResult : undefined,

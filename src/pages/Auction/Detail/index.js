@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-// import Promise from 'es6-promise';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
+
 import Countdown from 'react-countdown';
 import Table from './Table';
 import Progress from '../../../components/UI/Progress';
@@ -16,6 +16,43 @@ import {
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
+import styled from 'styled-components';
+import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
+import SVG from 'react-inlinesvg';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+
+const ArrowDown = styled.button`
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: #000000;
+  border: 1px solid #2b2b2b;
+  transition: 0.3s ease all;
+  will-change: background-color, border, transform;
+  width: 30px;
+  height: 30px;
+
+  &:focus,
+  &:hover,
+  &:active {
+    outline: none;
+  }
+
+  &:hover {
+    background-color: #101016;
+  }
+`;
+
+const Wrapper = styled.div`
+  background-color: #000;
+`;
+
+const ArrowContainer = styled.div`
+  transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: 0.3s ease all;
+  will-change: transform;
+`;
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
@@ -71,7 +108,12 @@ function Detail(props) {
       liquidity
       soldAuctioningTokens
       clearingPriceOrder
+      minFundingThreshold
+      isAtomicClosureAllowed
+      estimatedTokenSold
+      minimumBiddingAmountPerOrder
     }
+    
     orders(where: { auctionId : "${props.match.params.id}" }){
       id
       userId {
@@ -81,6 +123,7 @@ function Detail(props) {
       auctionId {
         id
       }
+      price
       buyAmount
       sellAmount
       status
@@ -97,6 +140,9 @@ function Detail(props) {
   const { account } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const auctionContract = getAuctionContract(state.type);
+  const [showDetails, setShowDetails] = useState(false);
+
+  // console.log('data', data);
 
   useEffect(async () => {
     getData();
@@ -130,6 +176,28 @@ function Detail(props) {
         maxAvailable = convertExponentToNum(maxAvailable);
         currentPrice = convertExponentToNum(currentPrice);
         minBuyAmount = convertExponentToNum(minBuyAmount);
+
+        let minFundingThreshold = convertExponentToNum(
+          new BigNumber(elem['minFundingThreshold']).dividedBy(1000000).toNumber(),
+        );
+        let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder'])
+          .dividedBy(1000000)
+          .toNumber();
+        let estimatedTokenSold = convertExponentToNum(
+          new BigNumber(elem['estimatedTokenSold']).dividedBy(auctionDecimal).toNumber(),
+        );
+        // minFundingThreshold.toFixed(8);
+        minimumBiddingAmountPerOrder.toFixed(8);
+        // estimatedTokenSold.toFixed(8);
+
+        let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
+
+        let orderCancellationEndDate = moment
+          .unix(elem['orderCancellationEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+        let auctionEndDateFormatted = moment
+          .unix(elem['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
 
         let auctionEndDate = elem['auctionEndDate'];
         let auctionStartDate = elem['auctionStartDate'];
@@ -172,6 +240,9 @@ function Detail(props) {
 
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
+          // console.log('@@@@@@@@@@@@@@@@@@@');
+          // console.log('####################');
+          // console.log(order);
           let userId = order.userId.address.toLowerCase();
           let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
             .dividedBy(auctionDecimal)
@@ -179,6 +250,8 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount'])
             .dividedBy(biddingDecimal)
             .toString();
+          let price = new BigNumber(order['price']).dividedBy(auctionDecimal).toFixed(8).toString();
+          // let price = order['price'].dividedBy(biddingDecimal).toFixed(8).toString();
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -195,6 +268,7 @@ function Detail(props) {
               auctionSymbol,
               biddingSymbol,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+              price: price,
             });
           } else {
             otherUserOrders.push({
@@ -204,6 +278,7 @@ function Detail(props) {
               auctionSymbol,
               biddingSymbol,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
+              price: price,
             });
           }
         });
@@ -247,7 +322,14 @@ function Detail(props) {
           isAllowCancellation,
           placeHolderMinBuyAmount,
           placeholderSellAmount,
+          minFundingThreshold,
+          minimumBiddingAmountPerOrder,
+          estimatedTokenSold,
+          isAtomicClosureAllowed,
+          orderCancellationEndDate,
+          auctionEndDateFormatted,
         };
+        console.log('auction details: ', detail);
         setState({
           ...state,
           detail,
@@ -322,6 +404,7 @@ function Detail(props) {
           })
           .then((response) => {
             let { data } = response;
+            console.log('graph data: ', data);
             setData(data);
           })
           .catch((err) => {
@@ -341,10 +424,46 @@ function Detail(props) {
     // });
     getData();
   };
+  const convertToHex = (data) => {
+    let msg = '';
+    for (var i = 0; i < data.length; i++) {
+      var s = data.charCodeAt(i).toString(16);
+      while (s.length < 2) {
+        s = '0' + s;
+      }
+      msg += s;
+    }
+    return msg;
+  };
+
+  const encodeOrder = (userId, sellAmount, buyAmount) => {
+    return (
+      '0x' +
+      new BigNumber(userId).toString(16).padStart(16, '0') +
+      // buyAmount.padStart(24, '0') +
+      new BigNumber(buyAmount).toString(16).padStart(24, '0') +
+      // sellAmount.padStart(24, '0')
+      new BigNumber(sellAmount).toString(16).padStart(24, '0')
+    );
+  };
+
   const calculateLPTokens = async (auction) => {
     return new Promise((resolve, reject) => {
+      console.log('auction: ', auction, {
+        userId: auction.userId.id,
+        buyAmount: auction.buyAmount,
+        sellAmount: auction.sellAmount,
+      });
+      // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
+      // auction.userId.id = 17;
+      let encodedOrder = encodeOrder(auction.userId.id, auction.buyAmount, auction.sellAmount);
+      console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
       methods
-        .call(auctionContract.methods.calculateLPTokens, [auction.auctionId.id, auction.sellAmount])
+        .call(auctionContract.methods.calculateLPTokens, [
+          auction.auctionId.id,
+          auction.userId.id,
+          encodedOrder,
+        ])
         .then((res) => {
           let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
           lpToken = convertExponentToNum(lpToken);
@@ -362,29 +481,85 @@ function Detail(props) {
     balanceOf = new BigNumber(balanceOf).dividedBy(decimal).toNumber();
     return balanceOf;
   };
+  const percentage = 66;
+
+  const columns = useMemo(() => {
+    return [
+      {
+        Header: 'Name',
+        columns: [
+          {
+            Header: 'Address',
+            accessor: 'address',
+          },
+          {
+            Header: 'Price',
+            accessor: 'price',
+          },
+          {
+            Header: 'Amount Commited',
+            accessor: 'amountCommited',
+          },
+          {
+            Header: 'LP Tokens Claimable',
+            accessor: 'lpToken',
+          },
+          {
+            Header: 'TX Hash',
+            accessor: 'txHash',
+          },
+          {
+            Header: 'Block Number',
+            accessor: 'blockNumber',
+            disableFilters: true,
+          },
+          {
+            Header: 'Buy Amount',
+            accessor: 'auctionDivBuyAmount',
+          },
+          {
+            Header: 'Sell Amount',
+            accessor: 'auctionDivSellAmount',
+          },
+          {
+            accessor: 'status',
+          },
+          {
+            accessor: 'id',
+          },
+          {
+            Header: ' ',
+            accessor: 'inCenter',
+          },
+        ],
+      },
+    ];
+  }, []);
+
   return (
     <div>
-      <div className="col-span-12 p-6 flex flex-col">
+      <div className="col-span-12 p-6 flex items-center">
         <h2 className="text-white mb-2 text-4xl font-normal">Auction Details</h2>
-        <div className="text-gray text-2xl ">
+        <div className="text-gray text-xl ml-2">
           {state.detail.title} - Auction id# {state.detail.id}
         </div>
       </div>
       <div
         className="grid grid-cols-12 xl:grid-cols-10
-        text-white bg-black mt-8  py-10 border border-lightGray rounded-md flex flex-row  justify-between relative"
+        text-white bg-black mt-8  py-8 border border-lightGray rounded-md flex flex-row  justify-between relative"
       >
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray ">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col border-r border-lightGray ">
           {loading ? (
             <div className="h-13 flex items-center justify-center px-4 py-2">
               <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
             </div>
           ) : (
-            <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
-              {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+            <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
+              {state.detail.currentPrice && state.detail.currentPrice.toFixed(8)}{' '}
+              {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
             </h2>
           )}
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             Current Price{' '}
             <div className="tooltip relative">
               <img
@@ -396,15 +571,15 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
-          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-blue">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col ">
+          <h2 className="flex items-center text-white mb-1 xl:text-xl md:text-lg font-bold text-blue">
             {loading ? (
               <div className="h-13 flex items-center justify-center px-4 py-2">
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : state.detail.biddingSymbol ? (
               <img
-                width="40"
+                width="30"
                 className="mr-2"
                 src={
                   require(`../../../assets/images/coins/${state.detail.biddingSymbol.toLowerCase()}.png`)
@@ -430,7 +605,7 @@ function Detail(props) {
               />
             </a>
           </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             Bidding With{' '}
             <div className="tooltip relative">
               <img
@@ -442,12 +617,12 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-6 px-8 flex flex-col "></div>
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col border-r border-lightGray">
-          <h2 className="flex items-center text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+        <div className="hidden xl:block col-span-6 xl:col-span-2 lg:col-span-4 md:col-span-6 my-5 px-8 flex flex-col "></div>
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col border-r border-lightGray">
+          <h2 className="flex items-center text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
             {state.detail.auctionSymbol ? (
               <img
-                width="40"
+                width="30"
                 className="mr-2"
                 src={
                   require(`../../../assets/images/coins/${state.detail.auctionSymbol.toLowerCase()}.png`)
@@ -479,7 +654,7 @@ function Detail(props) {
               />
             </a>
           </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             Total Auctioned{' '}
             <div className="tooltip relative">
               <img
@@ -491,8 +666,8 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-6 px-8 flex flex-col ">
-          <h2 className="text-white mb-1 xl:text-2xl md:text-xl font-bold text-primary">
+        <div className="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-6 my-5 px-8 flex flex-col ">
+          <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
             {loading ? (
               <div className="h-13 flex items-center justify-center px-4 py-2">
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
@@ -503,7 +678,7 @@ function Detail(props) {
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
           </h2>
-          <div className="flex items-center text-white text-xl md:text-lg ">
+          <div className="flex items-center text-white text-lg md:text-md ">
             {' '}
             Min Bid Price{' '}
             <div className="tooltip relative">
@@ -540,7 +715,191 @@ function Detail(props) {
             )}
           </div>
         </div>
+
+        <div
+          className="show-icon flex items-center justify-end text-right text-white absolute"
+          style={{ right: '10px', bottom: '-40px', zIndex: '9' }}
+        >
+          <span className="mr-2">{showDetails ? 'Less' : 'More Details'} </span>
+          <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 hidden sm:flex'}>
+            <ArrowContainer active={showDetails}>
+              <SVG src={ArrowIcon} />
+            </ArrowContainer>
+          </ArrowDown>
+        </div>
       </div>
+
+      {showDetails && (
+        <div
+          className="grid grid-cols-3
+        text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
+        >
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col mb-5">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.orderCancellationEndDate}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Last order cancelation date{' '}
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Last order cancelation date</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.auctionEndDateFormatted}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Auction End Date
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Auction End Date</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex items-center mb-5">
+              <div className="mr-2" style={{ width: 35, height: 35 }}>
+                <CircularProgressbar
+                  value={state.detail.minFundingThreshold}
+                  text={`${state.detail.minFundingThreshold}%`}
+                  styles={{
+                    root: {},
+                    path: {
+                      stroke: `rgb(35,110,97)`,
+                      strokeLinecap: 'butt',
+                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                      transform: 'rotate(0.25turn)',
+                      transformOrigin: 'center center',
+                    },
+                    trail: {
+                      stroke: '#d6d6d6',
+                      strokeLinecap: 'butt',
+                      transform: 'rotate(0.25turn)',
+                      transformOrigin: 'center center',
+                    },
+                    text: {
+                      fill: '#fff',
+                      fontSize: '28px',
+                    },
+                    background: {
+                      fill: '#3e98c7',
+                    },
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-white text-lg md:text-md font-bold">
+                  {state.detail.minFundingThreshold}
+                </div>
+                <div className="flex items-center text-white text-md md:text-sm">
+                  Minimum funding
+                  <div className="tooltip relative">
+                    <img
+                      className="ml-3"
+                      src={require('../../../assets/images/info.svg').default}
+                      alt=""
+                    />
+                    <span className="label">Minimum funding</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center mb-5">
+              <div className="mr-2" style={{ width: 35, height: 35 }}>
+                <CircularProgressbar
+                  value={state.detail.estimatedTokenSold}
+                  text={`${state.detail.estimatedTokenSold}%`}
+                  styles={{
+                    root: {},
+                    path: {
+                      stroke: `rgb(35,110,97)`,
+                      strokeLinecap: 'butt',
+                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                      transform: 'rotate(0.25turn)',
+                      transformOrigin: 'center center',
+                    },
+                    trail: {
+                      stroke: '#d6d6d6',
+                      strokeLinecap: 'butt',
+                      transform: 'rotate(0.25turn)',
+                      transformOrigin: 'center center',
+                    },
+                    text: {
+                      fill: '#fff',
+                      fontSize: '28px',
+                    },
+                    background: {
+                      fill: '#3e98c7',
+                    },
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-white text-lg md:text-md font-bold">
+                  {state.detail.estimatedTokenSold} {state.detail.auctionSymbol}
+                </div>
+                <div className="flex items-center text-white text-md md:text-sm">
+                  Estimated tokens sold{' '}
+                  <div className="tooltip relative">
+                    <img
+                      className="ml-3"
+                      src={require('../../../assets/images/info.svg').default}
+                      alt=""
+                    />
+                    <span className="label">Estimated tokens sold</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col mb-5">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.isAtomicClosureAllowed === true ? 'Enabled' : 'Disabled'}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Atomic closure{' '}
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Atomic closure</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.minimumBiddingAmountPerOrder.toFixed(8)} {state.detail.biddingSymbol}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Min bidding amount per order{' '}
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Min bidding amount per order</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-8 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-15">
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -552,9 +911,7 @@ function Detail(props) {
               <div className="">
                 <span className={`${state.detail.statusClass}-icon`}></span>
               </div>
-              <div className="text-sm">
-                {state.detail.status}
-              </div>
+              <div className="text-sm">{state.detail.status}</div>
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
@@ -645,6 +1002,7 @@ function Detail(props) {
         auctionStatus={state.auctionStatus}
         getData={getData}
         auctionId={state.detail.id}
+        // columns={columns}
       />
     </div>
   );
@@ -680,7 +1038,7 @@ const ProgressBar = ({
       <Progress
         wrapperClassName=""
         type="circle"
-        width={250}
+        width={200}
         percent={completed ? 100 : percentage || 0}
         strokeWidth={4}
         color="#FFAB2D"
@@ -688,20 +1046,20 @@ const ProgressBar = ({
       />
       <div
         className={`flex flex-col items-center absolute top-1/2 left-1/2 
-                    w-full h-full pt-18 md:pt-14 pb-14 md:pb-10 px-4
+                    w-full h-full pt-14 md:pt-12 pb-12 md:pb-8 px-4
                     transform -translate-x-1/2 -translate-y-1/2 justify-center`}
       >
         <div
           className={`flex flex-col items-center absolute top-1/2 left-1/2 
-                            w-full h-full pt-18 md:pt-14 pb-14 md:pb-10 px-4
+                            w-full h-full pt-14 md:pt-12 pb-12 md:pb-8 px-4
                             transform -translate-x-1/2 -translate-y-1/2 justify-center`}
         >
           <div className="flex flex-col items-center flex-grow text-center justify-center">
-            <div className="text-primary font-bold text-3xl ">
+            <div className="text-primary font-bold text-2xl ">
               {' '}
               {days}:{hours}:{minutes}:{seconds}
             </div>
-            <div className="text-white font-bold text-3xl">{completed ? 'Completed' : label}</div>
+            <div className="text-white font-bold text-2xl">{completed ? 'Completed' : label}</div>
           </div>
         </div>
       </div>
