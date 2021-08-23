@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import toHex from 'to-hex';
 import { methods } from '../../../utilities/ContractService';
@@ -44,10 +44,11 @@ function Table(props) {
   const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
   const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [blockNumberSorted, setBlockNumberSorted] = useState(false);
+  const [blockNumberSorted, setBlockNumberSorted] = useState(true);
   const [upDownValue, setUpDownValue] = useState(true);
   const [sortPrice, setSortPrice] = useState(false);
   const [priceUpDownValue, setPriceUpDownValue] = useState(true);
+  const [propsData, setPropsData] = useState([]);
 
   const [isShowMyOrder, updateMyOrder] = useState(false);
   const trimAddress = (address) => {
@@ -146,43 +147,55 @@ function Table(props) {
     updateSelectedCancelOrders(arr);
   };
 
-  props.data.sort(function (a, b) {
-    return b.blockNumber - a.blockNumber;
-  });
+  // props.data.sort(function (a, b) {
+  //   return b.blockNumber - a.blockNumber;
+  // });
+
+  useEffect(() => {
+    setPropsData(props.data.sort((a, b) => a.blockNumber - b.blockNumber));
+  }, [props.data]);
 
   const sortBlockNumber = (newValue) => {
+    console.log(newValue, 'newValue');
     setBlockNumberSorted(!blockNumberSorted);
     if (newValue === true) {
-      props.data.sort(function (a, b) {
+      let DescendingData = propsData.sort(function (a, b) {
         return b.blockNumber - a.blockNumber;
       });
+      setPropsData(DescendingData);
     } else {
-      props.data.sort(function (a, b) {
-        return a.blockNumber - b.blockNumber;
-      });
+      let AssendingData = propsData.sort((a, b) => a.blockNumber - b.blockNumber);
+      setPropsData(AssendingData);
     }
+  };
+
+  const upDownArrowBlockHandler = () => {
+    let DescendingData = propsData.sort(function (a, b) {
+      return b.blockNumber - a.blockNumber;
+    });
+    setPropsData(DescendingData);
+    setUpDownValue((x) => !x);
   };
 
   const sortPriceHandler = (newValue) => {
     setSortPrice(!sortPrice);
     if (newValue === true) {
-      props.data.sort(function (a, b) {
+      let DescendingData = propsData.sort(function (a, b) {
         return b.price - a.price;
       });
+      setPropsData(DescendingData);
     } else {
-      props.data.sort(function (a, b) {
-        return a.price - b.price;
-      });
+      let AssendingData = propsData.sort((a, b) => a.price - b.price);
+      setPropsData(AssendingData);
     }
   };
 
-  const upDownArrowBlockHandler = () => {
-    setUpDownValue(false);
-  };
   const upDownArrowPriceHandler = () => {
     setPriceUpDownValue(false);
   };
   // Render the UI for your table
+  console.log(propsData, propsData);
+
   return (
     <div className="relative w-full">
       <div className="bg-fadeBlack w-full p-6 mt-16">
@@ -249,10 +262,10 @@ function Table(props) {
               <th>TX Hash</th>
               <th>
                 Block Number{' '}
-                {/* {upDownValue ? (
+                {upDownValue ? (
                   <span
                     className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1"
-                    onClick={() => upDownArrowBlockHandler()}
+                    onClick={upDownArrowBlockHandler}
                   >
                     <img className="inline w-2.5" src={sortUp} alt="sort up" />
                     <img className="inline w-2.5" src={sortDown} alt="sort down" />
@@ -264,7 +277,7 @@ function Table(props) {
                     alt="sort up"
                     onClick={() => sortBlockNumber(blockNumberSorted)}
                   />
-                )} */}
+                )}
               </th>
               <th>Buy Amount</th>
               <th>Sell Amount</th>
@@ -280,14 +293,14 @@ function Table(props) {
                   </div>
                 </td>
               </tr>
-            ) : props.data.length === 0 ? (
+            ) : propsData.length === 0 ? (
               <tr>
                 <td colSpan="12">
                   <div className="text-center">No Data Found</div>
                 </td>{' '}
               </tr>
             ) : (
-              props.data.map((item, index) => {
+              propsData.map((item, index) => {
                 let userId = item.userId.address.toLowerCase();
                 let account = props.account ? props.account.toLowerCase() : '0x';
                 return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
