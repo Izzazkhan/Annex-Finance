@@ -437,7 +437,6 @@ function Detail(props) {
   };
 
   const encodeOrder = (userId, sellAmount, buyAmount) => {
-    
     return (
       '0x' +
       new BigNumber(userId).toString(16).padStart(16, '0') +
@@ -450,16 +449,21 @@ function Detail(props) {
 
   const calculateLPTokens = async (auction) => {
     return new Promise((resolve, reject) => {
-
-      console.log('auction: ', auction, {userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
+      console.log('auction: ', auction, {
+        userId: auction.userId.id,
+        buyAmount: auction.buyAmount,
+        sellAmount: auction.sellAmount,
+      });
       // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
       // auction.userId.id = 17;
       let encodedOrder = encodeOrder(auction.userId.id, auction.buyAmount, auction.sellAmount);
       console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
       methods
-        .call(auctionContract.methods.calculateLPTokens,
-          [auction.auctionId.id, auction.userId.id, encodedOrder]
-        )
+        .call(auctionContract.methods.calculateLPTokens, [
+          auction.auctionId.id,
+          auction.userId.id,
+          encodedOrder,
+        ])
         .then((res) => {
           let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
           lpToken = convertExponentToNum(lpToken);
@@ -551,7 +555,8 @@ function Detail(props) {
             </div>
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
-              {state.detail.currentPrice} {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+              {state.detail.currentPrice && state.detail.currentPrice.toFixed(8)}{' '}
+              {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
             </h2>
           )}
           <div className="flex items-center text-white text-lg md:text-md ">

@@ -46,9 +46,10 @@ function Table(props) {
   const [loading, setLoading] = useState(false);
   const [blockNumberSorted, setBlockNumberSorted] = useState(true);
   const [upDownValue, setUpDownValue] = useState(true);
-  const [sortPrice, setSortPrice] = useState(false);
+  const [sortPrice, setSortPrice] = useState(true);
   const [priceUpDownValue, setPriceUpDownValue] = useState(true);
   const [propsData, setPropsData] = useState([]);
+  const [currentSort, setCurrentSort] = useState('default');
 
   const [isShowMyOrder, updateMyOrder] = useState(false);
   const trimAddress = (address) => {
@@ -147,54 +148,57 @@ function Table(props) {
     updateSelectedCancelOrders(arr);
   };
 
-  // props.data.sort(function (a, b) {
-  //   return b.blockNumber - a.blockNumber;
-  // });
-
   useEffect(() => {
-    setPropsData(props.data.sort((a, b) => a.blockNumber - b.blockNumber));
+    let DescendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
+    setPropsData(DescendingSort);
   }, [props.data]);
 
-  const sortBlockNumber = (newValue) => {
-    console.log(newValue, 'newValue');
-    setBlockNumberSorted(!blockNumberSorted);
-    if (newValue === true) {
-      let DescendingData = propsData.sort(function (a, b) {
-        return b.blockNumber - a.blockNumber;
-      });
-      setPropsData(DescendingData);
-    } else {
-      let AssendingData = propsData.sort((a, b) => a.blockNumber - b.blockNumber);
-      setPropsData(AssendingData);
-    }
+  const sortTypes = {
+    up: {
+      class: 'sort-up',
+      fn: (a, b) => a.blockNumber - b.blockNumber,
+    },
+    down: {
+      class: 'sort-down',
+      fn: (a, b) => b.blockNumber - a.blockNumber,
+    },
+    default: {
+      class: 'sort',
+      fn: (a, b) => b.blockNumber - a.blockNumber,
+    },
+    priceUp: {
+      class: 'price-sort-up',
+      fn: (a, b) => a.price - b.price,
+    },
+    priceDown: {
+      class: 'price-sort-down',
+      fn: (a, b) => b.price - a.price,
+    },
+    priceDefault: {
+      class: 'price-sort',
+      fn: (a, b) => b.price - a.price,
+    },
   };
 
-  const upDownArrowBlockHandler = () => {
-    let DescendingData = propsData.sort(function (a, b) {
-      return b.blockNumber - a.blockNumber;
-    });
-    setPropsData(DescendingData);
-    setUpDownValue((x) => !x);
+  const onSortChange = () => {
+    console.log('hello');
+    let nextSort;
+    if (currentSort === 'down') nextSort = 'up';
+    else if (currentSort === 'up') nextSort = 'default';
+    else if (currentSort === 'default') nextSort = 'down';
+    else nextSort = 'down';
+    setCurrentSort(nextSort);
+  };
+  const onSortChangePrice = () => {
+    let nextSort;
+    if (currentSort === 'priceDown') nextSort = 'priceUp';
+    else if (currentSort === 'priceUp') nextSort = 'priceDefault';
+    else if (currentSort === 'priceDefault') nextSort = 'priceDown';
+    else nextSort = 'priceDown';
+    setCurrentSort(nextSort);
   };
 
-  const sortPriceHandler = (newValue) => {
-    setSortPrice(!sortPrice);
-    if (newValue === true) {
-      let DescendingData = propsData.sort(function (a, b) {
-        return b.price - a.price;
-      });
-      setPropsData(DescendingData);
-    } else {
-      let AssendingData = propsData.sort((a, b) => a.price - b.price);
-      setPropsData(AssendingData);
-    }
-  };
-
-  const upDownArrowPriceHandler = () => {
-    setPriceUpDownValue(false);
-  };
-  // Render the UI for your table
-  console.log(propsData, propsData);
+  console.log('currentsort', currentSort);
 
   return (
     <div className="relative w-full">
@@ -241,44 +245,36 @@ function Table(props) {
               <th>Address</th>
               <th>
                 Price{' '}
-                {/* {priceUpDownValue ? (
-                  <span
-                    className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1"
-                    onClick={() => upDownArrowPriceHandler()}
-                  >
-                    <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                    <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                  </span>
-                ) : (
-                  <img
-                    className="inline relative left-1"
-                    src={sortPrice ? sortUp : sortDown}
-                    alt="sort up"
-                    onClick={() => sortPriceHandler(sortPrice)}
-                  />
-                )} */}
+                <button onClick={onSortChangePrice}>
+                  {sortTypes[currentSort].class === 'price-sort-down' ? (
+                    <img className="inline relative left-1" src={sortDown} alt="price-sort-down" />
+                  ) : sortTypes[currentSort].class === 'price-sort-up' ? (
+                    <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
+                  ) : (
+                    <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                      <img className="inline w-2.5" src={sortUp} alt="price-sort up" />
+                      <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                    </span>
+                  )}
+                </button>
               </th>
               <th>Amount Committed</th>
               <th>LP Tokens Claimable</th>
               <th>TX Hash</th>
               <th>
                 Block Number{' '}
-                {upDownValue ? (
-                  <span
-                    className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1"
-                    onClick={upDownArrowBlockHandler}
-                  >
-                    <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                    <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                  </span>
-                ) : (
-                  <img
-                    className="inline relative left-1"
-                    src={blockNumberSorted ? sortUp : sortDown}
-                    alt="sort up"
-                    onClick={() => sortBlockNumber(blockNumberSorted)}
-                  />
-                )}
+                <button onClick={onSortChange}>
+                  {sortTypes[currentSort].class === 'sort-down' ? (
+                    <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                  ) : sortTypes[currentSort].class === 'sort-up' ? (
+                    <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                  ) : (
+                    <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                      <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                      <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                    </span>
+                  )}
+                </button>
               </th>
               <th>Buy Amount</th>
               <th>Sell Amount</th>
@@ -301,7 +297,7 @@ function Table(props) {
                 </td>{' '}
               </tr>
             ) : (
-              propsData.map((item, index) => {
+              propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
                 let userId = item.userId.address.toLowerCase();
                 let account = props.account ? props.account.toLowerCase() : '0x';
                 return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
@@ -319,9 +315,7 @@ function Table(props) {
                       </div>
                     </td>
                     <td>
-                      <div>
-                        {(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}
-                      </div>
+                      <div>{(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}</div>
                     </td>
                     <td>
                       <div>
