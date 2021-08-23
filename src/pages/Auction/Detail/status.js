@@ -154,21 +154,21 @@ const AuctionStatus = ({
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      {auctionStatus === 'upcoming' ? (
+      {/* {auctionStatus === 'upcoming' ? (
         <AuctionCountDown auctionStartDate={auctionStartDate * 1000} />
-      ) : auctionStatus === 'inprogress' ? (
-        <AuctionProgress
-          auctionEndDate={auctionEndDate}
-          detail={detail}
-          minBuyAmount={minBuyAmount}
-          maxAvailable={maxAvailable}
-          handleSubmit={showCommitModal}
-        />
-      ) : auctionStatus === 'completed' ? (
+      ) : auctionStatus === 'inprogress' ? ( */}
+      <AuctionProgress
+        auctionEndDate={auctionEndDate}
+        detail={detail}
+        minBuyAmount={minBuyAmount}
+        maxAvailable={maxAvailable}
+        handleSubmit={showCommitModal}
+      />
+      {/* ) : auctionStatus === 'completed' ? (
         <AuctionCompleted settlAuction={settlAuction} isAlreadySettle={detail['isAlreadySettle']} />
       ) : (
         ''
-      )}
+      )} */}
       {/* */}
 
       <Modal
@@ -256,13 +256,17 @@ const AuctionProgress = (props) => {
 
   const [value, setValue] = useState(props.minBuyAmount);
   const handleInputChange = (e) => {
+    console.log('e.target', e.target);
     let value = e.target.value;
     let id = e.target.id;
     setState({
       ...state,
       [id]: value,
     });
+    setValue(value);
   };
+
+  console.log('state.sellAmount', state.sellAmount);
 
   // console.log('***', props);
   const validateForm = () => {
@@ -282,13 +286,13 @@ const AuctionProgress = (props) => {
         errorMessage = `${placeholder} required`;
         isValid = false;
         break;
-      // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
-      } else if (key === 'minBuyAmount' && (value < minBuyAmount)) {
+        // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
+      } else if (key === 'minBuyAmount' && value < minBuyAmount) {
         errorMessage = `${placeholder} must be greater than Minimum Token Amount`;
         isValid = false;
         break;
       } else if (key === 'sellAmount' && value > maxAvailable) {
-      // } else if (key === 'sellAmount' && value < 10) {
+        // } else if (key === 'sellAmount' && value < 10) {
         errorMessage = `${placeholder} must be smaller than Max Available`;
         isValid = false;
         break;
@@ -314,6 +318,10 @@ const AuctionProgress = (props) => {
   const onChangeSlider = (newValue) => {
     console.log('newvalue', newValue);
     setValue(newValue);
+    setState({
+      ...state,
+      ['sellAmount']: newValue,
+    });
   };
   return (
     <>
@@ -438,6 +446,7 @@ const AuctionProgress = (props) => {
                 className="border border-solid border-gray bg-transparent
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
                 type="number"
+                value={state.sellAmount}
               />
             </div>
             <div className="mb-3 w-full pr-2">
