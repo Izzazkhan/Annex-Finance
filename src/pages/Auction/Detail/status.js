@@ -98,7 +98,6 @@ const AuctionStatus = ({
         ['0x0000000000000000000000000000000000000000000000000000000000000001'],
         '0x',
       ];
-      console.log('data: ', data);
       let auctionTxDetail = await methods.send(
         auctionContract.methods.placeSellOrders,
         data,
@@ -126,7 +125,6 @@ const AuctionStatus = ({
     try {
       e.preventDefault();
       setLoading(true);
-      // console.log('settleAuction');
       await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       getData();
       setLoading(false);
@@ -265,7 +263,6 @@ const AuctionProgress = (props) => {
     setValue(value);
   };
 
-  // console.log('***', props);
   const validateForm = () => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
@@ -313,7 +310,6 @@ const AuctionProgress = (props) => {
   };
 
   const onChangeSlider = (newValue) => {
-    console.log('newvalue', newValue);
     setValue(newValue);
     setState({
       ...state,
@@ -322,7 +318,7 @@ const AuctionProgress = (props) => {
   };
   return (
     <>
-      {console.log(props.detail) && props.detail.chartType === 'block' ? (
+      {props.detail && props.detail.chartType === 'block' ? (
         <Fragment>
           <div className="chart flex items-end relative mt-5 pl-10 mr-2">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">

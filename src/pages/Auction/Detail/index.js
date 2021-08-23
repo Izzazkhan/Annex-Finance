@@ -142,8 +142,6 @@ function Detail(props) {
   const auctionContract = getAuctionContract(state.type);
   const [showDetails, setShowDetails] = useState(false);
 
-  // console.log('data', data);
-
   useEffect(async () => {
     getData();
   }, []);
@@ -186,9 +184,6 @@ function Detail(props) {
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold']).dividedBy(auctionDecimal).toNumber(),
         );
-        // minFundingThreshold.toFixed(8);
-        minimumBiddingAmountPerOrder.toFixed(8);
-        // estimatedTokenSold.toFixed(8);
 
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
 
@@ -240,9 +235,6 @@ function Detail(props) {
 
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
-          // console.log('@@@@@@@@@@@@@@@@@@@');
-          // console.log('####################');
-          // console.log(order);
           let userId = order.userId.address.toLowerCase();
           let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
             .dividedBy(auctionDecimal)
@@ -251,7 +243,6 @@ function Detail(props) {
             .dividedBy(biddingDecimal)
             .toString();
           let price = new BigNumber(order['price']).dividedBy(auctionDecimal).toFixed(8).toString();
-          // let price = order['price'].dividedBy(biddingDecimal).toFixed(8).toString();
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -329,7 +320,6 @@ function Detail(props) {
           orderCancellationEndDate,
           auctionEndDateFormatted,
         };
-        console.log('auction details: ', detail);
         setState({
           ...state,
           detail,
@@ -365,6 +355,7 @@ function Detail(props) {
       });
     return graphData;
   };
+
   const convertExponentToNum = (x) => {
     if (Math.abs(x) < 1.0) {
       let e = parseInt(x.toString().split('e-')[1]);
@@ -382,6 +373,7 @@ function Detail(props) {
     }
     return x;
   };
+
   const getCurrentPriceDecimal = (auctionDecimal, biddingDecimal) => {
     // let decimal = 0;
     // if (auctionDecimal !== biddingDecimal) {
@@ -404,7 +396,6 @@ function Detail(props) {
           })
           .then((response) => {
             let { data } = response;
-            console.log('graph data: ', data);
             setData(data);
           })
           .catch((err) => {
@@ -449,15 +440,15 @@ function Detail(props) {
 
   const calculateLPTokens = async (auction) => {
     return new Promise((resolve, reject) => {
-      console.log('auction: ', auction, {
-        userId: auction.userId.id,
-        buyAmount: auction.buyAmount,
-        sellAmount: auction.sellAmount,
-      });
+      // console.log('auction: ', auction, {
+      //   userId: auction.userId.id,
+      //   buyAmount: auction.buyAmount,
+      //   sellAmount: auction.sellAmount,
+      // });
       // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
       // auction.userId.id = 17;
       let encodedOrder = encodeOrder(auction.userId.id, auction.buyAmount, auction.sellAmount);
-      console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
+      // console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
       methods
         .call(auctionContract.methods.calculateLPTokens, [
           auction.auctionId.id,
@@ -481,60 +472,14 @@ function Detail(props) {
     balanceOf = new BigNumber(balanceOf).dividedBy(decimal).toNumber();
     return balanceOf;
   };
-  const percentage = 66;
 
-  const columns = useMemo(() => {
-    return [
-      {
-        Header: 'Name',
-        columns: [
-          {
-            Header: 'Address',
-            accessor: 'address',
-          },
-          {
-            Header: 'Price',
-            accessor: 'price',
-          },
-          {
-            Header: 'Amount Commited',
-            accessor: 'amountCommited',
-          },
-          {
-            Header: 'LP Tokens Claimable',
-            accessor: 'lpToken',
-          },
-          {
-            Header: 'TX Hash',
-            accessor: 'txHash',
-          },
-          {
-            Header: 'Block Number',
-            accessor: 'blockNumber',
-            disableFilters: true,
-          },
-          {
-            Header: 'Buy Amount',
-            accessor: 'auctionDivBuyAmount',
-          },
-          {
-            Header: 'Sell Amount',
-            accessor: 'auctionDivSellAmount',
-          },
-          {
-            accessor: 'status',
-          },
-          {
-            accessor: 'id',
-          },
-          {
-            Header: ' ',
-            accessor: 'inCenter',
-          },
-        ],
-      },
-    ];
-  }, []);
+  console.log('state', state);
+
+  const totalSellAmount =
+    state.detail.data &&
+    state.detail.data.reduce(function (acc, obj) {
+      return acc + Number(obj.sellAmount);
+    }, 0);
 
   return (
     <div>
@@ -555,7 +500,7 @@ function Detail(props) {
             </div>
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
-              {state.detail.currentPrice && state.detail.currentPrice.toFixed(8)}{' '}
+              {state.detail.currentPrice ? state.detail.currentPrice.toFixed(8) : 0}{' '}
               {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
             </h2>
           )}
@@ -772,8 +717,19 @@ function Detail(props) {
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
                 <CircularProgressbar
-                  value={state.detail.minFundingThreshold}
-                  text={`${state.detail.minFundingThreshold}%`}
+                  value={
+                    totalSellAmount > 0
+                      ? (totalSellAmount / Number(state.detail.minFundingThreshold)) * 100
+                      : 0
+                  }
+                  text={`${
+                    totalSellAmount > 0
+                      ? (
+                          (totalSellAmount / Number(state.detail.minFundingThreshold)) *
+                          100
+                        ).toFixed(0)
+                      : 0
+                  }%`}
                   styles={{
                     root: {},
                     path: {
@@ -819,8 +775,13 @@ function Detail(props) {
             <div className="flex items-center mb-5">
               <div className="mr-2" style={{ width: 35, height: 35 }}>
                 <CircularProgressbar
-                  value={state.detail.estimatedTokenSold}
-                  text={`${state.detail.estimatedTokenSold}%`}
+                  value={
+                    (state.detail.estimatedTokenSold / Number(state.detail.totalAuction)) * 100
+                  }
+                  text={`${(
+                    (state.detail.estimatedTokenSold / Number(state.detail.totalAuction)) *
+                    100
+                  ).toFixed(0)}%`}
                   styles={{
                     root: {},
                     path: {
@@ -883,7 +844,10 @@ function Detail(props) {
             </div>
             <div className="flex flex-col">
               <div className="text-white text-lg md:text-md font-bold">
-                {state.detail.minimumBiddingAmountPerOrder.toFixed(8)} {state.detail.biddingSymbol}
+                {state.detail.minimumBiddingAmountPerOrder
+                  ? state.detail.minimumBiddingAmountPerOrder.toFixed(8)
+                  : 0}{' '}
+                {state.detail.biddingSymbol}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Min bidding amount per order{' '}
@@ -1002,7 +966,6 @@ function Detail(props) {
         auctionStatus={state.auctionStatus}
         getData={getData}
         auctionId={state.detail.id}
-        // columns={columns}
       />
     </div>
   );
