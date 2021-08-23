@@ -160,7 +160,7 @@ class BlockChart {
       width: 30,
       height: 100,
     };
-    console.log('this.blockDimension', this.blockDimension);
+    // console.log('this.blockDimension', this.blockDimension);
     this.gutterSize = Math.floor(this.blockDimension.width / 2);
     this.initialScale = this.options.blocks.scaleX.scale.map((c) => [c]);
 

@@ -89,8 +89,8 @@ const AuctionStatus = ({
       setLoading(true);
       let sellAmount = modalError.payload.sellAmount;
       let buyAmount = modalError.payload.minBuyAmount;
-      sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString();
-      buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString();
+      sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10);
+      buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10);
       let data = [
         auctionId,
         [buyAmount],
@@ -98,7 +98,7 @@ const AuctionStatus = ({
         ['0x0000000000000000000000000000000000000000000000000000000000000001'],
         '0x',
       ];
-      console.log('data', data);
+      console.log('data: ', data);
       let auctionTxDetail = await methods.send(
         auctionContract.methods.placeSellOrders,
         data,
@@ -126,7 +126,7 @@ const AuctionStatus = ({
     try {
       e.preventDefault();
       setLoading(true);
-      console.log('settleAuction');
+      // console.log('settleAuction');
       await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       getData();
       setLoading(false);
@@ -264,7 +264,7 @@ const AuctionProgress = (props) => {
     });
   };
 
-  console.log('***', props);
+  // console.log('***', props);
   const validateForm = () => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
@@ -287,8 +287,8 @@ const AuctionProgress = (props) => {
         errorMessage = `${placeholder} must be greater than Minimum Token Amount`;
         isValid = false;
         break;
-      // } else if (key === 'sellAmount' && value > maxAvailable) {
-      } else if (key === 'sellAmount' && value < 10) {
+      } else if (key === 'sellAmount' && value > maxAvailable) {
+      // } else if (key === 'sellAmount' && value < 10) {
         errorMessage = `${placeholder} must be smaller than Max Available`;
         isValid = false;
         break;
@@ -317,7 +317,7 @@ const AuctionProgress = (props) => {
   };
   return (
     <>
-      {props.detail.chartType === 'block' ? (
+      {console.log(props.detail) && props.detail.chartType === 'block' ? (
         <Fragment>
           <div className="chart flex items-end relative mt-5 pl-10 mr-2">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">

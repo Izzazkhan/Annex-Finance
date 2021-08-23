@@ -142,7 +142,7 @@ function Detail(props) {
   const auctionContract = getAuctionContract(state.type);
   const [showDetails, setShowDetails] = useState(false);
 
-  console.log('data', data);
+  // console.log('data', data);
 
   useEffect(async () => {
     getData();
@@ -178,10 +178,10 @@ function Detail(props) {
         minBuyAmount = convertExponentToNum(minBuyAmount);
 
         let minFundingThreshold = convertExponentToNum(
-          new BigNumber(elem['minFundingThreshold']).dividedBy(auctionDecimal).toNumber(),
+          new BigNumber(elem['minFundingThreshold']).dividedBy(1000000).toNumber(),
         );
         let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder'])
-          .dividedBy(biddingDecimal)
+          .dividedBy(1000000)
           .toNumber();
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold']).dividedBy(auctionDecimal).toNumber(),
@@ -240,9 +240,9 @@ function Detail(props) {
 
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
-          console.log('@@@@@@@@@@@@@@@@@@@');
-          console.log('####################');
-          console.log(order);
+          // console.log('@@@@@@@@@@@@@@@@@@@');
+          // console.log('####################');
+          // console.log(order);
           let userId = order.userId.address.toLowerCase();
           let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
             .dividedBy(auctionDecimal)
@@ -329,6 +329,7 @@ function Detail(props) {
           orderCancellationEndDate,
           auctionEndDateFormatted,
         };
+        console.log('auction details: ', detail);
         setState({
           ...state,
           detail,
@@ -403,6 +404,7 @@ function Detail(props) {
           })
           .then((response) => {
             let { data } = response;
+            console.log('graph data: ', data);
             setData(data);
           })
           .catch((err) => {
@@ -422,10 +424,42 @@ function Detail(props) {
     // });
     getData();
   };
+  const convertToHex = (data) => {
+    let msg = '';
+    for (var i = 0; i < data.length; i++) {
+      var s = data.charCodeAt(i).toString(16);
+      while (s.length < 2) {
+        s = '0' + s;
+      }
+      msg += s;
+    }
+    return msg;
+  };
+
+  const encodeOrder = (userId, sellAmount, buyAmount) => {
+    
+    return (
+      '0x' +
+      new BigNumber(userId).toString(16).padStart(16, '0') +
+      // buyAmount.padStart(24, '0') +
+      new BigNumber(buyAmount).toString(16).padStart(24, '0') +
+      // sellAmount.padStart(24, '0')
+      new BigNumber(sellAmount).toString(16).padStart(24, '0')
+    );
+  };
+
   const calculateLPTokens = async (auction) => {
     return new Promise((resolve, reject) => {
+
+      console.log('auction: ', auction, {userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
+      // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
+      // auction.userId.id = 17;
+      let encodedOrder = encodeOrder(auction.userId.id, auction.buyAmount, auction.sellAmount);
+      console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
       methods
-        .call(auctionContract.methods.calculateLPTokens, [auction.auctionId.id, auction.sellAmount])
+        .call(auctionContract.methods.calculateLPTokens,
+          [auction.auctionId.id, auction.userId.id, encodedOrder]
+        )
         .then((res) => {
           let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
           lpToken = convertExponentToNum(lpToken);
