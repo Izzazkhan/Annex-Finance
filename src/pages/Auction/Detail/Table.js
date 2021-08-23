@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import toHex from 'to-hex';
 import { methods } from '../../../utilities/ContractService';
 import Loading from '../../../components/UI/Loading';
-
+import { sortTypes } from './sortTypes';
 import sortUp from '../../../assets/icons/sortUp.svg';
 import sortDown from '../../../assets/icons/sortDown.svg';
 
@@ -153,52 +153,23 @@ function Table(props) {
     setPropsData(DescendingSort);
   }, [props.data]);
 
-  const sortTypes = {
-    up: {
-      class: 'sort-up',
-      fn: (a, b) => a.blockNumber - b.blockNumber,
-    },
-    down: {
-      class: 'sort-down',
-      fn: (a, b) => b.blockNumber - a.blockNumber,
-    },
-    default: {
-      class: 'sort',
-      fn: (a, b) => b.blockNumber - a.blockNumber,
-    },
-    priceUp: {
-      class: 'price-sort-up',
-      fn: (a, b) => a.price - b.price,
-    },
-    priceDown: {
-      class: 'price-sort-down',
-      fn: (a, b) => b.price - a.price,
-    },
-    priceDefault: {
-      class: 'price-sort',
-      fn: (a, b) => b.price - a.price,
-    },
+  const onSortChange = (sortColum) => {
+    if (sortColum === 'BlockNumber') {
+      let nextSort;
+      if (currentSort === 'down') nextSort = 'up';
+      else if (currentSort === 'up') nextSort = 'default';
+      else if (currentSort === 'default') nextSort = 'down';
+      else nextSort = 'down';
+      setCurrentSort(nextSort);
+    } else {
+      let nextSort;
+      if (currentSort === 'priceDown') nextSort = 'priceUp';
+      else if (currentSort === 'priceUp') nextSort = 'priceDefault';
+      else if (currentSort === 'priceDefault') nextSort = 'priceDown';
+      else nextSort = 'priceDown';
+      setCurrentSort(nextSort);
+    }
   };
-
-  const onSortChange = () => {
-    console.log('hello');
-    let nextSort;
-    if (currentSort === 'down') nextSort = 'up';
-    else if (currentSort === 'up') nextSort = 'default';
-    else if (currentSort === 'default') nextSort = 'down';
-    else nextSort = 'down';
-    setCurrentSort(nextSort);
-  };
-  const onSortChangePrice = () => {
-    let nextSort;
-    if (currentSort === 'priceDown') nextSort = 'priceUp';
-    else if (currentSort === 'priceUp') nextSort = 'priceDefault';
-    else if (currentSort === 'priceDefault') nextSort = 'priceDown';
-    else nextSort = 'priceDown';
-    setCurrentSort(nextSort);
-  };
-
-  console.log('currentsort', currentSort);
 
   return (
     <div className="relative w-full">
@@ -245,11 +216,11 @@ function Table(props) {
               <th>Address</th>
               <th>
                 Price{' '}
-                <button onClick={onSortChangePrice}>
-                  {sortTypes[currentSort].class === 'price-sort-down' ? (
-                    <img className="inline relative left-1" src={sortDown} alt="price-sort-down" />
-                  ) : sortTypes[currentSort].class === 'price-sort-up' ? (
-                    <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
+                <button onClick={() => onSortChange('Price')}>
+                  {sortTypes[currentSort].class === 'price-sort-up' ? (
+                    <img className="inline relative left-1" src={sortDown} alt="price-sort-up" />
+                  ) : sortTypes[currentSort].class === 'price-sort-down' ? (
+                    <img className="inline relative left-1" src={sortUp} alt="price-sort down" />
                   ) : (
                     <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
                       <img className="inline w-2.5" src={sortUp} alt="price-sort up" />
@@ -263,7 +234,7 @@ function Table(props) {
               <th>TX Hash</th>
               <th>
                 Block Number{' '}
-                <button onClick={onSortChange}>
+                <button onClick={() => onSortChange('BlockNumber')}>
                   {sortTypes[currentSort].class === 'sort-down' ? (
                     <img className="inline relative left-1" src={sortDown} alt="sort down" />
                   ) : sortTypes[currentSort].class === 'sort-up' ? (
