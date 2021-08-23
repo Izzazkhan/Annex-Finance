@@ -154,21 +154,21 @@ const AuctionStatus = ({
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      {/* {auctionStatus === 'upcoming' ? (
+      {auctionStatus === 'upcoming' ? (
         <AuctionCountDown auctionStartDate={auctionStartDate * 1000} />
-      ) : auctionStatus === 'inprogress' ? ( */}
-      <AuctionProgress
-        auctionEndDate={auctionEndDate}
-        detail={detail}
-        minBuyAmount={minBuyAmount}
-        maxAvailable={maxAvailable}
-        handleSubmit={showCommitModal}
-      />
-      {/* ) : auctionStatus === 'completed' ? (
+      ) : auctionStatus === 'inprogress' ? (
+        <AuctionProgress
+          auctionEndDate={auctionEndDate}
+          detail={detail}
+          minBuyAmount={minBuyAmount}
+          maxAvailable={maxAvailable}
+          handleSubmit={showCommitModal}
+        />
+      ) : auctionStatus === 'completed' ? (
         <AuctionCompleted settlAuction={settlAuction} isAlreadySettle={detail['isAlreadySettle']} />
       ) : (
         ''
-      )} */}
+      )}
       {/* */}
 
       <Modal
@@ -256,7 +256,6 @@ const AuctionProgress = (props) => {
 
   const [value, setValue] = useState(props.minBuyAmount);
   const handleInputChange = (e) => {
-    console.log('e.target', e.target);
     let value = e.target.value;
     let id = e.target.id;
     setState({
@@ -265,8 +264,6 @@ const AuctionProgress = (props) => {
     });
     setValue(value);
   };
-
-  console.log('state.sellAmount', state.sellAmount);
 
   // console.log('***', props);
   const validateForm = () => {
