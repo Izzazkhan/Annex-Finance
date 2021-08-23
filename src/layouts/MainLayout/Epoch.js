@@ -26,6 +26,10 @@ const Styles = styled.div`
       .rangeslider-horizontal {
         height: 30px;
         border-radius: 15px;
+        @media (max-width: 767px){
+          height: 20px;
+          border-radius: 10x;
+        }
       }
       .rangeslider__handle {
         background: url(${SliderIcon});
@@ -36,6 +40,10 @@ const Styles = styled.div`
         height: 50px;
         box-shadow: none;
         background-repeat: no-repeat;
+        @media (max-width: 767px){
+          width: 40px;
+          height: 40px;
+        }
         &:after {
           display: none;
         }
@@ -85,6 +93,10 @@ const Styles = styled.div`
       max-width: 850px;
       width: 80%;
       margin: 0 auto;
+      @media (max-width: 767px){
+      margin: 50px auto 0;
+      width: 100%;
+      }
       .items-list {
         padding: 6px;
         .item-bar {
@@ -125,10 +137,16 @@ const Styles = styled.div`
         margin: auto;
         border-bottom: 2.25px dotted #f1992080;
         border-style: dashed;
+        @media (max-width: 767px){
+          width: 40%;
+        }
       }
     }
     .holding-apr {
       left: 20%;
+      @media (max-width: 767px){
+        left: 0%;
+      }
       .left-bottom {
         background: url(${AprBg});
         background-size: 100%;
@@ -142,6 +160,11 @@ const Styles = styled.div`
         margin-top: 45px;
         margin-left: -15px;
         word-break: break-all;
+      @media (max-width: 767px){
+        width: 30px;
+        height: 30px;
+        margin-top: 30px;
+      }
       }
       .top-right {
         background: url(${AprBg});
@@ -156,6 +179,10 @@ const Styles = styled.div`
         transform: rotate(180deg);
         margin-top: -35px;
         align-items: end;
+      @media (max-width: 767px){
+        width: 30px;
+        height: 30px;
+      }
         span {
           transform: rotate(-180deg);
         }
@@ -164,12 +191,19 @@ const Styles = styled.div`
     .custom-top {
       position: relative;
       top: 50px;
+      @media (max-width: 767px){
+        top: 80px;
+
+      }
     }
     .title-text {
       left: 0;
       right: 0;
       margin: 0 auto;
       max-width: 200px;
+      @media (max-width: 767px){
+        top: 40px;
+      }
     }
   }
 `;
@@ -284,8 +318,8 @@ const Epoch = ({ settings, setSetting }) => {
 
   return (
     <Styles>
-      <div className=" landing bg-lightGray rounded-md p-8 text-primary pb-8">
-        <div className="flex items-center justify-between pr-10 relative">
+      <div className=" landing bg-lightGray rounded-md p-5 pb-12 md:p-8 md:pb-8 text-primary ">
+        <div className="flex items-center justify-between pr-5 md:pr-10 relative">
           <div className={` ${showDetails && 'custom-top'} flex items-center`}>
             <div className="font-bold text-md text-right">
               ANN Balance <br />
@@ -312,12 +346,12 @@ const Epoch = ({ settings, setSetting }) => {
               <div className="font-bold text-sm text-right">per epoch</div>
             </div>
           )}
-          <div className="text-center font-bold text-3xl text-border absolute title-text">
+          <div className="text-center font-bold text-2xl md:text-3xl text-border absolute title-text">
             {currentEpoch} epoch <span className=""></span>
           </div>
-          <div className={` ${showDetails && 'custom-top'} flex items-center font-bold`}>
-            <div className="text-lg">ANN Holding Rewards : </div>
-            <div className="text-md ml-1"> {holdingReward} ANN</div>
+          <div className={` ${showDetails && 'custom-top'} flex items-center font-bold mr-3`}>
+            <div className="text-sm md:text-lg">ANN Holding Rewards : </div>
+            <div className="text-xs md:text-md ml-1"> {holdingReward} ANN</div>
           </div>
           <div className="absolute right-0">
             <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
