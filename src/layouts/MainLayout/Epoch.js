@@ -20,6 +20,11 @@ import { set } from 'lodash';
 const Styles = styled.div`
   .landing {
     .custom-range {
+      @media (max-width: 767px){
+        width: 90%;
+        margin: 0 auto;
+      }
+
       .rangeslider__fill {
         background: linear-gradient(90deg, #ffcb5b 16.38%, #f19920 67.43%);
       }
@@ -83,6 +88,11 @@ const Styles = styled.div`
           font-weight: bold;
           font-size: 10px;
           word-break: break-all;
+      @media (max-width: 767px){
+        width: 40px;
+        height: 30px;
+        bottom: -27px;
+      }
         }
       }
       .label {
@@ -144,8 +154,13 @@ const Styles = styled.div`
     }
     .holding-apr {
       left: 20%;
+      @media (max-width: 1024px){
+        left: 14%;
+        top: -30px;
+      }
       @media (max-width: 767px){
         left: 0%;
+        top: 20px;
       }
       .left-bottom {
         background: url(${AprBg});
@@ -161,10 +176,20 @@ const Styles = styled.div`
         margin-left: -15px;
         word-break: break-all;
       @media (max-width: 767px){
-        width: 30px;
-        height: 30px;
-        margin-top: 30px;
+        background: no-repeat;
+        width: auto;
+        padding: 0;
+        height: auto;
+        margin: 0;
       }
+      span{
+        @media (max-width: 767px){
+          br{
+            display: none;
+          }
+        }
+      }
+      
       }
       .top-right {
         background: url(${AprBg});
@@ -180,17 +205,31 @@ const Styles = styled.div`
         margin-top: -35px;
         align-items: end;
       @media (max-width: 767px){
-        width: 30px;
-        height: 30px;
+        background: no-repeat;
+        width: auto;
+        padding: 0;
+        height: auto;
+        margin: 0;
       }
         span {
           transform: rotate(-180deg);
+          line-height: 14px;
+          @media (max-width: 767px){
+            br{
+              display: none;
+            }
+          }
+
+          
         }
       }
     }
     .custom-top {
       position: relative;
       top: 50px;
+      @media (max-width: 1280px){
+        top: 35px;
+      }
       @media (max-width: 767px){
         top: 80px;
 
@@ -203,6 +242,9 @@ const Styles = styled.div`
       max-width: 200px;
       @media (max-width: 767px){
         top: 40px;
+        &.open{
+          top:0;
+        }
       }
     }
   }
@@ -319,7 +361,7 @@ const Epoch = ({ settings, setSetting }) => {
   return (
     <Styles>
       <div className=" landing bg-lightGray rounded-md p-5 pb-12 md:p-8 md:pb-8 text-primary ">
-        <div className="flex items-center justify-between pr-5 md:pr-10 relative">
+        <div className="flex items-center justify-between pr-10 relative">
           <div className={` ${showDetails && 'custom-top'} flex items-center`}>
             <div className="font-bold text-md text-right">
               ANN Balance <br />
@@ -330,26 +372,54 @@ const Epoch = ({ settings, setSetting }) => {
             </div>
           </div>
           {showDetails && (
-            <div className="flex items-center holding-apr absolute">
-              <div className="font-bold text-md text-center">
-                Holdding <br />
-                APR
+            <>
+              <div className="hidden md:flex flex-col md:flex-row items-center holding-apr absolute">
+
+                <div className="flex items-center">
+                  <div className="font-bold text-md text-center">
+                    Holdding <br />
+                    APR
+                  </div>
+                  <div className="left-bottom text-white text-md text-center">
+                    <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', }}>{holdingAPI}%</span></div>
+                </div>
+                <div className="flex items-center">
+                  <div className="top-right text-white text-md text-center">
+                    <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', }}>
+                      +<br />
+                      {currentEpochROI}%
+                    </span>
+                  </div>
+                  <div className="font-bold text-sm text-right">per epoch</div>
+                </div>
+
               </div>
-              <div className="left-bottom text-white text-xs text-center">
-                <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'width': '75%' }}>{holdingAPI}%</span></div>
-              <div className="top-right text-white text-xs text-center">
-                <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'width': '75%' }}>
-                  +<br />
-                  {currentEpochROI}%
-                </span>
+              <div className=" md:hidden flex flex-col md:flex-row items-start holding-apr absolute">
+
+                <div className="flex items-center">
+                  <div className="font-bold text-md text-center mr-2">
+                    Holdding APR
+                  </div>
+                  <div className="left-bottom text-white text-md text-center">
+                    <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', }}>{holdingAPI}%</span></div>
+                </div>
+                <div className="flex items-center">
+                  <div className="font-bold text-sm text-right mr-2">per epoch</div>
+                  <div className="top-right text-white text-md text-center">
+                    <span style={{ 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'textOverflow': 'ellipsis', }}>
+                      +<br />
+                      {currentEpochROI}%
+                    </span>
+                  </div>
+                </div>
+
               </div>
-              <div className="font-bold text-sm text-right">per epoch</div>
-            </div>
+            </>
           )}
-          <div className="text-center font-bold text-2xl md:text-3xl text-border absolute title-text">
+          <div className={` ${showDetails && 'open'} text-center font-bold text-2xl md:text-3xl text-border absolute title-text`}>
             {currentEpoch} epoch <span className=""></span>
           </div>
-          <div className={` ${showDetails && 'custom-top'} flex items-center font-bold mr-3`}>
+          <div className={` ${showDetails && 'custom-top mr-0'} flex items-center font-bold md:mr-3`}>
             <div className="text-sm md:text-lg">ANN Holding Rewards : </div>
             <div className="text-xs md:text-md ml-1"> {holdingReward} ANN</div>
           </div>
