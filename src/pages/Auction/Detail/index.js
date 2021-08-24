@@ -473,8 +473,6 @@ function Detail(props) {
     return balanceOf;
   };
 
-  console.log('state', state);
-
   const totalSellAmount =
     state.detail.data &&
     state.detail.data.reduce(function (acc, obj) {

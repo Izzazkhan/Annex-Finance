@@ -147,8 +147,8 @@ function Table(props) {
   };
 
   useEffect(() => {
-    let DescendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
-    setPropsData(DescendingSort);
+    let descendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
+    setPropsData(descendingSort);
   }, [props.data]);
 
   const onSortChange = (sortColum) => {

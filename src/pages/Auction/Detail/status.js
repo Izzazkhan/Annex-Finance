@@ -44,7 +44,7 @@ const AuctionStatus = ({
       setAuctionThreshold(threshold);
     }
   }, [showModal]);
-  const showCommitModal = async (minBuyAmount, sellAmount) => {
+  const showCommitModal = async (minBuyAmount, sellAmount, allowListCallData, prevOrder) => {
     updateShowModal(true);
     let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
     let biddingTokenBalance = await methods.call(biddingTokenContract.methods.balanceOf, [account]);
@@ -58,7 +58,7 @@ const AuctionStatus = ({
       setModalError({
         type: '',
         message: '',
-        payload: { minBuyAmount, sellAmount },
+        payload: { minBuyAmount, sellAmount, allowListCallData, prevOrder },
       });
     }
     await handleApproveBiddingToken();
@@ -89,14 +89,16 @@ const AuctionStatus = ({
       setLoading(true);
       let sellAmount = modalError.payload.sellAmount;
       let buyAmount = modalError.payload.minBuyAmount;
+      let allowListCallData = modalError.payload.allowListCallData;
+      let prevOrder = modalError.payload.prevOrder;
       sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10);
       buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10);
       let data = [
         auctionId,
         [buyAmount],
         [sellAmount],
-        ['0x0000000000000000000000000000000000000000000000000000000000000001'],
-        '0x',
+        [allowListCallData], // ['0x0000000000000000000000000000000000000000000000000000000000000001'],
+        prevOrder, // '0x',
       ];
       let auctionTxDetail = await methods.send(
         auctionContract.methods.placeSellOrders,
@@ -250,6 +252,8 @@ const AuctionProgress = (props) => {
   const [state, setState] = useState({
     minBuyAmount: '',
     sellAmount: '',
+    allowListCallData: '0x0000000000000000000000000000000000000000000000000000000000000001',
+    prevOrder: '0x',
   });
 
   const [value, setValue] = useState(props.minBuyAmount);
@@ -267,6 +271,8 @@ const AuctionProgress = (props) => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
       { id: 'sellAmount', placeholder: 'Sell Amount' },
+      { id: 'allowListCallData', placeholder: 'Allow List Call Data' },
+      { id: 'prevOrder', placeholder: 'Previous Order' },
     ];
     let isValid = true;
     let errorMessage = '';
@@ -305,7 +311,12 @@ const AuctionProgress = (props) => {
   const showCommitModal = () => {
     let isValid = validateForm();
     if (isValid) {
-      props.handleSubmit(state.minBuyAmount, state.sellAmount);
+      props.handleSubmit(
+        state.minBuyAmount,
+        state.sellAmount,
+        state.allowListCallData,
+        state.prevOrder,
+      );
     }
   };
 
@@ -316,6 +327,7 @@ const AuctionProgress = (props) => {
       ['sellAmount']: newValue,
     });
   };
+
   return (
     <>
       {props.detail && props.detail.chartType === 'block' ? (
@@ -451,6 +463,32 @@ const AuctionProgress = (props) => {
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
                 type="number"
                 onChange={handleInputChange}
+              />
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div className="mb-3 w-full">
+              <span className="label">Allow List Call Data</span>
+              <input
+                // placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
+                id="allowListCallData"
+                onChange={handleInputChange}
+                className="border border-solid border-gray bg-transparent
+                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                // type="number"
+                value={state.allowListCallData}
+              />
+            </div>
+            <div className="mb-3 w-full pr-2">
+              <span className="label">Previous Order</span>
+              <input
+                // placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
+                id="prevOrder"
+                className="border border-solid border-gray bg-transparent
+                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                // type="number"
+                onChange={handleInputChange}
+                value={state.prevOrder}
               />
             </div>
           </div>

@@ -211,7 +211,7 @@ const Epoch = ({ settings, setSetting }) => {
   const [holdingReward, setHoldingReward] = useState('');
   const [eligibleEpochs, seteligibleEpochs] = useState('');
   const [currentEpoch, setCurrentEpoch] = useState('');
-  const [holdingAPI, setHoldingAPI] = useState('');
+  const [holdingAPR, setHoldingAPR] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
   // console.log('settings', settings)
@@ -258,9 +258,11 @@ const Epoch = ({ settings, setSetting }) => {
         Number(getEpoch) - Number(transferPoint[0]) > Number(eligibleEpochs) ||
         Number(getEpoch) - Number(transferPoint[0]) === Number(eligibleEpochs)
       ) {
-        setHoldingAPI((currentEpochROI / 100) * (Number(getEpoch) - Number(transferPoint[0])));
+        setHoldingAPR(
+          ((currentEpochROI / 100) * (Number(getEpoch) - Number(transferPoint[0]))).toFixed(2),
+        );
       } else {
-        setHoldingAPI(0);
+        setHoldingAPR(0);
       }
       setCurrentEpoch(Number(getEpoch) - Number(transferPoint[0]));
       setSetting({
@@ -322,7 +324,7 @@ const Epoch = ({ settings, setSetting }) => {
                     width: '75%',
                   }}
                 >
-                  {holdingAPI}%
+                  {holdingAPR}%
                 </span>
               </div>
               <div className="top-right text-white text-xs text-center">
@@ -405,11 +407,11 @@ const Epoch = ({ settings, setSetting }) => {
               </div>
 
               <Slider
-                // labels={checkCurrentEligibleEpoch ? holdingAPI.toString() : '0'}
-                handleLabel={checkCurrentEligibleEpoch ? holdingAPI.toString() : '0'}
+                // labels={checkCurrentEligibleEpoch ? holdingAPR.toString() : '0'}
+                handleLabel={checkCurrentEligibleEpoch ? holdingAPR.toString() : '0'}
                 min={0}
                 max={100}
-                value={checkCurrentEligibleEpoch ? holdingAPI : 0}
+                value={checkCurrentEligibleEpoch ? holdingAPR : 0}
                 tooltip={true}
               />
             </div>
