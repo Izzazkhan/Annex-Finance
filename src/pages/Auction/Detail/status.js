@@ -454,7 +454,7 @@ const AuctionProgress = (props) => {
                 value={state.sellAmount}
               />
             </div>
-            <div className="mb-3 w-full pr-2">
+            <div className="mb-3 w-full pl-2">
               <span className="label">Min Buy Amount</span>
               <input
                 placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
@@ -479,7 +479,7 @@ const AuctionProgress = (props) => {
                 value={state.allowListCallData}
               />
             </div>
-            <div className="mb-3 w-full pr-2">
+            <div className="mb-3 w-full pl-2">
               <span className="label">Previous Order</span>
               <input
                 // placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
