@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@annex/sdk": "git+https://github.com/annexfinance/annex-swap-sdk.git",
+    "@annex/sdk": "https://github.com/annexfinance/annex-swap-sdk",
+    "@ethersproject/networks": "^5.4.1",
     "@apollo/client": "^3.3.20",
     "@craco/craco": "^6.2.0",
     "@ethersproject/abi": "^5.2.0",
@@ -13,7 +14,6 @@
     "@ethersproject/bytes": "^5.4.0",
     "@ethersproject/constants": "^5.2.0",
     "@ethersproject/contracts": "^5.2.0",
-    "@ethersproject/networks": "^5.4.1",
     "@ethersproject/providers": "^5.1.2",
     "@ethersproject/solidity": "^5.4.0",
     "@ethersproject/strings": "^5.2.0",
