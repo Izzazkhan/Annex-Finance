@@ -3,9 +3,6 @@ import { BarChart, Bar, ResponsiveContainer, Cell, XAxis, YAxis, Tooltip } from 
 import moment from 'moment';
 
 function CustomTooltip({ payload, label, active }) {
-  console.log('payload', payload);
-  // let priceSeparate = label && label.split(' ');
-  // label = priceSeparate && Number(priceSeparate[0]).toFixed(2).toString() + ' ' + priceSeparate[1];
   if (active) {
     return (
       <div
@@ -33,7 +30,6 @@ function CustomTooltip({ payload, label, active }) {
 }
 
 export default function Chart(props) {
-  console.log('props in graphs', props);
   return (
     <div
       className="relative pt-5"
@@ -51,11 +47,10 @@ export default function Chart(props) {
           <Bar dataKey="auctionDivBuyAmount" fill="#C4C4C4">
             {props.data.length &&
               props.data.map((entry, index) => {
-                console.log('entry', entry);
-                const color = entry.isSuccessfull
-                  ? // && Math.floor(Date.now() / 1000) > entry.auctionEndDate
-                    '#C4C4C4'
-                  : '#565656';
+                const color =
+                  entry.isSuccessfull && Math.floor(Date.now() / 1000) > entry.auctionEndDate
+                    ? '#C4C4C4'
+                    : '#565656';
 
                 return <Cell fill={color} key={index} />;
               })}

@@ -6,6 +6,7 @@ import LineChart from '../../../components/common/LineChart';
 import { useHistory } from 'react-router-dom';
 
 function AuctionItem(props) {
+  console.log('props', props);
   const mappedOrderData = props.orders.map((item, index) => {
     const buyAmount = item.buyAmount.split(' ')[0];
     const price = Number(item.price.split(' ')[0]).toFixed(2);
@@ -23,6 +24,7 @@ function AuctionItem(props) {
 
   mappedOrderData.map((item, i) => {
     item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
+    item.auctionEndDate = props.auctionEndDate;
   });
 
   const history = useHistory();

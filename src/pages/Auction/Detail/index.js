@@ -237,7 +237,6 @@ function Detail(props) {
           auctionDecimal: elem['auctioningToken']['decimals'],
           biddingDecimal: elem['biddingToken']['decimals'],
         });
-        console.log('graphData', graphData);
         let orders = [];
         let placeHolderMinBuyAmount = 0;
         let placeholderSellAmount = 0;
@@ -268,7 +267,7 @@ function Detail(props) {
           let price = order['price'] ? order['price'] : 0;
           let priceSeparate = price.split(' ');
           price = Number(priceSeparate[0]).toFixed(2);
-
+          let priceUnit = priceSeparate[1];
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -286,6 +285,7 @@ function Detail(props) {
               biddingSymbol,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
+              priceUnit: priceUnit,
             });
           } else {
             otherUserOrders.push({
@@ -296,11 +296,11 @@ function Detail(props) {
               biddingSymbol,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
+              priceUnit: priceUnit,
             });
           }
         });
         orders = userOrders.concat(otherUserOrders);
-        console.log('orders', orders);
         if (orderLength === 0) {
           placeHolderMinBuyAmount = minBuyAmount;
           placeholderSellAmount = minBuyAmount;
@@ -373,10 +373,8 @@ function Detail(props) {
       auctionDecimal,
       biddingDecimal,
     );
-    console.log('ordersList', ordersList, orders);
     orders &&
       orders.forEach((item) => {
-        console.log('**item', item);
         graphData.push({
           ...item,
           isSuccessfull: item.price >= clearingPriceOrder.price,
@@ -385,8 +383,6 @@ function Detail(props) {
 
     return graphData;
   };
-
-  console.log('new data', data);
 
   const convertExponentToNum = (x) => {
     if (Math.abs(x) < 1.0) {
@@ -479,7 +475,6 @@ function Detail(props) {
       // });
       // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
       // auction.userId.id = 17;
-      console.log('auction=>>>>>>>>>>>>', auction);
       let encodedOrder = encodeOrder(
         auction.userId.id,
         auction.buyAmount_eth,
@@ -516,8 +511,6 @@ function Detail(props) {
     state.detail.data.reduce(function (acc, obj) {
       return acc + Number(obj.sellAmount);
     }, 0);
-
-  console.log('state', state);
 
   return (
     <div>

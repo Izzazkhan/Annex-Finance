@@ -70,9 +70,6 @@ function Past(props) {
     }
   `);
   useEffect(() => {
-    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    // console.log('##############################');
-    console.log('original data', data);
     if (data && data.auctions) {
       let arr = [];
       data.auctions.forEach((element) => {
@@ -91,13 +88,10 @@ function Past(props) {
         let graphData = [];
         orders &&
           orders.forEach((item) => {
-            // let buyAmount = item['buyAmount'];
-            console.log('item', item);
             graphData.push({
               ...item,
               isSuccessfull: item.price >= clearingPriceOrder.price,
               auctionEndDate: auctionEndDate,
-              // buyAmount: Number(buyAmount.split(' ')[0]),
             });
           });
         arr.push({
@@ -114,8 +108,6 @@ function Past(props) {
       setAuction(arr);
     }
   }, [data]);
-
-  console.log('auction', auction);
 
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
