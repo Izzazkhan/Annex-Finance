@@ -269,7 +269,6 @@ function Table(props) {
               propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
                 let userId = item.userId.address.toLowerCase();
                 let account = props.account ? props.account.toLowerCase() : '0x';
-                console.log('account', userId, account);
                 return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
                   <tr key={index}>
                     <td>
