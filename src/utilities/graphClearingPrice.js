@@ -195,8 +195,8 @@ function getConvertedOrders(orders, auctionDecimal, biddingDecimal) {
     //   sellAmount,
     //   toHex(element.sellAmount / Number('1e' + biddingDecimal)),
     // );
-    let sellAmount = new BigNumber(element.sellAmount / Number('1e' + biddingDecimal));
-    let buyAmount = new BigNumber(element.buyAmount / Number('1e' + auctionDecimal));
+    let sellAmount = new BigNumber(element.sellAmount_eth / Number('1e' + biddingDecimal));
+    let buyAmount = new BigNumber(element.buyAmount_eth / Number('1e' + auctionDecimal));
     convertedOrder.push({
       userId: new BigNumber(element.userId['id']),
       sellAmount,

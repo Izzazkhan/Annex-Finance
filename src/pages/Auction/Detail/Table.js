@@ -75,6 +75,7 @@ function Table(props) {
         let orderData = encodeOrder(userId, sellAmount, buyAmount);
         orders.push(orderData);
       }
+      console.log('orders', orders);
       await methods.send(
         props.auctionContract.methods.claimFromParticipantOrder,
         [auctionId, orders],
@@ -267,6 +268,7 @@ function Table(props) {
               </tr>
             ) : (
               propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
+                console.log('item>>>>>>>>>>>>>>>>>>>', item);
                 let userId = item.userId.address.toLowerCase();
                 let account = props.account ? props.account.toLowerCase() : '0x';
                 return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
@@ -284,15 +286,13 @@ function Table(props) {
                       </div>
                     </td>
                     <td>
-                      <div>{(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}</div>
+                      <div>{item.price}</div>
                     </td>
                     <td>
-                      <div>
-                        {item.auctionDivSellAmount} {item.biddingSymbol}
-                      </div>
+                      <div>{item.sellAmount}</div>
                     </td>
                     <td>
-                      <div>{item.lpToken}</div>
+                      <div>{item.claimableLP}</div>
                     </td>
                     <td>
                       <div className="text-primary">
@@ -308,10 +308,10 @@ function Table(props) {
                       <div>{item.blockNumber}</div>
                     </td>
                     <td>
-                      <div>{item.auctionDivBuyAmount}</div>
+                      <div>{item.buyAmount}</div>
                     </td>
                     <td>
-                      <div>{item.auctionDivSellAmount}</div>
+                      <div>{item.sellAmount}</div>
                     </td>
                     <td>
                       {account === userId &&

@@ -30,12 +30,27 @@ function Live(props) {
       orderCancellationEndDate
       auctionEndDate
       auctionStartDate
+      auctionedSellAmount_eth
+      minBuyAmount_eth
+      liquidity_eth
+      soldAuctioningTokens_eth
+      minimumBiddingAmountPerOrder_eth
+      estimatedTokenSold_eth
+      minFundingThreshold_eth
+      maxAvailable_eth
+      minimumPrice_eth
+      currentPrice_eth
       orders {
         id
         buyAmount
         sellAmount
         claimableLP
         status
+        buyAmount_eth
+        sellAmount_eth
+        claimableLP_eth
+        price_eth
+        price
         userId {
           id
         }
@@ -45,6 +60,8 @@ function Live(props) {
         bidder {
           id
           status
+          lpTokens_eth
+          biddingToken_eth
         }
       }
     }
@@ -58,7 +75,7 @@ function Live(props) {
 
   useEffect(() => {
     if (data && data.auctions) {
-      // console.log('auction Data', data);
+      console.log('auction Data', data);
       let arr = [];
       data.auctions.forEach((element) => {
         let auctionDecimal = element['auctioningToken']['decimals'];

@@ -23,7 +23,9 @@ const AuctionStatus = ({
   auctionContract,
   auctionAddr,
   getData,
+  orders,
 }) => {
+  console.log('orders', orders, 'detail', detail);
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
@@ -44,7 +46,7 @@ const AuctionStatus = ({
       setAuctionThreshold(threshold);
     }
   }, [showModal]);
-  const showCommitModal = async (minBuyAmount, sellAmount, allowListCallData, prevOrder) => {
+  const showCommitModal = async (minBuyAmount, sellAmount) => {
     updateShowModal(true);
     let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
     let biddingTokenBalance = await methods.call(biddingTokenContract.methods.balanceOf, [account]);
@@ -58,7 +60,7 @@ const AuctionStatus = ({
       setModalError({
         type: '',
         message: '',
-        payload: { minBuyAmount, sellAmount, allowListCallData, prevOrder },
+        payload: { minBuyAmount, sellAmount },
       });
     }
     await handleApproveBiddingToken();
@@ -89,16 +91,16 @@ const AuctionStatus = ({
       setLoading(true);
       let sellAmount = modalError.payload.sellAmount;
       let buyAmount = modalError.payload.minBuyAmount;
-      let allowListCallData = modalError.payload.allowListCallData;
-      let prevOrder = modalError.payload.prevOrder;
+      // let allowListCallData = modalError.payload.allowListCallData;
+      // let prevOrder = modalError.payload.prevOrder;
       sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10);
       buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10);
       let data = [
         auctionId,
         [buyAmount],
         [sellAmount],
-        [allowListCallData], // ['0x0000000000000000000000000000000000000000000000000000000000000001'],
-        prevOrder, // '0x',
+        ['0x0000000000000000000000000000000000000000000000000000000000000001'],
+        '0x',
       ];
       let auctionTxDetail = await methods.send(
         auctionContract.methods.placeSellOrders,
@@ -163,6 +165,7 @@ const AuctionStatus = ({
           minBuyAmount={minBuyAmount}
           maxAvailable={maxAvailable}
           handleSubmit={showCommitModal}
+          orders={orders}
         />
       ) : auctionStatus === 'completed' ? (
         <AuctionCompleted settlAuction={settlAuction} isAlreadySettle={detail['isAlreadySettle']} />
@@ -249,11 +252,24 @@ const AuctionCompleted = ({ settlAuction, isAlreadySettle }) => {
   );
 };
 const AuctionProgress = (props) => {
+  console.log('propss', props);
+
+  let isSuccessfullArr = [];
+  props.detail.data.map((item) => {
+    isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+  });
+
+  props.orders.map((item, i) => {
+    item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
+  });
+
+  console.log('props.orders', props.orders);
+
   const [state, setState] = useState({
     minBuyAmount: '',
     sellAmount: '',
-    allowListCallData: '0x0000000000000000000000000000000000000000000000000000000000000001',
-    prevOrder: '0x',
+    // allowListCallData: '0x0000000000000000000000000000000000000000000000000000000000000001',
+    // prevOrder: '0x',
   });
 
   const [value, setValue] = useState(props.minBuyAmount);
@@ -271,8 +287,8 @@ const AuctionProgress = (props) => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
       { id: 'sellAmount', placeholder: 'Sell Amount' },
-      { id: 'allowListCallData', placeholder: 'Allow List Call Data' },
-      { id: 'prevOrder', placeholder: 'Previous Order' },
+      // { id: 'allowListCallData', placeholder: 'Allow List Call Data' },
+      // { id: 'prevOrder', placeholder: 'Previous Order' },
     ];
     let isValid = true;
     let errorMessage = '';
@@ -314,8 +330,8 @@ const AuctionProgress = (props) => {
       props.handleSubmit(
         state.minBuyAmount,
         state.sellAmount,
-        state.allowListCallData,
-        state.prevOrder,
+        // state.allowListCallData,
+        // state.prevOrder,
       );
     }
   };
@@ -348,8 +364,8 @@ const AuctionProgress = (props) => {
               <span></span>UnSuccessfull
             </span>
             {/*  */}
-            {props.detail && props.detail.data.length > 0 ? (
-              <BarChart width="100%" height="211px" data={props.detail.data} />
+            {props.orders && props.orders.length > 0 ? (
+              <BarChart width="100%" height="211px" data={props.orders} />
             ) : (
               <div
                 className="relative pt-5"
@@ -466,7 +482,7 @@ const AuctionProgress = (props) => {
               />
             </div>
           </div>
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <div className="mb-3 w-full">
               <span className="label">Allow List Call Data</span>
               <input
@@ -491,7 +507,7 @@ const AuctionProgress = (props) => {
                 value={state.prevOrder}
               />
             </div>
-          </div>
+          </div> */}
           <div className="input-with-button text-right">
             <button
               className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24

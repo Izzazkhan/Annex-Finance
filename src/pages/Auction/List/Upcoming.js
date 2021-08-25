@@ -32,12 +32,26 @@ function Upcoming(props) {
         orderCancellationEndDate
         auctionEndDate
         auctionStartDate
+        auctionedSellAmount_eth
+        minBuyAmount_eth
+        liquidity_eth
+        soldAuctioningTokens_eth
+        minimumBiddingAmountPerOrder_eth
+        estimatedTokenSold_eth
+        minFundingThreshold_eth
+        maxAvailable_eth
+        minimumPrice_eth
+        currentPrice_eth
         orders {
           id
           buyAmount
           sellAmount
           claimableLP
           status
+          buyAmount_eth
+          sellAmount_eth
+          claimableLP_eth
+          price_eth
           userId {
             id
           }
@@ -47,6 +61,8 @@ function Upcoming(props) {
           bidder {
             id
             status
+            lpTokens_eth
+            biddingToken_eth
           }
         }
       }
@@ -63,7 +79,9 @@ function Upcoming(props) {
           auctionDecimal,
           biddingDecimal,
         );
-        let formatedAuctionDate = moment.unix(element['auctionStartDate']).format('MM/DD/YYYY HH:mm:ss');
+        let formatedAuctionDate = moment
+          .unix(element['auctionStartDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
         orders &&
           orders.forEach((item) => {
@@ -79,7 +97,7 @@ function Upcoming(props) {
           status: 'Upcoming',
           statusClass: 'upcoming',
           formatedAuctionDate,
-          dateLabel:'Starting Date',
+          dateLabel: 'Starting Date',
           title: element.type + ' Auction',
         });
       });
@@ -103,8 +121,8 @@ function Upcoming(props) {
           })}
         </div>
       ) : (
-              <div className="text-center mb-5 mt-5">No data found</div>
-            )}
+        <div className="text-center mb-5 mt-5">No data found</div>
+      )}
     </div>
   );
 }
