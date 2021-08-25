@@ -27,6 +27,10 @@ function AuctionItem(props) {
     item.auctionEndDate = props.auctionEndDate;
   });
 
+  const sortByBuyAmount = mappedOrderData.sort(
+    (a, b) => Number(b.auctionDivBuyAmount) - Number(a.auctionDivBuyAmount),
+  );
+
   const history = useHistory();
   const redirectToUrl = (url) => {
     history.push(url);
@@ -70,7 +74,7 @@ function AuctionItem(props) {
                     width="310px"
                     height="230px"
                     style={{ marginTop: '-25px' }}
-                    data={mappedOrderData}
+                    data={sortByBuyAmount}
                   />
                 ) : (
                   <div
