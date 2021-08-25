@@ -29,6 +29,16 @@ function Past(props) {
           id
           decimals
         }
+        auctionedSellAmount_eth
+        minBuyAmount_eth
+        liquidity_eth
+        soldAuctioningTokens_eth
+        minimumBiddingAmountPerOrder_eth
+        estimatedTokenSold_eth
+        minFundingThreshold_eth
+        maxAvailable_eth
+        minimumPrice_eth
+        currentPrice_eth
         orderCancellationEndDate
         auctionEndDate
         auctionStartDate
@@ -38,6 +48,11 @@ function Past(props) {
           sellAmount
           claimableLP
           status
+          buyAmount_eth
+          sellAmount_eth
+          claimableLP_eth
+          price_eth
+          price
           userId {
             id
           }
@@ -47,15 +62,14 @@ function Past(props) {
           bidder {
             id
             status
+            lpTokens_eth
+            biddingToken_eth
           }
         }
       }
     }
   `);
   useEffect(() => {
-    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    // console.log('##############################');
-    // console.log('data', data);
     if (data && data.auctions) {
       let arr = [];
       data.auctions.forEach((element) => {

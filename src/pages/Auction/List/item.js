@@ -6,7 +6,27 @@ import LineChart from '../../../components/common/LineChart';
 import { useHistory } from 'react-router-dom';
 
 function AuctionItem(props) {
-  console.log('###', props);
+  console.log('props', props);
+  const mappedOrderData = props.orders.map((item, index) => {
+    const buyAmount = item.buyAmount.split(' ')[0];
+    const price = Number(item.price.split(' ')[0]).toFixed(2);
+    return {
+      ...item,
+      auctionDivBuyAmount: buyAmount,
+      price: price,
+    };
+  });
+
+  let isSuccessfullArr = [];
+  props.data.map((item) => {
+    isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+  });
+
+  mappedOrderData.map((item, i) => {
+    item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
+    item.auctionEndDate = props.auctionEndDate;
+  });
+
   const history = useHistory();
   const redirectToUrl = (url) => {
     history.push(url);
@@ -50,7 +70,7 @@ function AuctionItem(props) {
                     width="310px"
                     height="230px"
                     style={{ marginTop: '-25px' }}
-                    data={props.data}
+                    data={mappedOrderData}
                   />
                 ) : (
                   <div

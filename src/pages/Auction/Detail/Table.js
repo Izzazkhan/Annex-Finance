@@ -147,8 +147,8 @@ function Table(props) {
   };
 
   useEffect(() => {
-    let DescendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
-    setPropsData(DescendingSort);
+    let descendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
+    setPropsData(descendingSort);
   }, [props.data]);
 
   const onSortChange = (sortColum) => {
@@ -215,13 +215,13 @@ function Table(props) {
               <th>
                 Price{' '}
                 <button onClick={() => onSortChange('Price')}>
-                  {sortTypes[currentSort].class === 'price-sort-up' ? (
-                    <img className="inline relative left-1" src={sortDown} alt="price-sort-up" />
-                  ) : sortTypes[currentSort].class === 'price-sort-down' ? (
-                    <img className="inline relative left-1" src={sortUp} alt="price-sort down" />
+                  {sortTypes[currentSort].class === 'price-sort-down' ? (
+                    <img className="inline relative left-1" src={sortDown} alt="price-sort-down" />
+                  ) : sortTypes[currentSort].class === 'price-sort-up' ? (
+                    <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
                   ) : (
                     <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                      <img className="inline w-2.5" src={sortUp} alt="price-sort up" />
+                      <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
                       <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
                     </span>
                   )}
@@ -284,15 +284,15 @@ function Table(props) {
                       </div>
                     </td>
                     <td>
-                      <div>{(item.auctionDivSellAmount / item.auctionDivBuyAmount).toFixed(8)}</div>
-                    </td>
-                    <td>
                       <div>
-                        {item.auctionDivSellAmount} {item.biddingSymbol}
+                        {item.price} {item.priceUnit}
                       </div>
                     </td>
                     <td>
-                      <div>{item.lpToken}</div>
+                      <div>{item.sellAmount}</div>
+                    </td>
+                    <td>
+                      <div>{item.claimableLP}</div>
                     </td>
                     <td>
                       <div className="text-primary">
@@ -308,10 +308,10 @@ function Table(props) {
                       <div>{item.blockNumber}</div>
                     </td>
                     <td>
-                      <div>{item.auctionDivBuyAmount}</div>
+                      <div>{item.buyAmount}</div>
                     </td>
                     <td>
-                      <div>{item.auctionDivSellAmount}</div>
+                      <div>{item.sellAmount}</div>
                     </td>
                     <td>
                       {account === userId &&
@@ -345,7 +345,8 @@ function Table(props) {
                             </span>
                           </label>
                         </div>
-                      ) : props.isAllowCancellation &&
+                      ) : account === userId &&
+                        props.isAllowCancellation &&
                         props.auctionStatus !== 'completed' &&
                         item.status !== 'CANCELLED' ? (
                         <div className="flex items-center custom-check">
@@ -389,7 +390,7 @@ function Table(props) {
                           </label>
                         </div>
                       ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
-                        <div>'Waiting to settle</div>
+                        <div>Waiting to settle</div>
                       ) : (
                         ''
                       )}

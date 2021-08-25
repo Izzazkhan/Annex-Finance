@@ -112,6 +112,16 @@ function Detail(props) {
       isAtomicClosureAllowed
       estimatedTokenSold
       minimumBiddingAmountPerOrder
+      auctionedSellAmount_eth
+      minBuyAmount_eth
+      liquidity_eth
+      soldAuctioningTokens_eth
+      minimumBiddingAmountPerOrder_eth
+      estimatedTokenSold_eth
+      minFundingThreshold_eth
+      maxAvailable_eth
+      minimumPrice_eth
+      currentPrice_eth
     }
     
     orders(where: { auctionId : "${props.match.params.id}" }){
@@ -131,8 +141,14 @@ function Detail(props) {
       txHash
       blockNumber
       timestamp
+      buyAmount_eth
+      sellAmount_eth
+      claimableLP_eth
+      price_eth
       bidder{
         status
+        lpTokens_eth
+        biddingToken_eth
       }
       }
   }
@@ -161,13 +177,19 @@ function Detail(props) {
         let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
         let auctionBalance = await getTokenBalance(auctionTokenId, auctionDecimal);
         let biddingBalance = await getTokenBalance(biddingTokenId, biddingDecimal);
-        let totalAuction = elem['auctionedSellAmount']
-          ? new BigNumber(elem['auctionedSellAmount']).dividedBy(auctionDecimal).toString()
+        let totalAuction = elem['auctionedSellAmount_eth']
+          ? new BigNumber(elem['auctionedSellAmount_eth']).dividedBy(auctionDecimal).toString()
           : 0;
-        let minimumPrice = new BigNumber(elem['minimumPrice']).dividedBy(biddingDecimal).toNumber();
-        let maxAvailable = new BigNumber(elem['maxAvailable']).dividedBy(auctionDecimal).toNumber();
-        let currentPrice = new BigNumber(elem['currentPrice']).dividedBy(biddingDecimal).toNumber();
-        let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder'])
+        let minimumPrice = new BigNumber(elem['minimumPrice_eth'])
+          .dividedBy(biddingDecimal)
+          .toNumber();
+        let maxAvailable = new BigNumber(elem['maxAvailable_eth'])
+          .dividedBy(auctionDecimal)
+          .toNumber();
+        let currentPrice = new BigNumber(elem['currentPrice_eth'])
+          .dividedBy(biddingDecimal)
+          .toNumber();
+        let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(biddingDecimal)
           .toNumber();
         minimumPrice = convertExponentToNum(minimumPrice);
@@ -176,13 +198,13 @@ function Detail(props) {
         minBuyAmount = convertExponentToNum(minBuyAmount);
 
         let minFundingThreshold = convertExponentToNum(
-          new BigNumber(elem['minFundingThreshold']).dividedBy(1000000).toNumber(),
+          new BigNumber(elem['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
         );
-        let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder'])
+        let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(1000000)
           .toNumber();
         let estimatedTokenSold = convertExponentToNum(
-          new BigNumber(elem['estimatedTokenSold']).dividedBy(auctionDecimal).toNumber(),
+          new BigNumber(elem['estimatedTokenSold_eth']).dividedBy(auctionDecimal).toNumber(),
         );
 
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
@@ -236,13 +258,16 @@ function Detail(props) {
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
           let userId = order.userId.address.toLowerCase();
-          let auctionDivBuyAmount = new BigNumber(order['buyAmount'])
+          let auctionDivBuyAmount = new BigNumber(order['buyAmount_eth'])
             .dividedBy(auctionDecimal)
             .toString();
-          let auctionDivSellAmount = new BigNumber(order['sellAmount'])
+          let auctionDivSellAmount = new BigNumber(order['sellAmount_eth'])
             .dividedBy(biddingDecimal)
             .toString();
-          let price = new BigNumber(order['price']).dividedBy(auctionDecimal).toFixed(8).toString();
+          let price = order['price'] ? order['price'] : 0;
+          let priceSeparate = price.split(' ');
+          price = Number(priceSeparate[0]).toFixed(2);
+          let priceUnit = priceSeparate[1];
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
@@ -260,6 +285,7 @@ function Detail(props) {
               biddingSymbol,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
+              priceUnit: priceUnit,
             });
           } else {
             otherUserOrders.push({
@@ -270,6 +296,7 @@ function Detail(props) {
               biddingSymbol,
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
+              priceUnit: priceUnit,
             });
           }
         });
@@ -353,6 +380,7 @@ function Detail(props) {
           isSuccessfull: item.price >= clearingPriceOrder.price,
         });
       });
+
     return graphData;
   };
 
@@ -447,7 +475,12 @@ function Detail(props) {
       // });
       // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
       // auction.userId.id = 17;
-      let encodedOrder = encodeOrder(auction.userId.id, auction.buyAmount, auction.sellAmount);
+      let encodedOrder = encodeOrder(
+        auction.userId.id,
+        auction.buyAmount_eth,
+        auction.sellAmount_eth,
+      );
+      // let encodedOrder = encodeOrder(auction.userId.id, 0, 0);
       // console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
       methods
         .call(auctionContract.methods.calculateLPTokens, [
@@ -472,8 +505,6 @@ function Detail(props) {
     balanceOf = new BigNumber(balanceOf).dividedBy(decimal).toNumber();
     return balanceOf;
   };
-
-  console.log('state', state);
 
   const totalSellAmount =
     state.detail.data &&
@@ -953,6 +984,7 @@ function Detail(props) {
             auctionContract={auctionContract}
             auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
             getData={getData}
+            orders={state.orders}
           />
         </div>
       </div>

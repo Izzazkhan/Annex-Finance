@@ -30,12 +30,27 @@ function Live(props) {
       orderCancellationEndDate
       auctionEndDate
       auctionStartDate
+      auctionedSellAmount_eth
+      minBuyAmount_eth
+      liquidity_eth
+      soldAuctioningTokens_eth
+      minimumBiddingAmountPerOrder_eth
+      estimatedTokenSold_eth
+      minFundingThreshold_eth
+      maxAvailable_eth
+      minimumPrice_eth
+      currentPrice_eth
       orders {
         id
         buyAmount
         sellAmount
         claimableLP
         status
+        buyAmount_eth
+        sellAmount_eth
+        claimableLP_eth
+        price_eth
+        price
         userId {
           id
         }
@@ -45,6 +60,8 @@ function Live(props) {
         bidder {
           id
           status
+          lpTokens_eth
+          biddingToken_eth
         }
       }
     }
@@ -58,7 +75,6 @@ function Live(props) {
 
   useEffect(() => {
     if (data && data.auctions) {
-      // console.log('auction Data', data);
       let arr = [];
       data.auctions.forEach((element) => {
         let auctionDecimal = element['auctioningToken']['decimals'];
@@ -97,7 +113,7 @@ function Live(props) {
     }
   }, [data]);
 
-  // console.log('auction', auction);
+  console.log('auction', auction);
 
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
@@ -112,7 +128,6 @@ function Live(props) {
       ) : auction.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
           {auction.map((item, index) => {
-            // console.log('item', item);
             return <AuctionItem key={index} {...item} />;
           })}
         </div>
