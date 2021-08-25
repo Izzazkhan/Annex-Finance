@@ -133,7 +133,6 @@ function Table(props) {
     } else {
       arr.push(item);
     }
-    console.log('selectedClaimOrders', selectedClaimOrders);
     updateSelectedClaimOrders(arr);
   };
   const handleCancelCheckbox = (item) => {
@@ -144,7 +143,6 @@ function Table(props) {
     } else {
       arr.push(item);
     }
-    console.log('selectedCancelOrders', selectedCancelOrders);
     updateSelectedCancelOrders(arr);
   };
 

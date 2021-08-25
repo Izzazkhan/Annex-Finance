@@ -98,7 +98,6 @@ const AuctionStatus = ({
         ['0x0000000000000000000000000000000000000000000000000000000000000001'],
         '0x',
       ];
-      console.log('data: ', data);
       let auctionTxDetail = await methods.send(
         auctionContract.methods.placeSellOrders,
         data,
@@ -126,7 +125,6 @@ const AuctionStatus = ({
     try {
       e.preventDefault();
       setLoading(true);
-      // console.log('settleAuction');
       await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       getData();
       setLoading(false);
@@ -154,21 +152,21 @@ const AuctionStatus = ({
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
       </div>
-      {/* {auctionStatus === 'upcoming' ? (
+      {auctionStatus === 'upcoming' ? (
         <AuctionCountDown auctionStartDate={auctionStartDate * 1000} />
-      ) : auctionStatus === 'inprogress' ? ( */}
-      <AuctionProgress
-        auctionEndDate={auctionEndDate}
-        detail={detail}
-        minBuyAmount={minBuyAmount}
-        maxAvailable={maxAvailable}
-        handleSubmit={showCommitModal}
-      />
-      {/* ) : auctionStatus === 'completed' ? (
+      ) : auctionStatus === 'inprogress' ? (
+        <AuctionProgress
+          auctionEndDate={auctionEndDate}
+          detail={detail}
+          minBuyAmount={minBuyAmount}
+          maxAvailable={maxAvailable}
+          handleSubmit={showCommitModal}
+        />
+      ) : auctionStatus === 'completed' ? (
         <AuctionCompleted settlAuction={settlAuction} isAlreadySettle={detail['isAlreadySettle']} />
       ) : (
         ''
-      )} */}
+      )}
       {/* */}
 
       <Modal
@@ -256,7 +254,6 @@ const AuctionProgress = (props) => {
 
   const [value, setValue] = useState(props.minBuyAmount);
   const handleInputChange = (e) => {
-    console.log('e.target', e.target);
     let value = e.target.value;
     let id = e.target.id;
     setState({
@@ -266,9 +263,6 @@ const AuctionProgress = (props) => {
     setValue(value);
   };
 
-  console.log('state.sellAmount', state.sellAmount);
-
-  // console.log('***', props);
   const validateForm = () => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
@@ -316,7 +310,6 @@ const AuctionProgress = (props) => {
   };
 
   const onChangeSlider = (newValue) => {
-    console.log('newvalue', newValue);
     setValue(newValue);
     setState({
       ...state,
@@ -325,7 +318,7 @@ const AuctionProgress = (props) => {
   };
   return (
     <>
-      {console.log(props.detail) && props.detail.chartType === 'block' ? (
+      {props.detail && props.detail.chartType === 'block' ? (
         <Fragment>
           <div className="chart flex items-end relative mt-5 pl-10 mr-2">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
