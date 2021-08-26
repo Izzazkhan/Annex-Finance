@@ -15,7 +15,8 @@ import Select from '../../components/UI/Select';
 import Switch from "../../components/UI/Switch";
 import { Grid } from 'react-virtualized';
 import styled from 'styled-components';
-
+import ComingSoon from '../../assets/images/coming-soon.png';
+import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
 
 const Styles = styled.div`
  .border-custom{
@@ -326,25 +327,33 @@ function Pools() {
 
   return (
     <Layout mainClassName="min-h-screen py-8">
+      <div className="flex justify-between items-center w-full text-white">
+        <div className="coming-soon">
+          <div className="image">
+            <img src={ComingSoon} alt="Coming Soon" className="" />
+          </div>
+        </div>
+      </div>
+
       <Styles>
-        <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
+        {/* <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
  pl-6 lg:pr-5 ">
           <div className="col-span-2 flex items-center">
             <div className="list-icon">
-              <a onClick={ListViews}>{showList? <img src={ListIconActive} alt="" className="" width="28px"  height="25px"/>
-              : <img src={ListIcon} alt="" className="" width="28px" height="25px"/>}</a>
+              <a onClick={ListViews}>{showList ? <img src={ListIconActive} alt="" className="" width="28px" height="25px" />
+                : <img src={ListIcon} alt="" className="" width="28px" height="25px" />}</a>
             </div>
             <div className="grid-icon ml-3">
-              <a onClick={GridViews}>{showGrid? <img src={GridIconActive} alt="" className="" width="25px" height="25px" />
-              :<img src={GridIcon} alt="" className="" width="25px" height="25px"/>}</a>
+              <a onClick={GridViews}>{showGrid ? <img src={GridIconActive} alt="" className="" width="25px" height="25px" />
+                : <img src={GridIcon} alt="" className="" width="25px" height="25px" />}</a>
             </div>
           </div>
           <div className="col-span-5 flex items-center">
             <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
-             ${live ? "bgPrimaryGradient" :  "bg-transparent border border-primary"} `}
+             ${live ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
             >Live</a>
             <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
-             ${finished ? "bgPrimaryGradient" :  "bg-transparent border border-primary"} `}>Finished</a>
+             ${finished ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}>Finished</a>
             <div className="flex items-center text-white ml-5 pt-2">
               <Switch />
               <div className="ml-2 mb-2">Staked only</div>
@@ -365,9 +374,9 @@ function Pools() {
 
           </div>
 
-        </div>
+        </div> */}
         {/* <GridView /> */}
-        { showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} /> }
+        {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
       </Styles>
     </Layout>
   );
