@@ -12,6 +12,8 @@ import ListIconActive from '../../assets/images/card-list-btn-active.png';
 import GridIconActive from '../../assets/images/card-grid-btn-active.png';
 import Select from '../../components/UI/Select';
 import Switch from "../../components/UI/Switch";
+import ComingSoon from '../../assets/images/coming-soon.png';
+import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
 
 
 function Farms() {
@@ -300,7 +302,16 @@ function Farms() {
 
   return (
     <Layout mainClassName="min-h-screen py-8">
-      <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
+      <div className="flex justify-between items-center w-full text-white">
+        <div className="coming-soon">
+          <div className="image">
+            <img src={ComingSoon} alt="Coming Soon" className="" /> 
+          </div>
+        </div>
+      </div>
+
+
+      {/* <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
  pl-6 lg:pr-5 ">
         <div className="col-span-2 flex items-center">
           <div className="list-icon">
@@ -335,7 +346,7 @@ function Farms() {
         </div>
 
       </div>
-      <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />
+      <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} /> */}
     </Layout>
   );
 }
