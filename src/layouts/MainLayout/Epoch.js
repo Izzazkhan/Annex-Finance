@@ -346,7 +346,9 @@ const Epoch = ({ settings, setSetting }) => {
         accountAddress,
         0,
       ]);
-      if (
+      if (annBalance / Math.pow(10, decimals) === 0) {
+        setHoldingAPR(0);
+      } else if (
         Number(getEpoch) - Number(transferPoint[0]) > Number(eligibleEpochs) ||
         Number(getEpoch) - Number(transferPoint[0]) === Number(eligibleEpochs)
       ) {
@@ -356,7 +358,12 @@ const Epoch = ({ settings, setSetting }) => {
       } else {
         setHoldingAPR(0);
       }
-      setCurrentEpoch(Number(getEpoch) - Number(transferPoint[0]));
+
+      if (annBalance / Math.pow(10, decimals) === 0) {
+        setCurrentEpoch(0);
+      } else {
+        setCurrentEpoch(Number(getEpoch) - Number(transferPoint[0]));
+      }
       setSetting({
         annBalance: annBalance / Math.pow(10, decimals),
       });
