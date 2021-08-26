@@ -66,15 +66,18 @@ function Table(props) {
       let orders = [];
       for (let index = 0; index < selectedClaimOrders.length; index++) {
         const element = selectedClaimOrders[index];
+        console.log('element: ', element);
         let userId = element['userId']['id'];
-        let sellAmount = element['sellAmount'];
-        let buyAmount = element['buyAmount'];
+        let sellAmount = element['sellAmount_eth'];
+        let buyAmount = element['buyAmount_eth'];
+        console.log('user claim data: ', userId, sellAmount, buyAmount);
         userId = toHex(userId, { addPrefix: true });
         sellAmount = toHex(sellAmount, { addPrefix: true });
         buyAmount = toHex(buyAmount, { addPrefix: true });
         let orderData = encodeOrder(userId, sellAmount, buyAmount);
         orders.push(orderData);
       }
+      console.log('claim orders: ', orders);
       await methods.send(
         props.auctionContract.methods.claimFromParticipantOrder,
         [auctionId, orders],

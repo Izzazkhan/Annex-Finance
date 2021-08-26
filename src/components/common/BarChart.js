@@ -32,7 +32,7 @@ function CustomTooltip({ payload, label, active }) {
 export default function Chart(props) {
   // console.log('data in chart', props);
   const sortByBuyAmount = props.data.sort(
-    (a, b) => Number(b.auctionDivBuyAmount) - Number(a.auctionDivBuyAmount),
+    (a, b) => Number(a.price) - Number(b.price),
   );
   return (
     <div

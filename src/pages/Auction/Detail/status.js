@@ -292,28 +292,40 @@ const AuctionProgress = (props) => {
     ];
     let isValid = true;
     let errorMessage = '';
+    console.log('validate: ', props);
     for (let index = 0; index < inputs.length; index++) {
       let key = inputs[index]['id'];
       let placeholder = inputs[index]['placeholder'];
       let value = Number(state[key]);
       let minBuyAmount = Number(props.minBuyAmount);
       let maxAvailable = Number(props.maxAvailable);
+      let minBiddingPerOrder = Number(props.detail.minimumBiddingAmountPerOrder);
+      let biddingSymbol = props.detail.biddingSymbol;
+      let auctioningSymbol = props.detail.auctionSymbol;
+
       if (value === '' || value === 0) {
         errorMessage = `${placeholder} required`;
         isValid = false;
         break;
         // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
-      } else if (key === 'minBuyAmount' && value < minBuyAmount) {
-        errorMessage = `${placeholder} must be greater than Minimum Token Amount`;
+      } else if (key === 'minBuyAmount' && value > maxAvailable) {
+        errorMessage = `${placeholder} must be less than Maximum Auctioning Amount - ${maxAvailable} ${auctioningSymbol}`;
         isValid = false;
         break;
-      } else if (key === 'sellAmount' && value > maxAvailable) {
-        // } else if (key === 'sellAmount' && value < 10) {
-        errorMessage = `${placeholder} must be smaller than Max Available`;
+      } else if (key === 'sellAmount' && value < minBuyAmount) {
+        errorMessage = `${placeholder} must be larger than Minimum Bidding Amount Per Order - ${minBiddingPerOrder} ${biddingSymbol}`;
         isValid = false;
         break;
       }
     }
+    if (isValid) {
+      let bidPrice = state['sellAmount'] / state['minBuyAmount'];
+      if (bidPrice < props.detail.currentPrice || bidPrice < props.detail.minimumPrice) {
+        errorMessage = `Your bid price ${bidPrice} must be larger than current price or minimum bidding price`;
+        isValid = false;
+      }
+    }
+
     if (!isValid) {
       Swal.fire({
         title: 'Error',
@@ -430,12 +442,12 @@ const AuctionProgress = (props) => {
                 {props.detail && props.detail.biddingBalance && props.detail.auctionBalance && (
                   <div className="flex justify-between mb-3">
                     <div className="text-md mr-3">
-                      <b>{props.detail.auctionSymbol} Bidding Token :</b>{' '}
-                      {props.detail.biddingBalance}
+                      <b>Bidding Token :</b>{' '}
+                      {props.detail.biddingBalance} {props.detail.biddingSymbol}
                     </div>
                     <div className="text-md ">
-                      <b>{props.detail.auctionSymbol} Auction Token :</b>{' '}
-                      {props.detail.auctionBalance}
+                      <b>Auction Token :</b>{' '}
+                      {props.detail.auctionBalance} {props.detail.auctionSymbol}
                     </div>
                   </div>
                 )}
@@ -459,7 +471,7 @@ const AuctionProgress = (props) => {
           </div>
           <div className="flex justify-between">
             <div className="mb-3 w-full">
-              <span className="label">Sell Amount</span>
+              <span className="label">Sell Amount - {props.detail.biddingSymbol}</span>
               <input
                 placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
                 id="sellAmount"
@@ -471,7 +483,7 @@ const AuctionProgress = (props) => {
               />
             </div>
             <div className="mb-3 w-full pl-2">
-              <span className="label">Min Buy Amount</span>
+              <span className="label">Min Buy Amount - {props.detail.auctionSymbol}</span>
               <input
                 placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
                 id="minBuyAmount"
