@@ -1,8 +1,11 @@
 import { ChainId, JSBI, Percent, Token, WETH } from "@annex/sdk";
+import { CONTRACT_ROUTER_ADDRESS, NETWORK_ID } from "../utilities/constants";
 
-export const ROUTER_ADDRESS = "0x6ec44D20c8f1c746D88547f2c5c3E168D5fE74B0";
+export const ROUTER_ADDRESS = CONTRACT_ROUTER_ADDRESS;
+console.log('router address: ', ROUTER_ADDRESS);
 
-export const CHAIN_ID = 97;
+export const CHAIN_ID = NETWORK_ID;
+console.log('chain id: ', NETWORK_ID);
 
 export const DAI = new Token(
 	ChainId.MAINNET,
@@ -74,7 +77,7 @@ export const PINNED_PAIRS = {
 				"Annex",
 				"Annex Token"
 			),
-			new Token(ChainId.MAINNET, "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", 18, "WBNB", "Wrapped BNB"),
+			new Token(ChainId.MAINNET, "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", 18, "WBNB", "Wrapped BNB"),
 		],
 		[BUSD, USDT],
 		[DAI, USDT],
