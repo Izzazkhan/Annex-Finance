@@ -30,10 +30,6 @@ function CustomTooltip({ payload, label, active }) {
 }
 
 export default function Chart(props) {
-  // console.log('data in chart', props);
-  const sortByBuyAmount = props.data.sort(
-    (a, b) => Number(a.price) - Number(b.price),
-  );
   return (
     <div
       className="relative pt-5"
@@ -45,14 +41,17 @@ export default function Chart(props) {
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={sortByBuyAmount.length && sortByBuyAmount}
+          data={props.data.length && props.data}
           margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <Bar dataKey="auctionDivBuyAmount" fill="#C4C4C4">
-            {sortByBuyAmount.length &&
-              sortByBuyAmount.map((entry, index) => {
+            {props.data.length &&
+              props.data.map((entry, index) => {
+                // console.log('entry', entry);
                 const color =
-                  entry.isSuccessfull && Math.floor(Date.now() / 1000) > entry.auctionEndDate
+                  entry.isSuccessfull &&
+                  Math.floor(Date.now() / 1000) > entry.auctionEndDate &&
+                  entry.minFundingThresholdNotReached === false
                     ? '#C4C4C4'
                     : '#565656';
 

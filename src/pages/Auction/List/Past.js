@@ -6,6 +6,7 @@ import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 
 function Past(props) {
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -29,9 +30,11 @@ function Past(props) {
           id
           decimals
         }
+        minFundingThresholdNotReached
         auctionedSellAmount_eth
         minBuyAmount_eth
         liquidity_eth
+        initialAuctionOrder
         soldAuctioningTokens_eth
         minimumBiddingAmountPerOrder_eth
         estimatedTokenSold_eth
@@ -39,6 +42,8 @@ function Past(props) {
         maxAvailable_eth
         minimumPrice_eth
         currentPrice_eth
+        clearingPriceOrder
+        clearingPrice
         orderCancellationEndDate
         auctionEndDate
         auctionStartDate
@@ -76,7 +81,10 @@ function Past(props) {
         let auctionDecimal = element['auctioningToken']['decimals'];
         let biddingDecimal = element['biddingToken']['decimals'];
         let auctionEndDate = element['auctionEndDate'];
+        let initialAuctionOrder = element['initialAuctionOrder'];
+        let clearingPrice = element['clearingPrice'];
         let { orders, clearingPriceOrder } = calculateClearingPrice(
+          initialAuctionOrder,
           element.orders,
           auctionDecimal,
           biddingDecimal,
@@ -86,11 +94,12 @@ function Past(props) {
           .unix(element['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
+        console.log('orders', orders);
         orders &&
           orders.forEach((item) => {
             graphData.push({
               ...item,
-              isSuccessfull: item.price >= clearingPriceOrder.price,
+              isSuccessfull: item.price >= new BigNumber(clearingPrice),
               auctionEndDate: auctionEndDate,
             });
           });
@@ -108,6 +117,8 @@ function Past(props) {
       setAuction(arr);
     }
   }, [data]);
+
+  console.log('auction', auction);
 
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
