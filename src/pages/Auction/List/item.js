@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import MiniLogo from '../../../components/UI/MiniLogo';
 import { Link } from 'react-router-dom';
 import BarChart from '../../../components/common/BarChart';
@@ -6,34 +6,41 @@ import LineChart from '../../../components/common/LineChart';
 import { useHistory } from 'react-router-dom';
 
 function AuctionItem(props) {
-  const sortedData = props.data.sort((a, b) => a.price - b.price);
-  const priceMapped = props.orders.map((item) => {
-    return {
-      ...item,
-      priceValue: Number(item.price.split(' ')[0]),
-    };
-  });
-  const sortedOrder = priceMapped.sort((a, b) => a.priceValue - b.priceValue);
-  const mappedOrderData = sortedOrder.map((item, index) => {
-    const buyAmount = item.buyAmount.split(' ')[0];
-    const price = Number(item.price.split(' ')[0]).toFixed(2);
-    return {
-      ...item,
-      auctionDivBuyAmount: buyAmount,
-      price: price,
-      minFundingThresholdNotReached: props.minFundingThresholdNotReached,
-    };
-  });
+  const [orderArr, setOrderArr] = useState([]);
 
-  let isSuccessfullArr = [];
-  sortedData.map((item) => {
-    isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
-  });
+  useEffect(() => {
+    const priceMapped = props.orders.map((item) => {
+      return {
+        ...item,
+        priceValue: Number(item.price.split(' ')[0]),
+      };
+    });
+    const mappedOrderData = priceMapped
+      .sort((a, b) => a.priceValue - b.priceValue)
+      .map((item) => {
+        const buyAmount = item.buyAmount.split(' ')[0];
+        const price = Number(item.price.split(' ')[0]).toFixed(2);
+        return {
+          ...item,
+          auctionDivBuyAmount: buyAmount,
+          price: price,
+          minFundingThresholdNotReached: props.minFundingThresholdNotReached,
+        };
+      });
 
-  mappedOrderData.map((item, i) => {
-    item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
-    item.auctionEndDate = props.auctionEndDate;
-  });
+    let isSuccessfullArr = [];
+    props.data
+      .sort((a, b) => a.price - b.price)
+      .map((item) => {
+        isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+      });
+
+    mappedOrderData.map((item, i) => {
+      item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
+      item.auctionEndDate = props.auctionEndDate;
+    });
+    setOrderArr(mappedOrderData);
+  }, []);
 
   const history = useHistory();
   const redirectToUrl = (url) => {
@@ -78,7 +85,7 @@ function AuctionItem(props) {
                     width="310px"
                     height="230px"
                     style={{ marginTop: '-25px' }}
-                    data={mappedOrderData}
+                    data={orderArr.length && orderArr}
                   />
                 ) : (
                   <div

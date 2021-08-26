@@ -251,29 +251,34 @@ const AuctionCompleted = ({ settlAuction, isAlreadySettle }) => {
   );
 };
 const AuctionProgress = (props) => {
-  const sortedData = props.detail.data.sort((a, b) => a.price - b.price);
+  const [orderArr, setOrderArr] = useState([]);
 
-  let isSuccessfullArr = [];
-  sortedData.map((item) => {
-    isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
-  });
+  useEffect(() => {
+    let isSuccessfullArr = [];
+    props.detail.data
+      .sort((a, b) => b.price - a.price)
+      .map((item) => {
+        isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+      });
 
-  const priceMapped = props.orders.map((item) => {
-    return {
-      ...item,
-      priceValue: Number(item.price.split(' ')[0]),
-      minFundingThresholdNotReached: props.detail.minFundingThresholdNotReached,
-    };
-  });
+    const priceMapped = props.orders.map((item) => {
+      return {
+        ...item,
+        priceValue: Number(item.price.split(' ')[0]),
+        minFundingThresholdNotReached: props.detail.minFundingThresholdNotReached,
+      };
+    });
 
-  const sortedOrder = priceMapped.sort((a, b) => a.priceValue - b.priceValue);
-
-  const orderArray = sortedOrder.map((item, i) => {
-    return {
-      ...item,
-      isSuccessfull: isSuccessfullArr[i].isSuccessfull,
-    };
-  });
+    const orderArray = priceMapped
+      .sort((a, b) => a.priceValue - b.priceValue)
+      .map((item, i) => {
+        return {
+          ...item,
+          isSuccessfull: isSuccessfullArr[i].isSuccessfull,
+        };
+      });
+    setOrderArr(orderArray);
+  }, []);
 
   const [state, setState] = useState({
     minBuyAmount: '',
@@ -373,7 +378,8 @@ const AuctionProgress = (props) => {
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
               <span className="border first"></span>
               <span className="label my-2 font-normal">
-                No. of orders <b>{props.detail && sortedData ? sortedData.length : 0}</b>
+                No. of orders{' '}
+                <b>{props.detail && props.detail.data ? props.detail.data.length : 0}</b>
               </span>
               <span className=" border last"></span>
             </div>
@@ -384,8 +390,8 @@ const AuctionProgress = (props) => {
               <span></span>UnSuccessfull
             </span>
             {/*  */}
-            {orderArray && orderArray.length > 0 ? (
-              <BarChart width="100%" height="211px" data={orderArray} />
+            {orderArr && orderArr.length > 0 ? (
+              <BarChart width="100%" height="211px" data={orderArr} />
             ) : (
               <div
                 className="relative pt-5"
@@ -409,7 +415,7 @@ const AuctionProgress = (props) => {
         </Fragment>
       ) : (
         <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
-          <LineChart width="100%" height="211px" data={sortedData} />
+          <LineChart width="100%" height="211px" data={props.detail.data} />
           <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
             <div className="items-center ">
               <div className="flex items-center text-primary text-xs font-bold">Auction Start</div>
