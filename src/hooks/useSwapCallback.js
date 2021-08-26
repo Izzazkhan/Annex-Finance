@@ -128,6 +128,7 @@ export function useSwapCallback(
 							parameters: { methodName, args, value },
 							contract,
 						} = call;
+						console.log('params: ', call);
 						const options = !value || isZero(value) ? {} : { value };
 
 						return contract.estimateGas[methodName](...args, options)
@@ -158,7 +159,7 @@ export function useSwapCallback(
 									.catch((callError) => {
 										console.info("Call threw error", call, callError);
 										let errorMessage;
-										switch (callError.reason) {
+										switch (callError.data.message) {
 											case "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT":
 											case "UniswapV2Router: EXCESSIVE_INPUT_AMOUNT":
 												errorMessage =

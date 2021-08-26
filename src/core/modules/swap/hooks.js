@@ -14,6 +14,8 @@ import { useUserSlippageTolerance } from "../user/hooks";
 import { computeSlippageAdjustedAmounts } from "../../../utils/prices";
 import { useActiveWeb3React } from "../../../hooks";
 
+import { CONTRACT_FACTORY_ADDRESS, CONTRACT_ROUTER_ADDRESS } from "../../../utilities/constants";
+
 const {replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput} = swapActionCreators;
 
 export function useSwapState() {
@@ -81,9 +83,9 @@ export function tryParseAmount(value, currency) {
 }
 
 const BAD_RECIPIENT_ADDRESSES = [
-	"0x8edD47fA123c263377b9C81A449c7e601C89723E", // v2 factory
+	CONTRACT_FACTORY_ADDRESS, // v2 factory
 	"0xf164fC0Ec4E93095b804a4795bBe1e041497b92a", // v2 router 01
-	"0x6ec44D20c8f1c746D88547f2c5c3E168D5fE74B0", // v2 router 02
+	CONTRACT_ROUTER_ADDRESS, // v2 router 02
 ];
 
 /**
