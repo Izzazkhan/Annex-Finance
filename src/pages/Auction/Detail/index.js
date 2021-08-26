@@ -96,9 +96,11 @@ function Detail(props) {
         description
         website
       }
+      minFundingThresholdNotReached
       minimumPrice 
       maxAvailable 
       currentPrice 
+      initialAuctionOrder
       minimumBiddingAmountPerOrder
       orderCancellationEndDate
       auctionStartDate
@@ -122,6 +124,7 @@ function Detail(props) {
       maxAvailable_eth
       minimumPrice_eth
       currentPrice_eth
+      clearingPrice
     }
     
     orders(where: { auctionId : "${props.match.params.id}" }){
@@ -208,6 +211,8 @@ function Detail(props) {
           .toNumber();
         let minimumBiddingAmountPerOrderValue = elem['minimumBiddingAmountPerOrder'];
 
+        let minFundingThresholdNotReached = elem['minFundingThresholdNotReached'];
+
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold_eth']).dividedBy(auctionDecimal).toNumber(),
         );
@@ -239,6 +244,8 @@ function Detail(props) {
           isAllowCancellation = true;
         }
         let graphData = getGraphData({
+          clearingPrice: elem['clearingPrice'],
+          initialAuctionOrder: elem['initialAuctionOrder'],
           ordersList: data.orders,
           auctionDecimal: elem['auctioningToken']['decimals'],
           biddingDecimal: elem['biddingToken']['decimals'],
@@ -351,6 +358,7 @@ function Detail(props) {
           minFundingThresholdValue,
           minimumBiddingAmountPerOrder,
           minimumBiddingAmountPerOrderValue,
+          minFundingThresholdNotReached,
           estimatedTokenSold,
           estimatedTokenSoldValue,
           isAtomicClosureAllowed,
@@ -376,18 +384,26 @@ function Detail(props) {
     let currentDate = moment();
     return endDate.diff(currentDate, 'seconds');
   };
-  const getGraphData = ({ ordersList, auctionDecimal, biddingDecimal }) => {
+  const getGraphData = ({
+    clearingPrice,
+    initialAuctionOrder,
+    ordersList,
+    auctionDecimal,
+    biddingDecimal,
+  }) => {
     let graphData = [];
     let { orders, clearingPriceOrder } = calculateClearingPrice(
+      initialAuctionOrder,
       ordersList,
       auctionDecimal,
       biddingDecimal,
     );
+    // console.log('clearingPriceOrder.price', clearingPriceOrder.price.toString());
     orders &&
       orders.forEach((item) => {
         graphData.push({
           ...item,
-          isSuccessfull: item.price >= clearingPriceOrder.price,
+          isSuccessfull: item.price >= new BigNumber(clearingPrice),
         });
       });
 

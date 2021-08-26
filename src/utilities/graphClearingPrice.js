@@ -15,9 +15,9 @@ export function encodeOrder(order) {
 
 function decodeOrder(bytes) {
   return {
-    userId: new BigNumber('0x' + bytes.substring(2, 18)).toHexString(),
-    sellAmount: new BigNumber('0x' + bytes.substring(43, 66)).toHexString(),
-    buyAmount: new BigNumber('0x' + bytes.substring(19, 42)).toHexString(),
+    userId: new BigNumber('0x' + bytes.substring(2, 18)),
+    sellAmount: new BigNumber('0x' + bytes.substring(43, 66)),
+    buyAmount: new BigNumber('0x' + bytes.substring(19, 42)),
   };
 }
 
@@ -134,10 +134,15 @@ function findClearingPrice(sellOrders, initialAuctionOrder) {
   }
 }
 
-export function calculateClearingPrice(orders, auctionDecimal, biddingDecimal) {
+export function calculateClearingPrice(
+  initialAuctionOrder,
+  orders,
+  auctionDecimal,
+  biddingDecimal,
+) {
   orders = getConvertedOrders(orders, auctionDecimal, biddingDecimal);
   const initialOrder = orders[0]
-    ? orders[0]
+    ? decodeOrder(initialAuctionOrder)
     : {
         userId: new BigNumber(0),
         sellAmount: new BigNumber(0),
