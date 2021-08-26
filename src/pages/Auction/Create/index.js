@@ -20,10 +20,10 @@ export default function CreateAuction(props) {
       name: 'Annex Finance Swap',
       value: '0',
     },
-    // {
-    //   name: 'Annex Swap',
-    //   value: '1',
-    // },
+    {
+      name: 'Annex Swap',
+      value: '2',
+    },
     // {
     //   name: 'Pancake Swap',
     //   value: '0',

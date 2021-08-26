@@ -180,6 +180,7 @@ function Detail(props) {
         let totalAuction = elem['auctionedSellAmount_eth']
           ? new BigNumber(elem['auctionedSellAmount_eth']).dividedBy(auctionDecimal).toString()
           : 0;
+        let totalAuctionedValue = elem['auctionedSellAmount'];
         let minimumPrice = new BigNumber(elem['minimumPrice_eth'])
           .dividedBy(biddingDecimal)
           .toNumber();
@@ -200,12 +201,17 @@ function Detail(props) {
         let minFundingThreshold = convertExponentToNum(
           new BigNumber(elem['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
         );
+        let minFundingThresholdValue = elem['minFundingThreshold'];
+
         let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(1000000)
           .toNumber();
+        let minimumBiddingAmountPerOrderValue = elem['minimumBiddingAmountPerOrder'];
+
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold_eth']).dividedBy(auctionDecimal).toNumber(),
         );
+        let estimatedTokenSoldValue = elem['estimatedTokenSold'];
 
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
 
@@ -316,6 +322,7 @@ function Detail(props) {
           type,
           id: elem.id,
           totalAuction,
+          totalAuctionedValue,
           minBuyAmount,
           auctionTokenName,
           auctionSymbol,
@@ -341,8 +348,11 @@ function Detail(props) {
           placeHolderMinBuyAmount,
           placeholderSellAmount,
           minFundingThreshold,
+          minFundingThresholdValue,
           minimumBiddingAmountPerOrder,
+          minimumBiddingAmountPerOrderValue,
           estimatedTokenSold,
+          estimatedTokenSoldValue,
           isAtomicClosureAllowed,
           orderCancellationEndDate,
           auctionEndDateFormatted,
@@ -614,7 +624,7 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.totalAuction} ${state.detail.auctionSymbol}`
+              `${state.detail.totalAuctionedValue}`
             )}
             <a
               href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
@@ -788,7 +798,7 @@ function Detail(props) {
               </div>
               <div className="flex flex-col">
                 <div className="text-white text-lg md:text-md font-bold">
-                  {state.detail.minFundingThreshold}
+                  {state.detail.minFundingThresholdValue}
                 </div>
                 <div className="flex items-center text-white text-md md:text-sm">
                   Minimum funding
@@ -840,7 +850,7 @@ function Detail(props) {
               </div>
               <div className="flex flex-col">
                 <div className="text-white text-lg md:text-md font-bold">
-                  {state.detail.estimatedTokenSold} {state.detail.auctionSymbol}
+                  {state.detail.estimatedTokenSoldValue}
                 </div>
                 <div className="flex items-center text-white text-md md:text-sm">
                   Estimated tokens sold{' '}
@@ -875,10 +885,7 @@ function Detail(props) {
             </div>
             <div className="flex flex-col">
               <div className="text-white text-lg md:text-md font-bold">
-                {state.detail.minimumBiddingAmountPerOrder
-                  ? state.detail.minimumBiddingAmountPerOrder.toFixed(8)
-                  : 0}{' '}
-                {state.detail.biddingSymbol}
+                {state.detail.minimumBiddingAmountPerOrderValue}
               </div>
               <div className="flex items-center text-white text-md md:text-sm">
                 Min bidding amount per order{' '}
