@@ -13,21 +13,21 @@ import { useLocation } from 'react-router-dom';
 function Header({ onOpen, title, settings }) {
   const [totalXaiMinted, setTotalXaiMinted] = useState('0');
 
-  const getTotalXaiMinted = async () => {
-    // total xai minted
-    const xaiContract = getXaiTokenContract();
-    let tvm = await methods.call(xaiContract.methods.totalSupply, []);
-    tvm = new BigNumber(tvm).div(
-      new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18),
-    );
+  // const getTotalXaiMinted = async () => {
+  //   // total xai minted
+  //   const xaiContract = getXaiTokenContract();
+  //   let tvm = await methods.call(xaiContract.methods.totalSupply, []);
+  //   tvm = new BigNumber(tvm).div(
+  //     new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18),
+  //   );
 
-    setTotalXaiMinted(tvm);
-  };
+  //   setTotalXaiMinted(tvm);
+  // };
 
   useEffect(() => {
-    if (checkIsValidNetwork('metamask')) {
-      getTotalXaiMinted();
-    }
+    // if (checkIsValidNetwork('metamask')) {
+    //   getTotalXaiMinted();
+    // }
   }, [settings.markets]);
 
   const [currentTitle, setCurrentTitle] = useState('');
@@ -79,7 +79,7 @@ function Header({ onOpen, title, settings }) {
       <Navigation
         wrapperClassName="hidden lg:block"
         totalLiquidity={settings.totalLiquidity}
-        totalXaiMinted={totalXaiMinted}
+        // totalXaiMinted={totalXaiMinted}
       />
     </header>
   );

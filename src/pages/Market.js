@@ -3,7 +3,7 @@ import {compose} from "redux";
 import {withRouter} from "react-router-dom";
 import {connectAccount} from "../core";
 import {useEffect, useMemo, useState} from "react";
-import {getXaiTokenContract, methods} from "../utilities/ContractService";
+import {methods} from "../utilities/ContractService";
 import BigNumber from "bignumber.js";
 import * as constants from "../utilities/constants";
 import Layout from "../layouts/MainLayout/MainLayout";
@@ -21,7 +21,7 @@ const Market = ({ history, settings }) => {
     const [availableLiquidity, setAvailableLiquidity] = useState('0');
 
     const getTotalInfo = async () => {
-        const xaiContract = getXaiTokenContract();
+        // const xaiContract = getXaiTokenContract();
 
         const tempTS = (settings.markets || []).reduce((accumulator, market) => {
             return new BigNumber(accumulator).plus(
@@ -37,23 +37,23 @@ const Market = ({ history, settings }) => {
             return new BigNumber(accumulator).plus(new BigNumber(market.liquidity));
         }, 0);
 
-        let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
-            constants.CONTRACT_XAI_VAULT_ADDRESS
-        ]);
-        xaiBalance = new BigNumber(xaiBalance).div(1e18);
+        // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
+        //     constants.CONTRACT_XAI_VAULT_ADDRESS
+        // ]);
+        // xaiBalance = new BigNumber(xaiBalance).div(1e18);
 
         setTotalSupply(
-            tempTS
-                .plus(xaiBalance)
+            tempTS !== 0 ? tempTS
+                // .plus(xaiBalance)
                 .dp(2, 1)
-                .toString(10)
+                .toString(10) : tempTS
         );
-        setTotalBorrow(tempTB.dp(2, 1).toString(10));
+        setTotalBorrow(tempTB !== 0 ? tempTB.dp(2, 1).toString(10) : tempTB);
         setAvailableLiquidity(
-            tempAL
-                .plus(xaiBalance)
+            tempAL !== 0 ? tempAL
+                // .plus(xaiBalance)
                 .dp(2, 1)
-                .toString(10)
+                .toString(10) : tempAL
         );
     };
 

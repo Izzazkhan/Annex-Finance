@@ -5,7 +5,7 @@ import {
 	getAbepContract,
 	getComptrollerContract,
 	getTokenContract,
-	getXaiTokenContract,
+	// getXaiTokenContract,
 	methods
 } from "./utilities/ContractService";
 import {promisify} from "./utilities";
@@ -22,25 +22,27 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 	const setDecimals = async () => {
 		const decimals = {};
 		for (const item of Object.values(constants.CONTRACT_TOKEN_ADDRESS)) {
-			decimals[`${item.id}`] = {};
-			if (item.id !== 'bnb') {
-				const tokenContract = getTokenContract(item.id);
-				const tokenDecimals = await methods.call(
-					tokenContract.methods.decimals,
-					[]
-				);
-				const aBepContract = getAbepContract(item.id);
-				const atokenDecimals = await methods.call(
-					aBepContract.methods.decimals,
-					[]
-				);
-				decimals[`${item.id}`].token = Number(tokenDecimals);
-				decimals[`${item.id}`].atoken = Number(atokenDecimals);
-				decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
-			} else {
-				decimals[`${item.id}`].token = 18;
-				decimals[`${item.id}`].atoken = 8;
-				decimals[`${item.id}`].price = 18;
+			if (item.id && item.id != 'ann') {
+				decimals[`${item.id}`] = {};
+				if (item.id !== 'bnb') {
+					const tokenContract = getTokenContract(item.id);
+					const tokenDecimals = await methods.call(
+						tokenContract.methods.decimals,
+						[]
+					);
+					const aBepContract = getAbepContract(item.id);
+					const atokenDecimals = await methods.call(
+						aBepContract.methods.decimals,
+						[]
+					);
+					decimals[`${item.id}`].token = Number(tokenDecimals);
+					decimals[`${item.id}`].atoken = Number(atokenDecimals);
+					decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
+				} else {
+					decimals[`${item.id}`].token = 18;
+					decimals[`${item.id}`].atoken = 8;
+					decimals[`${item.id}`].price = 18;
+				}
 			}
 		}
 		decimals.mantissa = +process.env.REACT_APP_MANTISSA_DECIMALS;
@@ -110,45 +112,46 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 		}
 
 		const appContract = getComptrollerContract();
-		const xaiContract = getXaiTokenContract();
+		// const xaiContract = getXaiTokenContract();
 
 		// Total Vai Staked
-		let xaiVaultStaked = await methods.call(xaiContract.methods.balanceOf, [
-			constants.CONTRACT_XAI_VAULT_ADDRESS
-		]);
-		xaiVaultStaked = new BigNumber(xaiVaultStaked)
-			.div(1e18)
-			.dp(4, 1)
-			.toString(10);
+		// let xaiVaultStaked = await methods.call(xaiContract.methods.balanceOf, [
+		// 	constants.CONTRACT_XAI_VAULT_ADDRESS
+		// ]);
+		// xaiVaultStaked = new BigNumber(xaiVaultStaked)
+		// 	.div(1e18)
+		// 	.dp(4, 1)
+		// 	.toString(10);
 
 		// minted xai amount
-		let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
-			accountAddress
-		]);
-		xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
+		// let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
+		// 	accountAddress
+		// ]);
+		// xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
 
 		// XAI APY
-		let xaiAPY;
-		if (settings.dailyAnnex && xaiVaultStaked) {
-			let annexXAIVaultRate = await methods.call(
-				appContract.methods.annexXAIVaultRate,
-				[]
-			);
-			annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
-				.div(1e18)
-				.times(20 * 60 * 24);
+		// let xaiAPY;
+		// if (settings.dailyAnnex && xaiVaultStaked) {
+		if (settings.dailyAnnex) {
+			// let annexXAIVaultRate = await methods.call(
+			// 	appContract.methods.annexXAIVaultRate,
+			// 	[]
+			// );
+			// annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
+			// 	.div(1e18)
+			// 	.times(20 * 60 * 24);
 			const annMarket = settings.markets.find(
 				ele => ele.underlyingSymbol === 'ANN'
 			);
-			xaiAPY = new BigNumber(annexXAIVaultRate)
-				.times(annMarket.tokenPrice)
-				.times(365 * 100)
-				.div(xaiVaultStaked)
-				.dp(2, 1)
-				.toString(10);
-			setSetting({
-				xaiAPY
-			});
+			// xaiAPY = new BigNumber(annexXAIVaultRate)
+			// 	.times(annMarket.tokenPrice)
+			// 	.times(365 * 100)
+			// 	.div(xaiVaultStaked)
+			// 	.dp(2, 1)
+			// 	.toString(10);
+			// setSetting({
+			// 	xaiAPY
+			// });
 		}
 
 		const assetsIn = await methods.call(appContract.methods.getAssetsIn, [
@@ -294,17 +297,17 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 				new BigNumber(market.totalSupplyUsd || 0)
 			);
 		}
-		let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
-			constants.CONTRACT_XAI_VAULT_ADDRESS
-		]);
-		xaiBalance = new BigNumber(xaiBalance).div(1e18);
+		// let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
+		// 	constants.CONTRACT_XAI_VAULT_ADDRESS
+		// ]);
+		// xaiBalance = new BigNumber(xaiBalance).div(1e18);
 
 		setSetting({
 			assetList,
-			xaiMinted,
-			totalLiquidity: totalLiquidity.plus(xaiBalance).toString(10),
+			// xaiMinted,
+			// totalLiquidity: totalLiquidity.plus(xaiBalance).toString(10),
 			totalSupplyBalance: totalSupplyBalance.toString(10),
-			totalBorrowBalance: totalBorrowBalance.plus(xaiMinted).toString(10),
+			totalBorrowBalance: totalBorrowBalance.toString(10),
 			totalBorrowLimit: totalBorrowLimit.toString(10)
 		});
 	};

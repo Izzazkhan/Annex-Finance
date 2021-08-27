@@ -72,9 +72,9 @@ export const PINNED_PAIRS = {
 		[
 			new Token(
 				ChainId.MAINNET,
-				"0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+				"0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067",
 				18,
-				"Annex",
+				"ANN",
 				"Annex Token"
 			),
 			new Token(ChainId.MAINNET, "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", 18, "WBNB", "Wrapped BNB"),
