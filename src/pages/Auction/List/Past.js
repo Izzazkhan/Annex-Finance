@@ -94,7 +94,6 @@ function Past(props) {
           .unix(element['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
-        console.log('orders', orders);
         orders &&
           orders.forEach((item) => {
             graphData.push({
@@ -117,8 +116,6 @@ function Past(props) {
       setAuction(arr);
     }
   }, [data]);
-
-  console.log('auction', auction);
 
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">

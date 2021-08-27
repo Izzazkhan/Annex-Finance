@@ -7,7 +7,7 @@ import filledArrow from '../../assets/icons/filledArrow.svg';
 import logo from '../../assets/icons/logo.svg';
 import Navigation from '../../components/common/Navigation';
 import RouteMap from '../../routes/RouteMap';
-import { getXaiTokenContract, methods } from '../../utilities/ContractService';
+import { methods } from '../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
 import { checkIsValidNetwork } from '../../utilities/common';
 import { accountActionCreators, connectAccount } from '../../core';
@@ -151,20 +151,20 @@ const NavItems = ({
 
 function Sidebar({ isOpen, onClose, settings }) {
   const { pathname, search } = useLocation();
-  const [totalXaiMinted, setTotalXaiMinted] = useState('0');
+  // const [totalXaiMinted, setTotalXaiMinted] = useState('0');
   const [activeMenu, updateActiveMenu] = useState('');
   const history = useHistory();
 
-  const getTotalXaiMinted = async () => {
-    // total xai minted
-    const xaiContract = getXaiTokenContract();
-    let tvm = await methods.call(xaiContract.methods.totalSupply, []);
-    tvm = new BigNumber(tvm).div(
-      new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18),
-    );
+  // const getTotalXaiMinted = async () => {
+  //   // total xai minted
+  //   const xaiContract = getXaiTokenContract();
+  //   let tvm = await methods.call(xaiContract.methods.totalSupply, []);
+  //   tvm = new BigNumber(tvm).div(
+  //     new BigNumber(10).pow(Number(process.env.REACT_APP_XAI_DECIMALS) || 18),
+  //   );
 
-    setTotalXaiMinted(tvm);
-  };
+  //   setTotalXaiMinted(tvm);
+  // };
 
   useEffect(() => {
     let menuIndex = sidebarItems.findIndex((x) => pathname.includes(x.href));
@@ -181,9 +181,9 @@ function Sidebar({ isOpen, onClose, settings }) {
   }, [pathname, search]);
 
   useEffect(() => {
-    if (checkIsValidNetwork('metamask')) {
-      getTotalXaiMinted();
-    }
+    // if (checkIsValidNetwork('metamask')) {
+    //   getTotalXaiMinted();
+    // }
   }, [settings.markets]);
   const toggleDropdown = (val) => {
     updateActiveMenu(val !== activeMenu ? val : '');
@@ -212,7 +212,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           wrapperClassName="block xl:hidden"
           onClose={onClose}
           totalLiquidity={settings.totalLiquidity}
-          totalXaiMinted={totalXaiMinted}
+          // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8">
           <div className="font-bold text-white">Annex Finance</div>

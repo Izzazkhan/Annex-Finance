@@ -8,6 +8,8 @@ const TOKEN_ABI = {
   usdt: constants.CONTRACT_USDT_TOKEN_ABI,
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   ann: constants.CONTRACT_ANN_TOKEN_ABI,
+  btcb: constants.CONTRACT_BTCB_TOKEN_ABI,
+  eth: constants.CONTRACT_ETH_TOKEN_ABI,
   wbtc: constants.CONTRACT_WBTC_TOKEN_ABI
 };
 const AUCTION_ABI = {
@@ -42,26 +44,26 @@ const send = (method, params, from) => {
   });
 };
 
-export const getXaiTokenContract = () => {
-  return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_XAI_TOKEN_ABI),
-    constants.CONTRACT_XAI_TOKEN_ADDRESS,
-  );
-};
+// export const getXaiTokenContract = () => {
+//   return new instance.eth.Contract(
+//     JSON.parse(constants.CONTRACT_XAI_TOKEN_ABI),
+//     constants.CONTRACT_XAI_TOKEN_ADDRESS,
+//   );
+// };
 
-export const getXaiControllerContract = () => {
-  return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_XAI_CONTROLLER_ABI),
-    constants.CONTRACT_XAI_UNITROLLER_ADDRESS,
-  );
-};
+// export const getXaiControllerContract = () => {
+//   return new instance.eth.Contract(
+//     JSON.parse(constants.CONTRACT_XAI_CONTROLLER_ABI),
+//     constants.CONTRACT_XAI_UNITROLLER_ADDRESS,
+//   );
+// };
 
-export const getXaiVaultContract = () => {
-  return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_XAI_VAULT_ABI),
-    constants.CONTRACT_XAI_VAULT_ADDRESS,
-  );
-};
+// export const getXaiVaultContract = () => {
+//   return new instance.eth.Contract(
+//     JSON.parse(constants.CONTRACT_XAI_VAULT_ABI),
+//     constants.CONTRACT_XAI_VAULT_ADDRESS,
+//   );
+// };
 
 export const getTokenContract = (name) => {
   return new instance.eth.Contract(

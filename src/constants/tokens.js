@@ -16,6 +16,22 @@ export const CAKE = {
         'PancakeSwap Token',
     ),
 }
+export const ANN = {
+    [ChainId.MAINNET]: new Token(
+        ChainId.MAINNET,
+        '0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067',
+        18,
+        'ANN',
+        'Annex Token',
+    ),
+    [ChainId.BSCTESTNET]: new Token(
+        ChainId.BSCTESTNET,
+        '0xb75f3F9D35d256a94BBd7A3fC2E16c768E17930E',
+        18,
+        'ANN',
+        'Annex Token',
+    ),
+}
 export const BUSD = {
     [ChainId.MAINNET]: new Token(
         ChainId.MAINNET,
@@ -63,6 +79,15 @@ const tokens = {
     bnb: {
         symbol: 'BNB',
         projectLink: 'https://www.binance.com/',
+    },
+    ann: {
+        symbol: 'ANN',
+        address: {
+            56: '0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067',
+            97: '0xb75f3F9D35d256a94BBd7A3fC2E16c768E17930E',
+        },
+        decimals: 18,
+        projectLink: 'https://annex.finance/',
     },
     cake: {
         symbol: 'CAKE',

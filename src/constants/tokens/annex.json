@@ -218,9 +218,10 @@
         {
             "name": "Annex Token",
             "symbol": "ANN",
-            "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+            "address": "0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067",
             "chainId": 56,
-            "decimals": 18
+            "decimals": 18,
+            "logoURI": "/images/coins/ann.png"
         },
         {
             "name": "Streamity",

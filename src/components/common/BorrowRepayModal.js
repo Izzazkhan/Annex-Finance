@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Modal from '../UI/Modal';
 import coinImg from '../../assets/images/coins/ann.png';
-import available from '../../assets/images/coins/XAI.png';
+// import available from '../../assets/images/coins/XAI.png';
 import BigNumber from "bignumber.js";
 import {getBigNumber} from "../../utilities/common";
 import {accountActionCreators, connectAccount} from "../../core";

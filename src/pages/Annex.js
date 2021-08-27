@@ -55,13 +55,13 @@ const Annex = ({ settings, getMarketHistory }) => {
         const compContract = getComptrollerContract();
 
         // total info
-        let annexXAIVaultRate = await methods.call(
-            compContract.methods.annexXAIVaultRate,
-            []
-        );
-        annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
-            .div(1e18)
-            .times(20 * 60 * 24);
+        // let annexXAIVaultRate = await methods.call(
+        //     compContract.methods.annexXAIVaultRate,
+        //     []
+        // );
+        // annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
+        //     .div(1e18)
+        //     .times(20 * 60 * 24);
         const tokenContract = getTokenContract('ann');
         const remainedAmount = await methods.call(tokenContract.methods.balanceOf, [
             process.env.REACT_APP_ENV === 'dev'
@@ -71,7 +71,6 @@ const Annex = ({ settings, getMarketHistory }) => {
         setDailyDistribution(
             new BigNumber(settings.dailyAnnex)
                 .div(new BigNumber(10).pow(18))
-                .plus(annexXAIVaultRate)
                 .dp(2, 1)
                 .toString(10)
         );
@@ -112,6 +111,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                 borrowAnnexAPY: borrowGraph
             });
         }
+        console.log('temp markets: ', tempMarkets);
         setMarkets(tempMarkets);
     };
 
@@ -120,7 +120,7 @@ const Annex = ({ settings, getMarketHistory }) => {
     }, [])
 
     useEffect(() => {
-        if (settings.markets && settings.dailyAnnex) {
+        if (settings.markets && settings.markets.length > 0 && settings.dailyAnnex) {
             getANNInfo();
         }
     }, [settings.markets]);

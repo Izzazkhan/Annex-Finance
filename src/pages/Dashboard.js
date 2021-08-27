@@ -21,8 +21,8 @@ import BigNumber from "bignumber.js";
 import {
   getAbepContract,
   getComptrollerContract,
-  getXaiControllerContract,
-  getXaiTokenContract, getXaiVaultContract,
+  // getXaiControllerContract,
+  // getXaiTokenContract, getXaiVaultContract,
   methods
 } from "../utilities/ContractService";
 import * as constants from "../utilities/constants";
@@ -50,41 +50,41 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     }
     try {
       const appContract = getComptrollerContract();
-      const xaiControllerContract = getXaiControllerContract();
-      const xaiContract = getXaiTokenContract();
+      // const xaiControllerContract = getXaiControllerContract();
+      // const xaiContract = getXaiTokenContract();
       // xai amount in wallet
-      let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
-        accountAddress
-      ]);
+      // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
+      //   accountAddress
+      // ]);
 
-      xaiBalance = new BigNumber(xaiBalance).div(new BigNumber(10).pow(18));
+      // xaiBalance = new BigNumber(xaiBalance).div(new BigNumber(10).pow(18));
 
       // minted xai amount
-      let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
-        accountAddress
-      ]);
+      // let xaiMinted = await methods.call(appContract.methods.mintedXAIs, [
+      //   accountAddress
+      // ]);
 
-      xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
+      // xaiMinted = new BigNumber(xaiMinted).div(new BigNumber(10).pow(18));
 
       // mintable xai amount
-      let { 1: mintableXai } = await methods.call(
-        xaiControllerContract.methods.getMintableXAI,
-        [accountAddress]
-      );
-      mintableXai = new BigNumber(mintableXai).div(new BigNumber(10).pow(18));
+      // let { 1: mintableXai } = await methods.call(
+      //   xaiControllerContract.methods.getMintableXAI,
+      //   [accountAddress]
+      // );
+      // mintableXai = new BigNumber(mintableXai).div(new BigNumber(10).pow(18));
       // allowable amount
-      let allowBalance = await methods.call(xaiContract.methods.allowance, [
-        accountAddress,
-        constants.CONTRACT_XAI_UNITROLLER_ADDRESS
-      ]);
-      allowBalance = new BigNumber(allowBalance).div(new BigNumber(10).pow(18));
-      const xaiEnabled = allowBalance.isGreaterThanOrEqualTo(xaiMinted);
+      // let allowBalance = await methods.call(xaiContract.methods.allowance, [
+      //   accountAddress,
+      //   constants.CONTRACT_XAI_UNITROLLER_ADDRESS
+      // ]);
+      // allowBalance = new BigNumber(allowBalance).div(new BigNumber(10).pow(18));
+      // const xaiEnabled = allowBalance.isGreaterThanOrEqualTo(xaiMinted);
 
       setSetting({
-        xaiBalance,
-        xaiEnabled,
-        xaiMinted,
-        mintableXai
+        // xaiBalance,
+        // xaiEnabled,
+        // xaiMinted,
+        // mintableXai
       });
     } catch (e) {
       console.log(e)
@@ -132,13 +132,13 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
   // Rewards
   const [earnedBalance, setEarnedBalance] = useState('0.0000');
-  const [xaiMint, setXaiMint] = useState('0.0000');
+  // const [xaiMint, setXaiMint] = useState('0.0000');
 
   const getVoteInfo = async () => {
     const myAddress = account;
     if (!myAddress) return;
     const appContract = getComptrollerContract();
-    const xaiContract = getXaiControllerContract();
+    // const xaiContract = getXaiControllerContract();
     const annexInitialIndex = await methods.call(
       appContract.methods.annexInitialIndex,
       []
@@ -151,52 +151,54 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     ) {
       const item = Object.values(constants.CONTRACT_ABEP_ADDRESS)[index];
 
-      const aBepContract = getAbepContract(item.id);
-      const supplyState = await methods.call(
-        appContract.methods.annexSupplyState,
-        [item.address]
-      );
-      const supplyIndex = supplyState.index;
-      let supplierIndex = await methods.call(
-        appContract.methods.annexSupplierIndex,
-        [item.address, myAddress]
-      );
-      if (+supplierIndex === 0 && +supplyIndex > 0) {
-        supplierIndex = annexInitialIndex;
-      }
-      let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+      if (item.id && item != 'ann') {
+        const aBepContract = getAbepContract(item.id);
+        const supplyState = await methods.call(
+          appContract.methods.annexSupplyState,
+          [item.address]
+        );
+        const supplyIndex = supplyState.index;
+        let supplierIndex = await methods.call(
+          appContract.methods.annexSupplierIndex,
+          [item.address, myAddress]
+        );
+        if (+supplierIndex === 0 && +supplyIndex > 0) {
+          supplierIndex = annexInitialIndex;
+        }
+        let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
 
-      const supplierTokens = await methods.call(
-        aBepContract.methods.balanceOf,
-        [myAddress]
-      );
-      const supplierDelta = new BigNumber(supplierTokens)
-        .multipliedBy(deltaIndex)
-        .dividedBy(1e36);
-
-      annexEarned = annexEarned.plus(supplierDelta);
-
-      const borrowState = await methods.call(
-        appContract.methods.annexBorrowState,
-        [item.address]
-      );
-      let borrowIndex = borrowState.index;
-      const borrowerIndex = await methods.call(
-        appContract.methods.annexBorrowerIndex,
-        [item.address, myAddress]
-      );
-      if (+borrowerIndex > 0) {
-        deltaIndex = new BigNumber(borrowIndex).minus(borrowerIndex);
-        const borrowBalanceStored = await methods.call(
-          aBepContract.methods.borrowBalanceStored,
+        const supplierTokens = await methods.call(
+          aBepContract.methods.balanceOf,
           [myAddress]
         );
-        borrowIndex = await methods.call(aBepContract.methods.borrowIndex, []);
-        const borrowerAmount = new BigNumber(borrowBalanceStored)
-          .multipliedBy(1e18)
-          .dividedBy(borrowIndex);
-        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
-        annexEarned = annexEarned.plus(borrowerDelta);
+        const supplierDelta = new BigNumber(supplierTokens)
+          .multipliedBy(deltaIndex)
+          .dividedBy(1e36);
+
+        annexEarned = annexEarned.plus(supplierDelta);
+
+        const borrowState = await methods.call(
+          appContract.methods.annexBorrowState,
+          [item.address]
+        );
+        let borrowIndex = borrowState.index;
+        const borrowerIndex = await methods.call(
+          appContract.methods.annexBorrowerIndex,
+          [item.address, myAddress]
+        );
+        if (+borrowerIndex > 0) {
+          deltaIndex = new BigNumber(borrowIndex).minus(borrowerIndex);
+          const borrowBalanceStored = await methods.call(
+            aBepContract.methods.borrowBalanceStored,
+            [myAddress]
+          );
+          borrowIndex = await methods.call(aBepContract.methods.borrowIndex, []);
+          const borrowerAmount = new BigNumber(borrowBalanceStored)
+            .multipliedBy(1e18)
+            .dividedBy(borrowIndex);
+          const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
+          annexEarned = annexEarned.plus(borrowerDelta);
+        }
       }
     }
 
@@ -209,37 +211,37 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       .dp(4, 1)
       .toString(10);
 
-    const annexXAIState = await methods.call(
-      xaiContract.methods.annexXAIState,
-      []
-    );
-    const xaiMintIndex = annexXAIState.index;
-    let xaiMinterIndex = await methods.call(
-      xaiContract.methods.annexXAIMinterIndex,
-      [myAddress]
-    );
-    if (+xaiMinterIndex === 0 && +xaiMintIndex > 0) {
-      xaiMinterIndex = annexInitialIndex;
-    }
-    const deltaIndex = new BigNumber(xaiMintIndex).minus(
-      new BigNumber(xaiMinterIndex)
-    );
-    const xaiMinterAmount = await methods.call(appContract.methods.mintedXAIs, [
-      myAddress
-    ]);
-    const xaiMinterDelta = new BigNumber(xaiMinterAmount)
-      .times(deltaIndex)
-      .div(1e54)
-      .dp(4, 1)
-      .toString(10);
+    // const annexXAIState = await methods.call(
+    //   xaiContract.methods.annexXAIState,
+    //   []
+    // );
+    // const xaiMintIndex = annexXAIState.index;
+    // let xaiMinterIndex = await methods.call(
+    //   xaiContract.methods.annexXAIMinterIndex,
+    //   [myAddress]
+    // );
+    // if (+xaiMinterIndex === 0 && +xaiMintIndex > 0) {
+    //   xaiMinterIndex = annexInitialIndex;
+    // }
+    // const deltaIndex = new BigNumber(xaiMintIndex).minus(
+    //   new BigNumber(xaiMinterIndex)
+    // );
+    // const xaiMinterAmount = await methods.call(appContract.methods.mintedXAIs, [
+    //   myAddress
+    // ]);
+    // const xaiMinterDelta = new BigNumber(xaiMinterAmount)
+    //   .times(deltaIndex)
+    //   .div(1e54)
+    //   .dp(4, 1)
+    //   .toString(10);
     setEarnedBalance(
       annexEarned && annexEarned !== '0' ? `${annexEarned}` : '0.0000'
     );
-    setXaiMint(
-      xaiMinterDelta && xaiMinterDelta !== '0'
-        ? `${xaiMinterDelta}`
-        : '0.0000'
-    );
+    // setXaiMint(
+    //   xaiMinterDelta && xaiMinterDelta !== '0'
+    //     ? `${xaiMinterDelta}`
+    //     : '0.0000'
+    // );
   };
 
 
@@ -274,15 +276,15 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       .toString(10)
   }, [netAPY, settings.totalSupplyBalance])
 
-  const addXAIApy = useCallback(
-    async apy => {
-      if (!account) {
-        return;
-      }
-      setNetAPY(apy.dp(2, 1).toString(10));
-    },
-    [settings, account]
-  );
+  // const addXAIApy = useCallback(
+  //   async apy => {
+  //     if (!account) {
+  //       return;
+  //     }
+  //     setNetAPY(apy.dp(2, 1).toString(10));
+  //   },
+  //   [settings, account]
+  // );
 
 
   const updateNetAPY = useCallback(async () => {
@@ -334,7 +336,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     } else {
       apy = totalBorrowed.isZero() ? 0 : totalSum.div(totalBorrowed).times(100);
     }
-    addXAIApy(apy);
+    // addXAIApy(apy);
   }, [settings.assetList, withANN]);
 
 

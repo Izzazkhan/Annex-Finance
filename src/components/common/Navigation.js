@@ -12,7 +12,7 @@ import HeaderLogo from '../../assets/icons/headerLogo.svg';
 
 const format = commaNumber.bindWith(',', '.');
 
-function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, onClose }) {
+function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
   const { account } = useActiveWeb3React();
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
 
@@ -25,11 +25,11 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, 
     liquidityUpdate(Number(totalLiquidity));
   }, [totalLiquidity])
 
-  useEffect(() => {
-    if(totalXaiMinted instanceof BigNumber) {
-      mintedUpdate(Number(totalXaiMinted?.toNumber()));
-    }
-  }, [totalXaiMinted])
+  // useEffect(() => {
+  //   if(totalXaiMinted instanceof BigNumber) {
+  //     mintedUpdate(Number(totalXaiMinted?.toNumber()));
+  //   }
+  // }, [totalXaiMinted])
 
 
   const ConnectWallet = ({ action}) => (

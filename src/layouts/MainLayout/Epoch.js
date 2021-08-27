@@ -172,21 +172,12 @@ const Styles = styled.div`
         top: 35px;
       }
       .left-bottom {
-        background: url(${AprBg});
-        background-size: 100%;
-        background-repeat: no-repeat;
-        width: 40px;
-        height: 40px;
         display: flex;
         justify-content: center;
         padding-top: 4px;
         font-weight: bold;
-        margin-top: 45px;
-        margin-left: -15px;
         word-break: break-all;
         @media (max-width: 767px) {
-          background: no-repeat;
-          width: auto;
           padding: 0;
           height: auto;
           margin: 0;
@@ -200,27 +191,17 @@ const Styles = styled.div`
         }
       }
       .top-right {
-        background: url(${AprBg});
-        background-size: 100%;
-        background-repeat: no-repeat;
-        width: 40px;
-        height: 40px;
         display: flex;
         justify-content: center;
         padding-top: 4px;
         font-weight: bold;
-        transform: rotate(180deg);
-        margin-top: -35px;
         align-items: end;
         @media (max-width: 767px) {
-          background: no-repeat;
-          width: auto;
           padding: 0;
           height: auto;
           margin: 0;
         }
         span {
-          transform: rotate(-180deg);
           line-height: 14px;
           @media (max-width: 767px) {
             br {
@@ -410,7 +391,7 @@ const Epoch = ({ settings, setSetting }) => {
           </div>
           {showDetails && (
             <>
-              <div className="hidden md:flex flex-col md:flex-row items-center holding-apr absolute">
+              {/* <div className="hidden md:flex flex-col md:flex-row items-center holding-apr absolute">
                 <div className="flex items-center">
                   <div className="font-bold text-md text-center">
                     Holdding <br />
@@ -433,8 +414,8 @@ const Epoch = ({ settings, setSetting }) => {
                   </div>
                   <div className="font-bold text-sm text-right">per epoch</div>
                 </div>
-              </div>
-              <div className=" md:hidden flex flex-col md:flex-row items-start holding-apr absolute">
+              </div> */}
+              <div className=" flex flex-col  items-start holding-apr absolute">
                 <div className="flex items-center">
                   <div className="font-bold text-md text-center mr-2">Holdding APR</div>
                   <div className="left-bottom text-white text-md text-center">
@@ -451,7 +432,7 @@ const Epoch = ({ settings, setSetting }) => {
                     <span
                       style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                     >
-                      +<br />
+                      +
                       {currentEpochROI}%
                     </span>
                   </div>
