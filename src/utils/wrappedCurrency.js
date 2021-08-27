@@ -1,4 +1,4 @@
-import { ETHER, Token, TokenAmount, WETH } from "@pancakeswap-libs/sdk";
+import { ETHER, Token, TokenAmount, WETH } from "@annex/sdk";
 
 export function wrappedCurrency(currency, chainId) {
 	// eslint-disable-next-line no-nested-ternary

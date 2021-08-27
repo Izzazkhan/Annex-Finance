@@ -13,7 +13,7 @@ const VotingWallet = ({
     balance,
     settings,
     earnedBalance,
-    xaiMint,
+    // xaiMint,
     delegateAddress,
     delegateStatus,
     loading,
@@ -43,7 +43,7 @@ const VotingWallet = ({
     };
 
     const handleCollect = () => {
-        if (+earnedBalance !== 0 || +xaiMint !== 0) {
+        if (+earnedBalance !== 0) {
             setIsLoading(true);
             const appContract = getComptrollerContract();
             methods

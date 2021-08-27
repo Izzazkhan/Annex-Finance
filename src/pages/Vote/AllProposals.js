@@ -17,6 +17,7 @@ import {useActiveWeb3React} from "../../hooks";
 import {promisify} from "../../utilities";
 import Loading from "../../components/UI/Loading";
 import ProposalOverview from "../../components/vote/ProposalOverview";
+import AnnexPieChart from "../../components/Annex/AnnexPieChart";
 
 
 const AllProposals = ({
@@ -146,12 +147,16 @@ const AllProposals = ({
             });
     };
 
-    const activeProposals = useMemo(() => {
+    const proposalStates = useMemo(() => {
         if(proposals?.result && proposals?.result?.length === 0) {
-            return 0;
+            return [
+                { color: "#2E2E2E", name: "Failed", value: 100 },
+                { color: "#413FBB", name: "Active", value: 0 },
+                { color: "#4FD000", name: "Passed", value: 0 }
+            ];
         }
 
-        const count = proposals?.result?.reduce((total, item) => {
+        const activeValue = proposals?.result?.reduce((total, item) => {
             if(item.state === 'Active') {
                 return total+=1;
             }
@@ -159,17 +164,7 @@ const AllProposals = ({
             return total;
         }, 0)
 
-        return Math.floor(count / proposals?.result?.length * 100);
-
-
-    }, [proposals?.result])
-
-    const passedProposals = useMemo(() => {
-        if(proposals?.result && proposals?.result?.length === 0) {
-            return 0;
-        }
-
-        const count = proposals?.result?.reduce((total, item) => {
+        const passedValue = proposals?.result?.reduce((total, item) => {
             if(item.state === 'Executed') {
                 return total+=1;
             }
@@ -177,7 +172,21 @@ const AllProposals = ({
             return total;
         }, 0)
 
-        return Math.floor(count / proposals?.result?.length * 100);
+        if(proposals?.result?.length === 0) {
+            return [
+                { color: "#2E2E2E", name: "Failed", value: 1 },
+                { color: "#413FBB", name: "Active", value: 0 },
+                { color: "#4FD000", name: "Passed", value: 0 }
+            ];
+        }
+
+        return [
+            { color: "#2E2E2E", name: "Failed", value: proposals?.result?.length - activeValue - passedValue },
+            { color: "#413FBB", name: "Active", value: activeValue },
+            { color: "#4FD000", name: "Passed", value: passedValue }
+        ]
+
+
     }, [proposals?.result])
 
     return (
@@ -185,15 +194,8 @@ const AllProposals = ({
             <div className="flex flex-col sm:flex-row sm:justify-between items-center space-y-4 sm:space-y-0 mt-8">
                 <div className="text-primary text-2xl font-bold">Governance Proposals</div>
                 <div className="flex items-center space-x-4">
-                    <Progress
-                        className="text-white"
-                        type="circle"
-                        color="#4FD000"
-                        percent={activeProposals}
-                        strokeWidth={10}
-                        trailColor={"#2E2E2E"}
-                        width={110}
-                        symbolClassName="flex text-white"
+                    <AnnexPieChart
+                        data={proposalStates}
                     />
                     <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-4 text-white">
@@ -222,7 +224,7 @@ const AllProposals = ({
                 {!isLoadingProposal && (
                     <>
                         {proposals?.result && proposals?.result?.length !== 0 ? (
-                            proposals.map(item => {
+                            proposals?.result?.map(item => {
                                 return (
                                     <ProposalOverview
                                         proposal={item}

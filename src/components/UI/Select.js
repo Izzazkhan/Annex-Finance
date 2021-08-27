@@ -3,37 +3,39 @@ import React, { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import usdc from '../../assets/images/coins/usdc.png';
-import styled from "styled-components";
-import * as constants from "../../utilities/constants";
+import styled from 'styled-components';
+import * as constants from '../../utilities/constants';
 
 const ListboxOptions = styled(Listbox.Options)`
   border-radius: 24px;
-  
-`
+`;
 
 const defaultOptions = [
-  { name: 'usdc', logo: <img alt={'usdc'} src={usdc} style={{ width: 32, height: 32}} /> },
+  { name: 'usdc', logo: <img alt={'usdc'} src={usdc} style={{ width: 32, height: 32 }} /> },
 ];
 
-export default function Select({
-  type = 'primary',
+function Select({
+  type,
   options = defaultOptions,
-  width = 'w-56',
+  width,
   label,
   labelClassName,
   logoClassName,
-  onChange
+  onChange,
 }) {
   const [selected, setSelected] = useState(options[0]);
 
   return (
     <div className={width}>
-      <Listbox value={selected} onChange={(val) => {
-        setSelected(val);
-        if(onChange) {
-          onChange(val)
-        }
-      }}>
+      <Listbox
+        value={selected}
+        onChange={(val) => {
+          setSelected(val);
+          if (onChange) {
+            onChange(val);
+          }
+        }}
+      >
         {({ open }) => (
           <>
             <div className="relative z-10">
@@ -45,10 +47,14 @@ export default function Select({
                focus-visible:border-indigo-500 sm:text-sm bg-transparent border border-solid ${
                  type === 'primary'
                    ? 'border-primary rounded-4xl'
+                   : type === 'custom-primary'
+                   ? 'border-primary rounded-lg '
                    : type === 'basic'
                    ? 'border-gray rounded-md py-2'
                    : type === 'mini'
                    ? 'border-none shadow-none'
+                   : type === 'basic-xl'
+                   ? 'border-gray  rounded-xl px-4 h-14'
                    : 'bg-primary rounded-4xl py-1.5'
                }`}
               >
@@ -56,9 +62,9 @@ export default function Select({
                   {selected?.logo && (
                     <div className={logoClassName ? logoClassName : ''}>
                       <img
-                          alt={selected?.name}
-                          src={selected?.logo}
-                          style={{ width: 32, height: 32}}
+                        alt={selected?.name}
+                        src={selected?.logo}
+                        style={{ width: 32, height: 32 }}
                       />
                     </div>
                   )}
@@ -68,6 +74,8 @@ export default function Select({
                       className={`block truncate ${
                         type === 'primary'
                           ? 'text-primary font-bold'
+                          : type === 'custom-primary'
+                          ? 'text-white text-lg'
                           : type === 'basic'
                           ? 'text-white'
                           : type === 'mini'
@@ -81,6 +89,8 @@ export default function Select({
                   <ChevronDownIcon
                     className={`w-6 hover:text-violet-100 mr-2 ${
                       type === 'primary'
+                        ? 'text-primary'
+                        : type === 'custom-primary'
                         ? 'text-primary'
                         : type === 'basic'
                         ? 'text-white'
@@ -117,11 +127,11 @@ export default function Select({
                           {option?.logo && (
                             <div className={logoClassName ? logoClassName : ''}>
                               <img
-
-                                  alt={option?.name}
-                                  src={option?.logo}
-                                  style={{ width: 32, height: 32}}
-                              /></div>
+                                alt={option?.name}
+                                src={option?.logo}
+                                style={{ width: 32, height: 32 }}
+                              />
+                            </div>
                           )}
                           <span
                             className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}
@@ -141,3 +151,10 @@ export default function Select({
     </div>
   );
 }
+
+Select.defaultProps = {
+  type: 'primary',
+  width: 'w-56',
+};
+
+export default Select;

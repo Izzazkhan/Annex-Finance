@@ -11,7 +11,7 @@ import {
 	Trade,
 	TradeType,
 	WETH,
-} from "@pancakeswap-libs/sdk";
+} from "@annex/sdk";
 import { useMemo } from "react";
 import { useAllTokens } from "../hooks/Tokens";
 import { useV1FactoryContract } from "../hooks/useContract";
@@ -20,7 +20,7 @@ import {
 	NEVER_RELOAD,
 	useSingleCallResult,
 	useSingleContractMultipleData
-} from "../core/modules/multicall/hooks";
+} from "../core";
 import { useETHBalances, useTokenBalance, useTokenBalances } from "../hooks/wallet";
 import { useActiveWeb3React } from "../hooks";
 

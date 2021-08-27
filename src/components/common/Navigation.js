@@ -1,20 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import people from '../../assets/icons/people.svg';
 import coins from '../../assets/icons/coins.svg';
 import MiniLogo from '../../components/UI/MiniLogo';
-import { useQuery } from '../../hooks/useQuery';
 import ConnectWalletModal from './ConnectWalletModal';
 import {useActiveWeb3React} from "../../hooks";
 import {shortenAddress} from "../../utils/address";
 import commaNumber from "comma-number";
-import {getBigNumber} from "../../utilities/common";
 import BigNumber from "bignumber.js";
 import {nFormatter} from "../../utils/data";
 import {useCountUp} from "react-countup";
+import HeaderLogo from '../../assets/icons/headerLogo.svg';
 
 const format = commaNumber.bindWith(',', '.');
 
-function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, onClose }) {
+function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
   const { account } = useActiveWeb3React();
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
 
@@ -27,11 +25,11 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, 
     liquidityUpdate(Number(totalLiquidity));
   }, [totalLiquidity])
 
-  useEffect(() => {
-    if(totalXaiMinted instanceof BigNumber) {
-      mintedUpdate(Number(totalXaiMinted?.toNumber()));
-    }
-  }, [totalXaiMinted])
+  // useEffect(() => {
+  //   if(totalXaiMinted instanceof BigNumber) {
+  //     mintedUpdate(Number(totalXaiMinted?.toNumber()));
+  //   }
+  // }, [totalXaiMinted])
 
 
   const ConnectWallet = ({ action}) => (
@@ -71,7 +69,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, totalXaiMinted, 
             <ConnectWallet />
           </li>
           <li className="">
-            <MiniLogo size="md" />
+              <img src={HeaderLogo} alt={'Annex'} className={'w-12 h-12 rounded-full block'}/>
           </li>
         </ul>
       )}

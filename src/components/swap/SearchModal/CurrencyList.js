@@ -1,4 +1,4 @@
-import {Currency, currencyEquals, ETHER, Token} from "@pancakeswap-libs/sdk";
+import {Currency, currencyEquals, ETHER, Token} from "@annex/sdk";
 import { Text } from "rebass";
 import { Box } from "rebass/styled-components";
 import { FixedSizeList } from "react-window";

@@ -6,7 +6,7 @@ import {useAllTokens, useToken} from "../../../hooks/Tokens";
 import {isAddress} from "../../../utils";
 import useTokenComparator from "./sorting";
 import filterTokens from "./filtering";
-import {ETHER} from "@pancakeswap-libs/sdk";
+import {ETHER} from "@annex/sdk";
 import {CloseIcon} from "./ListSelect";
 import SortButton from "./SortButton";
 import CurrencyList from "./CurrencyList";
@@ -49,6 +49,8 @@ export default function CurrencySearch({
 	const tokenComparator = useTokenComparator(invertSearchOrder);
 
 	const filteredTokens = useMemo(() => {
+		// console.log(allTokens);
+		if(!allTokens) return [];
 		if (isAddressSearch) return searchToken ? [searchToken] : [];
 		return filterTokens(Object.values(allTokens), searchQuery);
 	}, [isAddressSearch, searchToken, allTokens, searchQuery]);

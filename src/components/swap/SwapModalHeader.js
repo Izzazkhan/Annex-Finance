@@ -8,7 +8,7 @@ import {RowBetween, RowFixed} from "../UI/Row";
 import CurrencyLogo from "../common/CurrencyLogo";
 import {isAddress} from "../../utils";
 import {shortenAddress} from "../../utils/address";
-import {TradeType} from "@pancakeswap-libs/sdk";
+import {TradeType} from "@annex/sdk";
 import {Field} from "../../core/modules/swap/actions";
 
 
@@ -36,12 +36,12 @@ export default function SwapModalHeader({
 	const priceImpactSeverity = warningSeverity(priceImpactWithoutFee);
 
 	return (
-		<AutoColumn gap="md" style={{ marginTop: "20px" }}>
+		<AutoColumn gap="md" style={{ marginTop: "40px" }}>
 			<RowBetween align="flex-end">
 				<RowFixed gap="0px">
 					<CurrencyLogo currency={trade.inputAmount.currency} size="24px" style={{ marginRight: "12px" }} />
 					<span
-						className={`text-2xl ml-2 font-bold 
+						className={`text-xl ml-2 font-bold 
 						${showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT 
 							? "text-primary"
 							: "text-white"}
@@ -52,7 +52,7 @@ export default function SwapModalHeader({
 				</RowFixed>
 				<RowFixed gap="0px">
 					<span
-						className={'text-2xl ml-2 font-bold'}>
+						className={'text-xl ml-2 font-bold'}>
 						{trade.inputAmount.currency.symbol}
 					</span>
 				</RowFixed>
@@ -64,7 +64,7 @@ export default function SwapModalHeader({
 				<RowFixed gap="0px">
 					<CurrencyLogo currency={trade.outputAmount.currency} size="24px" style={{ marginRight: "12px" }} />
 					<span
-						className={`text-2xl ml-2 font-bold ${priceImpactSeverity > 2
+						className={`text-xl ml-2 font-bold ${priceImpactSeverity > 2
 							? "text-darkRed"
 							: showAcceptChanges && trade.tradeType === TradeType.EXACT_INPUT
 							? "text-primaryLight"
@@ -74,7 +74,7 @@ export default function SwapModalHeader({
 					</span>
 				</RowFixed>
 				<RowFixed gap="0px">
-					<span className="text-2xl ml-2 font-bold text-white">
+					<span className="text-xl ml-2 font-bold text-white">
 						{trade.outputAmount.currency.symbol}
 					</span>
 				</RowFixed>
@@ -85,7 +85,7 @@ export default function SwapModalHeader({
 						<RowFixed>
 							<AlertTriangle size={20} style={{ marginRight: "8px", minWidth: 24 }} />
 							<span className="text-2xl ml-2 font-bold text-primary">
-								 Price Updated
+								Price Updated
 							</span>
 						</RowFixed>
 						<button

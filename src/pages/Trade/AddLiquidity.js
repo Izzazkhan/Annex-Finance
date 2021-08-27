@@ -1,16 +1,9 @@
 import React, {useCallback, useState} from 'react';
-import Select from '../../components/UI/Select';
-import BTN from '../../assets/icons/BTN.svg';
-import LTC from '../../assets/icons/LTC.svg';
 import help from '../../assets/icons/help.svg';
-import ethereumLogo from '../../assets/icons/ethereumLogo.svg';
-import bnbLogo from '../../assets/icons/bnbLogo.svg';
 import blackPlus from '../../assets/icons/blackPlus.svg';
-import whitePlus from '../../assets/icons/whitePlus.svg';
-import ValueRange from './ValueRange';
 import {useActiveWeb3React} from "../../hooks";
 import {useCurrency} from "../../hooks/Tokens";
-import {currencyEquals, ETHER, WETH} from "@pancakeswap-libs/sdk";
+import {currencyEquals, ETHER, WETH} from "@annex/sdk";
 import {
 	useDerivedMintInfo,
 	useMintActionHandlers,
@@ -37,31 +30,6 @@ import {PairState} from "../../data/Reserves";
 import {Dots} from "../../components/UI/Dots";
 import {MinimalPositionCard} from "../../components/swap/PositionCard";
 import { BigNumber } from "@ethersproject/bignumber";
-
-const cryptos = [
-	{ name: 'BTN', logo: <img src={BTN} alt="" /> },
-	{ name: 'LTC', logo: <img src={LTC} alt="" /> },
-];
-
-
-
-const InputSummary = () => (
-	<div className="bg-blueGray border border-solid border-primary rounded-2xl py-2 px-6 pr-0 w-full">
-		<div className="flex justify-between">
-			<div className="text-white flex flex-col space-y-5">
-				<div className="">Input</div>
-				<div className="font-bold">0.001</div>
-			</div>
-			<div className="text-white flex flex-col space-y-2">
-				<div className="self-end pr-6">Balance 0</div>
-				<div className="flex space-x-2 items-center">
-					<div className="font-bold">MAX</div>
-					<Select type="mini" width="w-40" options={cryptos} />
-				</div>
-			</div>
-		</div>
-	</div>
-);
 
 
 const PlusIcon = () => (
@@ -435,19 +403,19 @@ function AddLiquidity({
 							Connect to wallet
 						</button>
 					) : (
-						<AutoColumn gap="md">
+						<AutoColumn gap="md" className={'w-full'}>
 
 							{(approvalA === ApprovalState.NOT_APPROVED ||
 								approvalA === ApprovalState.PENDING ||
 								approvalB === ApprovalState.NOT_APPROVED ||
 								approvalB === ApprovalState.PENDING) &&
 							isValid && (
-								<RowBetween>
+								<RowBetween className={'space-x-3 w-full'}>
 									{approvalA !== ApprovalState.APPROVED && (
 										<button
 											onClick={approveACallback}
 											disabled={approvalA === ApprovalState.PENDING}
-											className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
+											className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
 											style={{
 												width:
 													approvalB !== ApprovalState.APPROVED ? "48%" : "100%",
@@ -466,7 +434,7 @@ function AddLiquidity({
 										<button
 											onClick={approveBCallback}
 											disabled={approvalB === ApprovalState.PENDING}
-											className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
+											className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
 											style={{
 												width:
 													approvalA !== ApprovalState.APPROVED ? "48%" : "100%",

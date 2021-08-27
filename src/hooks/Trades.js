@@ -1,4 +1,4 @@
-import { Trade } from "@pancakeswap-libs/sdk";
+import { Trade } from "@annex/sdk";
 import _ from "lodash";
 import { useMemo } from "react";
 

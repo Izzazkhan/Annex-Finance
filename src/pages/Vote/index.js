@@ -5,7 +5,7 @@ import {
     getAbepContract,
     getComptrollerContract,
     getTokenContract,
-    getXaiControllerContract,
+    // getXaiControllerContract,
     methods
 } from "../../utilities/ContractService";
 import BigNumber from "bignumber.js";
@@ -28,7 +28,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
     const [current, setCurrent] = useState(1);
     const [isLoadingProposal, setIsLoadingProposal] = useState(false);
     const [earnedBalance, setEarnedBalance] = useState('0.00000000');
-    const [xaiMint, setXaiMint] = useState('0.00000000');
+    // const [xaiMint, setXaiMint] = useState('0.00000000');
     const [delegateAddress, setDelegateAddress] = useState('');
     const [delegateStatus, setDelegateStatus] = useState('');
 
@@ -95,7 +95,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
         const myAddress = account;
         if (!myAddress) return;
         const appContract = getComptrollerContract();
-        const xaiContract = getXaiControllerContract();
+        // const xaiContract = getXaiControllerContract();
         const annexInitialIndex = await methods.call(
             appContract.methods.annexInitialIndex,
             []
@@ -166,37 +166,37 @@ const Vote = ({ settings, getProposals, setSetting }) => {
             .dp(8, 1)
             .toString(10);
 
-        const annexXAIState = await methods.call(
-            xaiContract.methods.annexXAIState,
-            []
-        );
-        const xaiMintIndex = annexXAIState.index;
-        let xaiMinterIndex = await methods.call(
-            xaiContract.methods.annexXAIMinterIndex,
-            [myAddress]
-        );
-        if (+xaiMinterIndex === 0 && +xaiMintIndex > 0) {
-            xaiMinterIndex = annexInitialIndex;
-        }
-        const deltaIndex = new BigNumber(xaiMintIndex).minus(
-            new BigNumber(xaiMinterIndex)
-        );
-        const xaiMinterAmount = await methods.call(appContract.methods.mintedXAIs, [
-            myAddress
-        ]);
-        const xaiMinterDelta = new BigNumber(xaiMinterAmount)
-            .times(deltaIndex)
-            .div(1e54)
-            .dp(8, 1)
-            .toString(10);
+        // const annexXAIState = await methods.call(
+        //     xaiContract.methods.annexXAIState,
+        //     []
+        // );
+        // const xaiMintIndex = annexXAIState.index;
+        // let xaiMinterIndex = await methods.call(
+        //     xaiContract.methods.annexXAIMinterIndex,
+        //     [myAddress]
+        // );
+        // if (+xaiMinterIndex === 0 && +xaiMintIndex > 0) {
+        //     xaiMinterIndex = annexInitialIndex;
+        // }
+        // const deltaIndex = new BigNumber(xaiMintIndex).minus(
+        //     new BigNumber(xaiMinterIndex)
+        // );
+        // const xaiMinterAmount = await methods.call(appContract.methods.mintedXAIs, [
+        //     myAddress
+        // ]);
+        // const xaiMinterDelta = new BigNumber(xaiMinterAmount)
+        //     .times(deltaIndex)
+        //     .div(1e54)
+        //     .dp(8, 1)
+        //     .toString(10);
         setEarnedBalance(
             annexEarned && annexEarned !== '0' ? `${annexEarned}` : '0.00000000'
         );
-        setXaiMint(
-            xaiMinterDelta && xaiMinterDelta !== '0'
-                ? `${xaiMinterDelta}`
-                : '0.00000000'
-        );
+        // setXaiMint(
+        //     xaiMinterDelta && xaiMinterDelta !== '0'
+        //         ? `${xaiMinterDelta}`
+        //         : '0.00000000'
+        // );
     };
 
     const updateDelegate = async () => {
@@ -245,7 +245,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
                 <VotingWallet
                     balance={balance !== '0' ? `${balance}` : '0.00000000'}
                     earnedBalance={earnedBalance}
-                    xaiMint={xaiMint}
+                    // xaiMint={xaiMint}
                     votingWeight={votingWeight}
                     delegateAddress={delegateAddress}
                     delegateStatus={delegateStatus}

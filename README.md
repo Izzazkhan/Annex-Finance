@@ -6,6 +6,7 @@ npm install
 npm run start
 ```
 
+
 ## Requirements and Configuration
 
 You’ll need to have Node 8.16.0 or Node 10.16.0 or later version on your local development machine
@@ -15,7 +16,7 @@ You’ll need to have Node 8.16.0 or Node 10.16.0 or later version on your local
 To create a new app, you may choose one of the following methods:
 
 ```
-venus-protocol-ui
+annex-frontend
 ├── node_modules
 ├── public
 ├── src
@@ -32,7 +33,7 @@ venus-protocol-ui
 ├── README.md
 ```
 
-## Quick Deployment
+## Quick Install & Deployment
 
 ```sh
 npm install

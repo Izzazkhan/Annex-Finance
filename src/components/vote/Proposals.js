@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {useActiveWeb3React} from "../../hooks";
 import {compose} from "redux";
 import {connectAccount} from "../../core";
@@ -110,7 +111,7 @@ const Proposals = ({
                 )}
                 {!isLoadingProposal && (
                     <>
-                        {proposals &&  proposals.length !== 0 ? (
+                        {proposals && proposals.length !== 0 ? (
                             proposals.map(item => {
                                 return (
                                     <Proposal

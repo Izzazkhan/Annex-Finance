@@ -1,10 +1,8 @@
 import { parseUnits } from "@ethersproject/units";
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from "@pancakeswap-libs/sdk";
+import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from "@annex/sdk";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useToggledVersion, { Version } from "../../../hooks/useToggledVersion";
 import useENS from "../../../hooks/useENS";
-import { useV1Trade } from "../../../data/V1";
 import { useCurrency } from "../../../hooks/Tokens";
 import { useTradeExactIn, useTradeExactOut } from "../../../hooks/Trades";
 import useParsedQueryString from "../../../hooks/useParsedQueryString";
@@ -15,6 +13,8 @@ import { Field, swapActionCreators } from "./actions";
 import { useUserSlippageTolerance } from "../user/hooks";
 import { computeSlippageAdjustedAmounts } from "../../../utils/prices";
 import { useActiveWeb3React } from "../../../hooks";
+
+import { CONTRACT_FACTORY_ADDRESS, CONTRACT_ROUTER_ADDRESS } from "../../../utilities/constants";
 
 const {replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput} = swapActionCreators;
 
@@ -83,9 +83,9 @@ export function tryParseAmount(value, currency) {
 }
 
 const BAD_RECIPIENT_ADDRESSES = [
-	"0x6725F303b657a9451d8BA641348b6761A6CC7a17", // v2 factory
+	CONTRACT_FACTORY_ADDRESS, // v2 factory
 	"0xf164fC0Ec4E93095b804a4795bBe1e041497b92a", // v2 router 01
-	"0xD99D1c33F9fC3444f8101754aBC46c52416550D1", // v2 router 02
+	CONTRACT_ROUTER_ADDRESS, // v2 router 02
 ];
 
 /**
@@ -103,8 +103,6 @@ function involvesAddress(trade, checksummedAddress) {
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo() {
 	const { account } = useActiveWeb3React();
-
-	const toggledVersion = useToggledVersion();
 
 	const {
 		independentField,
@@ -143,8 +141,6 @@ export function useDerivedSwapInfo() {
 		[Field.OUTPUT]: outputCurrency || undefined,
 	};
 
-	// get link to trade on v1, if a better rate exists
-	const v1Trade = useV1Trade(isExactIn, currencies[Field.INPUT], currencies[Field.OUTPUT], parsedAmount);
 
 	let inputError;
 	if (!account) {
@@ -175,17 +171,10 @@ export function useDerivedSwapInfo() {
 	const slippageAdjustedAmounts =
 		v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage);
 
-	const slippageAdjustedAmountsV1 =
-		v1Trade && allowedSlippage && computeSlippageAdjustedAmounts(v1Trade, allowedSlippage);
-
 	// compare input balance to max input based on version
 	const [balanceIn, amountIn] = [
 		currencyBalances[Field.INPUT],
-		toggledVersion === Version.v1
-			? slippageAdjustedAmountsV1
-			? slippageAdjustedAmountsV1[Field.INPUT]
-			: null
-			: slippageAdjustedAmounts
+			slippageAdjustedAmounts
 			? slippageAdjustedAmounts[Field.INPUT]
 			: null,
 	];
@@ -200,7 +189,6 @@ export function useDerivedSwapInfo() {
 		parsedAmount,
 		v2Trade: v2Trade || undefined,
 		inputError,
-		v1Trade,
 	};
 }
 

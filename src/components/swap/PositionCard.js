@@ -1,4 +1,4 @@
-import {JSBI, Percent} from "@pancakeswap-libs/sdk";
+import {JSBI, Percent} from "@annex/sdk";
 import React, {useState} from "react";
 import { ChevronDown, ChevronUp } from "react-feather";
 import { Link } from 'react-router-dom';
@@ -37,34 +37,34 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }) {
 			: [undefined, undefined];
 
 	return userPoolBalance ? (
-		<div className="bg-blueGray p-6 rounded-3xl w-full border border-solid border-primary mt-14">
-			<div className="font-bold text-primary text-xl">LP TOKENS IN YOUR WALLET</div>
+		<div className="bg-blueGray p-6 rounded-3xl w-full border border-solid border-primary mt-4">
+			<div className="font-bold text-primary text-lg">LP TOKENS IN YOUR WALLET</div>
 			<div
-				className="flex justify-between items-center mt-6"
+				className="flex justify-between items-center mt-4"
 				onClick={() => setShowMore(!showMore)}
 			>
 				<div className="flex items-center">
 					<DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin size={20} />
-					<div className="text-white text-xl font-bold ml-6">
+					<div className="text-white text-lg font-bold ml-3">
 						{currency0.symbol}/{currency1.symbol}
 					</div>
 				</div>
-				<div className="text-white text-2xl font-bold">
+				<div className="text-white text-xl font-bold">
 					{userPoolBalance ? userPoolBalance.toSignificant(4) : "-"}
 				</div>
 			</div>
-			<div className="flex justify-between items-center mt-6">
-				<div className="text-primary text-xl font-bold">{currency0.symbol}:</div>
-				<div className="text-white text-2xl font-bold">
+			<div className="flex justify-between items-center mt-4">
+				<div className="text-primary text-lg font-bold">{currency0.symbol}:</div>
+				<div className="text-white text-xl font-bold">
 					{token0Deposited
 						? token0Deposited?.toSignificant(6)
 						: "-"
 					}
 				</div>
 			</div>
-			<div className="flex justify-between items-center mt-6">
-				<div className="text-primary text-xl font-bold">{currency1.symbol}:</div>
-				<div className="text-white text-2xl font-bold">
+			<div className="flex justify-between items-center mt-4">
+				<div className="text-primary text-lg font-bold">{currency1.symbol}:</div>
+				<div className="text-white text-xl font-bold">
 					{token1Deposited
 						? token1Deposited?.toSignificant(6)
 						: "-"
@@ -104,7 +104,7 @@ export default function FullPositionCard({ pair }) {
 			: [undefined, undefined];
 
 	return (
-		<div className="border border-blueGray hover:border-darkGray transition-all">
+		<div className="border bg-fadeBlack mb-3 py-3 px-4 rounded-lg border-blueGray hover:border-darkGray transition-all">
 			<AutoColumn>
 				<RowBetween
 					style={{ height: '24px', cursor: 'pointer' }}
@@ -122,16 +122,17 @@ export default function FullPositionCard({ pair }) {
 					</RowFixed>
 					<RowFixed>
 						{showMore ? (
-							<ChevronUp size="20" style={{ marginLeft: "10px" }} />
+							<ChevronUp size="20" color={'#fff'} style={{ marginLeft: "10px" }} />
 						) : (
-							<ChevronDown size="20" style={{ marginLeft: "10px" }} />
+							<ChevronDown size="20" color={'#fff'} style={{ marginLeft: "10px" }} />
 						)}
 					</RowFixed>
 				</RowBetween>
 				{showMore && (
-					<AutoColumn gap={'8px'}>
+					<AutoColumn gap={'8px'} className={'mt-6'}>
 						<RowBetween
 							style={{ height: '24px' }}
+							className={'py-2'}
 						>
 							<RowFixed>
 								<span className="text-white text-base">
@@ -156,6 +157,7 @@ export default function FullPositionCard({ pair }) {
 
 						<RowBetween
 							style={{ height: '24px' }}
+							className={'py-2'}
 						>
 							<RowFixed>
 								<span className="text-white text-base">
@@ -180,6 +182,7 @@ export default function FullPositionCard({ pair }) {
 
 						<RowBetween
 							style={{ height: '24px' }}
+							className={'py-2'}
 						>
 							<span className="text-white text-base">
 								Your pool tokens:
@@ -190,6 +193,7 @@ export default function FullPositionCard({ pair }) {
 						</RowBetween>
 						<RowBetween
 							style={{ height: '24px' }}
+							className={'py-2'}
 						>
 							<span className="text-white text-base">
 								Your pool share:
@@ -199,9 +203,9 @@ export default function FullPositionCard({ pair }) {
 							</span>
 						</RowBetween>
 
-						<RowBetween marginTop="10px" className={'space-x-2'}>
+						<RowBetween marginTop="10px" className={'space-x-2 w-full'}>
 							<Link
-								className="bg-primaryLight py-2 rounded px-32 w-full
+								className="bg-primaryLight py-2 rounded w-full
 								transition-all disabled:opacity-50
                                 h-12 text-black flex items-center justify-center"
 								to={`/trade/liquidity/add/${currencyId(currency0)}/${currencyId(currency1)}`}
@@ -209,9 +213,9 @@ export default function FullPositionCard({ pair }) {
 								Add
 							</Link>
 							<Link
-								className="bg-darkGray py-2 rounded px-32 w-full
+								className="bg-darkGray py-2 rounded w-full
 								transition-all disabled:opacity-50 border border-darkGray
-                                h-12 text-black flex items-center justify-center"
+                                h-12 text-white flex items-center justify-center"
 								to={`/trade/liquidity/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
 							>
 								Remove

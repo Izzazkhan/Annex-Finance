@@ -11,6 +11,7 @@ import {
 	parseCallKey,
 } from "./actions";
 import { useActiveWeb3React } from "../../../hooks";
+import {notNull} from "../../../utils/notNull";
 
 const {
 	errorFetchingMulticallResults,
@@ -181,7 +182,7 @@ export default function Updater() {
 								results: outdatedCallKeys
 									.slice(firstCallKeyIndex, lastCallKeyIndex)
 									.reduce((memo, callKey, i) => {
-							memo[callKey] = returnData[i] || null;
+							memo[callKey] = notNull(returnData[i], null);
 							return memo;
 						}, {}),
 							blockNumber: fetchBlockNumber,

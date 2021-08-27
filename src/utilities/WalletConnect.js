@@ -95,26 +95,26 @@ export default class WalletConnectClass {
     return Number(this.web3.utils.fromWei(weiBalance, 'ether'));
   }
 
-  getXaiTokenContract() {
-    return new this.web3.eth.Contract(
-      JSON.parse(constants.CONTRACT_XAI_TOKEN_ABI),
-      constants.CONTRACT_XAI_TOKEN_ADDRESS
-    );
-  }
+  // getXaiTokenContract() {
+  //   return new this.web3.eth.Contract(
+  //     JSON.parse(constants.CONTRACT_XAI_TOKEN_ABI),
+  //     constants.CONTRACT_XAI_TOKEN_ADDRESS
+  //   );
+  // }
 
-  getXaiControllerContract() {
-    return new this.web3.eth.Contract(
-      JSON.parse(constants.CONTRACT_XAI_CONTROLLER_ABI),
-      constants.CONTRACT_XAI_UNITROLLER_ADDRESS
-    );
-  }
+  // getXaiControllerContract() {
+  //   return new this.web3.eth.Contract(
+  //     JSON.parse(constants.CONTRACT_XAI_CONTROLLER_ABI),
+  //     constants.CONTRACT_XAI_UNITROLLER_ADDRESS
+  //   );
+  // }
 
-  getXaiVaultContract() {
-    return new this.web3.eth.Contract(
-      JSON.parse(constants.CONTRACT_XAI_VAULT_ABI),
-      constants.CONTRACT_XAI_VAULT_ADDRESS
-    );
-  }
+  // getXaiVaultContract() {
+  //   return new this.web3.eth.Contract(
+  //     JSON.parse(constants.CONTRACT_XAI_VAULT_ABI),
+  //     constants.CONTRACT_XAI_VAULT_ADDRESS
+  //   );
+  // }
 
   getTokenContract(name) {
     return new this.web3.eth.Contract(

@@ -1,8 +1,12 @@
 import {Field} from "./swap/actions";
 import {Field as MintField} from "./mint/actions";
+import {Field as BurnField} from "./burn/actions";
 import {DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL} from "../../constants/lists";
 import DEFAULT_LIST from "../../constants/tokens/annex.json";
 import {DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE} from "../../constants/swap";
+import farmsConfig from '../../constants/farms'
+import poolsConfig from '../../constants/pools'
+import isArchivedPid from "../../utils/farmHelpers";
 
 const auth = {
   user: null
@@ -97,6 +101,52 @@ const mint = {
   otherTypedValue: "",
 }
 
+const burn = {
+  independentField: BurnField.LIQUIDITY_PERCENT,
+  typedValue: "0",
+}
+
+
+
+const noAccountFarmConfig = farmsConfig.map((farm) => ({
+  ...farm,
+  userData: {
+    allowance: '0',
+    tokenBalance: '0',
+    stakedBalance: '0',
+    earnings: '0',
+  },
+}))
+
+const farms = { data: noAccountFarmConfig, loadArchivedFarmsData: false, userDataLoaded: false }
+
+export const nonArchivedFarms = farmsConfig.filter(({ pid }) => !isArchivedPid(pid))
+
+const pools = {
+  data: [...poolsConfig],
+  userDataLoaded: false,
+  cakeVault: {
+    totalShares: null,
+    pricePerFullShare: null,
+    totalCakeInVault: null,
+    estimatedCakeBountyReward: null,
+    totalPendingCakeHarvest: null,
+    fees: {
+      performanceFee: null,
+      callFee: null,
+      withdrawalFee: null,
+      withdrawalFeePeriod: null,
+    },
+    userData: {
+      isLoading: true,
+      userShares: null,
+      cakeAtLastUserAction: null,
+      lastDepositedTime: null,
+      lastUserActionTime: null,
+    },
+  },
+}
+
 export const initialState = {
   auth,
   account,
@@ -106,5 +156,8 @@ export const initialState = {
   application,
   transaction,
   user,
-  mint
+  mint,
+  burn,
+  farms,
+  pools
 };

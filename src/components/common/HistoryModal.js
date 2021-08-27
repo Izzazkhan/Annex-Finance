@@ -1,5 +1,7 @@
 import React, {useMemo} from 'react';
 import styled from "styled-components";
+import { ArrowRight } from 'react-feather';
+
 import Modal from '../UI/Modal';
 import {useActiveWeb3React} from "../../hooks";
 import {isTransactionRecent, useAllTransactions} from "../../core";
@@ -71,15 +73,17 @@ function HistoryModal({ open, onSetOpen, onCloseModal }) {
 
             return (
                 <>
-                    <FlexRow key={hash} className={'hover:bg-fadeBlack'}>
+                    <FlexRow key={hash} className={'self-stretch hover:bg-fadeBlack text-left'}>
                         <a
                             target={"_blank"}
                             rel={'noreferrer noopener'}
                             className={`no-underline text-primaryLight 
-                            font-bold text-lg focus:outline-none hover:text-primary`}
+                            font-medium text-base focus:outline-none hover:text-primary 
+                            text-left flex items-center justify-between border py-2 px-4 rounded-2xl border-gray w-full`}
                             href={getEtherscanLink(chainId, hash, "transaction")}
                         >
-                            {summary || hash}
+                            <span>{summary || hash}</span>
+                            <ArrowRight size={'16px'}/>
                         </a>
                     </FlexRow>
                 </>

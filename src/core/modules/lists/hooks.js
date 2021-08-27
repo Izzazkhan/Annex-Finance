@@ -1,4 +1,4 @@
-import { ChainId, Token } from "@pancakeswap-libs/sdk";
+import { ChainId, Token } from "@annex/sdk";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
