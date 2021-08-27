@@ -18,13 +18,25 @@ const defaultOptions = {
 const getSubGraphDataSource = (path) => {
   switch (path) {
     case '/auction/past': {
-      return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
+      if (process.env.REACT_APP_ENV === 'dev') {
+        return process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+      } else {
+        return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
+      }
     }
     case '/auction/live': {
-      return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
+      if (process.env.REACT_APP_ENV === 'dev') {
+        return process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+      } else {
+        return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
+      }
     }
     default: {
-      return process.env.REACT_APP_SUBGRAPH_DATASOURCE;
+      if (process.env.REACT_APP_ENV === 'dev') {
+        return process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+      } else {
+        return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
+      }
     }
   }
 };

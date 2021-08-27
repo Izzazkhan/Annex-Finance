@@ -557,7 +557,7 @@ function Detail(props) {
             </div>
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
-              {state.detail.currentPrice ? state.detail.currentPrice.toFixed(8) : 0}{' '}
+              {state.detail.currentPrice ? Number(state.detail.currentPrice).toFixed(8) : 0}{' '}
               {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
             </h2>
           )}
