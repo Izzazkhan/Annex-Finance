@@ -164,6 +164,13 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: ann,
         aAsset: ann
       },
+      wbnb: {
+        id: 'wbnb',
+        symbol: 'WBNB',
+        address: process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
+        asset: bnb,
+        aAsset: bnb
+      },
       //  wbtc: {
       //   id: 'wbtc',
       //   symbol: 'wbtc',
@@ -343,21 +350,45 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
     //   "contract": "FaucetToken",
     // }
   } : {
-    usdc: {
-      id: 'usdc',
-      "name": "USD Coin",
-      "symbol": "USDC",
-      "decimals": 6,
-      "address": process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS,
-      "contract": "FaucetToken",
+    // usdc: {
+    //   id: 'usdc',
+    //   "name": "USD Coin",
+    //   "symbol": "USDC",
+    //   "decimals": 6,
+    //   "address": process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS,
+    //   "contract": "FaucetToken",
+    // },
+    // usdt: {
+    //   id: 'usdt',
+    //   "name": "Tether",
+    //   "symbol": "USDT",
+    //   "decimals": 6,
+    //   "address": process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
+    //   "contract": "FaucetToken",
+    // },
+    wbnb: {
+      id: 'wbnb',
+      "name": "Wrapped BNB",
+      "symbol": "WBNB",
+      "decimals": 18,
+      "address": process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
+      // "contract": "FaucetToken",
     },
-    usdt: {
-      id: 'usdt',
-      "name": "Tether",
-      "symbol": "USDT",
-      "decimals": 6,
-      "address": process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
-      "contract": "FaucetToken",
+    busd: {
+      id: 'busd',
+      "name": "Binance USD",
+      "symbol": "BUSD",
+      "decimals": 18,
+      "address": process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS,
+      // "contract": "FaucetToken",
+    },
+    btcb: {
+      id: 'btcb',
+      "name": "Binance Bitcoin",
+      "symbol": "BTCB",
+      "decimals": 18,
+      "address": process.env.REACT_APP_MAIN_BTC_TOKEN_ADDRESS,
+      // "contract": "FaucetToken",
     },
     //  wbtc: {
     //   id: 'wbtc',

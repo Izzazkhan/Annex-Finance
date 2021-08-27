@@ -2,10 +2,10 @@ import { ChainId, JSBI, Percent, Token, WETH } from "@annex/sdk";
 import { CONTRACT_ROUTER_ADDRESS, NETWORK_ID } from "../utilities/constants";
 
 export const ROUTER_ADDRESS = CONTRACT_ROUTER_ADDRESS;
-console.log('router address: ', ROUTER_ADDRESS);
+// console.log('router address: ', ROUTER_ADDRESS);
 
 export const CHAIN_ID = NETWORK_ID;
-console.log('chain id: ', NETWORK_ID);
+// console.log('chain id: ', NETWORK_ID);
 
 export const DAI = new Token(
 	ChainId.MAINNET,

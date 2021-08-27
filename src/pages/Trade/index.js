@@ -106,7 +106,6 @@ function Trade() {
         }
         `,
       );
-      console.log('response', response);
       setSwapData(response.pairs);
 
       let pairDayMapped = [];
@@ -118,7 +117,6 @@ function Trade() {
         });
       });
 
-      console.log('pairDayMapped', pairDayMapped);
       let pairHourMapped = [];
       response.pairHourDatas.forEach((item) => {
         pairDayMapped.forEach((pairItem) => {
@@ -131,7 +129,6 @@ function Trade() {
         });
       });
 
-      console.log('pairHourMapped', pairHourMapped);
       setLiquidityData(pairHourMapped);
     } catch (error) {
       console.error(error);

@@ -238,7 +238,6 @@ export default function Form(props) {
   useEffect(async () => {
     if (showModal) {
       const threshold = await methods.call(auctionContract.methods.threshold, []);
-      // console.log('threshold: ', threshold);
       setAuctionThreshold(threshold);
       setModalError({
         message: '',
@@ -301,7 +300,6 @@ export default function Form(props) {
     return isValid;
   };
   const handleInputChange = (e, type, index, isAdvance) => {
-    // console.log('enter', index);
     let key = isAdvance ? 'advanceInputs' : 'inputs';
     let inputs = isAdvance ? [...state.advanceInputs] : [...state.inputs];
     let input = inputs[index];
@@ -361,7 +359,6 @@ export default function Form(props) {
           ],
         ];
         console.log('************ auction data ************: ', data);
-        // console.log('auction contract: ', auctionContract);
         let auctionTxDetail = await methods.send(
           auctionContract.methods.initiateAuction,
           [data],
@@ -380,7 +377,6 @@ export default function Form(props) {
         });
         // history.push('/auction/live');
       } else {
-        // console.log('buy ann');
         setModalError({
           type: 'error',
           message: 'Please buy ANN Token',
@@ -465,7 +461,6 @@ export default function Form(props) {
 
   const getFormState = async () => {
     let arr = state.inputs.concat(state.advanceInputs);
-    console.log('element id: ', arr);
     let obj = {};
     
     let auctionToken = '';
@@ -515,7 +510,6 @@ export default function Form(props) {
     return obj;
   };
   const enocodeParamToUint = (value, decimal) => {
-    console.log('value decimals: ', value, decimal);
     const web3 = new Web3(window.web3.currentProvider);
     // value = new BigNumber(value).div(decimal).toString();
     // // value = value.replace('-', '');
@@ -527,7 +521,6 @@ export default function Form(props) {
     value = '0x' + (new BigNumber(value).times(new BigNumber(10).pow(decimal))).toString(16).padStart(64, '0');
     // let hexValue = toHex(new BigNumber(value).times(new BigNumber(10).pow(decimal)), { addPrefix: true });
     // value = web3.eth.abi.encodeParameter('uint256', hexValue);
-    console.log('hex value: ', value);
     return value;
   };
   const hanldeShowModal = (val) => {

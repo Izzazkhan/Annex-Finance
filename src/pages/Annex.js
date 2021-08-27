@@ -111,7 +111,6 @@ const Annex = ({ settings, getMarketHistory }) => {
                 borrowAnnexAPY: borrowGraph
             });
         }
-        console.log('temp markets: ', tempMarkets);
         setMarkets(tempMarkets);
     };
 
