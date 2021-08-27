@@ -22,7 +22,7 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 	const setDecimals = async () => {
 		const decimals = {};
 		for (const item of Object.values(constants.CONTRACT_TOKEN_ADDRESS)) {
-			if (item.id && item.id != 'ann') {
+			if (item.id && (item.id != 'ann' && item.id != 'wbnb')) {
 				decimals[`${item.id}`] = {};
 				if (item.id !== 'bnb') {
 					const tokenContract = getTokenContract(item.id);
