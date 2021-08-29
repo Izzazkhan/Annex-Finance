@@ -47,7 +47,7 @@ export default function Chart(props) {
           <Bar dataKey="auctionDivBuyAmount" fill="#C4C4C4">
             {props.data.length &&
               props.data.map((entry, index) => {
-                // console.log('entry', entry);
+                console.log('entry', entry);
                 const color =
                   entry.isSuccessfull &&
                   Math.floor(Date.now() / 1000) > entry.auctionEndDate &&

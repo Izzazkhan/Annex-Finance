@@ -417,7 +417,7 @@ const Epoch = ({ settings, setSetting }) => {
               </div> */}
               <div className=" flex flex-col  items-start holding-apr absolute">
                 <div className="flex items-center">
-                  <div className="font-bold text-md text-center mr-2">Holdding APR</div>
+                  <div className="font-bold text-md text-center mr-2">Holding APR</div>
                   <div className="left-bottom text-white text-md text-center">
                     <span
                       style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
