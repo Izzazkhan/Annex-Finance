@@ -214,10 +214,9 @@ function Detail(props) {
         let minFundingThresholdNotReached = elem['minFundingThresholdNotReached'];
 
         let estimatedTokenSold = convertExponentToNum(
-          new BigNumber(elem['estimatedTokenSold_eth']).dividedBy(auctionDecimal).toNumber(),
+          new BigNumber(elem['estimatedTokenSold_eth']).dividedBy(auctionDecimal).toNumber().toFixed(2),
         );
-        let estimatedTokenSoldValue = elem['estimatedTokenSold'];
-
+        let estimatedTokenSoldValue = estimatedTokenSold + ' ' + auctionSymbol;
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
 
         let orderCancellationEndDate = moment
@@ -930,7 +929,7 @@ function Detail(props) {
                 <span className={`${state.detail.statusClass}-icon`}></span>
               </div>
               <div className="text-sm">
-                {console.log('state: ', state) && state.detail.status && (state.detail.status == 'inprogress' ?
+                {state.detail.status && (state.detail.status == 'inprogress' ?
                 'In Progress' : state.detail.status.charAt(0).toUpperCase() + state.detail.status.slice(1))}
               </div>
             </div>
