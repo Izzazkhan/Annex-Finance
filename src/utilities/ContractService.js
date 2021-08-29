@@ -11,7 +11,7 @@ const TOKEN_ABI = {
   btcb: constants.CONTRACT_BTCB_TOKEN_ABI,
   eth: constants.CONTRACT_ETH_TOKEN_ABI,
   wbtc: constants.CONTRACT_WBTC_TOKEN_ABI,
-  wbnb: constants.CONTRACT_WBNB_TOKEN_ABI
+  wbnb: constants.CONTRACT_WBNB_TOKEN_ABI,
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
@@ -129,9 +129,11 @@ export const getTokenContractWithDynamicAbi = (addr) => {
 export const getEpochContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_EPOCH_ABI),
-    constants.CONTRACT_EPOCH_ADDRESS,
+    process.env.REACT_APP_ENV === 'dev'
+      ? process.env.REACT_APP_TEST_EPOCH_ADDRESS
+      : process.env.REACT_APP_MAIN_EPOCH_ADDRESS,
   );
-}
+};
 
 export const methods = {
   call,
