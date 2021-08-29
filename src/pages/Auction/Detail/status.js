@@ -89,7 +89,7 @@ const AuctionStatus = ({
       e.preventDefault();
       setLoading(true);
       let sellAmount = modalError.payload.sellAmount;
-      let buyAmount = modalError.payload.minBuyAmount;
+      let buyAmount = modalError.payload.sellAmount / modalError.payload.minBuyAmount;
       // let allowListCallData = modalError.payload.allowListCallData;
       // let prevOrder = modalError.payload.prevOrder;
       sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10);
@@ -322,20 +322,20 @@ const AuctionProgress = (props) => {
         isValid = false;
         break;
         // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
-      } else if (key === 'minBuyAmount' && value > maxAvailable) {
+      } else if (key === 'minBuyAmount' && state['sellAmount'] / value > maxAvailable) {
         errorMessage = `${placeholder} must be less than Maximum Auctioning Amount - ${maxAvailable} ${auctioningSymbol}`;
         isValid = false;
         break;
       } else if (key === 'sellAmount' && value < minBuyAmount) {
-        errorMessage = `${placeholder} must be larger than Minimum Bidding Amount Per Order - ${minBiddingPerOrder} ${biddingSymbol}`;
+        errorMessage = `${placeholder} must be larger than Minimum Bidding Amount Per Order - ${minBuyAmount} ${biddingSymbol}`;
         isValid = false;
         break;
       }
     }
     if (isValid) {
-      let bidPrice = state['sellAmount'] / state['minBuyAmount'];
-      if (bidPrice < props.detail.currentPrice || bidPrice < props.detail.minimumPrice) {
-        errorMessage = `Your bid price ${bidPrice} must be larger than current price or minimum bidding price`;
+      // let bidPrice = state['sellAmount'] / state['minBuyAmount'];
+      if (state['minBuyAmount'] < props.detail.currentPrice || state['minBuyAmount'] < props.detail.minimumPrice) {
+        errorMessage = `Your bid price ${state['minBuyAmount']} must be larger than current price or minimum bidding price`;
         isValid = false;
       }
     }
@@ -441,9 +441,9 @@ const AuctionProgress = (props) => {
             </div>
             <div className="custom-range">
               <Slider
-                min={props.minBuyAmount}
-                max={props.detail.biddingBalance}
-                value={value}
+                min={Number(props.minBuyAmount)}
+                max={Number(props.detail.biddingBalance)}
+                value={Number(value)}
                 onChange={onChangeSlider}
               />
               {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
@@ -468,13 +468,13 @@ const AuctionProgress = (props) => {
 
                 <div className="flex justify-between mb-3">
                   <div className="text-md ">
-                    <b>To calculate the price:</b> Sell amount/ Min Buy amount.
+                    <b>To calculate the buy amount:</b> Sell amount/ Desired Bid Price.
                   </div>
                 </div>
                 {state.sellAmount && state.minBuyAmount ? (
                   <div className="text-md ">
                     {' '}
-                    <b>Price: </b>
+                    <b>Buy Amount: </b>
                     {state.sellAmount / state.minBuyAmount}
                   </div>
                 ) : (
@@ -497,7 +497,7 @@ const AuctionProgress = (props) => {
               />
             </div>
             <div className="mb-3 w-full pl-2">
-              <span className="label">Min Buy Amount - {props.detail.auctionSymbol}</span>
+              <span className="label">Desired Bid Price - {props.detail.auctionSymbol}</span>
               <input
                 placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
                 id="minBuyAmount"

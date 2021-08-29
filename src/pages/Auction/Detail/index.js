@@ -282,7 +282,7 @@ function Detail(props) {
           price = Number(priceSeparate[0]).toFixed(8);
           let priceUnit = priceSeparate[1];
           if (orderLength - 1 === index) {
-            placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
+            placeHolderMinBuyAmount = Number(price);
             placeholderSellAmount = Number(auctionDivSellAmount) + 1;
             if (placeHolderMinBuyAmount > maxAvailable || placeholderSellAmount > maxAvailable) {
               placeHolderMinBuyAmount = maxAvailable;

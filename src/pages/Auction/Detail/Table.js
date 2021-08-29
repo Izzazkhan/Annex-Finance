@@ -255,7 +255,7 @@ function Table(props) {
                 </th>
                 <th>Buy Amount</th>
                 <th>Sell Amount</th>
-                <th className="text-center"></th>
+                <th className="text-center">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -271,7 +271,7 @@ function Table(props) {
                 <tr>
                   <td colSpan="12">
                     <div className="text-center">No Data Found</div>
-                  </td>{' '}
+                  </td>
                 </tr>
               ) : (
                 propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
@@ -402,7 +402,7 @@ function Table(props) {
                         ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
                           <div>Waiting to settle</div>
                         ) : (
-                          ''
+                          'Bid'
                         )}
                       </td>
                     </tr>
