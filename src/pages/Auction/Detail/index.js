@@ -557,8 +557,8 @@ function Detail(props) {
             </div>
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
-              {state.detail.currentPrice ? state.detail.currentPrice.toFixed(8) : 0}{' '}
-              {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+              {state.detail.currentPrice ? state.detail.currentPrice.toFixed(8).toString() : 0}{' '}
+              {state.detail.auctionSymbol}-{state.detail.biddingSymbol}
             </h2>
           )}
           <div className="flex items-center text-white text-lg md:text-md ">
@@ -675,7 +675,7 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}/`
+              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}-`
             )}
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
