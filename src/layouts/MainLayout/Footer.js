@@ -48,8 +48,8 @@ const Footer = props => {
 			>
 				ANN
 			</a>
-			<a href="#" className="text-white no-underline focus:outline-none">Support</a>
-			<a href="#" className="text-white no-underline focus:outline-none">Whitepaper</a>
+			<a href="https://t.me/Annex_finance_group" className="text-white no-underline focus:outline-none" target="_blank" rel="noreferrer">Support</a>
+			<a href="https://annex.finance/Whitepaper.pdf" className="text-white no-underline focus:outline-none" target="_blank" rel="noreferrer">Whitepaper</a>
 		</div>
 	)
 }

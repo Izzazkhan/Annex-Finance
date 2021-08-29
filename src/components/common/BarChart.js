@@ -43,6 +43,7 @@ export default function Chart(props) {
         <BarChart
           data={props.data.length && props.data}
           margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
+          options={{scales: {y: {tick: 100000}}}}
         >
           <Bar dataKey="auctionDivBuyAmount" fill="#C4C4C4">
             {props.data.length &&
@@ -60,7 +61,7 @@ export default function Chart(props) {
           </Bar>
           <Tooltip content={<CustomTooltip />} />
           <XAxis fontSize="12" dataKey="price" />
-          <YAxis fontSize="12" dataKey="auctionDivBuyAmount" />
+          <YAxis fontSize="12" dataKey="auctionDivBuyAmount" ticks={[0, 10000]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

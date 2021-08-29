@@ -279,7 +279,7 @@ function Detail(props) {
             .toString();
           let price = order['price'] ? order['price'] : 0;
           let priceSeparate = price.split(' ');
-          price = Number(priceSeparate[0]).toFixed(2);
+          price = Number(priceSeparate[0]).toFixed(8);
           let priceUnit = priceSeparate[1];
           if (orderLength - 1 === index) {
             placeHolderMinBuyAmount = Number(auctionDivBuyAmount) + 1;
@@ -557,8 +557,8 @@ function Detail(props) {
             </div>
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
-              {state.detail.currentPrice ? Number(state.detail.currentPrice).toFixed(8) : 0}{' '}
-              {state.detail.auctionSymbol}/{state.detail.biddingSymbol}
+              {state.detail.currentPrice ? Number(state.detail.currentPrice.toFixed(8)) : 0}{' '}
+              {state.detail.auctionSymbol}-{state.detail.biddingSymbol}
             </h2>
           )}
           <div className="flex items-center text-white text-lg md:text-md ">
@@ -675,7 +675,7 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}/`
+              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}-`
             )}
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
@@ -929,7 +929,10 @@ function Detail(props) {
               <div className="">
                 <span className={`${state.detail.statusClass}-icon`}></span>
               </div>
-              <div className="text-sm">{state.detail.status}</div>
+              <div className="text-sm">
+                {console.log('state: ', state) && state.detail.status && (state.detail.status == 'inprogress' ?
+                'In Progress' : state.detail.status.charAt(0).toUpperCase() + state.detail.status.slice(1))}
+              </div>
             </div>
           </div>
           <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
@@ -941,7 +944,9 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  state.detail.contract
+                  <a href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`} target="_blank" rel="noreferrer">
+                    {state.detail.contract}
+                  </a>
                 )}
               </div>
             </div>
@@ -953,7 +958,9 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  state.detail.token
+                  <a href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`} target="_blank" rel="noreferrer">
+                    {state.detail.token}
+                  </a>
                 )}
               </div>
             </div>
@@ -965,7 +972,7 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  state.detail.website
+                  <a href={state.detail.website} target="_blank" rel="noreferrer">{state.detail.website}</a>
                 )}
               </div>
             </div>
@@ -973,7 +980,7 @@ function Detail(props) {
               <div className="text-lg font-medium mb-3">About</div>
               <div className="flex flex-wrap justify-between space-x-2 ">
                 <MediaIcon name="Telegram" src="telegram" url={state.detail.telegramLink} />
-                <MediaIcon name="Discord" src="discord" url={state.detail.discordLink} />
+                <MediaIcon name="Github" src="discord" url={state.detail.discordLink} />
                 <MediaIcon name="Medium" src="medium" url={state.detail.mediumLink} />
                 <MediaIcon name="Twitter" src="telegram" url={state.detail.twitterLink} />
               </div>
@@ -1089,7 +1096,7 @@ const MediaIcon = ({ name, src, url }) => {
   return (
     <div className="flex items-center text-xl font-medium underline mb-3">
       <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
-      <a href={url}>{name}</a>
+      <a href={url} target="_blank" rel="noreferrer">{name}</a>
     </div>
   );
 };

@@ -270,7 +270,7 @@ const AuctionProgress = (props) => {
     });
 
     const orderArray = priceMapped
-      .sort((a, b) => a.priceValue - b.priceValue)
+      .sort((a, b) => a.price_eth - b.price_eth)
       .map((item, i) => {
         return {
           ...item,
