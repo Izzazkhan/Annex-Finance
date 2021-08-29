@@ -69,7 +69,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
             <ConnectWallet />
           </li>
           <li className="">
-              <img src={HeaderLogo} alt={'Annex'} className={'w-12 h-12 rounded-full block'}/>
+              <a href="https://annex.finance" target="_blank" rel="noreferrer"><img src={HeaderLogo} alt={'Annex'} className={'w-12 h-12 rounded-full block'}/></a>
           </li>
         </ul>
       )}
