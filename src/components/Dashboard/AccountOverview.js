@@ -5,6 +5,7 @@ import ANNBalance from '../../assets/icons/ANN-Balance.svg';
 import DailyEarning from '../../assets/icons/Daily-Earning.svg';
 import ANNRewards from '../../assets/icons/ANN-Rewards.svg';
 import AnnualEarning from '../../assets/icons/Annual-Earning.svg';
+import FireImage from '../../assets/images/fire.png';
 import Switch from '../UI/Switch';
 import fire from '../../assets/icons/fire.svg';
 import React, { useEffect, useState } from 'react';
@@ -53,6 +54,18 @@ const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: 0.3s ease all;
   will-change: transform;
+`;
+
+const Styles = styled.span`
+  display: flex;
+  .fire-image {
+    height: 20px;
+    padding-right: 3px;
+    @media (max-width: 767px) {
+      height: 14px;
+      padding-right: 2px;
+    }
+  }
 `;
 
 const AccountOverview = ({
@@ -147,8 +160,12 @@ const AccountOverview = ({
               </div>
               <Switch value={withANN} onChange={() => setWithANN((oldVal) => !oldVal)} />
 
-              <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
-                <div className="text-primary font-bold text-lg md:text-xl">APY with ANN</div>
+              <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-8 md:mb-8 flex-grow text-center">
+                <div className="text-primary font-bold text-lg md:text-xl">
+                  <Styles>
+                    <img className="fire-image" src={FireImage} alt="fire" /> APY with ANN
+                  </Styles>
+                </div>
               </div>
             </div>
           </div>
