@@ -420,7 +420,7 @@ function Auction() {
           <Route exact strict path={`${path}/live`} component={Live} />
           <Route exact strict path={`${path}/detail/:id`} component={Detail} />
           <Route exact strict path={`${path}/create`} component={CreateAuction} />
-          <Redirect to={`${path}/past`} />
+          <Redirect to={`${path}/live`} />
         </Switch>
       </Styles>
     </Layout>
