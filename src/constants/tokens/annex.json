@@ -7,8 +7,8 @@
         "patch": 1
     },
     "tags": {},
-    "logoURI": "/images/coins/wbnb.png",
-    "keywords": ["annex", "default"],
+    "logoURI": "/images/coins/ANN.png",
+    "keywords": ["annex finance", "default", "swap"],
     "tokens": [
         {
             "name": "Annex",
