@@ -164,13 +164,13 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: ann,
         aAsset: ann
       },
-      // wbnb: {
-      //   id: 'wbnb',
-      //   symbol: 'WBNB',
-      //   address: process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
-      //   asset: bnb,
-      //   aAsset: bnb
-      // },
+      wbnb: {
+        id: 'wbnb',
+        symbol: 'WBNB',
+        address: process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
+        asset: bnb,
+        aAsset: bnb
+      },
       //  wbtc: {
       //   id: 'wbtc',
       //   symbol: 'wbtc',
