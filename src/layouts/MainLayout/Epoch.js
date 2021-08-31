@@ -244,6 +244,27 @@ const Styles = styled.div`
         }
       }
     }
+    .tooltip {
+      margin-bottom: 5px;
+      .label {
+        display: none;
+        position: absolute;
+        bottom: auto;
+        left: calc(50% - 90px);
+        color: #e2e2e2;
+        font-size: 12px;
+        width: 180px;
+        text-align: center;
+        background: #000;
+        padding: 2px 0;
+        height: auto;
+        top: -35px;
+        border: none;
+      }
+      .tooltip-label:hover + .label {
+        display: block;
+      }
+    }
   }
 `;
 
@@ -432,8 +453,7 @@ const Epoch = ({ settings, setSetting }) => {
                     <span
                       style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                     >
-                      +
-                      {currentEpochROI}%
+                      +{currentEpochROI}%
                     </span>
                   </div>
                 </div>
@@ -445,7 +465,12 @@ const Epoch = ({ settings, setSetting }) => {
               showDetails && 'open'
             } text-center font-bold text-2xl md:text-3xl text-border absolute title-text`}
           >
-            {currentEpoch} epoch <span className=""></span>
+            <div className="tooltip relative">
+              <div className="tooltip-label">
+                {currentEpoch} epoch <span className=""></span>
+              </div>
+              <span className="label">{currentEpoch} epoch</span>
+            </div>
           </div>
           <div
             className={` ${

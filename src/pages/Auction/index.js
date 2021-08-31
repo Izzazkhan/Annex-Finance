@@ -369,6 +369,7 @@ const Styles = styled.div`
       text-align: center;
       background: #000;
       padding: 2px 0;
+      top: auto;
     }
   }
 

@@ -11,10 +11,10 @@ module.exports = {
     react: {
       version: 'detect', // Automatically detect the react version
     },
-    "import/resolver": {
-      "node": {
-        "paths": ["src"]
-      }
+    'import/resolver': {
+      node: {
+        paths: ['src'],
+      },
     },
   },
   env: {
@@ -28,7 +28,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     // Make this the last element so prettier config overrides other formatting rules
   ],
-  "plugins": ["react", "react-hooks"],
+  plugins: ['react', 'react-hooks'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'max-len': [2, { code: 150, tabWidth: 2, ignoreUrls: true }],
@@ -63,5 +63,6 @@ module.exports = {
     'arrow-body-style': 'off',
     'no-unused-vars': 'off',
     'react/prop-types': 0,
+    'react/display-name': 'off',
   },
 };

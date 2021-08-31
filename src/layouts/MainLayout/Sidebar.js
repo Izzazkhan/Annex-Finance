@@ -28,6 +28,114 @@ const Wrapper = styled.aside`
   @media (min-width: 1024px) {
     min-width: 244px;
   }
+
+  .certik-container {
+    // position: fixed;
+    display: flex;
+    height: 45px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    right: calc(50% - 111px);
+    background: linear-gradient(#2e2e2e, #2e2e2e) padding-box,
+      radial-gradient(
+          99.67% 1137.19% at -5.59% 88.89%,
+          #ff9d2d 0%,
+          rgb(253 195 81) 34.07%,
+          rgb(249 183 67) 55.73%,
+          rgb(245 164 45) 76.44%,
+          #f19920 100%
+        )
+        border-box;
+    border: solid 3px transparent;
+    border-radius: 16px;
+    align-items: center;
+    padding: 10px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    pointer-events: none;
+    @media (max-width: 1023px) {
+      padding: 10px;
+      right: calc(50% - 85px);
+    }
+    @media (max-width: 575px) {
+      height: 45px;
+      right: calc(50% - 75px);
+    }
+    &.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    &.large {
+      & > .pending {
+        position: absolute;
+        left: -15px;
+        top: -15px;
+      }
+      & > .txt {
+        margin: 0 5px 0 5px;
+        color: #5c6d78;
+        font-size: 12px;
+        white-space: nowrap;
+        @media (max-width: 1023px) {
+          margin: 0 5px 0 5px;
+          font-size: 12px;
+        }
+        @media (max-width: 575px) {
+          font-size: 10px;
+        }
+      }
+      & > .logo {
+        width: 65px;
+        margin-right: 10px;
+        @media (max-width: 1023px) {
+          width: 60px;
+          margin-right: 5px;
+        }
+        @media (max-width: 575px) {
+          width: 60px;
+        }
+      }
+      & > .skynet {
+        width: 20px;
+        height: 20px;
+      }
+      & > .pulsing-circle {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #ffad4f;
+        @media (max-width: 575px) {
+          width: 5px;
+          height: 5px;
+        }
+        &::before {
+          content: '';
+          position: absolute;
+          display: block;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background-color: #ff9800;
+          animation: pulsing-circle 1s ease infinite;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
+  }
+  @keyframes pulsing-circle {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
 `;
 
 const Logo = styled.img`
@@ -49,7 +157,12 @@ const sidebarItems = [
   // eslint-disable-next-line react/display-name
   { key: 3, icon: (fill) => <AnnexIcon fill={fill} />, title: 'Annex', href: RouteMap.annex },
   // eslint-disable-next-line react/display-name
-  { key: 4,  icon: (fill) => <MarketIcon fill={fill} />, title: 'Market', href: RouteMap.market.index,},
+  {
+    key: 4,
+    icon: (fill) => <MarketIcon fill={fill} />,
+    title: 'Market',
+    href: RouteMap.market.index,
+  },
   {
     key: 5,
     // eslint-disable-next-line react/display-name
@@ -214,7 +327,18 @@ function Sidebar({ isOpen, onClose, settings }) {
           totalLiquidity={settings.totalLiquidity}
           // totalXaiMinted={totalXaiMinted}
         />
-        <div className="mt-auto mb-10 pl-8">
+        <div className="mt-auto mb-10 pl-8 pr-8">
+          <a
+            className="certik-container large visible"
+            href="https://www.certik.org/projects/annex"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img className="logo" src="/images/certik-full.svg" alt="" />
+            <img className="check" src="/images/check-primary.svg" alt="" />
+            <span className="txt">Skynet</span>
+            <div className="pulsing-circle"></div>
+          </a>
           <div className="font-bold text-white">Annex Finance</div>
           <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
         </div>
