@@ -6,6 +6,8 @@ import DailyEarning from '../../assets/icons/Daily-Earning.svg';
 import ANNRewards from '../../assets/icons/ANN-Rewards.svg';
 import AnnualEarning from '../../assets/icons/Annual-Earning.svg';
 import FireImage from '../../assets/images/fire.png';
+import GreyFireImage from '../../assets/images/fire_emoji.png';
+
 import Switch from '../UI/Switch';
 import fire from '../../assets/icons/fire.svg';
 import React, { useEffect, useState } from 'react';
@@ -109,10 +111,7 @@ const AccountOverview = ({
 
   return (
     <Wrapper className="text-white mt-8 p-6 border border-lightGray rounded-md">
-      <div
-        className="cursor-pointer flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2"
-        onClick={() => setShowDetails((s) => !s)}
-      >
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2">
         <div className="flex flex-row items-center justify-between flex-wrap flex-grow">
           <div className="flex flex-col items-stretch md:items-start flex-grow text-left space-y-1 md:space-y-2 order-first">
             <div className="text-primary font-bold text-lg md:text-xl">Supply Balance</div>
@@ -171,7 +170,12 @@ const AccountOverview = ({
               <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-8 md:mb-8 flex-grow text-center">
                 <div className="text-primary font-bold text-md">
                   <Styles>
-                    <img className="fire-image" src={FireImage} alt="fire" /> APY with ANN
+                    <img
+                      className="fire-image"
+                      src={withANN ? FireImage : GreyFireImage}
+                      alt="fire"
+                    />{' '}
+                    APY with ANN
                   </Styles>
                 </div>
               </div>

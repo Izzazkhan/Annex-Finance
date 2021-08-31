@@ -41,7 +41,7 @@ import MarketHistory from '../components/Dashboard/MarketHistory.js';
 const format = commaNumber.bindWith(',', '.');
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
-  // Dashboard Logics
+  // debugger;
   const { account, chainId } = useActiveWeb3React();
   const updateMarketInfo = async () => {
     const accountAddress = account;
@@ -242,14 +242,22 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [netAPY, settings.totalSupplyBalance]);
 
   // const addXAIApy = useCallback(
-  //   async apy => {
+  //   async (apy) => {
   //     if (!account) {
   //       return;
   //     }
   //     setNetAPY(apy.dp(2, 1).toString(10));
   //   },
-  //   [settings, account]
+  //   [settings, account],
   // );
+  const addXAIApy = (ap) => {
+    console.log('ap', ap);
+    if (!account) {
+      return;
+    } else {
+      setNetAPY(ap.dp(2, 1).toString(10));
+    }
+  };
 
   const updateNetAPY = useCallback(async () => {
     let totalSum = new BigNumber(0);
@@ -296,7 +304,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     } else {
       apy = totalBorrowed.isZero() ? 0 : totalSum.div(totalBorrowed).times(100);
     }
-    // addXAIApy(apy);
+    addXAIApy(apy);
   }, [settings.assetList, withANN]);
 
   useEffect(() => {
@@ -310,7 +318,6 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       withANN,
     });
   }, [withANN]);
-
   // Markets
   const [suppliedAssets, setSuppliedAssets] = useState([]);
   const [nonSuppliedAssets, setNonSuppliedAssets] = useState([]);
