@@ -171,7 +171,7 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 		) {
 			const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
 			if (!settings.decimals[item.id]) {
-				return;
+				break;
 			}
 
 			let market = settings.markets.find(
