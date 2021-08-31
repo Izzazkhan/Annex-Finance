@@ -276,15 +276,15 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       .toString(10)
   }, [netAPY, settings.totalSupplyBalance])
 
-  // const addXAIApy = useCallback(
-  //   async apy => {
-  //     if (!account) {
-  //       return;
-  //     }
-  //     setNetAPY(apy.dp(2, 1).toString(10));
-  //   },
-  //   [settings, account]
-  // );
+  const addXAIApy = useCallback(
+    async apy => {
+      if (!account) {
+        return;
+      }
+      setNetAPY(apy.dp(2, 1).toString(10));
+    },
+    [settings, account]
+  );
 
 
   const updateNetAPY = useCallback(async () => {
@@ -336,7 +336,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     } else {
       apy = totalBorrowed.isZero() ? 0 : totalSum.div(totalBorrowed).times(100);
     }
-    // addXAIApy(apy);
+    addXAIApy(apy);
   }, [settings.assetList, withANN]);
 
 
@@ -709,6 +709,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           .isNegative()
           ? new BigNumber(0)
           : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
+        // apy = getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
       } else {
         apy = asset.borrowApy;
       }
