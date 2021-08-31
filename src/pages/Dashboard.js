@@ -16,32 +16,32 @@ import BalanceModal from '../components/common/BalanceModal';
 import ConfirmTransactionModal from '../components/common/ConfirmTransactionModal';
 import EnableCollateralModal from '../components/common/EnableCollateralModal';
 import { connectAccount, accountActionCreators } from '../core';
-import { bindActionCreators } from "redux";
-import BigNumber from "bignumber.js";
+import { bindActionCreators } from 'redux';
+import BigNumber from 'bignumber.js';
 import {
   getAbepContract,
   getComptrollerContract,
   // getXaiControllerContract,
   // getXaiTokenContract, getXaiVaultContract,
-  methods
-} from "../utilities/ContractService";
-import * as constants from "../utilities/constants";
-import { useActiveWeb3React } from "../hooks";
-import commaNumber from "comma-number";
-import { addToken, getBigNumber } from "../utilities/common";
-import { promisify } from "../utilities";
-import sxp from "../assets/images/coins/sxp.png";
+  methods,
+} from '../utilities/ContractService';
+import * as constants from '../utilities/constants';
+import { useActiveWeb3React } from '../hooks';
+import commaNumber from 'comma-number';
+import { addToken, getBigNumber } from '../utilities/common';
+import { promisify } from '../utilities';
+import sxp from '../assets/images/coins/sxp.png';
 import arrowUp from '../assets/icons/arrowUp.png';
 import arrowDown from '../assets/icons/arrowDown.png';
-import PendingTransaction from "../components/Dashboard/PendingTransaction.js";
-import toast from "../components/UI/Toast";
-import AccountOverview from "../components/Dashboard/AccountOverview.js";
-import MarketHistory from "../components/Dashboard/MarketHistory.js";
+import PendingTransaction from '../components/Dashboard/PendingTransaction.js';
+import toast from '../components/UI/Toast';
+import AccountOverview from '../components/Dashboard/AccountOverview.js';
+import MarketHistory from '../components/Dashboard/MarketHistory.js';
 
 const format = commaNumber.bindWith(',', '.');
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
-  // Dashboard Logics
+  // debugger;
   const { account, chainId } = useActiveWeb3React();
   const updateMarketInfo = async () => {
     const accountAddress = account;
@@ -87,14 +87,14 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         // mintableXai
       });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   };
 
   const handleAccountChange = async () => {
     await updateMarketInfo();
     setSetting({
-      accountLoading: false
+      accountLoading: false,
     });
   };
 
@@ -104,12 +104,11 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
   useEffect(() => {
     handleAccountChange();
-  }, [account])
+  }, [account]);
 
   // Borrow Limits
   const [available, setAvailable] = useState('0');
   const [borrowPercent, setBorrowPercent] = useState('0');
-
 
   useEffect(() => {
     if (account) {
@@ -120,15 +119,10 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       setBorrowPercent(
         total.isZero() || total.isNaN()
           ? 0
-          : totalBorrowBalance
-            .div(total)
-            .times(100)
-            .dp(0, 1)
-            .toString(10)
+          : totalBorrowBalance.div(total).times(100).dp(0, 1).toString(10),
       );
     }
   }, [settings.totalBorrowBalance, settings.totalBorrowLimit, account]);
-
 
   // Rewards
   const [earnedBalance, setEarnedBalance] = useState('0.0000');
@@ -139,59 +133,46 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     if (!myAddress) return;
     const appContract = getComptrollerContract();
     // const xaiContract = getXaiControllerContract();
-    const annexInitialIndex = await methods.call(
-      appContract.methods.annexInitialIndex,
-      []
-    );
+    const annexInitialIndex = await methods.call(appContract.methods.annexInitialIndex, []);
     let annexEarned = new BigNumber(0);
-    for (
-      let index = 0;
-      index < Object.values(constants.CONTRACT_ABEP_ADDRESS).length;
-      index += 1
-    ) {
+    for (let index = 0; index < Object.values(constants.CONTRACT_ABEP_ADDRESS).length; index += 1) {
       const item = Object.values(constants.CONTRACT_ABEP_ADDRESS)[index];
 
       if (item.id && item != 'ann') {
         const aBepContract = getAbepContract(item.id);
-        const supplyState = await methods.call(
-          appContract.methods.annexSupplyState,
-          [item.address]
-        );
+        const supplyState = await methods.call(appContract.methods.annexSupplyState, [
+          item.address,
+        ]);
         const supplyIndex = supplyState.index;
-        let supplierIndex = await methods.call(
-          appContract.methods.annexSupplierIndex,
-          [item.address, myAddress]
-        );
+        let supplierIndex = await methods.call(appContract.methods.annexSupplierIndex, [
+          item.address,
+          myAddress,
+        ]);
         if (+supplierIndex === 0 && +supplyIndex > 0) {
           supplierIndex = annexInitialIndex;
         }
         let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
 
-        const supplierTokens = await methods.call(
-          aBepContract.methods.balanceOf,
-          [myAddress]
-        );
+        const supplierTokens = await methods.call(aBepContract.methods.balanceOf, [myAddress]);
         const supplierDelta = new BigNumber(supplierTokens)
           .multipliedBy(deltaIndex)
           .dividedBy(1e36);
 
         annexEarned = annexEarned.plus(supplierDelta);
 
-        const borrowState = await methods.call(
-          appContract.methods.annexBorrowState,
-          [item.address]
-        );
+        const borrowState = await methods.call(appContract.methods.annexBorrowState, [
+          item.address,
+        ]);
         let borrowIndex = borrowState.index;
-        const borrowerIndex = await methods.call(
-          appContract.methods.annexBorrowerIndex,
-          [item.address, myAddress]
-        );
+        const borrowerIndex = await methods.call(appContract.methods.annexBorrowerIndex, [
+          item.address,
+          myAddress,
+        ]);
         if (+borrowerIndex > 0) {
           deltaIndex = new BigNumber(borrowIndex).minus(borrowerIndex);
-          const borrowBalanceStored = await methods.call(
-            aBepContract.methods.borrowBalanceStored,
-            [myAddress]
-          );
+          const borrowBalanceStored = await methods.call(aBepContract.methods.borrowBalanceStored, [
+            myAddress,
+          ]);
           borrowIndex = await methods.call(aBepContract.methods.borrowIndex, []);
           const borrowerAmount = new BigNumber(borrowBalanceStored)
             .multipliedBy(1e18)
@@ -202,14 +183,8 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       }
     }
 
-    const annexAccrued = await methods.call(appContract.methods.annexAccrued, [
-      myAddress
-    ]);
-    annexEarned = annexEarned
-      .plus(annexAccrued)
-      .dividedBy(1e18)
-      .dp(4, 1)
-      .toString(10);
+    const annexAccrued = await methods.call(appContract.methods.annexAccrued, [myAddress]);
+    annexEarned = annexEarned.plus(annexAccrued).dividedBy(1e18).dp(4, 1).toString(10);
 
     // const annexXAIState = await methods.call(
     //   xaiContract.methods.annexXAIState,
@@ -234,9 +209,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     //   .div(1e54)
     //   .dp(4, 1)
     //   .toString(10);
-    setEarnedBalance(
-      annexEarned && annexEarned !== '0' ? `${annexEarned}` : '0.0000'
-    );
+    setEarnedBalance(annexEarned && annexEarned !== '0' ? `${annexEarned}` : '0.0000');
     // setXaiMint(
     //   xaiMinterDelta && xaiMinterDelta !== '0'
     //     ? `${xaiMinterDelta}`
@@ -244,12 +217,9 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     // );
   };
 
-
-
   useEffect(() => {
     getVoteInfo();
   }, [settings.markets, account]);
-
 
   // Wallet balance
   const [netAPY, setNetAPY] = useState('0');
@@ -258,41 +228,43 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   const estDailyEarning = useMemo(() => {
     if (!netAPY || !settings.totalSupplyBalance) return '0';
     const apy = new BigNumber(netAPY);
-    const res = apy.times(settings.totalSupplyBalance).div(100).div(365)
+    const res = apy.times(settings.totalSupplyBalance).div(100).div(365);
 
-    return res
-      .dp(2, 1)
-      .toString(10)
-  }, [netAPY, settings.totalSupplyBalance])
-
+    return res.dp(2, 1).toString(10);
+  }, [netAPY, settings.totalSupplyBalance]);
 
   const annualEarning = useMemo(() => {
     if (!netAPY || !settings.totalSupplyBalance) return '0';
     const apy = new BigNumber(netAPY);
-    const res = apy.times(settings.totalSupplyBalance).div(100)
+    const res = apy.times(settings.totalSupplyBalance).div(100);
 
-    return res
-      .dp(2, 1)
-      .toString(10)
-  }, [netAPY, settings.totalSupplyBalance])
+    return res.dp(2, 1).toString(10);
+  }, [netAPY, settings.totalSupplyBalance]);
 
   // const addXAIApy = useCallback(
-  //   async apy => {
+  //   async (apy) => {
   //     if (!account) {
   //       return;
   //     }
   //     setNetAPY(apy.dp(2, 1).toString(10));
   //   },
-  //   [settings, account]
+  //   [settings, account],
   // );
-
+  const addXAIApy = (ap) => {
+    console.log('ap', ap);
+    if (!account) {
+      return;
+    } else {
+      setNetAPY(ap.dp(2, 1).toString(10));
+    }
+  };
 
   const updateNetAPY = useCallback(async () => {
     let totalSum = new BigNumber(0);
     let totalSupplied = new BigNumber(0);
     let totalBorrowed = new BigNumber(0);
     const { assetList } = settings;
-    assetList.forEach(asset => {
+    assetList.forEach((asset) => {
       const {
         supplyBalance,
         borrowBalance,
@@ -300,14 +272,10 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         supplyApy,
         borrowApy,
         annSupplyApy,
-        annBorrowApy
+        annBorrowApy,
       } = asset;
-      const supplyBalanceUSD = getBigNumber(supplyBalance).times(
-        getBigNumber(tokenPrice)
-      );
-      const borrowBalanceUSD = getBigNumber(borrowBalance).times(
-        getBigNumber(tokenPrice)
-      );
+      const supplyBalanceUSD = getBigNumber(supplyBalance).times(getBigNumber(tokenPrice));
+      const borrowBalanceUSD = getBigNumber(borrowBalance).times(getBigNumber(tokenPrice));
       totalSupplied = totalSupplied.plus(supplyBalanceUSD);
       totalBorrowed = totalSupplied.plus(borrowBalanceUSD);
 
@@ -323,7 +291,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       totalSum = totalSum.plus(
         supplyBalanceUSD
           .times(supplyApyWithANN.div(100))
-          .plus(borrowBalanceUSD.times(borrowApyWithANN.div(100)))
+          .plus(borrowBalanceUSD.times(borrowApyWithANN.div(100))),
       );
     });
 
@@ -336,26 +304,20 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     } else {
       apy = totalBorrowed.isZero() ? 0 : totalSum.div(totalBorrowed).times(100);
     }
-    // addXAIApy(apy);
+    addXAIApy(apy);
   }, [settings.assetList, withANN]);
 
-
   useEffect(() => {
-    if (
-      account &&
-      settings.assetList &&
-      settings.assetList.length > 0
-    ) {
+    if (account && settings.assetList && settings.assetList.length > 0) {
       updateNetAPY();
     }
   }, [account, updateNetAPY]);
 
   useEffect(() => {
     setSetting({
-      withANN
+      withANN,
     });
   }, [withANN]);
-
   // Markets
   const [suppliedAssets, setSuppliedAssets] = useState([]);
   const [nonSuppliedAssets, setNonSuppliedAssets] = useState([]);
@@ -369,17 +331,16 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
   const [borrowRecord, setBorrowRecord] = useState({});
 
-
   const annBalance = React.useMemo(() => {
     if (settings.assetList?.length > 0) {
-      const ann = settings.assetList?.find(item => item.symbol?.toUpperCase() === "ANN")
+      const ann = settings.assetList?.find((item) => item.symbol?.toUpperCase() === 'ANN');
       return ann ? ann.walletBalance : new BigNumber(0);
     }
-  }, [settings.assetList])
+  }, [settings.assetList]);
 
   const updateMarketTable = async () => {
     const tempArr = [];
-    settings.assetList.forEach(item => {
+    settings.assetList.forEach((item) => {
       const temp = {
         ...item,
         supplyApy: getBigNumber(item.supplyApy),
@@ -390,7 +351,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         borrowBalance: getBigNumber(item.borrowBalance),
         collateralFactor: getBigNumber(item.collateralFactor),
         tokenPrice: getBigNumber(item.tokenPrice),
-        liquidity: getBigNumber(item.liquidity)
+        liquidity: getBigNumber(item.liquidity),
       };
       tempArr.push(temp);
     });
@@ -399,7 +360,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     const tempNonSuppliableData = [];
     const tempBorrowedData = [];
     const tempNonBorrowedData = [];
-    tempArr.forEach(element => {
+    tempArr.forEach((element) => {
       if (element.supplyBalance.isZero()) {
         tempNonSuppliableData.push(element);
       } else {
@@ -418,15 +379,13 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     setNonBorrowedAssets([...tempNonBorrowedData]);
   };
 
-
   useEffect(() => {
     if (settings.assetList && settings.assetList.length > 0) {
       updateMarketTable();
     }
   }, [settings.assetList]);
 
-
-  const handleToggleCollateral = r => {
+  const handleToggleCollateral = (r) => {
     const appContract = getComptrollerContract();
     if (r && account && r.borrowBalance.isZero()) {
       if (!r.collateral) {
@@ -434,58 +393,48 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         setIsCollateralConfirm(true);
         setCollateralToken(r);
         methods
-          .send(
-            appContract.methods.enterMarkets,
-            [[r.atokenAddress]],
-            account
-          )
+          .send(appContract.methods.enterMarkets, [[r.atokenAddress]], account)
           .then(() => {
             setIsCollateralConfirm(false);
-            setCollateralToken({})
+            setCollateralToken({});
           })
           .catch(() => {
             setIsCollateralConfirm(false);
-            setCollateralToken({})
+            setCollateralToken({});
           });
-      } else if (
-        +r.hypotheticalLiquidity['1'] > 0 ||
-        +r.hypotheticalLiquidity['2'] === 0
-      ) {
+      } else if (+r.hypotheticalLiquidity['1'] > 0 || +r.hypotheticalLiquidity['2'] === 0) {
         setIsCollateralEnable(true);
         setIsCollateralConfirm(true);
         setCollateralToken(r);
         methods
-          .send(
-            appContract.methods.exitMarket,
-            [r.atokenAddress],
-            account
-          )
+          .send(appContract.methods.exitMarket, [r.atokenAddress], account)
           .then(() => {
             setIsCollateralConfirm(false);
-            setCollateralToken({})
+            setCollateralToken({});
           })
           .catch(() => {
             setIsCollateralConfirm(false);
-            setCollateralToken({})
+            setCollateralToken({});
           });
       } else {
         toast.error({
           title: `Collateral Required`,
           description:
-            'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+            'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.',
         });
       }
     } else {
       toast.error({
         title: `Collateral Required`,
         description:
-          'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.'
+          'You need to set collateral at least one asset for your borrowed assets. Please repay all borrowed asset or set other asset as collateral.',
       });
     }
   };
 
-
-  const [displayWarning, setDisplayWarning] = useState(Boolean(!localStorage.getItem("betaWarning")));
+  const [displayWarning, setDisplayWarning] = useState(
+    Boolean(!localStorage.getItem('betaWarning')),
+  );
   const [supplyWithdrawOpen, setSupplyWithdrawOpen] = useState(false);
   const [borrowRepayOpen, setBorrowRepayOpen] = useState(false);
   const [balanceOpen, setBalanceOpen] = useState(false);
@@ -544,45 +493,49 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     [],
   );
 
-  const handleSupplyClickRow = row => {
+  const handleSupplyClickRow = (row) => {
     setSupplyRecord(row);
     setSupplyWithdrawOpen(true);
   };
 
-
-  const loadingData = React.useMemo(() => fillArray({
-    Asset: (
-      <div className="h-13 flex items-center justify-center px-4 py-2">
-        <div className="animate-pulse rounded-lg w-20 bg-lightGray w-full flex items-center px-8 py-3" />
-      </div>
-    ),
-    Apy: (
-      <div className="h-13 flex items-center justify-center px-4 py-2">
-        <div className="animate-pulse rounded-lg w-14 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-      </div>
-    ),
-    Wallet: (
-      <div className="h-13 flex items-center justify-center px-4 py-2">
-        <div className="animate-pulse rounded-lg w-22 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-      </div>
-    ),
-    Collateral: (
-      <div className="h-13 flex items-center justify-center px-4 py-2">
-        <div className="animate-pulse rounded-lg w-18 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-      </div>
-    ),
-    Liquidity: (
-      <div className="h-13 flex items-center justify-center px-4 py-2">
-        <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
-      </div>
-    )
-  }, 8), []);
+  const loadingData = React.useMemo(
+    () =>
+      fillArray(
+        {
+          Asset: (
+            <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-20 bg-lightGray w-full flex items-center px-8 py-3" />
+            </div>
+          ),
+          Apy: (
+            <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-14 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div>
+          ),
+          Wallet: (
+            <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-22 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div>
+          ),
+          Collateral: (
+            <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-18 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div>
+          ),
+          Liquidity: (
+            <div className="h-13 flex items-center justify-center px-4 py-2">
+              <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
+            </div>
+          ),
+        },
+        8,
+      ),
+    [],
+  );
 
   const supplyData = React.useMemo(() => {
-    return suppliedAssets.map(asset => {
-      const apy = withANN
-        ? asset.supplyApy.plus(asset.annSupplyApy)
-        : asset.supplyApy
+    return suppliedAssets.map((asset) => {
+      const apy = withANN ? asset.supplyApy.plus(asset.annSupplyApy) : asset.supplyApy;
       return {
         Asset: (
           <div
@@ -590,13 +543,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.name} />
-            <div className="">
-              {asset.name}
-            </div>
+            <div className="">{asset.name}</div>
           </div>
         ),
         Apy: (
-          <div className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+          <div
+            className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
@@ -604,21 +556,17 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             <div className="w-20 ml-2 md:ml-3">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
-                : `${(apy).dp(2, 1).toString(10)}%`}
+                : `${apy.dp(2, 1).toString(10)}%`}
             </div>
           </div>
         ),
         Wallet: (
-          <div className="h-20 font-bold cursor-pointer text-green w-full
+          <div
+            className="h-20 font-bold cursor-pointer text-green w-full
                   px-8 py-6 text-green flex flex-col items-end justify-center"
             onClick={() => handleSupplyClickRow(asset)}
           >
-            ${format(
-              asset.supplyBalance
-                .times(asset.tokenPrice)
-                .dp(2, 1)
-                .toString(10)
-            )}
+            ${format(asset.supplyBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
             <div className="text-white text-right font-normal">
               {format(asset.supplyBalance.dp(4, 1).toString(10))} {asset.symbol}
             </div>
@@ -632,17 +580,14 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
               onChange={() => handleToggleCollateral(asset)}
             />
           </div>
-        ) : null
-
-      }
-    })
+        ) : null,
+      };
+    });
   }, [suppliedAssets, withANN]);
 
   const allMarketData = React.useMemo(() => {
-    return nonSuppliedAssets.map(asset => {
-      const apy = withANN
-        ? asset.supplyApy.plus(asset.annSupplyApy)
-        : asset.supplyApy
+    return nonSuppliedAssets.map((asset) => {
+      const apy = withANN ? asset.supplyApy.plus(asset.annSupplyApy) : asset.supplyApy;
       return {
         Asset: (
           <div
@@ -650,13 +595,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.name} />
-            <div className="">
-              {asset.name}
-            </div>
+            <div className="">{asset.name}</div>
           </div>
         ),
         Apy: (
-          <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+          <div
+            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
@@ -664,19 +608,16 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             <div className="w-20 ml-2 md:ml-3">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
-                : `${(apy).dp(2, 1).toString(10)}%`}
+                : `${apy.dp(2, 1).toString(10)}%`}
             </div>
           </div>
         ),
         Wallet: (
-          <div className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+          <div
+            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
-            {format(
-              asset.walletBalance
-                .dp(2, 1)
-                .toString(10)
-            )} {asset.symbol}
+            {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
           </div>
         ),
         Collateral: +asset.collateralFactor ? (
@@ -687,26 +628,21 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
               onChange={() => handleToggleCollateral(asset)}
             />
           </div>
-        ) : null
-
-      }
-    })
+        ) : null,
+      };
+    });
   }, [nonSuppliedAssets, withANN]);
 
-
-  const handleBorrowClickRow = row => {
+  const handleBorrowClickRow = (row) => {
     setBorrowRecord(row);
     setBorrowRepayOpen(true);
   };
 
-
   const borrowData = React.useMemo(() => {
-    return borrowedAssets.map(asset => {
+    return borrowedAssets.map((asset) => {
       let apy;
       if (withANN) {
-        apy = getBigNumber(asset.annBorrowApy)
-          .minus(asset.borrowApy)
-          .isNegative()
+        apy = getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
           ? new BigNumber(0)
           : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
       } else {
@@ -724,11 +660,21 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           </div>
         ),
         Apy: (
-          <div className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${withANN ? 'green' : 'red'}`} onClick={() => handleBorrowClickRow(asset)}>
+          <div
+            className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
+              withANN ? 'green' : 'red'
+            }`}
+            onClick={() => handleBorrowClickRow(asset)}
+          >
             {withANN ? (
               <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
             ) : (
-              <img src={arrowDown} style={{ marginLeft: 40 }} alt={'down'} className={'h-3 md:h-4'} />
+              <img
+                src={arrowDown}
+                style={{ marginLeft: 40 }}
+                alt={'down'}
+                className={'h-3 md:h-4'}
+              />
             )}
             <div className="w-20 ml-2 md:ml-3">
               {new BigNumber(apy).isGreaterThan(100000000)
@@ -738,30 +684,30 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           </div>
         ),
         Wallet: (
-          <div className="h-20 font-bold cursor-pointer w-full px-8 py-6 text-green flex flex-col items-end justify-center" onClick={() => handleBorrowClickRow(asset)}>
-
-            ${format(
-              asset.borrowBalance
-                .times(asset.tokenPrice)
-                .dp(2, 1)
-                .toString(10)
-            )}
+          <div
+            className="h-20 font-bold cursor-pointer w-full px-8 py-6 text-green flex flex-col items-end justify-center"
+            onClick={() => handleBorrowClickRow(asset)}
+          >
+            ${format(asset.borrowBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
             <div className="text-white text-right font-normal">
               {format(asset.borrowBalance.dp(4, 1).toString(10))} {asset.symbol}
             </div>
           </div>
         ),
         percentOfLimit: (
-          <div className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-primary" onClick={() => handleBorrowClickRow(asset)}>
+          <div
+            className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-primary"
+            onClick={() => handleBorrowClickRow(asset)}
+          >
             {asset.percentOfLimit}%
           </div>
         ),
-      }
-    })
+      };
+    });
   }, [borrowedAssets, withANN]);
 
   const allBorrowMarketData = React.useMemo(() => {
-    return nonBorrowedAssets.map(asset => {
+    return nonBorrowedAssets.map((asset) => {
       const apy = withANN
         ? getBigNumber(asset.annBorrowApy).minus(asset.borrowApy)
         : asset.borrowApy;
@@ -778,54 +724,48 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${!withANN
-              ? 'red'
-              : getBigNumber(asset.annBorrowApy)
-                .minus(asset.borrowApy)
-                .isNegative()
+            className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
+              !withANN
+                ? 'red'
+                : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
                 ? 'red'
                 : 'green'
-              }`}
-            onClick={() => handleBorrowClickRow(asset)}>
-            {
-              !withANN
-                ? (
-                  <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
-                )
-                : getBigNumber(asset.annBorrowApy)
-                  .minus(asset.borrowApy)
-                  .isNegative()
-                  ? (
-                    <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
-                  )
-                  : (
-                    <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
-                  )
-            }
+            }`}
+            onClick={() => handleBorrowClickRow(asset)}
+          >
+            {!withANN ? (
+              <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
+            ) : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative() ? (
+              <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
+            ) : (
+              <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
+            )}
             <div className="w-20 ml-2 md:ml-3">
               {new BigNumber(apy.absoluteValue()).isGreaterThan(100000000)
                 ? 'Infinity'
-                : `${apy
-                  .absoluteValue()
-                  .dp(2, 1)
-                  .toString(10)}%`}
+                : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
             </div>
           </div>
         ),
         Wallet: (
-          <div className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-8 py-3" onClick={() => handleBorrowClickRow(asset)}>
+          <div
+            className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-8 py-3"
+            onClick={() => handleBorrowClickRow(asset)}
+          >
             {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
           </div>
         ),
         Liquidity: (
-          <div className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-8 py-3" onClick={() => handleBorrowClickRow(asset)}>
+          <div
+            className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-8 py-3"
+            onClick={() => handleBorrowClickRow(asset)}
+          >
             ${format(asset.liquidity.dp(2, 1).toString(10))}
           </div>
         ),
-      }
-    })
+      };
+    });
   }, [nonBorrowedAssets, withANN]);
-
 
   // market Overview
   const [currentAsset, setCurrentAsset] = useState(null);
@@ -837,7 +777,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     let tempData = [];
     const res = await promisify(getMarketHistory, { asset, type, limit });
     tempData = res?.data?.result
-      .map(m => {
+      .map((m) => {
         return {
           blockNumber: m?.blockNumber,
           createdAt: m.createdAt,
@@ -853,18 +793,16 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     setData([...tempData]);
   };
 
-
   const getGovernanceData = useCallback(async () => {
     if (!currentAsset) return;
     if (settings.markets && settings.markets.length > 0) {
       const info = settings.markets.find(
-        item => item?.underlyingSymbol?.toLowerCase() === currentAsset
+        (item) => item?.underlyingSymbol?.toLowerCase() === currentAsset,
       );
       setMarketInfo(info || {});
     }
   }, [settings.markets, currentAsset]);
   const [showDetails, setShowDetails] = useState(false);
-
 
   useEffect(() => {
     getGovernanceData();
@@ -875,7 +813,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       getGraphData(
         constants.CONTRACT_ABEP_ADDRESS[currentAsset].address,
         process.env.REACT_APP_GRAPH_TICKER || null,
-        60
+        60,
       );
     }
   }, [account, currentAsset]);
@@ -887,8 +825,8 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   useEffect(() => {
     if (settings.assetList && settings.assetList.length > 0) {
       const currentMarketInfo =
-        settings.assetList.filter(s => s.id === currentAsset).length !== 0
-          ? settings.assetList.filter(s => s.id === currentAsset)[0]
+        settings.assetList.filter((s) => s.id === currentAsset).length !== 0
+          ? settings.assetList.filter((s) => s.id === currentAsset)[0]
           : {};
       const supplyApy = getBigNumber(currentMarketInfo.supplyApy);
       const borrowApy = getBigNumber(currentMarketInfo.borrowApy);
@@ -900,32 +838,34 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         : borrowApy;
       setCurrentAPY(
         (settings.marketType || 'supply') === 'supply'
-          ? supplyApyWithANN.isGreaterThan(100000000) ? "Infinity" : supplyApyWithANN.dp(2, 1).toString(10)
-          : borrowApyWithANN.isGreaterThan(100000000) ? "Infinity" : borrowApyWithANN.dp(2, 1).toString(10)
+          ? supplyApyWithANN.isGreaterThan(100000000)
+            ? 'Infinity'
+            : supplyApyWithANN.dp(2, 1).toString(10)
+          : borrowApyWithANN.isGreaterThan(100000000)
+          ? 'Infinity'
+          : borrowApyWithANN.dp(2, 1).toString(10),
       );
     }
   }, [currentAsset, settings.marketType, settings.assetList, settings.withANN]);
 
-  const handleChangeAsset = value => {
+  const handleChangeAsset = (value) => {
     setCurrentAsset(value.id);
   };
 
   const options = React.useMemo(() => {
-    return Object.keys(constants.CONTRACT_ABEP_ADDRESS).map(
-      (key, index) => ({
-        id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
-        name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
-        logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset
-      })
-    )
-  }, [])
+    return Object.keys(constants.CONTRACT_ABEP_ADDRESS).map((key, index) => ({
+      id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
+      name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
+      logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
+    }));
+  }, []);
 
   const wrongNetwork = React.useMemo(() => {
-    return (process.env.REACT_APP_ENV === 'prod' && chainId !== 56)
-      || (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-  }, [chainId])
-
-
+    return (
+      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
+      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
+    );
+  }, [chainId]);
 
   return (
     <Layout>
@@ -963,39 +903,16 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           className="bg-primary text-white rounded-lg py-4 px-6 mx-6 lg:mx-0 text-lg
                         flex justify-between items-center space-x-4 mt-5"
         >
-
           <p className="text-black flex-grow">
             {!account
-              ? "Please connect your wallet first."
+              ? 'Please connect your wallet first.'
               : wrongNetwork
-                ? ("Annex is only supported on Binance Smart Chain Network. Please confirm you installed Metamask and selected Binance Smart Chain Network")
-                : ("")
-            }
+              ? 'Annex is only supported on Binance Smart Chain Network. Please confirm you installed Metamask and selected Binance Smart Chain Network'
+              : ''}
           </p>
         </div>
       )}
-      {displayWarning && (
 
-        <div
-          className="bg-primary text-white rounded-lg py-3 px-6 mx-6 lg:mx-0 text-lg
-                        flex justify-between items-center space-x-4 mt-5"
-        >
-          <MiniLogo size="sm" />
-          <p className="text-black flex-grow">
-            This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
-            warranties, including that Annex is error-free or secure. Use it at your own risk.
-          </p>
-          <div className="cursor-pointer" onClick={() => {
-            localStorage.setItem("betaWarning", "true");
-            setDisplayWarning(false)
-          }}>
-            <img src={close} alt="close" />
-          </div>
-        </div>
-
-
-
-      )}
       <AccountOverview
         available={available}
         borrowPercent={borrowPercent}
@@ -1010,39 +927,41 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-stretch mt-5">
         <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
-          {(suppliedAssets.length === 0 && nonSuppliedAssets.length === 0) && (
-            <DataTable title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6" />} columns={supplyColumns} data={loadingData} />
+          {suppliedAssets.length === 0 && nonSuppliedAssets.length === 0 && (
+            <DataTable
+              title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6" />}
+              columns={supplyColumns}
+              data={loadingData}
+            />
           )}
           {suppliedAssets.length > 0 && (
             <DataTable title="Supply" columns={supplyColumns} data={supplyData} />
           )}
 
-          {
-            settings.pendingInfo &&
+          {settings.pendingInfo &&
             settings.pendingInfo.status &&
-            ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && (
-              <PendingTransaction />
-            )
-          }
+            ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && <PendingTransaction />}
           {nonSuppliedAssets.length > 0 && (
             <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
           )}
         </div>
         <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
-          {(borrowedAssets.length === 0 && nonBorrowedAssets.length === 0) && (
-            <DataTable title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6" />} columns={supplyColumns} data={loadingData} />
+          {borrowedAssets.length === 0 && nonBorrowedAssets.length === 0 && (
+            <DataTable
+              title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6" />}
+              columns={supplyColumns}
+              data={loadingData}
+            />
           )}
 
           {borrowedAssets.length > 0 && (
             <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
           )}
-          {
-            settings.pendingInfo &&
+          {settings.pendingInfo &&
             settings.pendingInfo.status &&
             ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
               <PendingTransaction />
-            )
-          }
+            )}
           {nonBorrowedAssets.length > 0 && (
             <DataTable
               title="All Borrow Markets"
@@ -1062,28 +981,49 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         currentAPY={currentAPY}
         data={data}
       />
+
+      {displayWarning && (
+        <div
+          className="bg-primary text-white rounded-lg py-3 px-6 mx-6 lg:mx-0 text-lg
+                flex justify-between items-center space-x-4 mt-5"
+        >
+          <MiniLogo size="sm" />
+          <p className="text-black flex-grow">
+            This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
+            warranties, including that Annex is error-free or secure. Use it at your own risk.
+          </p>
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              localStorage.setItem('betaWarning', 'true');
+              setDisplayWarning(false);
+            }}
+          >
+            <img src={close} alt="close" />
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
 
-
 Dashboard.defaultProps = {
-  settings: {}
+  settings: {},
 };
 
 const mapStateToProps = ({ account }) => ({
-  settings: account.setting
+  settings: account.setting,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   const { setSetting, getMarketHistory } = accountActionCreators;
 
   return bindActionCreators(
     {
       setSetting,
-      getMarketHistory
+      getMarketHistory,
     },
-    dispatch
+    dispatch,
   );
 };
 

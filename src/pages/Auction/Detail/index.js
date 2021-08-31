@@ -30,8 +30,8 @@ const ArrowDown = styled.button`
   border: 1px solid #2b2b2b;
   transition: 0.3s ease all;
   will-change: background-color, border, transform;
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
 
   &:focus,
   &:hover,
@@ -45,7 +45,11 @@ const ArrowDown = styled.button`
 `;
 
 const Wrapper = styled.div`
-  background-color: #000;
+  .show-icon{
+    right: calc(50% - 56px);
+    bottom: 15%;
+    z-index: 9;
+  }
 `;
 
 const ArrowContainer = styled.div`
@@ -198,7 +202,7 @@ function Detail(props) {
           .toNumber();
         minimumPrice = convertExponentToNum(minimumPrice);
         maxAvailable = convertExponentToNum(maxAvailable);
-        currentPrice = convertExponentToNum(currentPrice);
+        currentPrice = Number(convertExponentToNum(currentPrice));
         minBuyAmount = convertExponentToNum(minBuyAmount);
 
         let minFundingThreshold = convertExponentToNum(
@@ -214,7 +218,10 @@ function Detail(props) {
         let minFundingThresholdNotReached = elem['minFundingThresholdNotReached'];
 
         let estimatedTokenSold = convertExponentToNum(
-          new BigNumber(elem['estimatedTokenSold_eth']).dividedBy(auctionDecimal).toNumber().toFixed(2),
+          new BigNumber(elem['estimatedTokenSold_eth'])
+            .dividedBy(auctionDecimal)
+            .toNumber()
+            .toFixed(2),
         );
         let estimatedTokenSoldValue = estimatedTokenSold + ' ' + auctionSymbol;
         let isAtomicClosureAllowed = elem['isAtomicClosureAllowed'];
@@ -538,7 +545,7 @@ function Detail(props) {
     }, 0);
 
   return (
-    <div>
+    <Wrapper>
       <div className="col-span-12 p-6 flex items-center">
         <h2 className="text-white mb-2 text-4xl font-normal">Auction Details</h2>
         <div className="text-gray text-xl ml-2">
@@ -718,11 +725,9 @@ function Detail(props) {
         </div>
 
         <div
-          className="show-icon flex items-center justify-end text-right text-white absolute"
-          style={{ right: '10px', bottom: '-40px', zIndex: '9' }}
-        >
-          <span className="mr-2">{showDetails ? 'Less' : 'More Details'} </span>
-          <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 hidden sm:flex'}>
+          className="show-icon flex items-center justify-end text-right text-white absolute">
+          <span className="mr-2 text-sm">{showDetails ? 'Less' : 'More Details'} </span>
+          <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
             <ArrowContainer active={showDetails}>
               <SVG src={ArrowIcon} />
             </ArrowContainer>
@@ -929,8 +934,10 @@ function Detail(props) {
                 <span className={`${state.detail.statusClass}-icon`}></span>
               </div>
               <div className="text-sm">
-                {state.detail.status && (state.detail.status == 'inprogress' ?
-                'In Progress' : state.detail.status.charAt(0).toUpperCase() + state.detail.status.slice(1))}
+                {state.detail.status &&
+                  (state.detail.status == 'inprogress'
+                    ? 'In Progress'
+                    : state.detail.status.charAt(0).toUpperCase() + state.detail.status.slice(1))}
               </div>
             </div>
           </div>
@@ -943,7 +950,12 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`} target="_blank" rel="noreferrer">
+                  <a
+                    href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ wordBreak: 'break-all' }}
+                  >
                     {state.detail.contract}
                   </a>
                 )}
@@ -957,7 +969,12 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`} target="_blank" rel="noreferrer">
+                  <a
+                    href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ wordBreak: 'break-all' }}
+                  >
                     {state.detail.token}
                   </a>
                 )}
@@ -971,7 +988,9 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a href={state.detail.website} target="_blank" rel="noreferrer">{state.detail.website}</a>
+                  <a href={state.detail.website} target="_blank" rel="noreferrer">
+                    {state.detail.website}
+                  </a>
                 )}
               </div>
             </div>
@@ -1028,7 +1047,7 @@ function Detail(props) {
         getData={getData}
         auctionId={state.detail.id}
       />
-    </div>
+    </Wrapper>
   );
 }
 
@@ -1095,7 +1114,9 @@ const MediaIcon = ({ name, src, url }) => {
   return (
     <div className="flex items-center text-xl font-medium underline mb-3">
       <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
-      <a href={url} target="_blank" rel="noreferrer">{name}</a>
+      <a href={url} target="_blank" rel="noreferrer">
+        {name}
+      </a>
     </div>
   );
 };

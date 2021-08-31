@@ -462,7 +462,7 @@ export default function Form(props) {
   const getFormState = async () => {
     let arr = state.inputs.concat(state.advanceInputs);
     let obj = {};
-    
+
     let auctionToken = '';
     let auctionIndex = state.inputs.findIndex((x) => x.id === 'auctionToken');
     if (auctionIndex !== -1) {
@@ -470,7 +470,6 @@ export default function Form(props) {
     }
     const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
     let auctionDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
-    
 
     let biddingDecimal = 0;
     let biddingIndex = state.inputs.findIndex((x) => x.id === 'biddingToken');
@@ -518,7 +517,9 @@ export default function Form(props) {
     // value = web3.eth.abi.encodeParameter('uint256', value);
     // '0x' +
     //   new BigNumber(userId).toString(16).padStart(16, '0') +
-    value = '0x' + (new BigNumber(value).times(new BigNumber(10).pow(decimal))).toString(16).padStart(64, '0');
+    value =
+      '0x' +
+      new BigNumber(value).times(new BigNumber(10).pow(decimal)).toString(16).padStart(64, '0');
     // let hexValue = toHex(new BigNumber(value).times(new BigNumber(10).pow(decimal)), { addPrefix: true });
     // value = web3.eth.abi.encodeParameter('uint256', hexValue);
     return value;
@@ -550,9 +551,11 @@ export default function Form(props) {
           {state.inputs.map((input, index) => {
             return (
               <Fragment key={index}>
-                { input.label ? (
-                  <div className="col-span-12 flex flex-col text-primary  text-3xl pb-2
-                  font-normal my-5 form-section-title border-b border-solid border-lightGray mt-10">
+                {input.label ? (
+                  <div
+                    className="col-span-12 flex flex-col text-primary  text-3xl pb-2
+                  font-normal my-5 form-section-title border-b border-solid border-lightGray mt-10"
+                  >
                     {input.label}
                   </div>
                 ) : (
@@ -690,7 +693,7 @@ export default function Form(props) {
 
 const Input = ({ index, type, placeholder, value, isAdvance, description, handleInputChange }) => {
   return (
-    <div className={`col-span-6 flex flex-col mt-8`}>
+    <div className={`col-span-12 md:col-span-6  flex flex-col mt-4 md:mt-8`}>
       <input
         className="border border-solid border-gray bg-transparent
                  rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
@@ -733,7 +736,7 @@ const Textarea = ({
 
 const Checkbox = ({ index, type, description, value, isAdvance, handleInputChange, colspan }) => {
   return (
-    <div className={`col-span-6 flex mt-8 items-center custom-check`}>
+    <div className={`col-span-12 md:col-span-6 flex mt-4 md:mt-8 items-center custom-check`}>
       <label className="container text-base ml-2 font-normal">
         {description}
         <input
@@ -757,7 +760,7 @@ const SelectInput = ({
   description,
 }) => {
   return (
-    <div className={`col-span-6 flex flex-col mt-8`}>
+    <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
       <Select
         options={options}
         onChange={(val) => handleInputChange(val, type, index, isAdvance)}
@@ -772,7 +775,7 @@ const SelectInput = ({
 
 const DateInput = ({ index, type, value, isAdvance, description, handleInputChange }) => {
   return (
-    <div className={`col-span-6 flex flex-col mt-8`}>
+    <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
       <Flatpickr
         className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
         data-enable-time={true}

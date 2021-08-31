@@ -58,13 +58,13 @@ function Select({
                    : 'bg-primary rounded-4xl py-1.5'
                }`}
               >
-                <div className="flex items-center space-x-4 py-2">
+                <div className="flex items-center space-x-4">
                   {selected?.logo && (
                     <div className={logoClassName ? logoClassName : ''}>
                       <img
                         alt={selected?.name}
                         src={selected?.logo}
-                        style={{ width: 32, height: 32 }}
+                        style={{ width: 28, height: 28 }}
                       />
                     </div>
                   )}
