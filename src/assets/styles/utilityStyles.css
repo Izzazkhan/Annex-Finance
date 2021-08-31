@@ -1229,3 +1229,23 @@ button:disabled {
 .rc-md-editor .tab-map-list .list-item.active {
   font-weight: 700
 }
+.tooltip {
+  margin-bottom: 5px;
+}
+.tooltip .label {
+    display: none;
+    position: absolute;
+    bottom: auto;
+    left: calc(50% - 90px);
+    color: #e2e2e2;
+    font-size: 12px;
+    width: 180px;
+    text-align: center;
+    background: #000;
+    padding: 2px 0;
+    height: auto;
+    top: -25px;
+  }
+  .tooltip-label:hover + .label {
+    display: block;
+  }

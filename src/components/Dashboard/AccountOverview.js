@@ -109,7 +109,8 @@ const AccountOverview = ({
 
   return (
     <Wrapper className="text-white mt-8 p-6 border border-lightGray rounded-md">
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2">
+      <div className="cursor-pointer flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2" 
+      onClick={() => setShowDetails((s) => !s)}>
         <div className="flex flex-row items-center justify-between flex-wrap flex-grow">
           <div className="flex flex-col items-stretch md:items-start flex-grow text-left space-y-1 md:space-y-2 order-first">
             <div className="text-primary font-bold text-lg md:text-xl">Supply Balance</div>
@@ -153,7 +154,12 @@ const AccountOverview = ({
                             transform -translate-x-1/2 -translate-y-1/2 justify-center`}
             >
               <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
-                <div className="text-primary font-bold text-lg md:text-xl">Net APY</div>
+                <div className="text-primary font-bold text-lg md:text-xl">
+                  <div className="tooltip relative">
+                    <div className="tooltip-label"> Net APY</div>
+                    <span className="label">Last order cancelation date</span>
+                  </div>
+                </div>
                 <div className="text-white font-bold text-xl md:text-2xl">
                   {!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}
                 </div>
@@ -161,7 +167,7 @@ const AccountOverview = ({
               <Switch value={withANN} onChange={() => setWithANN((oldVal) => !oldVal)} />
 
               <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-8 md:mb-8 flex-grow text-center">
-                <div className="text-primary font-bold text-lg md:text-xl">
+                <div className="text-primary font-bold text-md">
                   <Styles>
                     <img className="fire-image" src={FireImage} alt="fire" /> APY with ANN
                   </Styles>
@@ -225,8 +231,8 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : dailyEarning
-                ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
-                : '-'
+                  ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
+                  : '-'
             }
             icon={DailyEarning}
             noData={!account || wrongNetwork}
@@ -245,8 +251,8 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : annualEarning
-                ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
-                : '-'
+                  ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
+                  : '-'
             }
             icon={AnnualEarning}
             noData={!account || wrongNetwork}

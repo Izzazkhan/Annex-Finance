@@ -31,23 +31,33 @@ const Wrapper = styled.aside`
   
 
 .certik-container {
-	position: fixed;
+	// position: fixed;
 	display: flex;
 	height: 50px;
-	bottom: 100px;
-	right: 20px;
-	background: linear-gradient(#3d313c, #3d313c) padding-box, 
-  radial-gradient(99.67% 1137.19% at -5.59% 88.89%, #ff9d2d 0%,
-     rgba(255, 255, 255, 0.13) 34.07%, rgba(255, 255, 255, 0) 55.73%, rgba(255, 255, 255, 0.13) 76.44%, #8f3f88 100%) border-box;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	right: calc(50% - 111px);
+	background: linear-gradient(#2e2e2e, #2e2e2e) padding-box, 
+    radial-gradient(99.67% 1137.19% at -5.59% 88.89%, #ff9d2d 0%, 
+        rgb(253 195 81) 34.07%, rgb(249 183 67) 55.73%, rgb(245 164 45) 76.44%, #f19920 100%) border-box;
   border: solid 3px transparent;
 	border-radius: 16px;
 	align-items: center;
-	padding: 13px 25px;
+	padding: 13px 20px;
 	z-index: 10;
 	opacity: 0;
 	transition: opacity .3s ease;
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 	pointer-events: none;
+  @media (max-width: 1023px) {
+	  padding: 10px;
+	  right: calc(50% - 85px);
+  }
+  @media (max-width: 575px) {
+    height: 45px;
+	  right: calc(50% - 75px);
+
+  }
   &.visible {
     opacity: 1;
     pointer-events: auto
@@ -59,18 +69,28 @@ const Wrapper = styled.aside`
       top: -15px
     }
     &>.txt {
-      margin: 0 10px 0 15px;
+      margin: 0 10px 0 10px;
       color: #5C6D78;
       font-size: 14px;
-      white-space: nowrap
+      white-space: nowrap;
+      @media (max-width: 1023px) {
+        margin: 0 5px 0 5px;
+        font-size: 12px;
+      }
+      @media (max-width: 575px) {
+        font-size: 10px;
+      }
     }
     &>.logo {
-      width: 100px;
-      margin-right: 10px
-    }
-    &>.logo {
-      width: 100px;
-      margin-right: 10px
+      width: 80px;
+      margin-right: 10px;
+      @media (max-width: 1023px) {
+        width: 70px;
+        margin-right: 5px;
+      }
+      @media (max-width: 575px) {
+        width: 60px;
+      }
     }
     &>.skynet {
       width: 20px;
@@ -82,18 +102,22 @@ const Wrapper = styled.aside`
       height: 10px;
       border-radius: 50%;
       background-color: #ffad4f;
-    }
-    &>.pulsing-circle::before {
-      content: '';
-      position: absolute;
-      display: block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #ffad4f;
-      animation: pulsing-circle 1s ease infinite;
-      left: 0;
-      top: 0
+      @media (max-width: 575px) {
+        width: 5px;
+        height: 5px;
+      }
+      &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #ff9800;
+        animation: pulsing-circle 1s ease infinite;
+        left: 0;
+        top: 0
+      }
     }
   }
 }
@@ -292,35 +316,35 @@ function Sidebar({ isOpen, onClose, settings }) {
           totalLiquidity={settings.totalLiquidity}
         // totalXaiMinted={totalXaiMinted}
         />
-        <a className="certik-container large visible" href="https://www.certik.org/projects/annex" target="_blank" rel="noreferrer">
-          <img className="logo" src="/images/certik-full.svg" alt=""/>
-            <img className="check" src="/images/check-primary.svg" alt=""/>
-              <span className="txt">Skynet</span>
-              <div className="pulsing-circle"></div>
-        </a>
-            <div className="mt-auto mb-10 pl-8">
-              <div className="font-bold text-white">Annex Finance</div>
-              <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
-            </div>
+        <div className="mt-auto mb-10 pl-8 pr-8">
+          <a className="certik-container large visible" href="https://www.certik.org/projects/annex" target="_blank" rel="noreferrer">
+            <img className="logo" src="/images/certik-full.svg" alt="" />
+            <img className="check" src="/images/check-primary.svg" alt="" />
+            <span className="txt">Skynet</span>
+            <div className="pulsing-circle"></div>
+          </a>
+          <div className="font-bold text-white">Annex Finance</div>
+          <div className="text-gray text-sm">© 2021 All Rights Reserved</div>
+        </div>
       </Wrapper>
     </>
-        );
+  );
 }
 
-        const mapStateToProps = ({account}) => ({
-          settings: account.setting,
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting,
 });
 
 const mapDispatchToProps = (dispatch) => {
-  const {setSetting, getGovernanceAnnex} = accountActionCreators;
+  const { setSetting, getGovernanceAnnex } = accountActionCreators;
 
-        return bindActionCreators(
-        {
-          setSetting,
-          getGovernanceAnnex,
+  return bindActionCreators(
+    {
+      setSetting,
+      getGovernanceAnnex,
     },
-        dispatch,
-        );
+    dispatch,
+  );
 };
 
-        export default connectAccount(mapStateToProps, mapDispatchToProps)(Sidebar);
+export default connectAccount(mapStateToProps, mapDispatchToProps)(Sidebar);

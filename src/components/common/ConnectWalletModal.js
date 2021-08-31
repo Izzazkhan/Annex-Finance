@@ -142,7 +142,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
                 <SVG src={ExternalLinkIcon} />
               </div>
             </div>
-            <div className="flex flex-col items-stretch lg:items-center justify-center">
+            <div className="flex flex-col sm:flex-row items-stretch lg:items-center justify-center">
               <button
                 className="
                   bg-primary text-black rounded-full px-20 py-5 uppercase font-bold focus:outline-none
@@ -150,6 +150,14 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
                 onClick={deactivate}
               >
                 Logout
+              </button>
+              <button
+                className="mt-1 sm:ml-2
+                  bg-primary text-black rounded-full px-20 py-5 uppercase font-bold focus:outline-none
+                  "
+                onClick={onCloseModal}
+              >
+                Close
               </button>
             </div>
           </div>

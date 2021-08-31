@@ -30,8 +30,8 @@ const ArrowDown = styled.button`
   border: 1px solid #2b2b2b;
   transition: 0.3s ease all;
   will-change: background-color, border, transform;
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
 
   &:focus,
   &:hover,
@@ -45,7 +45,11 @@ const ArrowDown = styled.button`
 `;
 
 const Wrapper = styled.div`
-  background-color: #000;
+  .show-icon{
+    right: calc(50% - 56px);
+    bottom: 15%;
+    z-index: 9;
+  }
 `;
 
 const ArrowContainer = styled.div`
@@ -541,7 +545,7 @@ function Detail(props) {
     }, 0);
 
   return (
-    <div>
+    <Wrapper>
       <div className="col-span-12 p-6 flex items-center">
         <h2 className="text-white mb-2 text-4xl font-normal">Auction Details</h2>
         <div className="text-gray text-xl ml-2">
@@ -721,11 +725,9 @@ function Detail(props) {
         </div>
 
         <div
-          className="show-icon flex items-center justify-end text-right text-white absolute"
-          style={{ right: '10px', bottom: '-40px', zIndex: '9' }}
-        >
-          <span className="mr-2">{showDetails ? 'Less' : 'More Details'} </span>
-          <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 hidden sm:flex'}>
+          className="show-icon flex items-center justify-end text-right text-white absolute">
+          <span className="mr-2 text-sm">{showDetails ? 'Less' : 'More Details'} </span>
+          <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
             <ArrowContainer active={showDetails}>
               <SVG src={ArrowIcon} />
             </ArrowContainer>
@@ -1045,7 +1047,7 @@ function Detail(props) {
         getData={getData}
         auctionId={state.detail.id}
       />
-    </div>
+    </Wrapper>
   );
 }
 
