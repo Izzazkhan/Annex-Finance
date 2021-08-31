@@ -5,6 +5,7 @@ import ANNBalance from '../../assets/icons/ANN-Balance.svg';
 import DailyEarning from '../../assets/icons/Daily-Earning.svg';
 import ANNRewards from '../../assets/icons/ANN-Rewards.svg';
 import AnnualEarning from '../../assets/icons/Annual-Earning.svg';
+import FireImage from '../../assets/images/fire.png';
 import Switch from '../UI/Switch';
 import fire from '../../assets/icons/fire.svg';
 import React, { useEffect, useState } from 'react';
@@ -55,6 +56,18 @@ const ArrowContainer = styled.div`
   will-change: transform;
 `;
 
+const Styles = styled.span`
+  display: flex;
+  .fire-image {
+    height: 20px;
+    padding-right: 3px;
+    @media (max-width: 767px) {
+      height: 14px;
+      padding-right: 2px;
+    }
+  }
+`;
+
 const AccountOverview = ({
   available,
   borrowPercent,
@@ -96,7 +109,8 @@ const AccountOverview = ({
 
   return (
     <Wrapper className="text-white mt-8 p-6 border border-lightGray rounded-md">
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2">
+      <div className="cursor-pointer flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2" 
+      onClick={() => setShowDetails((s) => !s)}>
         <div className="flex flex-row items-center justify-between flex-wrap flex-grow">
           <div className="flex flex-col items-stretch md:items-start flex-grow text-left space-y-1 md:space-y-2 order-first">
             <div className="text-primary font-bold text-lg md:text-xl">Supply Balance</div>
@@ -140,15 +154,24 @@ const AccountOverview = ({
                             transform -translate-x-1/2 -translate-y-1/2 justify-center`}
             >
               <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
-                <div className="text-primary font-bold text-lg md:text-xl">Net APY</div>
+                <div className="text-primary font-bold text-lg md:text-xl">
+                  <div className="tooltip relative">
+                    <div className="tooltip-label"> Net APY</div>
+                    <span className="label">Last order cancelation date</span>
+                  </div>
+                </div>
                 <div className="text-white font-bold text-xl md:text-2xl">
                   {!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}
                 </div>
               </div>
               <Switch value={withANN} onChange={() => setWithANN((oldVal) => !oldVal)} />
 
-              <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
-                <div className="text-primary font-bold text-lg md:text-xl">APY with ANN</div>
+              <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-8 md:mb-8 flex-grow text-center">
+                <div className="text-primary font-bold text-md">
+                  <Styles>
+                    <img className="fire-image" src={FireImage} alt="fire" /> APY with ANN
+                  </Styles>
+                </div>
               </div>
             </div>
           </div>
@@ -208,8 +231,8 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : dailyEarning
-                ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
-                : '-'
+                  ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
+                  : '-'
             }
             icon={DailyEarning}
             noData={!account || wrongNetwork}
@@ -228,8 +251,8 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : annualEarning
-                ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
-                : '-'
+                  ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
+                  : '-'
             }
             icon={AnnualEarning}
             noData={!account || wrongNetwork}

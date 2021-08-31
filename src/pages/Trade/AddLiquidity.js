@@ -1,9 +1,9 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import help from '../../assets/icons/help.svg';
 import blackPlus from '../../assets/icons/blackPlus.svg';
-import {useActiveWeb3React} from "../../hooks";
-import {useCurrency} from "../../hooks/Tokens";
-import {currencyEquals, ETHER, WETH} from "@annex/sdk";
+import { useActiveWeb3React } from "../../hooks";
+import { useCurrency } from "../../hooks/Tokens";
+import { currencyEquals, ETHER, WETH } from "@annex/sdk";
 import {
 	useDerivedMintInfo,
 	useMintActionHandlers,
@@ -11,24 +11,24 @@ import {
 	useUserDeadline,
 	useUserSlippageTolerance
 } from "../../core";
-import {Field} from "../../core/modules/mint/actions";
-import {ApprovalState, useApproveCallback} from "../../hooks/useApproveCallback";
-import {calculateGasMargin, calculateSlippageAmount, getRouterContract} from "../../utils";
-import {ONE_BIPS, ROUTER_ADDRESS} from "../../constants/swap";
+import { Field } from "../../core/modules/mint/actions";
+import { ApprovalState, useApproveCallback } from "../../hooks/useApproveCallback";
+import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from "../../utils";
+import { ONE_BIPS, ROUTER_ADDRESS } from "../../constants/swap";
 import maxAmountSpend from "../../utils/maxAmountSpend";
-import {wrappedCurrency} from "../../utils/wrappedCurrency";
+import { wrappedCurrency } from "../../utils/wrappedCurrency";
 import currencyId from "../../utils/currencyId";
 import TransactionConfirmationModal
 	from "../../components/swap/TransactionConfirmationModal/TransactionConfrimationModal";
 import ConfirmationModalContent from "../../components/swap/TransactionConfirmationModal/ConfirmationModalContent";
-import {AutoColumn, ColumnCenter} from "../../components/UI/Column";
-import Row, {RowBetween, RowFlat} from "../../components/UI/Row";
+import { AutoColumn, ColumnCenter } from "../../components/UI/Column";
+import Row, { RowBetween, RowFlat } from "../../components/UI/Row";
 import DoubleCurrencyLogo from "../../components/common/DoubleLogo";
 import ConfirmAddModalBottom from "../../components/swap/ConfirmAddModalBottom";
 import CurrencyInputPanel from "../../components/swap/CurrencyInputPanel";
-import {PairState} from "../../data/Reserves";
-import {Dots} from "../../components/UI/Dots";
-import {MinimalPositionCard} from "../../components/swap/PositionCard";
+import { PairState } from "../../data/Reserves";
+import { Dots } from "../../components/UI/Dots";
+import { MinimalPositionCard } from "../../components/swap/PositionCard";
 import { BigNumber } from "@ethersproject/bignumber";
 
 
@@ -181,11 +181,9 @@ function AddLiquidity({
 					setAttemptingTxn(false);
 
 					addTransaction(response, {
-						summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-							currencies[Field.CURRENCY_A]?.symbol
-						} and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${
-							currencies[Field.CURRENCY_B]?.symbol
-						}`,
+						summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+							} and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol
+							}`,
 					});
 
 					setTxHash(response.hash);
@@ -200,9 +198,8 @@ function AddLiquidity({
 			});
 	}
 
-	const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
-		currencies[Field.CURRENCY_A]?.symbol
-	} and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
+	const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${currencies[Field.CURRENCY_A]?.symbol
+		} and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
 
 	const handleCurrencyASelect = useCallback(
 		(currA) => {
@@ -246,7 +243,7 @@ function AddLiquidity({
 		return noLiquidity ? (
 			<AutoColumn gap="20px">
 				<div className={'mt-5 mb-8 rounded-xl w-full border border-fadeBlack'}>
-					<RowFlat style={{ alignItems: 'center'}}>
+					<RowFlat style={{ alignItems: 'center' }}>
 						<span className={'text-5xl leading-none mr-3 text-white'}>
 							{`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
 						</span>
@@ -274,9 +271,8 @@ function AddLiquidity({
 					</span>
 				</Row>
 				<span className={'text-left text-xs pt-2'}>
-					{`Output is estimated. If the price changes by more than ${
-						allowedSlippage / 100
-					}% your transaction will revert.`}
+					{`Output is estimated. If the price changes by more than ${allowedSlippage / 100
+						}% your transaction will revert.`}
 				</span>
 			</AutoColumn>
 		);
@@ -321,8 +317,12 @@ function AddLiquidity({
 						>
 							Add Liquidity
 						</div>
-						<div className="cursor-pointer" onClick={() => {}}>
-							<img src={help} alt="help" />
+						<div className="cursor-pointer" onClick={() => { }}>
+
+							<div className="tooltip relative">
+								<div className="tooltip-label"> <img src={help} alt="help" /></div>
+								<span className="label">Last order cancelation date</span>
+							</div>
 						</div>
 					</div>
 					{noLiquidity && (
@@ -366,107 +366,107 @@ function AddLiquidity({
 					{currencies[Field.CURRENCY_A] &&
 						currencies[Field.CURRENCY_B] &&
 						pairState !== PairState.INVALID && (
-						<div className="bg-primary bg-opacity-70 p-6 rounded-3xl w-full mt-8">
-							<div className="font-bold">PRICE AND POOL SHARE</div>
-							<div className="flex justify-between mt-4 px-10">
-								<div className="">
-									<div className="font-bold text-lg">{price?.toSignificant(6) || "-"}</div>
-									<div className="mt-2">
-										{currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
+							<div className="bg-primary bg-opacity-70 p-6 rounded-3xl w-full mt-8">
+								<div className="font-bold">PRICE AND POOL SHARE</div>
+								<div className="flex justify-between mt-4 px-10">
+									<div className="">
+										<div className="font-bold text-lg">{price?.toSignificant(6) || "-"}</div>
+										<div className="mt-2">
+											{currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
+										</div>
 									</div>
-								</div>
-								<div className="">
-									<div className="font-bold text-lg">{price?.invert()?.toSignificant(6) || "-"}</div>
-									<div className="mt-2">
-										{currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
+									<div className="">
+										<div className="font-bold text-lg">{price?.invert()?.toSignificant(6) || "-"}</div>
+										<div className="mt-2">
+											{currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
+										</div>
 									</div>
-								</div>
-								<div className="">
-									<div className="font-bold text-lg">
-										{noLiquidity && price
-											? "100"
-											: (poolTokenPercentage?.lessThan(ONE_BIPS) ? "<0.01" : poolTokenPercentage?.toFixed(2)) ||
-											"0"}
-										%
+									<div className="">
+										<div className="font-bold text-lg">
+											{noLiquidity && price
+												? "100"
+												: (poolTokenPercentage?.lessThan(ONE_BIPS) ? "<0.01" : poolTokenPercentage?.toFixed(2)) ||
+												"0"}
+											%
+										</div>
+										<div className="mt-2">Share of Pool</div>
 									</div>
-									<div className="mt-2">Share of Pool</div>
 								</div>
 							</div>
-						</div>
-					)}
+						)}
 					<div className="flex justify-center mt-6">
-					{!account ? (
-						<button
-							disabled
-							className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
-						>
-							Connect to wallet
-						</button>
-					) : (
-						<AutoColumn gap="md" className={'w-full'}>
-
-							{(approvalA === ApprovalState.NOT_APPROVED ||
-								approvalA === ApprovalState.PENDING ||
-								approvalB === ApprovalState.NOT_APPROVED ||
-								approvalB === ApprovalState.PENDING) &&
-							isValid && (
-								<RowBetween className={'space-x-3 w-full'}>
-									{approvalA !== ApprovalState.APPROVED && (
-										<button
-											onClick={approveACallback}
-											disabled={approvalA === ApprovalState.PENDING}
-											className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
-											style={{
-												width:
-													approvalB !== ApprovalState.APPROVED ? "48%" : "100%",
-											}}
-										>
-											{approvalA === ApprovalState.PENDING ? (
-												<Dots>
-													Approving {currencies[Field.CURRENCY_A]?.symbol}
-												</Dots>
-											) : (
-												`Approve ${currencies[Field.CURRENCY_A]?.symbol}`
-											)}
-										</button>
-									)}
-									{approvalB !== ApprovalState.APPROVED && (
-										<button
-											onClick={approveBCallback}
-											disabled={approvalB === ApprovalState.PENDING}
-											className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
-											style={{
-												width:
-													approvalA !== ApprovalState.APPROVED ? "48%" : "100%",
-											}}
-										>
-											{approvalB === ApprovalState.PENDING ? (
-												<Dots>
-													Approving {currencies[Field.CURRENCY_B]?.symbol}
-												</Dots>
-											) : (
-												`Approve ${currencies[Field.CURRENCY_B]?.symbol}`
-											)}
-										</button>
-									)}
-								</RowBetween>
-							)}
-
+						{!account ? (
 							<button
-								onClick={() => {
-									setShowConfirm(true);
-								}}
-								disabled={
-									!isValid ||
-									approvalA !== ApprovalState.APPROVED ||
-									approvalB !== ApprovalState.APPROVED
-								}
+								disabled
 								className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
 							>
-								{error || "Supply"}
+								Connect to wallet
 							</button>
-						</AutoColumn>
-					)}
+						) : (
+							<AutoColumn gap="md" className={'w-full'}>
+
+								{(approvalA === ApprovalState.NOT_APPROVED ||
+									approvalA === ApprovalState.PENDING ||
+									approvalB === ApprovalState.NOT_APPROVED ||
+									approvalB === ApprovalState.PENDING) &&
+									isValid && (
+										<RowBetween className={'space-x-3 w-full'}>
+											{approvalA !== ApprovalState.APPROVED && (
+												<button
+													onClick={approveACallback}
+													disabled={approvalA === ApprovalState.PENDING}
+													className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
+													style={{
+														width:
+															approvalB !== ApprovalState.APPROVED ? "48%" : "100%",
+													}}
+												>
+													{approvalA === ApprovalState.PENDING ? (
+														<Dots>
+															Approving {currencies[Field.CURRENCY_A]?.symbol}
+														</Dots>
+													) : (
+														`Approve ${currencies[Field.CURRENCY_A]?.symbol}`
+													)}
+												</button>
+											)}
+											{approvalB !== ApprovalState.APPROVED && (
+												<button
+													onClick={approveBCallback}
+													disabled={approvalB === ApprovalState.PENDING}
+													className={`focus:outline-none py-2 px-8 flex-grow text-black text-lg h-14 bgPrimaryGradient rounded-lg`}
+													style={{
+														width:
+															approvalA !== ApprovalState.APPROVED ? "48%" : "100%",
+													}}
+												>
+													{approvalB === ApprovalState.PENDING ? (
+														<Dots>
+															Approving {currencies[Field.CURRENCY_B]?.symbol}
+														</Dots>
+													) : (
+														`Approve ${currencies[Field.CURRENCY_B]?.symbol}`
+													)}
+												</button>
+											)}
+										</RowBetween>
+									)}
+
+								<button
+									onClick={() => {
+										setShowConfirm(true);
+									}}
+									disabled={
+										!isValid ||
+										approvalA !== ApprovalState.APPROVED ||
+										approvalB !== ApprovalState.APPROVED
+									}
+									className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl h-14 bgPrimaryGradient rounded-lg`}
+								>
+									{error || "Supply"}
+								</button>
+							</AutoColumn>
+						)}
 					</div>
 				</div>
 			</div>
@@ -474,11 +474,11 @@ function AddLiquidity({
 				&& !noLiquidity
 				&& pairState !== PairState.INVALID
 				&& (
-				<MinimalPositionCard
-					showUnwrapped={oneCurrencyIsWETH}
-					pair={pair}
-				/>
-			)}
+					<MinimalPositionCard
+						showUnwrapped={oneCurrencyIsWETH}
+						pair={pair}
+					/>
+				)}
 		</div>
 	);
 }
