@@ -109,8 +109,10 @@ const AccountOverview = ({
 
   return (
     <Wrapper className="text-white mt-8 p-6 border border-lightGray rounded-md">
-      <div className="cursor-pointer flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2" 
-      onClick={() => setShowDetails((s) => !s)}>
+      <div
+        className="cursor-pointer flex flex-col md:flex-row items-stretch md:items-center justify-between md:px-8 mb-2"
+        onClick={() => setShowDetails((s) => !s)}
+      >
         <div className="flex flex-row items-center justify-between flex-wrap flex-grow">
           <div className="flex flex-col items-stretch md:items-start flex-grow text-left space-y-1 md:space-y-2 order-first">
             <div className="text-primary font-bold text-lg md:text-xl">Supply Balance</div>
@@ -157,7 +159,7 @@ const AccountOverview = ({
                 <div className="text-primary font-bold text-lg md:text-xl">
                   <div className="tooltip relative">
                     <div className="tooltip-label"> Net APY</div>
-                    <span className="label">Last order cancelation date</span>
+                    <span className="label">Net APY</span>
                   </div>
                 </div>
                 <div className="text-white font-bold text-xl md:text-2xl">
@@ -231,8 +233,8 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : dailyEarning
-                  ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
-                  : '-'
+                ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
+                : '-'
             }
             icon={DailyEarning}
             noData={!account || wrongNetwork}
@@ -251,8 +253,8 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : annualEarning
-                  ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
-                  : '-'
+                ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
+                : '-'
             }
             icon={AnnualEarning}
             noData={!account || wrongNetwork}
