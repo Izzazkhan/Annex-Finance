@@ -32,7 +32,6 @@ annex-frontend
 ├── README.md
 ```
 
-
 ## Quick Install & Deployment
 
 ```sh
