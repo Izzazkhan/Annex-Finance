@@ -305,7 +305,7 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 		setSetting({
 			assetList,
 			// xaiMinted,
-			// totalLiquidity: totalLiquidity.plus(xaiBalance).toString(10),
+			totalLiquidity: totalLiquidity.toString(10),
 			totalSupplyBalance: totalSupplyBalance.toString(10),
 			totalBorrowBalance: totalBorrowBalance.toString(10),
 			totalBorrowLimit: totalBorrowLimit.toString(10)
