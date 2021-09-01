@@ -79,6 +79,29 @@ const VotingWallet = ({
                 }</div>
             </div>
             <div className="border-t border-solid border-lightGray p-6">
+                <div className="flex align-center just-between">
+                    <div className="align-center">
+                        <div className="text-gray text-xl">ANN Earned</div>
+                        <div className="text-red text-xl">{
+                            loading ? (
+                                <div className="animate-pulse w-36 h-6 bg-lightGray rounded-lg inline-block"/>
+                            ) : (
+                                <>
+                                    {getBefore(format(earnedBalance))}
+                                    <span>{getAfter(format(earnedBalance))}</span>
+                                </>
+                            )
+                        }</div>
+                    </div>
+                    <div className="align-center">
+                        <button
+                            className="focus:outline-none bg-primary text-black py-3 px-6 rounded-lg text-sm mr-6"
+                            onClick={handleCollect}
+                        >Claim ANN</button>
+                    </div>
+                </div>
+            </div>
+            <div className="border-t border-solid border-lightGray p-6">
                 <div className="text-gray text-xl">Voting Weight</div>
                 <div className="text-red text-xl">{
                     loading ? (

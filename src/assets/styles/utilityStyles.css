@@ -1249,3 +1249,7 @@ button:disabled {
   .tooltip-label:hover + .label {
     display: block;
   }
+  .just-between {
+    justify-content: space-between;
+    align-items: center;
+  }

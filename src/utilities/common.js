@@ -11,7 +11,7 @@ export const encodeParameters = (types, values) => {
   return abi.encode(types, values);
 };
 
-export const getArgs = func => {
+export const getArgs = (func) => {
   // First match everything inside the function argument parens.
   const args = func.toString().match(/.*?\(([^)]*)\)/)
     ? func.toString().match(/.*?\(([^)]*)\)/)[1]
@@ -19,11 +19,11 @@ export const getArgs = func => {
   // Split the arguments string into an array comma delimited.
   return args
     .split(',')
-    .map(arg => {
+    .map((arg) => {
       // Ensure no inline comments are parsed and trim the whitespace.
       return arg.replace(/\/\*.*\*\//, '').trim();
     })
-    .filter(arg => {
+    .filter((arg) => {
       // Ensure no undefined values are added.
       return arg;
     });
@@ -90,9 +90,9 @@ export const addToken = async (asset = 'xai', decimal, type) => {
           address: tokenAddress, // The address that the token is at.
           symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
           decimals: tokenDecimals, // The number of decimals in the token
-          image: tokenImage // A string url of the token logo
-        }
-      }
+          image: tokenImage, // A string url of the token logo
+        },
+      },
     });
 
     if (wasAdded) {
@@ -108,7 +108,7 @@ export const addToken = async (asset = 'xai', decimal, type) => {
   }
 };
 
-export const getBigNumber = value => {
+export const getBigNumber = (value) => {
   if (!value) {
     return new BigNumber(0);
   }
@@ -118,23 +118,29 @@ export const getBigNumber = value => {
   return new BigNumber(value);
 };
 
-export const currencyFormatter = labelValue => {
+export const currencyFormatter = (labelValue, rowValue) => {
+  console.log('labelValue', labelValue);
   let suffix = '';
   let unit = 1;
   const abs = Math.abs(Number(labelValue));
-  if (abs >= 1.0e9) {
-    // Nine Zeroes for Billions
-    suffix = 'B';
-    unit = 1.0e9;
-  } else if (abs >= 1.0e6) {
-    // Six Zeroes for Millions
-    suffix = 'M';
-    unit = 1.0e6;
-  } else if (abs >= 1.0e3) {
-    // Three Zeroes for Thousands
-    suffix = 'K';
-    unit = 1.0e3;
+  if (rowValue === 'price') {
+    return `$${new BigNumber(`${abs}`).dp(2, 1)}`;
+  } else {
+    if (abs >= 1.0e9) {
+      // Nine Zeroes for Billions
+      suffix = 'B';
+      unit = 1.0e9;
+    } else if (abs >= 1.0e6) {
+      // Six Zeroes for Millions
+      suffix = 'M';
+      unit = 1.0e6;
+    } else if (abs >= 1.0e3) {
+      // Three Zeroes for Thousands
+      suffix = 'K';
+      unit = 1.0e3;
+    }
   }
+
   return `$${format(new BigNumber(`${abs / unit}`).dp(2, 1))}${suffix}`;
   // return Math.abs(Number(labelValue)) >= 1.0e9
   //   ? `$${format(
