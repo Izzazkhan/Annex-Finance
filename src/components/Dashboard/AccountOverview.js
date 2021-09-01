@@ -1,12 +1,15 @@
 import Progress from '../UI/Progress';
 import SummaryCard from '../common/SummaryCard';
+import SummaryActionCard from '../common/SummaryActionCard';
 import { getBigNumber } from '../../utilities/common';
 import ANNBalance from '../../assets/icons/ANN-Balance.svg';
 import DailyEarning from '../../assets/icons/Daily-Earning.svg';
 import ANNRewards from '../../assets/icons/ANN-Rewards.svg';
+import ANNRewardsFocus from '../../assets/icons/ANN-Rewards-focus.svg';
 import AnnualEarning from '../../assets/icons/Annual-Earning.svg';
 import FireImage from '../../assets/images/fire.png';
 import GreyFireImage from '../../assets/images/fire_emoji.png';
+import {getComptrollerContract, methods} from "../../utilities/ContractService";
 
 import Switch from '../UI/Switch';
 import fire from '../../assets/icons/fire.svg';
@@ -87,6 +90,7 @@ const AccountOverview = ({
   const { countUp: balanceCountUp, update: balanceUpdate } = useCountUp({ end: 0 });
   const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0 });
   const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0 });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (balance instanceof BigNumber) {
@@ -108,6 +112,25 @@ const AccountOverview = ({
       (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
     );
   }, [chainId]);
+
+  const handleCollect = () => {
+    if (+earnedBalance !== 0) {
+      setIsLoading(true);
+      const appContract = getComptrollerContract();
+      methods
+        .send(
+            appContract.methods.claimAnnex,
+            [account],
+            account
+        )
+        .then(() => {
+            setIsLoading(false);
+        })
+        .catch(() => {
+            setIsLoading(false);
+        });
+    }
+  };
 
   return (
     <Wrapper className="text-white mt-8 p-6 border border-lightGray rounded-md">
@@ -244,12 +267,15 @@ const AccountOverview = ({
             noData={!account || wrongNetwork}
             status="green"
           />
-          <SummaryCard
+          <SummaryActionCard
             name="ANN Rewards"
             title={`${format(getBigNumber(earnedBalance).dp(2, 1).toString(10))} ANN`}
             icon={ANNRewards}
+            iconFocus={ANNRewardsFocus}
             noData={!account || wrongNetwork}
             status="red"
+            tooltip="Claim your lending rewards"
+            action={handleCollect}
           />
           <SummaryCard
             name="Annual Earning"
