@@ -242,15 +242,14 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [netAPY, settings.totalSupplyBalance]);
 
   const addXAIApy = useCallback(
-    async apy => {
+    async (apy) => {
       if (!account) {
         return;
       }
       setNetAPY(apy.dp(2, 1).toString(10));
     },
-    [settings, account]
+    [settings, account],
   );
-
 
   const updateNetAPY = useCallback(async () => {
     let totalSum = new BigNumber(0);
