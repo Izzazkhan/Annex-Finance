@@ -15,7 +15,7 @@ export default function SummaryActionCard({ title, name, icon, iconFocus, status
 
   return (
     <div className="border border-solid border-primary rounded-lg w-full flex items-center py-3 md:py-4 lg:py-8">
-      <div className="flex px-7 py-4 md:py-0 items-center w-full">
+      <div className="flex justify-between px-7 py-4 md:py-0 items-center w-full">
         <div className="">
           <div className="flex items-center space-x-2">
             {arrow}
