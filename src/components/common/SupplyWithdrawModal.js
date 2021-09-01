@@ -244,6 +244,8 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         const { collateral } = record;
         const supplyBalance = getBigNumber(record.supplyBalance);
         const collateralFactor = getBigNumber(record.collateralFactor);
+        console.log('setting: ', settings)
+        console.log('record: ', record.liquidity.toString(10))
         if (!collateral) {
             setWithdrawSafeMaxBalance(supplyBalance);
             return;
@@ -255,6 +257,8 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
                 .div(tokenPrice),
             new BigNumber(0)
         );
+        const underlyingDecimal = settings.decimals[record.id].token || 18;
+        // const marketLiquidity = 
         setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
 
         if (tokenPrice && !withdrawAmount.isZero() && !withdrawAmount.isNaN()) {
