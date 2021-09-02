@@ -306,6 +306,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             symbol: '',
           },
         });
+        setCurrentTab('supply');
       } catch (error) {
         setIsWithdrawLoading(false);
         setSetting({
@@ -469,7 +470,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
               {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
               <StyledNumberFormat
                 // autoFocus
-                value={amount.isZero() ? '0' : amount.toString(10)}
+                value={amount.isZero() ? '' : amount.toString(10)}
                 onValueChange={({ value }) => {
                   setAmount(new BigNumber(value));
                 }}
@@ -506,7 +507,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
             <StyledNumberFormat
               // autoFocus
-              value={withdrawAmount.isZero() ? '0' : withdrawAmount.dp(2, 1).toString(10)}
+              value={withdrawAmount.isZero() ? '' : withdrawAmount.dp(2, 1).toString(10)}
               onValueChange={({ value }) => {
                 setWithdrawAmount(new BigNumber(value));
               }}
