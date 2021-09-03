@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import coinsBar from '../../assets/images/coins.png';
-import Web3 from 'web3';
 import toHex from 'to-hex';
 import ArrowIcon from '../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
@@ -312,8 +311,6 @@ const Epoch = ({ settings, setSetting }) => {
   // console.log('settings', settings)
   const epochContract = getEpochContract();
 
-  
-
   const getBalance = async () => {
     if (!account) {
       return;
@@ -353,8 +350,7 @@ const Epoch = ({ settings, setSetting }) => {
         seteligibleEpochs(eligibleEpochs);
         // seteligibleEpochs(50);
       }
-      const web3 = new Web3(Web3.givenProvider || 'http://localhost:3000');
-      const blockNumber = await web3.eth.getBlockNumber();
+      const blockNumber = settings.blockNumber;
       let getEpoch = await methods.call(epochContract.methods.getEpochs, [blockNumber]);
       let transferPoint = await methods.call(epochContract.methods.transferPoints, [
         accountAddress,
