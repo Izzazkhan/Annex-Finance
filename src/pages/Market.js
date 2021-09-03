@@ -19,6 +19,11 @@ const Market = ({ history, settings }) => {
   const [totalBorrow, setTotalBorrow] = useState('0');
   const [availableLiquidity, setAvailableLiquidity] = useState('0');
 
+  const markets = settings.markets.map(market => {
+    market.utilization = new BigNumber(market.totalBorrowsUsd).div(market.totalSupplyUsd).times(100).dp(2, 1).toString(10);
+    return market;
+  });
+
   const getTotalInfo = async () => {
     // const xaiContract = getXaiTokenContract();
 
@@ -198,6 +203,29 @@ const Market = ({ history, settings }) => {
             },
           },
           {
+            Header: 'Utiliz.',
+            accessor: 'utilization',
+            disableFilters: true,
+            // eslint-disable-next-line react/display-name
+            Cell: ({ value, row }) => {
+              return (
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className="font-bold">
+                      {new BigNumber(value)
+                        .isLessThan(0.01)
+                        ? '0.01'
+                        : new BigNumber(value)
+                            .dp(2, 1)
+                            .toString(10)}
+                      %
+                    </div>
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
             Header: 'Price',
             accessor: 'tokenPrice',
             disableFilters: true,
@@ -230,7 +258,7 @@ const Market = ({ history, settings }) => {
       <div className="relative w-full">
         <div className="bg-fadeBlack w-full p-7 mt-16 rounded-2xl">
           <MarketTable
-            data={settings.markets}
+            data={markets}
             columns={columns}
             onRowClick={(row) => history.push(`/market/${row?.original?.underlyingSymbol}`)}
           />
