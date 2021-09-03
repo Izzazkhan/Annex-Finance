@@ -308,13 +308,35 @@ const Epoch = ({ settings, setSetting }) => {
   const [holdingAPR, setHoldingAPR] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
-  // console.log('settings', settings)
-
   useEffect(() => {
-    balanceOf();
+    contractFunction();
   }, []);
 
-  const balanceOf = async () => {
+  useEffect(() => {
+    const web3 = new Web3(Web3.givenProvider || 'http://localhost:3000');
+    let subscription = web3.eth.subscribe(
+      'logs',
+      {
+        address:
+          process.env.REACT_APP_ENV === 'dev'
+            ? process.env.REACT_APP_TEST_COMPTROLLER_ADDRESS
+            : process.env.REACT_APP_MAIN_COMPTROLLER_ADDRESS,
+        topics: [],
+      },
+      (err, event) => {
+        if (!err) {
+          contractFunction();
+          // console.log(event);
+        }
+      },
+    );
+
+    return subscription.unsubscribe(function (error, success) {
+      if (success) console.log('Successfully unsubscribed!');
+    });
+  }, []);
+
+  const contractFunction = async () => {
     const accountAddress = account;
     if (!accountAddress) {
       return;
