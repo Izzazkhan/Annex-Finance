@@ -23,8 +23,6 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
     liquidityUpdate(Number(totalLiquidity));
   }, [totalLiquidity]);
 
-  console.log('totalLiquidity', totalLiquidity);
-
   // useEffect(() => {
   //   if(totalXaiMinted instanceof BigNumber) {
   //     mintedUpdate(Number(totalXaiMinted?.toNumber()));

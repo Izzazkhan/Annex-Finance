@@ -94,7 +94,7 @@ const AccountOverview = ({
 
   useEffect(() => {
     if (balance instanceof BigNumber) {
-      balanceUpdate(balance.toNumber());
+      balanceUpdate(balance.toString(10));
     }
   }, [balance]);
 

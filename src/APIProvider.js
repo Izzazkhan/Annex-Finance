@@ -70,6 +70,7 @@ const APIProvider = ({settings, setSetting, getGovernanceAnnex, ...props}) => {
 		}
 
 		setSetting({
+			blockNumber: res.data.blockNumber,
 			markets: res.data.markets,
 			dailyAnnex: res.data.dailyAnnex
 		});
