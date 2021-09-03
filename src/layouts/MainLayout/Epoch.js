@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import coinsBar from '../../assets/images/coins.png';
 import Web3 from 'web3';
 import toHex from 'to-hex';
@@ -301,6 +301,7 @@ const Epoch = ({ settings, setSetting }) => {
 
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
+  const [annDecimals, setAnnDecimals] = useState(18);
   const [currentEpochROI, setCurrentEpochROI] = useState('');
   const [holdingReward, setHoldingReward] = useState('');
   const [eligibleEpochs, seteligibleEpochs] = useState('');
@@ -309,23 +310,34 @@ const Epoch = ({ settings, setSetting }) => {
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
   // console.log('settings', settings)
+  const epochContract = getEpochContract();
+
+  
+
+  const getBalance = async () => {
+    if (!account) {
+      return;
+    }
+    const balance = await methods.call(epochContract.methods.balanceOf, [account]);
+    const decimals = await methods.call(epochContract.methods.decimals, []);
+    if (balance && decimals) {
+      setAnnDecimals(decimals);
+      setAnnBalance((balance / Math.pow(10, decimals)).toFixed(2));
+    }
+  };
 
   useEffect(() => {
-    balanceOf();
-  }, []);
+    getBalance();
+    setInterval(getBalance, 5 * 1000);
+  }, [])
 
-  const balanceOf = async () => {
+  const balanceOf = useCallback(async () => {
+    const decimals = annDecimals;
     const accountAddress = account;
     if (!accountAddress) {
       return;
     }
     try {
-      const epochContract = getEpochContract();
-      let annBalance = await methods.call(epochContract.methods.balanceOf, [accountAddress]);
-      let decimals = await methods.call(epochContract.methods.decimals, []);
-      if (annBalance) {
-        setAnnBalance((annBalance / Math.pow(10, decimals)).toFixed(2));
-      }
       let currentEpochROI = await methods.call(epochContract.methods.getCurrentEpochROI, []);
       setCurrentEpochROI(currentEpochROI / 100);
       let holdingReward = await methods.call(epochContract.methods.getHoldingReward, [
@@ -372,7 +384,11 @@ const Epoch = ({ settings, setSetting }) => {
     } catch (error) {
       console.log('error', error);
     }
-  };
+  }, [annBalance, annDecimals]);
+
+  useEffect(() => {
+    balanceOf();
+  }, [balanceOf]);
 
   const handleSubmitClaim = () => {
     const epochContract = getEpochContract();

@@ -21,6 +21,7 @@ import BigNumber from 'bignumber.js';
 import {
   getAbepContract,
   getComptrollerContract,
+  getTokenContract,
   // getXaiControllerContract,
   // getXaiTokenContract, getXaiVaultContract,
   methods,
@@ -128,6 +129,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   const [earnedBalance, setEarnedBalance] = useState('0.0000');
   // const [xaiMint, setXaiMint] = useState('0.0000');
 
+  /* ********************************** */
+  // ANN wallet balance
+  // will be removed after ANN listed to market
+  const [annBalance, setAnnBalance] = useState('0.0000');
+  ///////////////////////////
+
   const getVoteInfo = async () => {
     const myAddress = account;
     if (!myAddress) return;
@@ -135,6 +142,10 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     // const xaiContract = getXaiControllerContract();
     const annexInitialIndex = await methods.call(appContract.methods.annexInitialIndex, []);
     let annexEarned = new BigNumber(0);
+    /* **************************************** */
+    // will be removed after ANN listed to market
+    let annexBalance = new BigNumber(0);
+    ///////////////////////////////////
     // console.log('===== ', constants.CONTRACT_ABEP_ADDRESS)
     const promiseAssetCall = settings.assetList.map(asset => {
       const aBepContract = getAbepContract(asset.id);
@@ -240,6 +251,16 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
     const annexAccrued = await methods.call(appContract.methods.annexAccrued, [myAddress]);
     annexEarned = annexEarned.plus(annexAccrued).dividedBy(1e18).dp(4, 1).toString(10);
+    /* **************************************** */
+    // will be removed after ANN listed to market
+    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS).find(t => t.id === 'ann');
+    const annContract = getTokenContract(ann.id);
+    const annWalletBalance = await methods.call(
+      annContract.methods.balanceOf,
+      [myAddress]
+    );
+    annexBalance = new BigNumber(annWalletBalance).div(1e18);
+    /////////////////////////////////
 
     // const annexXAIState = await methods.call(
     //   xaiContract.methods.annexXAIState,
@@ -265,6 +286,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     //   .dp(4, 1)
     //   .toString(10);
     setEarnedBalance(annexEarned && annexEarned !== '0' ? `${annexEarned}` : '0.0000');
+    setAnnBalance(annexBalance && annexBalance !== '0' ? annexBalance : '0.0000');
     // setXaiMint(
     //   xaiMinterDelta && xaiMinterDelta !== '0'
     //     ? `${xaiMinterDelta}`
@@ -378,12 +400,13 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
   const [borrowRecord, setBorrowRecord] = useState({});
 
-  const annBalance = React.useMemo(() => {
-    if (settings.assetList?.length > 0) {
-      const ann = settings.assetList?.find((item) => item.symbol?.toUpperCase() === 'ANN');
-      return ann ? ann.walletBalance : new BigNumber(0);
-    }
-  }, [settings.assetList]);
+  // will be enabled after ANN added to market
+  // const annBalance = React.useMemo(() => {
+  //   if (settings.assetList?.length > 0) {
+  //     const ann = settings.assetList?.find((item) => item.symbol?.toUpperCase() === 'ANN');
+  //     return ann ? ann.walletBalance : new BigNumber(0);
+  //   }
+  // }, [settings.assetList]);
 
   const updateMarketTable = async () => {
     const tempArr = [];
