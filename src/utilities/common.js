@@ -76,7 +76,7 @@ export const addToken = async (asset = 'xai', decimal, type) => {
         : `a${(asset === 'btcb' ? 'btc' : asset).toUpperCase()}`;
     tokenDecimals = decimal || (type === 'token' ? 18 : 8);
     tokenImage = `${window.location.origin}/images/coins/${
-      type === 'token' ? asset : `a${asset === 'btcb' ? 'btc' : asset}`
+      type === 'token' ? asset.toLowerCase() : `a${asset === 'btcb' ? 'btc' : asset.toLowerCase()}`
     }.png`;
   }
 

@@ -7,7 +7,7 @@
         "patch": 1
     },
     "tags": {},
-    "logoURI": "/images/coins/ANN.png",
+    "logoURI": "/images/coins/ann.png",
     "keywords": ["annex finance", "default", "swap"],
     "tokens": [
         {
@@ -63,7 +63,7 @@
             "address": "0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067",
             "chainId": 56,
             "decimals": 18,
-            "logoURI": "/images/coins/ANN.png"
+            "logoURI": "/images/coins/ann.png"
         },
         {
             "name": "BUSD Token",
