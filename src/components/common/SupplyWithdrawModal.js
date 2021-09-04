@@ -629,14 +629,14 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           <div className="flex justify-between mt-6">
             <div className="">Protocol Balance</div>
             <div className="">
-              {format(record.supplyBalance.dp(2, 1).toString(10))} {record.symbol}
+              {format(record.supplyBalance.dp(8, 1).toString(10))} {record.symbol}
             </div>
           </div>
         ) : (
           <div className="flex justify-between mt-6">
             <div className="">Wallet Balance</div>
             <div className="">
-              {format(record?.walletBalance?.dp(2, 1)?.toString(10))} {record.symbol}
+              {format(record?.walletBalance?.dp(8, 1)?.toString(10))} {record.symbol}
             </div>
           </div>
         )}
