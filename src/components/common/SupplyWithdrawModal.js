@@ -233,12 +233,15 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
     // );
     const safeMax = BigNumber.maximum(
       totalBorrowLimit
-        .minus(totalBorrowBalance.div(40).times(100))
+        .minus(totalBorrowBalance.div(10).times(15))
         .div(collateralFactor)
         .div(tokenPrice),
       new BigNumber(0),
     );
     setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
+    console.log('safeMax: ', safeMax.toString(10))
+    console.log('supplyBalance: ', supplyBalance.toString(10))
+    console.log('real : ', BigNumber.minimum(safeMax, supplyBalance).toString(10))
 
     if (tokenPrice && !withdrawAmount.isZero() && !withdrawAmount.isNaN()) {
       const temp = totalBorrowLimit.minus(withdrawAmount.times(tokenPrice).times(collateralFactor));
@@ -514,7 +517,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
             <StyledNumberFormat
               // autoFocus
-              value={withdrawAmount.isZero() ? '' : withdrawAmount.dp(2, 1).toString(10)}
+              value={withdrawAmount.isZero() ? '' : withdrawAmount.toString(10)}
               onValueChange={({ value }) => {
                 setWithdrawAmount(new BigNumber(value));
               }}
