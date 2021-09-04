@@ -224,13 +224,13 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       setWithdrawSafeMaxBalance(supplyBalance);
       return;
     }
-    const underlyingDecimal = settings.decimals[record.id].token || 18;
-    const market = settings.markets.find(
-      (m) => m.underlyingAddress.toLowerCase() === record.tokenAddress.toLowerCase(),
-    );
-    const marketLiquidity = new BigNumber(market.cash).div(
-      new BigNumber(10).pow(underlyingDecimal),
-    );
+    // const underlyingDecimal = settings.decimals[record.id].token || 18;
+    // const market = settings.markets.find(
+    //   (m) => m.underlyingAddress.toLowerCase() === record.tokenAddress.toLowerCase(),
+    // );
+    // const marketLiquidity = new BigNumber(market.cash).div(
+    //   new BigNumber(10).pow(underlyingDecimal),
+    // );
     const safeMax = BigNumber.maximum(
       totalBorrowLimit
         .minus(totalBorrowBalance.div(40).times(100))
@@ -238,7 +238,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         .div(tokenPrice),
       new BigNumber(0),
     );
-    setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance, marketLiquidity));
+    setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
 
     if (tokenPrice && !withdrawAmount.isZero() && !withdrawAmount.isNaN()) {
       const temp = totalBorrowLimit.minus(withdrawAmount.times(tokenPrice).times(collateralFactor));
