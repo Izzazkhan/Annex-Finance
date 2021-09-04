@@ -239,9 +239,6 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       new BigNumber(0),
     );
     setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
-    console.log('safeMax: ', safeMax.toString(10))
-    console.log('supplyBalance: ', supplyBalance.toString(10))
-    console.log('real : ', BigNumber.minimum(safeMax, supplyBalance).toString(10))
 
     if (tokenPrice && !withdrawAmount.isZero() && !withdrawAmount.isNaN()) {
       const temp = totalBorrowLimit.minus(withdrawAmount.times(tokenPrice).times(collateralFactor));
