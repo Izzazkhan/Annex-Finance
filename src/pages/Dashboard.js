@@ -638,7 +638,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           >
             ${format(asset.supplyBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
             <div className="text-white text-right font-normal">
-              {format(asset.supplyBalance.dp(4, 1).toString(10))} {asset.symbol}
+              {format(asset.supplyBalance.dp(5, 1).toString(10))} {asset.symbol}
             </div>
           </div>
         ),
