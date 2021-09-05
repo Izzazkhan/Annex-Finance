@@ -8,8 +8,7 @@ import logo from '../../assets/icons/logo.svg';
 import Navigation from '../../components/common/Navigation';
 import RouteMap from '../../routes/RouteMap';
 import { methods } from '../../utilities/ContractService';
-import BigNumber from 'bignumber.js';
-import { checkIsValidNetwork } from '../../utilities/common';
+import {addToken, getBigNumber, checkIsValidNetwork} from "../../utilities/common";
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
 import {
@@ -23,6 +22,7 @@ import {
   VoteIcon,
   Auction,
 } from '../../components/common/Icons';
+import plusButtonIcon from "../../assets/icons/plusButonIcon.svg";
 
 const Wrapper = styled.aside`
   @media (min-width: 1024px) {
@@ -328,6 +328,38 @@ function Sidebar({ isOpen, onClose, settings }) {
           // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8">
+          <div className="flex space-x-6 text-white">
+            <div className="flex items-center cursor-pointer"
+              onClick={() =>
+                addToken(
+                  'ann',
+                  settings.decimals['ann']?.token,
+                  'token'
+                )
+            }>
+              <span>ANN</span>
+              <img
+                src={plusButtonIcon}
+                alt="plusButtonIcon"
+                className="ml-2 inline cursor-pointer"
+              />
+            </div>
+            <div className="flex items-center font-medium cursor-pointer"
+              onClick={() =>
+                addToken(
+                  'ann',
+                  settings.decimals['ann']?.atoken,
+                  'atoken'
+                )
+            }>
+              <span>aANN</span>
+              <img
+                src={plusButtonIcon}
+                alt="plusButtonIcon"
+                className="ml-2 inline cursor-pointer"
+              />
+            </div>
+          </div>
           <a
             className="certik-container large visible"
             href="https://www.certik.org/projects/annex"
