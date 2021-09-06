@@ -9,7 +9,7 @@ import ANNRewardsFocus from '../../assets/icons/ANN-Rewards-focus.svg';
 import AnnualEarning from '../../assets/icons/Annual-Earning.svg';
 import FireImage from '../../assets/images/fire.png';
 import GreyFireImage from '../../assets/images/fire_emoji.png';
-import {getComptrollerContract, methods} from "../../utilities/ContractService";
+import { getComptrollerContract, methods } from '../../utilities/ContractService';
 
 import Switch from '../UI/Switch';
 import fire from '../../assets/icons/fire.svg';
@@ -118,16 +118,12 @@ const AccountOverview = ({
       setIsLoading(true);
       const appContract = getComptrollerContract();
       methods
-        .send(
-            appContract.methods.claimAnnex,
-            [account],
-            account
-        )
+        .send(appContract.methods.claimAnnex, [account], account)
         .then(() => {
-            setIsLoading(false);
+          setIsLoading(false);
         })
         .catch(() => {
-            setIsLoading(false);
+          setIsLoading(false);
         });
     }
   };
