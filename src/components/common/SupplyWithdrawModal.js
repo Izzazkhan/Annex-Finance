@@ -225,8 +225,12 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       return;
     }
     const underlyingDecimal = settings.decimals[record.id].token || 18;
-    const market = settings.markets.find(m => m.underlyingAddress.toLowerCase() === record.tokenAddress.toLowerCase());
-    const marketLiquidity = new BigNumber(market.cash).div(new BigNumber(10).pow(underlyingDecimal));
+    const market = settings.markets.find(
+      (m) => m.underlyingAddress.toLowerCase() === record.tokenAddress.toLowerCase(),
+    );
+    const marketLiquidity = new BigNumber(market.cash).div(
+      new BigNumber(10).pow(underlyingDecimal),
+    );
     const safeMax = BigNumber.maximum(
       totalBorrowLimit
         .minus(totalBorrowBalance.div(40).times(100))
@@ -541,9 +545,9 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           </p>
         </div>
       )}
-      <div className="flex mt-16 bg-black rounded-md">
+      <div className="flex mt-16 bg-black rounded-4xl border border-primary">
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
             currentTab === 'supply' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('supply')}
@@ -551,7 +555,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           Supply
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
             currentTab === 'withdraw' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('withdraw')}

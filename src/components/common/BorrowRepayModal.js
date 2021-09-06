@@ -498,9 +498,9 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
           </div>
         )}
       </div>
-      <div className="flex mt-16 bg-black rounded-md">
+      <div className="flex mt-16 bg-black rounded-4xl border border-primary">
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
             currentTab === 'borrow' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('borrow')}
@@ -508,7 +508,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
           Borrow
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
             currentTab === 'repayBorrow' ? 'bg-primaryLight text-black' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('repayBorrow')}
