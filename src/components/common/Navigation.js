@@ -58,7 +58,12 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
               <div className="text-2xl text-white text-left">
                 ${nFormatter(new BigNumber(liquidityCountUp).dp(2, 1).toString(10), 2)}
               </div>
-              <div className="text-secondary text-sm">Total Value Locked</div>
+              <div
+                className="text-secondary text-sm"
+                style={{ color: 'rgb(255, 152, 0)', fontWeight: 'bold' }}
+              >
+                Total Value Locked
+              </div>
             </div>
           </li>
           <li className="">
@@ -78,7 +83,12 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
             <div className="text-lg text-white">
               ${nFormatter(new BigNumber(liquidityCountUp).dp(2, 1).toString(10), 2)}
             </div>
-            <div className="text-secondary text-xs">Total Value Locked</div>
+            <div
+              className="text-secondary text-xs"
+              style={{ color: 'rgb(255, 152, 0)', fontWeight: 'bold' }}
+            >
+              Total Value Locked
+            </div>
           </div>
         </li>
         <li className="">
