@@ -55,7 +55,10 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
           <li className="flex items-center space-x-2">
             <img src={coins} alt="coins" />
             <div className="">
-              <div className="text-2xl text-white text-left">
+              <div
+                className="text-2xl text-white text-left"
+                style={{ color: 'rgb(255, 152, 0)', fontWeight: 'bold' }}
+              >
                 ${nFormatter(new BigNumber(liquidityCountUp).dp(2, 1).toString(10), 2)}
               </div>
               <div
@@ -80,7 +83,10 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
         <li className="flex items-center space-x-2">
           <img className="w-8" src={coins} alt="coins" />
           <div className="">
-            <div className="text-lg text-white">
+            <div
+              className="text-lg text-white"
+              style={{ color: 'rgb(255, 152, 0)', fontWeight: 'bold' }}
+            >
               ${nFormatter(new BigNumber(liquidityCountUp).dp(2, 1).toString(10), 2)}
             </div>
             <div
