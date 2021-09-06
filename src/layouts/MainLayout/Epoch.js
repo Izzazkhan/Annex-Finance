@@ -310,7 +310,7 @@ const Epoch = ({ settings, setSetting }) => {
 
   useEffect(() => {
     contractFunction();
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     const web3 = new Web3(Web3.givenProvider || 'http://localhost:3000');
