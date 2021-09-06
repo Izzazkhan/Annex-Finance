@@ -40,7 +40,7 @@ const Styles = styled.div`
     td {
       margin: 0;
       text-align: right;
-      padding: 0.8rem 2rem 0.8rem 0 !important;
+      padding: 0.8rem 1.5rem 0.8rem 0 !important;
 
       :last-child {
         border-right: 0;

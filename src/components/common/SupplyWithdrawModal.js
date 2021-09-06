@@ -224,21 +224,21 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       setWithdrawSafeMaxBalance(supplyBalance);
       return;
     }
-    const underlyingDecimal = settings.decimals[record.id].token || 18;
-    const market = settings.markets.find(
-      (m) => m.underlyingAddress.toLowerCase() === record.tokenAddress.toLowerCase(),
-    );
-    const marketLiquidity = new BigNumber(market.cash).div(
-      new BigNumber(10).pow(underlyingDecimal),
-    );
+    // const underlyingDecimal = settings.decimals[record.id].token || 18;
+    // const market = settings.markets.find(
+    //   (m) => m.underlyingAddress.toLowerCase() === record.tokenAddress.toLowerCase(),
+    // );
+    // const marketLiquidity = new BigNumber(market.cash).div(
+    //   new BigNumber(10).pow(underlyingDecimal),
+    // );
     const safeMax = BigNumber.maximum(
       totalBorrowLimit
-        .minus(totalBorrowBalance.div(40).times(100))
+        .minus(totalBorrowBalance.div(10).times(15))
         .div(collateralFactor)
         .div(tokenPrice),
       new BigNumber(0),
     );
-    setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance, marketLiquidity));
+    setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
 
     if (tokenPrice && !withdrawAmount.isZero() && !withdrawAmount.isNaN()) {
       const temp = totalBorrowLimit.minus(withdrawAmount.times(tokenPrice).times(collateralFactor));
@@ -313,6 +313,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             symbol: '',
           },
         });
+        setCurrentTab('supply');
       } catch (error) {
         setIsWithdrawLoading(false);
         setSetting({
@@ -476,7 +477,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
               {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
               <StyledNumberFormat
                 // autoFocus
-                value={amount.isZero() ? '0' : amount.toString(10)}
+                value={amount.isZero() ? '' : amount.toString(10)}
                 onValueChange={({ value }) => {
                   setAmount(new BigNumber(value));
                 }}
@@ -513,7 +514,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
             <StyledNumberFormat
               // autoFocus
-              value={withdrawAmount.isZero() ? '0' : withdrawAmount.toString(10)}
+              value={withdrawAmount.isZero() ? '' : withdrawAmount.toString(10)}
               onValueChange={({ value }) => {
                 setWithdrawAmount(new BigNumber(value));
               }}
@@ -628,14 +629,14 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           <div className="flex justify-between mt-6">
             <div className="">Protocol Balance</div>
             <div className="">
-              {format(record.supplyBalance.dp(2, 1).toString(10))} {record.symbol}
+              {format(record.supplyBalance.dp(8, 1).toString(10))} {record.symbol}
             </div>
           </div>
         ) : (
           <div className="flex justify-between mt-6">
             <div className="">Wallet Balance</div>
             <div className="">
-              {format(record?.walletBalance?.dp(2, 1)?.toString(10))} {record.symbol}
+              {format(record?.walletBalance?.dp(8, 1)?.toString(10))} {record.symbol}
             </div>
           </div>
         )}
