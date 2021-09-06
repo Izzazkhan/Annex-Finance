@@ -549,7 +549,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       <div className="flex mt-16 bg-black rounded-md">
         <button
           className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
-            currentTab === 'supply' ? 'bg-primaryLight text-black' : 'bg-black'
+            currentTab === 'supply' ? 'bg-lightGray text-white' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('supply')}
         >
@@ -557,7 +557,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         </button>
         <button
           className={`py-4 px-10 w-full focus:outline-none rounded-md font-bold ${
-            currentTab === 'withdraw' ? 'bg-primaryLight text-black' : 'bg-black'
+            currentTab === 'withdraw' ? 'bg-lightGray text-white' : 'bg-black'
           }`}
           onClick={() => setCurrentTab('withdraw')}
         >
