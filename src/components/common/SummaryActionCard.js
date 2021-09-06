@@ -27,7 +27,6 @@ export default function SummaryActionCard({ title, name, icon, iconFocus, status
           <div className="tooltip relative">
             <div className="tooltip-label">
               <a
-                href="javascript:;"
                 onClick={action}
               >
                 <img

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import coinsBar from '../../assets/images/coins.png';
-import Web3 from 'web3';
 import toHex from 'to-hex';
 import ArrowIcon from '../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
@@ -301,6 +300,7 @@ const Epoch = ({ settings, setSetting }) => {
 
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
+  const [annDecimals, setAnnDecimals] = useState(18);
   const [currentEpochROI, setCurrentEpochROI] = useState('');
   const [holdingReward, setHoldingReward] = useState('');
   const [eligibleEpochs, seteligibleEpochs] = useState('');
@@ -308,46 +308,33 @@ const Epoch = ({ settings, setSetting }) => {
   const [holdingAPR, setHoldingAPR] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
-  useEffect(() => {
-    contractFunction();
-  }, [account]);
+  // console.log('settings', settings)
+  const epochContract = getEpochContract();
+
+  const getBalance = async () => {
+    if (!account) {
+      return;
+    }
+    const balance = await methods.call(epochContract.methods.balanceOf, [account]);
+    const decimals = await methods.call(epochContract.methods.decimals, []);
+    if (balance && decimals) {
+      setAnnDecimals(decimals);
+      setAnnBalance((balance / Math.pow(10, decimals)).toFixed(2));
+    }
+  };
 
   useEffect(() => {
-    const web3 = new Web3(Web3.givenProvider || 'http://localhost:3000');
-    let subscription = web3.eth.subscribe(
-      'logs',
-      {
-        address:
-          process.env.REACT_APP_ENV === 'dev'
-            ? process.env.REACT_APP_TEST_COMPTROLLER_ADDRESS
-            : process.env.REACT_APP_MAIN_COMPTROLLER_ADDRESS,
-        topics: [],
-      },
-      (err, event) => {
-        if (!err) {
-          contractFunction();
-          // console.log(event);
-        }
-      },
-    );
-
-    return subscription.unsubscribe(function (error, success) {
-      if (success) console.log('Successfully unsubscribed!');
-    });
+    getBalance();
+    setInterval(getBalance, 5 * 1000);
   }, []);
 
-  const contractFunction = async () => {
+  const balanceOf = useCallback(async () => {
+    const decimals = annDecimals;
     const accountAddress = account;
     if (!accountAddress) {
       return;
     }
     try {
-      const epochContract = getEpochContract();
-      let annBalance = await methods.call(epochContract.methods.balanceOf, [accountAddress]);
-      let decimals = await methods.call(epochContract.methods.decimals, []);
-      if (annBalance) {
-        setAnnBalance((annBalance / Math.pow(10, decimals)).toFixed(2));
-      }
       let currentEpochROI = await methods.call(epochContract.methods.getCurrentEpochROI, []);
       setCurrentEpochROI(currentEpochROI / 100);
       let holdingReward = await methods.call(epochContract.methods.getHoldingReward, [
@@ -363,8 +350,7 @@ const Epoch = ({ settings, setSetting }) => {
         seteligibleEpochs(eligibleEpochs);
         // seteligibleEpochs(50);
       }
-      const web3 = new Web3(Web3.givenProvider || 'http://localhost:3000');
-      const blockNumber = await web3.eth.getBlockNumber();
+      const blockNumber = settings.blockNumber;
       let getEpoch = await methods.call(epochContract.methods.getEpochs, [blockNumber]);
       let transferPoint = await methods.call(epochContract.methods.transferPoints, [
         accountAddress,
@@ -394,7 +380,11 @@ const Epoch = ({ settings, setSetting }) => {
     } catch (error) {
       console.log('error', error);
     }
-  };
+  }, [annBalance, annDecimals]);
+
+  useEffect(() => {
+    balanceOf();
+  }, [balanceOf]);
 
   const handleSubmitClaim = () => {
     const epochContract = getEpochContract();

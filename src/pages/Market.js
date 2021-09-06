@@ -17,7 +17,14 @@ const format = commaNumber.bindWith(',', '.');
 const Market = ({ history, settings }) => {
   const [totalSupply, setTotalSupply] = useState('0');
   const [totalBorrow, setTotalBorrow] = useState('0');
+  const [totalSupplier, setTotalSupplier] = useState('0');
+  const [totalBorrower, setTotalBorrower] = useState('0');
   const [availableLiquidity, setAvailableLiquidity] = useState('0');
+
+  const markets = settings.markets.map(market => {
+    market.utilization = new BigNumber(market.totalBorrowsUsd).div(market.totalSupplyUsd).times(100).dp(2, 1).toString(10);
+    return market;
+  });
 
   const getTotalInfo = async () => {
     // const xaiContract = getXaiTokenContract();
@@ -30,6 +37,12 @@ const Market = ({ history, settings }) => {
     }, 0);
     const tempAL = (settings.markets || []).reduce((accumulator, market) => {
       return new BigNumber(accumulator).plus(new BigNumber(market.liquidity));
+    }, 0);
+    const tempTSR = (settings.markets || []).reduce((accumulator, market) => {
+      return new BigNumber(accumulator).plus(new BigNumber(market.supplierCount));
+    }, 0);
+    const tempTBR = (settings.markets || []).reduce((accumulator, market) => {
+      return new BigNumber(accumulator).plus(new BigNumber(market.borrowerCount));
     }, 0);
 
     // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
@@ -53,6 +66,20 @@ const Market = ({ history, settings }) => {
             .dp(2, 1)
             .toString(10)
         : tempAL,
+    );
+    setTotalSupplier(
+      tempAL !== 0
+        ? tempTSR
+            .dp(2, 1)
+            .toString(10)
+        : tempTSR,
+    );
+    setTotalBorrower(
+      tempAL !== 0
+        ? tempTBR
+            .dp(2, 1)
+            .toString(10)
+        : tempTBR,
     );
   };
 
@@ -198,6 +225,29 @@ const Market = ({ history, settings }) => {
             },
           },
           {
+            Header: 'Utiliz.',
+            accessor: 'utilization',
+            disableFilters: true,
+            // eslint-disable-next-line react/display-name
+            Cell: ({ value, row }) => {
+              return (
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className="font-bold">
+                      {new BigNumber(value)
+                        .isLessThan(0.01)
+                        ? '0.01'
+                        : new BigNumber(value)
+                            .dp(2, 1)
+                            .toString(10)}
+                      %
+                    </div>
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
             Header: 'Price',
             accessor: 'tokenPrice',
             disableFilters: true,
@@ -216,7 +266,7 @@ const Market = ({ history, settings }) => {
   return (
     <Layout mainClassName="py-8" title={'Market'}>
       <div>
-        <div className="grid grid-cols-1 gap-y-4 md:gap-y-0 md:grid-cols-4 md:gap-x-4 px-10 md:px-0">
+        <div className="grid grid-cols-1 gap-y-5 md:gap-y-0 md:grid-cols-5 md:gap-x-5 px-10 md:px-0">
           <MarketSummaryCard title={'Total Supply'}>${format(totalSupply)}</MarketSummaryCard>
 
           <MarketSummaryCard title={'Total Borrow'}>${format(totalBorrow)}</MarketSummaryCard>
@@ -224,13 +274,19 @@ const Market = ({ history, settings }) => {
           <MarketSummaryCard title={'Available Liquidity'}>
             ${format(availableLiquidity)}
           </MarketSummaryCard>
+          <MarketSummaryCard title={'Total Suppliers'}>
+            {totalSupplier}
+          </MarketSummaryCard>
+          <MarketSummaryCard title={'Total Borrowers'}>
+            {totalBorrower}
+          </MarketSummaryCard>
         </div>
       </div>
 
       <div className="relative w-full">
         <div className="bg-fadeBlack w-full p-7 mt-16 rounded-2xl">
           <MarketTable
-            data={settings.markets}
+            data={markets}
             columns={columns}
             onRowClick={(row) => history.push(`/market/${row?.original?.underlyingSymbol}`)}
           />

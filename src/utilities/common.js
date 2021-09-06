@@ -119,7 +119,6 @@ export const getBigNumber = (value) => {
 };
 
 export const currencyFormatter = (labelValue, rowValue) => {
-  console.log('labelValue', labelValue);
   let suffix = '';
   let unit = 1;
   const abs = Math.abs(Number(labelValue));
