@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import * as constants from "../../utilities/constants";
 import underscore from '../../assets/icons/underscore.svg';
 import filledArrow from '../../assets/icons/filledArrow.svg';
 import logo from '../../assets/icons/logo.svg';
@@ -12,9 +11,6 @@ import { methods } from '../../utilities/ContractService';
 import { addToken, getBigNumber, checkIsValidNetwork } from '../../utilities/common';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
-import { useCurrency } from '../../hooks/Tokens';
-import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades';
-import { tryParseAmount } from '../../core/modules/swap/hooks';
 
 import {
   AnnexIcon,
@@ -310,27 +306,6 @@ function Sidebar({ isOpen, onClose, settings }) {
     updateActiveMenu(val !== activeMenu ? val : '');
   };
 
-  function fetchANNCurrentPrice() {
-    const inputCurrency = useCurrency(constants.CONTRACT_TOKEN_ADDRESS['ann'].address);
-    const outputCurrency = useCurrency(constants.CONTRACT_TOKEN_ADDRESS['busd'].address);
-    const isExactIn = true;
-    const parsedAmount = tryParseAmount('1', isExactIn ? inputCurrency : outputCurrency);
-
-    const bestTradeExactIn = useTradeExactIn(
-      isExactIn ? parsedAmount : undefined,
-      outputCurrency || undefined,
-    );
-
-    const bestTradeExactOut = useTradeExactOut(
-      inputCurrency || undefined,
-      !isExactIn ? parsedAmount : undefined,
-    );
-
-    const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
-
-    return v2Trade?.executionPrice.toSignificant(6);
-  }
-
   return (
     <>
       <Wrapper
@@ -358,7 +333,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8">
-          <div className="font-bold text-white margin-bottom-20">{`ANN Price: ${fetchANNCurrentPrice()}`}</div>
+          <div className="font-bold text-white margin-bottom-20">{`ANN Price: ${settings.annPrice}`}</div>
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
