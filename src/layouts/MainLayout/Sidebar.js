@@ -311,7 +311,7 @@ function Sidebar({ isOpen, onClose, settings }) {
     const inputCurrency = useCurrency(constants.CONTRACT_TOKEN_ADDRESS['ann'].address);
     const outputCurrency = useCurrency(constants.CONTRACT_TOKEN_ADDRESS['busd'].address);
     const isExactIn = true;
-    const parsedAmount = tryParseAmount('100', isExactIn ? inputCurrency : outputCurrency);
+    const parsedAmount = tryParseAmount('1', isExactIn ? inputCurrency : outputCurrency);
 
     const bestTradeExactIn = useTradeExactIn(
       isExactIn ? parsedAmount : undefined,
