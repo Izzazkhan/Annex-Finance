@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import * as constants from "../../utilities/constants";
 import underscore from '../../assets/icons/underscore.svg';
 import filledArrow from '../../assets/icons/filledArrow.svg';
 import logo from '../../assets/icons/logo.svg';
@@ -307,8 +308,8 @@ function Sidebar({ isOpen, onClose, settings }) {
   };
 
   function fetchANNCurrentPrice() {
-    const inputCurrency = useCurrency('0xb75f3F9D35d256a94BBd7A3fC2E16c768E17930E');
-    const outputCurrency = useCurrency('0x8301F2213c0eeD49a7E28Ae4c3e91722919B8B47');
+    const inputCurrency = useCurrency(constants.CONTRACT_TOKEN_ADDRESS['ann'].address);
+    const outputCurrency = useCurrency(constants.CONTRACT_TOKEN_ADDRESS['busd'].address);
     const isExactIn = true;
     const parsedAmount = tryParseAmount('100', isExactIn ? inputCurrency : outputCurrency);
 
