@@ -13,7 +13,8 @@ import HeaderLogo from '../../assets/icons/headerLogo.svg';
 const format = commaNumber.bindWith(',', '.');
 
 function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
-  const { account } = useActiveWeb3React();
+  const { account, active } = useActiveWeb3React();
+  // console.log('account', account);
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
 
   const { countUp: mintedCountUp, update: mintedUpdate } = useCountUp({ end: 0 });
@@ -39,7 +40,9 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
         setConnectWalletsOpen(true);
       }}
     >
-      {account ? shortenAddress(account) : 'Connect wallet'}
+      {account && localStorage.getItem('connect') === 'connected'
+        ? shortenAddress(account)
+        : 'Connect wallet'}
     </button>
   );
 

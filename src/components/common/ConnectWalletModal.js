@@ -71,7 +71,9 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
         .then(async (res) => {
           setSetting({
             selectedAddress: account,
+            account: 'accountConnected',
           });
+          localStorage.setItem('connect', 'connected');
           const networkDetails = {
             chainId:
               process.env.REACT_APP_ENV === 'dev'
@@ -103,6 +105,8 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
         });
   };
 
+  // console.log('settings', settings);
+
   const title =
     account && walletView === WALLET_VIEWS.ACCOUNT ? (
       <div className="flex flex-col justify-center items-center space-y-6 mt-10 mb-4">
@@ -117,6 +121,15 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
         <div className="text-sm">To start using AToken</div>
       </div>
     );
+
+  const logout = () => {
+    deactivate();
+    setSetting({
+      selectedAddress: account,
+      account: 'accountDisconnected',
+    });
+    localStorage.setItem('connect', 'disConnected');
+  };
 
   const content =
     account && walletView === WALLET_VIEWS.ACCOUNT ? (
@@ -147,7 +160,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
                 className="
                   bg-primary text-black rounded-full px-20 py-5 uppercase font-bold focus:outline-none
                   "
-                onClick={deactivate}
+                onClick={logout}
               >
                 Logout
               </button>

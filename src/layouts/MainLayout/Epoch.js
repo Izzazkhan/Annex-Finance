@@ -326,7 +326,7 @@ const Epoch = ({ settings, setSetting }) => {
   useEffect(() => {
     getBalance();
     setInterval(getBalance, 5 * 1000);
-  }, []);
+  }, [settings.account]);
 
   const balanceOf = useCallback(async () => {
     const decimals = annDecimals;

@@ -6,7 +6,7 @@ import {
   LOGIN_REQUEST,
   REGISTER_REQUEST,
   LOGOUT_REQUEST,
-  authActionCreators
+  authActionCreators,
 } from './actions';
 
 import { restService } from '../../../utilities';
@@ -32,8 +32,8 @@ export function* asyncLoginRequest({ payload, resolve, reject }) {
       method: 'POST',
       params: {
         Username: email,
-        Password: password
-      }
+        Password: password,
+      },
     });
     if (response.status === 200) {
       yield put(authActionCreators.loginSuccess({ user: response.data }));
@@ -55,8 +55,8 @@ export function* asyncRegisterRequest({ payload, resolve, reject }) {
       method: 'POST',
       params: {
         username: email,
-        password
-      }
+        password,
+      },
     });
     if (response.status === 200) {
       yield put(authActionCreators.registerSuccess({ user: response.data }));
@@ -111,11 +111,11 @@ export function* watchLogoutRequest() {
   }
 }
 
-export default function*() {
+export default function* () {
   yield all([
     fork(watchHandleAuthErrorRequest),
     fork(watchLoginRequest),
     fork(watchRegisterRequest),
-    fork(watchLogoutRequest)
+    fork(watchLogoutRequest),
   ]);
 }
