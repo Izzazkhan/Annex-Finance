@@ -187,7 +187,7 @@ const Market = ({ history, settings }) => {
           },
           {
             Header: 'Borrow APY',
-            accessor: 'borrowApy',
+            accessor: 'borrowAnnexApy',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
             Cell: ({ value, row }) => {
@@ -196,11 +196,11 @@ const Market = ({ history, settings }) => {
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">
                       {new BigNumber(value)
-                        .plus(new BigNumber(row?.original?.borrowAnnexApy))
+                        .minus(new BigNumber(row?.original?.borrowApy))
                         .isLessThan(0.01)
                         ? '0.01'
                         : new BigNumber(value)
-                            .plus(new BigNumber(row?.original?.borrowAnnexApy))
+                            .minus(new BigNumber(row?.original?.borrowApy))
                             .dp(2, 1)
                             .toString(10)}
                       %
