@@ -93,7 +93,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
   const getTotalLiquidity = async () => {
     let totalLiquidity = new BigNumber(0);
-    console.log('getTotalLiquidity');
 
     for (
       let index = 0;

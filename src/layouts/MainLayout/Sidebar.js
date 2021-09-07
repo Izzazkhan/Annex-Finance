@@ -43,14 +43,14 @@ const Wrapper = styled.aside`
     right: calc(50% - 111px);
     background: linear-gradient(#2e2e2e, #2e2e2e) padding-box,
       radial-gradient(
-          99.67% 1137.19% at -5.59% 88.89%,
-          #ff9d2d 0%,
-          rgb(253 195 81) 34.07%,
-          rgb(249 183 67) 55.73%,
-          rgb(245 164 45) 76.44%,
-          #f19920 100%
-        )
-        border-box;
+        99.67% 1137.19% at -5.59% 88.89%,
+        #ff9d2d 0%,
+        rgb(253 195 81) 34.07%,
+        rgb(249 183 67) 55.73%,
+        rgb(245 164 45) 76.44%,
+        #f19920 100%
+      )
+      border-box;
     border: solid 3px transparent;
     border-radius: 16px;
     align-items: center;
@@ -140,6 +140,9 @@ const Wrapper = styled.aside`
       transform: scale(2.5);
       opacity: 0;
     }
+  }
+  .margin-bottom-20 {
+    margin-bottom: 20px;
   }
 `;
 
@@ -354,10 +357,8 @@ function Sidebar({ isOpen, onClose, settings }) {
           totalLiquidity={settings.totalLiquidity}
           // totalXaiMinted={totalXaiMinted}
         />
-        <div className="mt-auto mb-10 pl-8 pr-8" style={{ marginTop: 20 }}>
-          <div className="font-bold text-white">{`ANN Price: ${fetchANNCurrentPrice()}`}</div>
-        </div>
         <div className="mt-auto mb-10 pl-8 pr-8">
+          <div className="font-bold text-white margin-bottom-20">{`ANN Price: ${fetchANNCurrentPrice()}`}</div>
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
@@ -374,12 +375,7 @@ function Sidebar({ isOpen, onClose, settings }) {
               className="flex items-center font-medium cursor-pointer"
               onClick={() => addToken('ann', settings.decimals['ann']?.atoken, 'atoken')}
             >
-              <span>aANN</span>
-              <img
-                src={plusButtonIcon}
-                alt="plusButtonIcon"
-                className="ml-2 inline cursor-pointer"
-              />
+              To Metamask
             </div>
           </div>
           <a
