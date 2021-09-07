@@ -17,8 +17,10 @@ const ProposalHistory = ({ proposalInfo }) => {
       <div className="mt-8">
         <div className="grid grid-cols-2 gap-y-6">
           <div
-            className="col-start-2 flex items-start space-x-2
-                                border-l-6 border-solid border-lightGreen pl-4"
+            className={`col-start-2 flex items-start space-x-2
+            border-l-6 border-solid ${
+              getStepNumber() >= 0 ? 'border-lightGreen' : 'border-gray'
+            } pl-4`}
           >
             {getStepNumber() >= 0 ? (
               <img className="w-5 mt-2" src={tickGreen} alt="" />
@@ -35,8 +37,11 @@ const ProposalHistory = ({ proposalInfo }) => {
             </div>
           </div>
           <div
-            className="col-start-1 flex justify-end items-start space-x-2
-                                border-r-6 border-solid border-lightGreen pr-4 -mr-1.5"
+            className={`col-start-1 flex justify-end items-start space-x-2
+                                border-r-6 border-solid ${
+                                  getStepNumber() >= 1 ? 'border-lightGreen' : 'border-gray'
+                                }
+                                 pr-4 -mr-1.5`}
           >
             <div className="text-right">
               <div className="text-white text-xl">Active</div>
@@ -54,8 +59,15 @@ const ProposalHistory = ({ proposalInfo }) => {
           </div>
           <div />
           <div
-            className="col-start-2 flex items-start space-x-2
-                                border-l-6 border-solid border-gray pl-4"
+            className={`col-start-2 flex items-start space-x-2
+                                border-l-6 border-solid ${
+                                  proposalInfo.state === 'Canceled' ||
+                                  proposalInfo.state === 'Defeated'
+                                    ? 'border-gray'
+                                    : getStepNumber() >= 2
+                                    ? 'border-lightGreen'
+                                    : 'border-gray'
+                                } pl-4`}
           >
             {proposalInfo.state === 'Canceled' || proposalInfo.state === 'Defeated' ? (
               <img className="w-5 mt-2" src={tickGray} alt="" />
@@ -84,8 +96,10 @@ const ProposalHistory = ({ proposalInfo }) => {
           {proposalInfo.state !== 'Defeated' && proposalInfo.state !== 'Canceled' && (
             <>
               <div
-                className="col-start-1 flex justify-end items-start space-x-2
-                                border-r-6 border-solid border-gray pr-4 -mr-1.5"
+                className={`col-start-1 flex justify-end items-start space-x-2
+                                border-r-6 border-solid ${
+                                  getStepNumber() >= 3 ? 'border-lightGreen' : 'border-gray'
+                                } pr-4 -mr-1.5`}
               >
                 <div className="text-right">
                   <div className="text-white text-xl">
@@ -109,8 +123,10 @@ const ProposalHistory = ({ proposalInfo }) => {
           {proposalInfo.state !== 'Defeated' && proposalInfo.state !== 'Canceled' && (
             <>
               <div
-                className="col-start-2 flex items-start space-x-2
-                                border-l-6 border-solid border-gray pl-4"
+                className={`col-start-2 flex items-start space-x-2
+                                border-l-6 border-solid ${
+                                  getStepNumber() >= 4 ? 'border-lightGreen' : 'border-gray'
+                                } pl-4`}
               >
                 {getStepNumber() >= 4 ? (
                   <img className="w-5 mt-2" src={tickGreen} alt="" />
@@ -119,10 +135,15 @@ const ProposalHistory = ({ proposalInfo }) => {
                 )}
                 <div className="">
                   <div className="tooltip relative">
-                    <div className="text-white text-xl tooltip-label">
+                    <div className="text-white text-xl flex items-center">
                       {proposalInfo.state === 'Expired'
                         ? proposalInfo.state
                         : `${proposalInfo.state === 'Executed' ? 'Executed' : 'Execute'}`}
+                      <img
+                        className="ml-3 tooltip-label"
+                        src={require('../../../assets/images/info.svg').default}
+                        alt=""
+                      />
                       <span className="label">Executable date</span>
                     </div>
                   </div>

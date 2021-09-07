@@ -8,9 +8,13 @@ import logo from '../../assets/icons/logo.svg';
 import Navigation from '../../components/common/Navigation';
 import RouteMap from '../../routes/RouteMap';
 import { methods } from '../../utilities/ContractService';
-import {addToken, getBigNumber, checkIsValidNetwork} from "../../utilities/common";
+import { addToken, getBigNumber, checkIsValidNetwork } from '../../utilities/common';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
+import { useCurrency } from '../../hooks/Tokens';
+import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades';
+import { tryParseAmount } from '../../core/modules/swap/hooks';
+
 import {
   AnnexIcon,
   DashboardIcon,
@@ -22,7 +26,7 @@ import {
   VoteIcon,
   Auction,
 } from '../../components/common/Icons';
-import plusButtonIcon from "../../assets/icons/plusButonIcon.svg";
+import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
 
 const Wrapper = styled.aside`
   @media (min-width: 1024px) {
@@ -301,6 +305,28 @@ function Sidebar({ isOpen, onClose, settings }) {
   const toggleDropdown = (val) => {
     updateActiveMenu(val !== activeMenu ? val : '');
   };
+
+  function fetchANNCurrentPrice() {
+    const inputCurrency = useCurrency('0xb75f3F9D35d256a94BBd7A3fC2E16c768E17930E');
+    const outputCurrency = useCurrency('0x8301F2213c0eeD49a7E28Ae4c3e91722919B8B47');
+    const isExactIn = true;
+    const parsedAmount = tryParseAmount('100', isExactIn ? inputCurrency : outputCurrency);
+
+    const bestTradeExactIn = useTradeExactIn(
+      isExactIn ? parsedAmount : undefined,
+      outputCurrency || undefined,
+    );
+
+    const bestTradeExactOut = useTradeExactOut(
+      inputCurrency || undefined,
+      !isExactIn ? parsedAmount : undefined,
+    );
+
+    const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
+
+    return v2Trade?.executionPrice.toSignificant(6);
+  }
+
   return (
     <>
       <Wrapper
@@ -327,16 +353,15 @@ function Sidebar({ isOpen, onClose, settings }) {
           totalLiquidity={settings.totalLiquidity}
           // totalXaiMinted={totalXaiMinted}
         />
+        <div className="mt-auto mb-10 pl-8 pr-8" style={{ marginTop: 20 }}>
+          <div className="font-bold text-white">{`ANN Current Price: ${fetchANNCurrentPrice()}`}</div>
+        </div>
         <div className="mt-auto mb-10 pl-8 pr-8">
           <div className="flex space-x-6 text-white">
-            <div className="flex items-center cursor-pointer"
-              onClick={() =>
-                addToken(
-                  'ann',
-                  settings.decimals['ann']?.token,
-                  'token'
-                )
-            }>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => addToken('ann', settings.decimals['ann']?.token, 'token')}
+            >
               <span>ANN</span>
               <img
                 src={plusButtonIcon}
@@ -344,14 +369,10 @@ function Sidebar({ isOpen, onClose, settings }) {
                 className="ml-2 inline cursor-pointer"
               />
             </div>
-            <div className="flex items-center font-medium cursor-pointer"
-              onClick={() =>
-                addToken(
-                  'ann',
-                  settings.decimals['ann']?.atoken,
-                  'atoken'
-                )
-            }>
+            <div
+              className="flex items-center font-medium cursor-pointer"
+              onClick={() => addToken('ann', settings.decimals['ann']?.atoken, 'atoken')}
+            >
               <span>aANN</span>
               <img
                 src={plusButtonIcon}
