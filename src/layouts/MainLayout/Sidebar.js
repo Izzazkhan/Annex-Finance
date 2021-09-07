@@ -355,7 +355,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8" style={{ marginTop: 20 }}>
-          <div className="font-bold text-white">{`ANN Current Price: ${fetchANNCurrentPrice()}`}</div>
+          <div className="font-bold text-white">{`ANN Price: ${fetchANNCurrentPrice()}`}</div>
         </div>
         <div className="mt-auto mb-10 pl-8 pr-8">
           <div className="flex space-x-6 text-white">
