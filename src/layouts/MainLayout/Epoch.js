@@ -295,8 +295,8 @@ const ArrowContainer = styled.div`
   will-change: transform;
 `;
 
-const Epoch = ({ setSetting }) => {
-  const { account, chainId, library } = useActiveWeb3React();
+const Epoch = ({ setSetting, settings }) => {
+  const { account } = useActiveWeb3React();
 
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
@@ -309,26 +309,6 @@ const Epoch = ({ setSetting }) => {
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
   const epochContract = getEpochContract();
-
-  const [blockNumber, setBlockNumber] = useState(undefined);
-
-  const wrongNetwork = React.useMemo(() => {
-    return (
-      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
-      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-    );
-  }, [chainId]);
-
-  React.useEffect(() => {
-    if (library && account && !wrongNetwork) {
-      library
-        .getBlockNumber()
-        .then((res) => {
-          setBlockNumber(res);
-        })
-        .catch((e) => console.log(e));
-    }
-  }, [library, account, wrongNetwork]);
 
   const getBalance = async () => {
     if (!account) {
@@ -392,7 +372,7 @@ const Epoch = ({ setSetting }) => {
         seteligibleEpochs(eligibleEpochs);
       }
 
-      let getEpoch = await methods.call(epochContract.methods.getEpochs, [blockNumber]);
+      let getEpoch = await methods.call(epochContract.methods.getEpochs, [settings.blockNumber]);
       let transferPoint = await methods.call(epochContract.methods.transferPoints, [
         accountAddress,
         0,
