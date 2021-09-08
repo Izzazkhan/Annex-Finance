@@ -40,9 +40,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
         setConnectWalletsOpen(true);
       }}
     >
-      {account && localStorage.getItem('connect') === 'connected'
-        ? shortenAddress(account)
-        : 'Connect wallet'}
+      {account ? shortenAddress(account) : 'Connect wallet'}
     </button>
   );
 
