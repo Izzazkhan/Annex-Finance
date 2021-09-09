@@ -107,7 +107,7 @@ const Wrapper = styled.aside`
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background-color: #ffad4f;
+        background-color: #15ff00;
         @media (max-width: 575px) {
           width: 5px;
           height: 5px;
@@ -119,7 +119,7 @@ const Wrapper = styled.aside`
           width: 10px;
           height: 10px;
           border-radius: 50%;
-          background-color: #ff9800;
+          background-color: #15ff00;
           animation: pulsing-circle 1s ease infinite;
           left: 0;
           top: 0;
@@ -333,7 +333,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8">
-          <div className="font-bold text-white margin-bottom-20">{`ANN Price: ${settings.annPrice}`}</div>
+          <div className="font-bold text-white margin-bottom-20">{`ANN Price: $${settings.annPrice}`}</div>
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
