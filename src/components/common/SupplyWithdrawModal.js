@@ -358,105 +358,109 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
     </div>
   );
 
-  const SecondaryList = () => (
-    <div className="flex flex-col space-y-4 px-2 mt-8">
-      <div className="flex justify-between items-center">
-        <div className="text-white">Fee</div>
-        <div className="text-white">
-          {!withdrawAmount.isNaN()
-            ? new BigNumber(withdrawAmount)
-                .times(withdrawFeePercent / 100)
-                .dp(4)
-                .toString(10)
-            : 0}{' '}
-          {record.symbol} ({withdrawFeePercent.toString(10)}%)
+  const SecondaryList = () => {
+    const progressValue =
+      withdrawAmount.isZero() || withdrawAmount.isNaN()
+        ? withdrawBorrowPercent.toFixed(2)
+        : withdrawNewBorrowPercent?.toFixed(2);
+
+    return (
+      <div className="flex flex-col space-y-4 px-2 mt-8">
+        <div className="flex justify-between items-center">
+          <div className="text-white">Fee</div>
+          <div className="text-white">
+            {!withdrawAmount.isNaN()
+              ? new BigNumber(withdrawAmount)
+                  .times(withdrawFeePercent / 100)
+                  .dp(4)
+                  .toString(10)
+              : 0}{' '}
+            {record.symbol} ({withdrawFeePercent.toString(10)}%)
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-white text-lg">Borrow Limit</div>
+          {withdrawAmount.isZero() || withdrawAmount.isNaN() ? (
+            <span>${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</span>
+          ) : (
+            <div className="flex">
+              <div className="">${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</div>
+              <div className="text-primary">
+                <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
+              </div>
+              <div className="">${format(withdrawNewBorrowLimit.dp(2, 1).toString(10))}</div>
+            </div>
+          )}
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-white text-lg">Borrow Limit Used</div>
+          {withdrawAmount.isZero() || withdrawAmount.isNaN() ? (
+            <span>{withdrawBorrowPercent.dp(2, 1).toString(10)}%</span>
+          ) : (
+            <div className="flex">
+              <div className="">{withdrawBorrowPercent.dp(2, 1).toString(10)}%</div>
+              <div className="text-primary">
+                <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
+              </div>
+              <div className="">{withdrawNewBorrowPercent.dp(2, 1).toString(10)}%</div>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col items-stretch pt-4">
+          <Progress
+            strokeWidth={3}
+            symbolClassName={'hidden'}
+            percent={progressValue > 100 ? 100 : progressValue}
+          />
         </div>
       </div>
-      <div className="flex justify-between items-center">
-        <div className="text-white text-lg">Borrow Limit</div>
-        {withdrawAmount.isZero() || withdrawAmount.isNaN() ? (
-          <span>${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</span>
-        ) : (
-          <div className="flex">
-            <div className="">${format(withdrawBorrowLimit.dp(2, 1).toString(10))}</div>
-            <div className="text-primary">
-              <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
-            </div>
-            <div className="">${format(withdrawNewBorrowLimit.dp(2, 1).toString(10))}</div>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-between items-center">
-        <div className="text-white text-lg">Borrow Limit Used</div>
-        {withdrawAmount.isZero() || withdrawAmount.isNaN() ? (
-          <span>{withdrawBorrowPercent.dp(2, 1).toString(10)}%</span>
-        ) : (
-          <div className="flex">
-            <div className="">{withdrawBorrowPercent.dp(2, 1).toString(10)}%</div>
-            <div className="text-primary">
-              <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
-            </div>
-            <div className="">{withdrawNewBorrowPercent.dp(2, 1).toString(10)}%</div>
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col items-stretch pt-4">
-        <Progress
-          strokeWidth={3}
-          symbolClassName={'hidden'}
-          percent={
-            withdrawAmount.isZero() || withdrawAmount.isNaN()
-              ? withdrawBorrowPercent.toFixed(2)
-              : withdrawNewBorrowPercent?.toFixed(2)
-          }
-        />
-      </div>
-    </div>
-  );
+    );
+  };
 
-  const SecondarySupplyList = () => (
-    <div className="flex flex-col space-y-4 px-2 mt-8">
-      <div className="flex justify-between items-center">
-        <div className="text-white text-lg">Borrow Limit</div>
-        {amount.isZero() || amount.isNaN() ? (
-          <span>${format(borrowLimit.dp(2, 1).toString(10))}</span>
-        ) : (
-          <div className="flex">
-            <div className="">${format(borrowLimit.dp(2, 1).toString(10))}</div>
-            <div className="text-primary">
-              <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
+  const SecondarySupplyList = () => {
+    const progressValue =
+      amount.isZero() || amount.isNaN() ? borrowPercent.toFixed(2) : newBorrowPercent?.toFixed(2);
+
+    return (
+      <div className="flex flex-col space-y-4 px-2 mt-8">
+        <div className="flex justify-between items-center">
+          <div className="text-white text-lg">Borrow Limit</div>
+          {amount.isZero() || amount.isNaN() ? (
+            <span>${format(borrowLimit.dp(2, 1).toString(10))}</span>
+          ) : (
+            <div className="flex">
+              <div className="">${format(borrowLimit.dp(2, 1).toString(10))}</div>
+              <div className="text-primary">
+                <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
+              </div>
+              <div className="">${format(newBorrowLimit.dp(2, 1).toString(10))}</div>
             </div>
-            <div className="">${format(newBorrowLimit.dp(2, 1).toString(10))}</div>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-between items-center">
-        <div className="text-white text-lg">Borrow Limit Used</div>
-        {amount.isZero() || amount.isNaN() ? (
-          <span>{borrowPercent.dp(2, 1).toString(10)}%</span>
-        ) : (
-          <div className="flex">
-            <div className="">{borrowPercent.dp(2, 1).toString(10)}%</div>
-            <div className="text-primary">
-              <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
+          )}
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-white text-lg">Borrow Limit Used</div>
+          {amount.isZero() || amount.isNaN() ? (
+            <span>{borrowPercent.dp(2, 1).toString(10)}%</span>
+          ) : (
+            <div className="flex">
+              <div className="">{borrowPercent.dp(2, 1).toString(10)}%</div>
+              <div className="text-primary">
+                <img src={primaryBigArrow} alt="arrow" className="mx-4 fill-current" />
+              </div>
+              <div className="">{newBorrowPercent.dp(2, 1).toString(10)}%</div>
             </div>
-            <div className="">{newBorrowPercent.dp(2, 1).toString(10)}%</div>
-          </div>
-        )}
+          )}
+        </div>
+        <div className="flex flex-col items-stretch pt-4">
+          <Progress
+            strokeWidth={3}
+            symbolClassName={'hidden'}
+            percent={progressValue > 100 ? 100 : progressValue}
+          />
+        </div>
       </div>
-      <div className="flex flex-col items-stretch pt-4">
-        <Progress
-          strokeWidth={3}
-          symbolClassName={'hidden'}
-          percent={
-            amount.isZero() || amount.isNaN()
-              ? borrowPercent.toFixed(2)
-              : newBorrowPercent?.toFixed(2)
-          }
-        />
-      </div>
-    </div>
-  );
+    );
+  };
 
   const title = (
     <div
