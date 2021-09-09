@@ -65,6 +65,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       annPrice: res.data.annexPrice,
       markets: res.data.markets,
       dailyAnnex: res.data.dailyAnnex,
+      blockNumber: res.data.blockNumber,
     });
 
     getTotalLiquidity(res.data.markets);
