@@ -46,6 +46,24 @@ const Styles = styled.div`
       border-top: 5px solid #2b2b2b;
     }
   }
+
+  table.no-data, table.loading {
+    font-size: 1.2rem;
+    th {
+      border-right: 1px solid #2b2b2b;
+    }
+    div.loader-container {
+      min-width: 150px;
+    }
+  }
+
+  @media (max-width: 372px) {
+    table.no-data, table.loading {
+      div.loader-container {
+        min-width: auto;
+      }
+    }
+  }
 `;
 
 function Table(props) {
@@ -230,7 +248,7 @@ function Table(props) {
           </div>
         </div>
         <Styles>
-          <table className={`text-left ${!isTableHorizontal && 'border-thick'}`}>
+          <table className={`text-left ${!isTableHorizontal && 'border-thick'} ${propsData.length === 0 && 'no-data'}`}>
             {
               isTableHorizontal ? (
                 <>
@@ -434,66 +452,17 @@ function Table(props) {
               ) : (
                 props.loading ? (
                   <>
-                    <thead>
-                      <tr>
-                        <th>Address</th>
-                        <th>
-                          Price{' '}
-                          <button onClick={() => onSortChange('Price')}>
-                            {sortTypes[currentSort].class === 'price-sort-down' ? (
-                              <img
-                                className="inline relative left-1"
-                                src={sortDown}
-                                alt="price-sort-down"
-                              />
-                            ) : sortTypes[currentSort].class === 'price-sort-up' ? (
-                              <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
-                            ) : (
-                              <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
-                                <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
-                              </span>
-                            )}
-                          </button>
-                        </th>
-                        <th>Amount Committed</th>
-                        <th>LP Tokens Claimable</th>
-                        <th>TX Hash</th>
-                        <th>
-                          Block Number{' '}
-                          <button onClick={() => onSortChange('BlockNumber')}>
-                            {sortTypes[currentSort].class === 'sort-down' ? (
-                              <img className="inline relative left-1" src={sortDown} alt="sort down" />
-                            ) : sortTypes[currentSort].class === 'sort-up' ? (
-                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                            ) : (
-                              <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                                <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                              </span>
-                            )}
-                          </button>
-                        </th>
-                        <th>Buy Amount</th>
-                        <th>Sell Amount</th>
-                        <th className="text-center">Status</th>
-                      </tr>
-                    </thead>
                     <tbody>
-                      <tr>
-                        <td colSpan="12">
-                          <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+
+                      <tr colSpan={'100%'}>
+                        <th colSpan={'50%'}>Address</th>
+                        <td className={'expand'} rowSpan={9} colSpan={'50%'}>
+                          <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg loader-container">
                             <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
                           </div>
                         </td>
                       </tr>
-                    </tbody>
-                  </>
-                ) : propsData.length === 0 ? (
-                  <>
-                    <thead>
                       <tr>
-                        <th>Address</th>
                         <th>
                           Price{' '}
                           <button onClick={() => onSortChange('Price')}>
@@ -513,9 +482,11 @@ function Table(props) {
                             )}
                           </button>
                         </th>
-                        <th>Amount Committed</th>
-                        <th>LP Tokens Claimable</th>
-                        <th>TX Hash</th>
+                      </tr>
+                      <tr><th>Amount Committed</th></tr>
+                      <tr><th>LP Tokens Claimable</th></tr>
+                      <tr><th>TX Hash</th></tr>
+                      <tr>
                         <th>
                           Block Number{' '}
                           <button onClick={() => onSortChange('BlockNumber')}>
@@ -531,17 +502,65 @@ function Table(props) {
                             )}
                           </button>
                         </th>
-                        <th>Buy Amount</th>
-                        <th>Sell Amount</th>
-                        <th className="text-center">Status</th>
                       </tr>
-                    </thead>
+                      <tr><th>Buy Amount</th></tr>
+                      <tr><th>Sell Amount</th></tr>
+                      <tr className={'border-bottom-none'}><th className="text-center">Status</th></tr>
+                    </tbody>
+                  </>
+                ) : propsData.length === 0 ? (
+                  <>
                     <tbody>
-                      <tr>
-                        <td colSpan="12">
+                      <tr colSpan={'100%'}>
+                        <th colSpan={'50%'}>Address</th>
+                        <td className={'content'} rowSpan={9} colSpan={'50%'}>
                           <div className="text-center">No Data Found</div>
                         </td>
                       </tr>
+                      <tr>
+                        <th>
+                          Price{' '}
+                          <button onClick={() => onSortChange('Price')}>
+                            {sortTypes[currentSort].class === 'price-sort-down' ? (
+                              <img
+                                className="inline relative left-1"
+                                src={sortDown}
+                                alt="price-sort-down"
+                              />
+                            ) : sortTypes[currentSort].class === 'price-sort-up' ? (
+                              <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
+                            ) : (
+                              <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                                <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
+                                <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                              </span>
+                            )}
+                          </button>
+                        </th>
+                      </tr>
+                      <tr><th>Amount Committed</th></tr>
+                      <tr><th>LP Tokens Claimable</th></tr>
+                      <tr><th>TX Hash</th></tr>
+                      <tr>
+                        <th>
+                          Block Number{' '}
+                          <button onClick={() => onSortChange('BlockNumber')}>
+                            {sortTypes[currentSort].class === 'sort-down' ? (
+                              <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                            ) : sortTypes[currentSort].class === 'sort-up' ? (
+                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                            ) : (
+                              <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                                <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                                <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                              </span>
+                            )}
+                          </button>
+                        </th>
+                      </tr>
+                      <tr><th>Buy Amount</th></tr>
+                      <tr><th>Sell Amount</th></tr>
+                      <tr className={'border-bottom-none'}><th className="text-center">Status</th></tr>
                     </tbody>
                   </>
                 ) : (
@@ -551,7 +570,7 @@ function Table(props) {
                         let userId = item.userId.address.toLowerCase();
                         let account = props.account ? props.account.toLowerCase() : '0x';
                         return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
-                          <>
+                          <React.Fragment key={index}>
                             <tr className={'top-border-thick'}>
                               <th>Address</th>
                               <td>
@@ -734,7 +753,7 @@ function Table(props) {
                                 )}
                               </td>
                             </tr>
-                          </>
+                          </React.Fragment>
                         ) : (
                           ''
                         );
@@ -747,7 +766,7 @@ function Table(props) {
           </table>
         </Styles>
       </div>
-    </div>
+    </div >
   );
 }
 

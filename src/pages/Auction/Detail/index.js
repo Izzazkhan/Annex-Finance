@@ -544,6 +544,17 @@ function Detail(props) {
       return acc + Number(obj.sellAmount);
     }, 0);
 
+  const roundOffToTwelve = (data) => {
+    let val = data
+    let resp = data
+    if (!data) {
+      return data
+    }
+    if (typeof (data) === 'string')
+      val = val.split('.')[1]
+    resp = val.length > 12 ? parseFloat(data).toFixed(12) : data
+    return resp
+  }
   return (
     <Wrapper>
       <div className="col-span-12 p-6 flex items-center">
@@ -681,7 +692,7 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}-`
+              `${roundOffToTwelve(state.detail.minimumPrice)} ${state.detail.auctionSymbol}-`
             )}
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
