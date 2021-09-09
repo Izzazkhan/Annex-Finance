@@ -147,60 +147,51 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     let annexBalance = new BigNumber(0);
     ///////////////////////////////////
     // console.log('===== ', constants.CONTRACT_ABEP_ADDRESS)
-    const promiseAssetCall = settings.assetList.map(asset => {
+    const promiseAssetCall = settings.assetList.map((asset) => {
       const aBepContract = getAbepContract(asset.id);
 
       return Promise.all([
-        methods.call(appContract.methods.annexSupplyState, [
-          asset.atokenAddress,
-        ]),
-        methods.call(appContract.methods.annexSupplierIndex, [
-          asset.atokenAddress,
-          myAddress,
-        ]),
+        methods.call(appContract.methods.annexSupplyState, [asset.atokenAddress]),
+        methods.call(appContract.methods.annexSupplierIndex, [asset.atokenAddress, myAddress]),
         methods.call(aBepContract.methods.balanceOf, [myAddress]),
-        methods.call(appContract.methods.annexBorrowState, [
-          asset.atokenAddress,
-        ]),
-        methods.call(appContract.methods.annexBorrowerIndex, [
-          asset.atokenAddress,
-          myAddress,
-        ]),
-        methods.call(aBepContract.methods.borrowBalanceStored, [
-          myAddress,
-        ]),
-        methods.call(aBepContract.methods.borrowIndex, [])
-      ])
+        methods.call(appContract.methods.annexBorrowState, [asset.atokenAddress]),
+        methods.call(appContract.methods.annexBorrowerIndex, [asset.atokenAddress, myAddress]),
+        methods.call(aBepContract.methods.borrowBalanceStored, [myAddress]),
+        methods.call(aBepContract.methods.borrowIndex, []),
+      ]);
     });
     const assetValues = await Promise.all(promiseAssetCall);
-    assetValues.forEach(([
-      supplyState,
-      supplierIndex,
-      supplierTokens,
-      borrowState,
-      borrowerIndex,
-      borrowBalanceStored,
-      borrowIndex]) => {
-      const supplyIndex = supplyState.index;
-      if (+supplierIndex === 0 && +supplyIndex > 0) {
-        supplierIndex = annexInitialIndex;
-      }
-      let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
-      const supplierDelta = new BigNumber(supplierTokens)
-        .multipliedBy(deltaIndex)
-        .dividedBy(1e36);
+    assetValues.forEach(
+      ([
+        supplyState,
+        supplierIndex,
+        supplierTokens,
+        borrowState,
+        borrowerIndex,
+        borrowBalanceStored,
+        borrowIndex,
+      ]) => {
+        const supplyIndex = supplyState.index;
+        if (+supplierIndex === 0 && +supplyIndex > 0) {
+          supplierIndex = annexInitialIndex;
+        }
+        let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
+        const supplierDelta = new BigNumber(supplierTokens)
+          .multipliedBy(deltaIndex)
+          .dividedBy(1e36);
 
-      annexEarned = annexEarned.plus(supplierDelta);
-      let initBorrowIndex = borrowState.index;
-      if (+borrowerIndex > 0) {
-        deltaIndex = new BigNumber(initBorrowIndex).minus(borrowerIndex);
-        const borrowerAmount = new BigNumber(borrowBalanceStored)
-          .multipliedBy(1e18)
-          .dividedBy(borrowIndex);
-        const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
-        annexEarned = annexEarned.plus(borrowerDelta);
-      }
-    });
+        annexEarned = annexEarned.plus(supplierDelta);
+        let initBorrowIndex = borrowState.index;
+        if (+borrowerIndex > 0) {
+          deltaIndex = new BigNumber(initBorrowIndex).minus(borrowerIndex);
+          const borrowerAmount = new BigNumber(borrowBalanceStored)
+            .multipliedBy(1e18)
+            .dividedBy(borrowIndex);
+          const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
+          annexEarned = annexEarned.plus(borrowerDelta);
+        }
+      },
+    );
     // for (let index = 0; index < Object.values(constants.CONTRACT_ABEP_ADDRESS).length; index += 1) {
     //   const item = Object.values(constants.CONTRACT_ABEP_ADDRESS)[index];
 
@@ -253,12 +244,9 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     annexEarned = annexEarned.plus(annexAccrued).dividedBy(1e18).dp(4, 1).toString(10);
     /* **************************************** */
     // will be removed after ANN listed to market
-    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS).find(t => t.id === 'ann');
+    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS).find((t) => t.id === 'ann');
     const annContract = getTokenContract(ann.id);
-    const annWalletBalance = await methods.call(
-      annContract.methods.balanceOf,
-      [myAddress]
-    );
+    const annWalletBalance = await methods.call(annContract.methods.balanceOf, [myAddress]);
     annexBalance = new BigNumber(annWalletBalance).div(1e18);
     /////////////////////////////////
 

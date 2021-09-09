@@ -332,7 +332,24 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
    * Max amount
    */
   const handleWithdrawMaxAmount = () => {
-    setWithdrawAmount(withdrawSafeMaxBalance);
+    const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
+    const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+    const tokenPrice = getBigNumber(record.tokenPrice);
+    const { collateral } = record;
+    const supplyBalance = getBigNumber(record.supplyBalance);
+    const collateralFactor = getBigNumber(record.collateralFactor);
+    if (!collateral) {
+      setWithdrawSafeMaxBalance(supplyBalance);
+      return;
+    }
+    const safeMax = BigNumber.maximum(
+      totalBorrowLimit
+        .minus(totalBorrowBalance.div(10).times(15))
+        .div(collateralFactor)
+        .div(tokenPrice),
+      new BigNumber(0),
+    );
+    setWithdrawAmount(BigNumber.minimum(safeMax, supplyBalance));
   };
 
   const PrimaryList = () => (
