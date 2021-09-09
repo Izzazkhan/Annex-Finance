@@ -130,8 +130,8 @@ export const getEpochContract = () => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_EPOCH_ABI),
     process.env.REACT_APP_ENV === 'dev'
-      ? process.env.REACT_APP_TEST_EPOCH_ADDRESS
-      : process.env.REACT_APP_MAIN_EPOCH_ADDRESS,
+      ? process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS
+      : process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS,
   );
 };
 
