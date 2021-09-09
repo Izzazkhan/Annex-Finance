@@ -295,10 +295,9 @@ const ArrowContainer = styled.div`
   will-change: transform;
 `;
 
-const Epoch = ({ settings, setSetting }) => {
+const Epoch = ({ setSetting }) => {
   const { account, chainId, library } = useActiveWeb3React();
 
-  
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
   const [annDecimals, setAnnDecimals] = useState(18);
@@ -309,47 +308,72 @@ const Epoch = ({ settings, setSetting }) => {
   const [holdingAPR, setHoldingAPR] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
-  // console.log('settings', settings)
   const epochContract = getEpochContract();
 
   const [blockNumber, setBlockNumber] = useState(undefined);
 
-	const wrongNetwork = React.useMemo(() => {
-		return (process.env.REACT_APP_ENV === 'prod' && chainId !== 56)
-			|| (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-	}, [chainId])
+  const wrongNetwork = React.useMemo(() => {
+    return (
+      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
+      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
+    );
+  }, [chainId]);
 
-	React.useEffect(() => {
-		if(library && account && !wrongNetwork) {
-			library.getBlockNumber()
-				.then(res => {
-					setBlockNumber(res);
-				})
-				.catch(e => console.log(e))
-		}
-	}, [library, account, wrongNetwork])
+  React.useEffect(() => {
+    if (library && account && !wrongNetwork) {
+      library
+        .getBlockNumber()
+        .then((res) => {
+          setBlockNumber(res);
+        })
+        .catch((e) => console.log(e));
+    }
+  }, [library, account, wrongNetwork]);
 
   const getBalance = async () => {
     if (!account) {
+      setAnnBalance('');
+      setAnnDecimals(18);
+      setCurrentEpochROI('');
+      setHoldingReward('');
+      seteligibleEpochs('');
+      setCurrentEpoch('');
+      setHoldingAPR('');
+      setCheckCurrentEligibleEpoch(false);
       return;
-    }
-    const balance = await methods.call(epochContract.methods.balanceOf, [account]);
-    const decimals = await methods.call(epochContract.methods.decimals, []);
-    if (balance && decimals) {
-      setAnnDecimals(decimals);
-      setAnnBalance((balance / Math.pow(10, decimals)).toFixed(2));
+    } else {
+      const balance = await methods.call(epochContract.methods.balanceOf, [account]);
+      const decimals = await methods.call(epochContract.methods.decimals, []);
+      if (balance && decimals) {
+        setAnnDecimals(decimals);
+        setAnnBalance((balance / Math.pow(10, decimals)).toFixed(2));
+      }
     }
   };
 
   useEffect(() => {
     getBalance();
-    setInterval(getBalance, 5 * 1000);
-  }, [settings.account]);
+    let interval;
+    if (account) {
+      interval = setInterval(getBalance, 5 * 1000);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [account]);
 
   const balanceOf = useCallback(async () => {
     const decimals = annDecimals;
     const accountAddress = account;
     if (!accountAddress) {
+      setAnnBalance('');
+      setAnnDecimals(18);
+      setCurrentEpochROI('');
+      setHoldingReward('');
+      seteligibleEpochs('');
+      setCurrentEpoch('');
+      setHoldingAPR('');
+      setCheckCurrentEligibleEpoch(false);
       return;
     }
     try {
@@ -366,7 +390,6 @@ const Epoch = ({ settings, setSetting }) => {
       let eligibleEpochs = await methods.call(epochContract.methods.eligibleEpochs, []);
       if (eligibleEpochs) {
         seteligibleEpochs(eligibleEpochs);
-        // seteligibleEpochs(50);
       }
 
       let getEpoch = await methods.call(epochContract.methods.getEpochs, [blockNumber]);
@@ -526,7 +549,7 @@ const Epoch = ({ settings, setSetting }) => {
                   className="active-label flex font-bold items-center justify-center text-black"
                   style={{
                     left: `calc(${
-                      Number(currentEpoch) > Number(eligibleEpochs) ? 30 : currentEpoch
+                      Number(currentEpoch) > Number(eligibleEpochs) ? 30 : Number(currentEpoch)
                     } * 3%)`,
                   }}
                 >

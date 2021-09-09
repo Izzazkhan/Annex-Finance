@@ -66,6 +66,8 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       markets: res.data.markets,
       dailyAnnex: res.data.dailyAnnex,
     });
+
+    getTotalLiquidity(res.data.markets);
   };
 
   useEffect(() => {
@@ -92,7 +94,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     }
   }, [account]);
 
-  const getTotalLiquidity = async () => {
+  const getTotalLiquidity = async (markets) => {
     let totalLiquidity = new BigNumber(0);
 
     for (
@@ -101,8 +103,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       index += 1
     ) {
       const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
-
-      let market = settings.markets.find((ele) => ele.underlyingSymbol === item.symbol);
+      let market = markets.find((ele) => ele.underlyingSymbol === item.symbol);
       if (!market) market = {};
       totalLiquidity = totalLiquidity.plus(new BigNumber(market.totalSupplyUsd || 0));
     }
@@ -309,10 +310,9 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     if (!account) {
       {
         await getMarkets();
-        await getTotalLiquidity();
       }
 
-      // fetch total supply
+      //   // fetch total supply
     }
     // handleAccountChange();
   }, []);

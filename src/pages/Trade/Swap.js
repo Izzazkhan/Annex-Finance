@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { JSBI, Token } from '@annex/sdk';
-import settings from '../../assets/icons/settings.svg';
+import settingsImage from '../../assets/icons/settings.svg';
 import settingsBlack from '../../assets/icons/settingsBlack.svg';
 import history from '../../assets/icons/history.svg';
 import historyBlack from '../../assets/icons/historyBlack.svg';
@@ -288,7 +288,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-full cursor-pointer" onClick={onSettingsOpen}>
-              <img className="w-full" src={trade ? settingsBlack : settings} alt="settings" />
+              <img className="w-full" src={trade ? settingsBlack : settingsImage} alt="settings" />
             </div>
             <div className="w-full cursor-pointer" onClick={onHistoryOpen}>
               <img src={trade ? historyBlack : history} alt="history" />
