@@ -333,7 +333,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8">
-          <div className="font-bold text-white margin-bottom-20">{`ANN Price: ${settings.annPrice}`}</div>
+          <div className="font-bold text-white margin-bottom-20">{`ANN Price: $${settings.annPrice}`}</div>
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
