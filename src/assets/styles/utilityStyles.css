@@ -1296,7 +1296,7 @@ button:disabled {
   background: #000;
   padding: 2px 0;
   height: auto;
-  top: -40px;
+  top: -50px;
   line-height: normal;
 }
 .tooltip-label:hover + .label {

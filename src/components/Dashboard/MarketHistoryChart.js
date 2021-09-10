@@ -187,7 +187,7 @@ const MarketHistoryChart = ({ data, type, withANN }) => {
             },
             // Include a dollar sign in the ticks
             callback: function (value, index, values) {
-              return `$${format(getBigNumber(value).dp(2, 1).toString(10))}`;
+              return `$${format(getBigNumber(value).dp(2, 1).toString(10) / 1000000)}M`;
             },
           },
         },
