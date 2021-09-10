@@ -148,21 +148,21 @@ const MarketHistory = ({
                         <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center lg:space-y-1">
                             <div className="text-base lg:text-center">Net APY</div>
                             <div className="font-bold text-lg text-right lg:text-center">
-                                {`${new BigNumber(
+                                {getBigNumber(
                                     activeType === TYPES.Supply
-                                        ? selectedAsset?.supplyBalance
-                                        : selectedAsset?.borrowBalance
+                                        ? ((selectedAsset.annSupplyApy)?(selectedAsset.annSupplyApy.plus(selectedAsset.supplyApy)):0)
+                                        : ((selectedAsset.annBorrowApy)?(selectedAsset.annBorrowApy.minus(selectedAsset.borrowApy)):0)
+                                )
+                                    .dp(2, 1)
+                                    .isGreaterThan(100000000)
+                                    ? "Infinity"
+                                    : getBigNumber(
+                                    activeType === TYPES.Supply
+                                        ? ((selectedAsset.annSupplyApy)?(selectedAsset.annSupplyApy.plus(selectedAsset.supplyApy)):0)
+                                        : ((selectedAsset.annBorrowApy)?(selectedAsset.annBorrowApy.minus(selectedAsset.borrowApy)):0)
                                     )
-                                        ?.times(selectedAsset?.tokenPrice || 0)
-                                        ?.times(apy?.toString(10))
-                                        ?.dividedBy(
-                                            activeType === TYPES.Supply
-                                                ? settings.totalSupplyBalance
-                                                : settings.totalBorrowBalance
-                                        )
-                                        ?.dp(2, 1)
-                                        ?.toString(10)}%`
-                                }
+                                    .dp(2, 1)
+                                    .toString(10) + "%"}
                             </div>
                         </div>
                         <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center lg:space-y-1 relative pl-8 lg:pl-5">
@@ -224,22 +224,22 @@ const MarketHistory = ({
                                     : "Borrow"
                             }</div>
                             <div className="font-bold text-primaryLight text-lg text-right lg:text-center">
-                                {/* {`$${nFormatter(
+                                {`$${nFormatter(
                                     new BigNumber(
                                         activeType === TYPES.Supply
                                             ? marketInfo?.totalSupplyUsd
                                             : marketInfo?.totalBorrowsUsd
                                     ).dp(2, 1).toString(10),
                                     2
-                                )}`} */}
-                                {`$${activeType === TYPES.Supply
+                                )}`}
+                                {/* {`$${activeType === TYPES.Supply
                                       ? Number(marketInfo.totalSupplyUsd) < 1000000
                                         ? Number(marketInfo.totalSupplyUsd).toFixed(2)
                                         : `${Number(marketInfo.totalSupplyUsd) / 10000000}M`
                                       : Number(marketInfo.totalBorrowsUsd) < 1000000
                                       ? Number(marketInfo.totalBorrowsUsd).toFixed(2)
                                       : `${Number(marketInfo.totalBorrowsUsd) / 10000000}M`
-                                  }`}
+                                  }`} */}
                             </div>
                         </div>
                     </div>
