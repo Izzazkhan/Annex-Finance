@@ -681,7 +681,7 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.minimumPrice} ${state.detail.auctionSymbol}-`
+              `${new BigNumber(state.detail.minimumPrice).dp(11)} ${state.detail.auctionSymbol}-`
             )}
 
             <span className="text-blue">{state.detail.biddingSymbol}</span>
