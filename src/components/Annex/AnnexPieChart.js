@@ -24,6 +24,7 @@ const AnnexPieChart = ({
                 style={{ top: '50%', left: '50%', transform: "translate(-50%, -50%)" }}
             >
                 {data?.[1]?.value}
+                {data.length && data.reduce((a, b) => ({ value: a.value + b.value })).value}
             </span>
         </div>
     )

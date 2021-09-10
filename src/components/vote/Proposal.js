@@ -204,6 +204,8 @@ const Proposal = ({
         <div
             className="border-t border-solid border-lightGray p-6"
         >
+          {proposal.state === 'Active' && (
+        <div>
             <div
                 className="text-white text-xl cursor-pointer"
                 onClick={() => history.push(`/vote/proposal/${proposal.id}`)}
@@ -305,6 +307,7 @@ const Proposal = ({
                 visible={showActionModal}
                 onClose={() => setShowActionModal(false)}
             />
+        </div>)}
         </div>
     )
 }

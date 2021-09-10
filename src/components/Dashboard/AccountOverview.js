@@ -176,8 +176,8 @@ const AccountOverview = ({
               <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
                 <div className="text-primary font-bold text-lg md:text-xl">
                   <div className="tooltip relative">
-                    <div className="tooltip-label"> Net APY</div>
-                    <span className="label">Net APY</span>
+                    <div className="tooltip-label">Net APY</div>
+                    <span className="label">Interest earned and paid, plus ANN</span>
                   </div>
                 </div>
                 <div className="text-white font-bold text-xl md:text-2xl">

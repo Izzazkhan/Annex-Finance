@@ -20,8 +20,6 @@ const TypeButton = styled.button`
   font-size: 1rem;
   transition: background-color 0.3s ease;
   border: none;
-
-
   &::before {
     content: "";
     width: 100%;
@@ -35,18 +33,15 @@ const TypeButton = styled.button`
     transform-origin: ${({ active, reverse }) => reverse ? "left center" : "right center"};
     transition: transform ease 0.3s;
   }
-
   &:hover {
     background-color: rgba(255, 171, 45, 0.05);
   }
-
   &:hover,
   &:focus,
   &:active {
     outline: none;
     box-shadow: none;
   }
-
   @media (max-width: 767px) {
     flex-grow: 1;
   }
@@ -229,14 +224,22 @@ const MarketHistory = ({
                                     : "Borrow"
                             }</div>
                             <div className="font-bold text-primaryLight text-lg text-right lg:text-center">
-                                {`$${nFormatter(
+                                {/* {`$${nFormatter(
                                     new BigNumber(
                                         activeType === TYPES.Supply
                                             ? marketInfo?.totalSupplyUsd
                                             : marketInfo?.totalBorrowsUsd
                                     ).dp(2, 1).toString(10),
                                     2
-                                )}`}
+                                )}`} */}
+                                {`$${activeType === TYPES.Supply
+                                      ? Number(marketInfo.totalSupplyUsd) < 1000000
+                                        ? Number(marketInfo.totalSupplyUsd).toFixed(2)
+                                        : `${Number(marketInfo.totalSupplyUsd) / 10000000}M`
+                                      : Number(marketInfo.totalBorrowsUsd) < 1000000
+                                      ? Number(marketInfo.totalBorrowsUsd).toFixed(2)
+                                      : `${Number(marketInfo.totalBorrowsUsd) / 10000000}M`
+                                  }`}
                             </div>
                         </div>
                     </div>
