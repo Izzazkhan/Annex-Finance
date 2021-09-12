@@ -150,20 +150,20 @@ const MarketHistory = ({
                             <div className="font-bold text-lg text-right lg:text-center">
                                 {getBigNumber(
                                     activeType === TYPES.Supply
-                                        ? ((selectedAsset.annSupplyApy && selectedAsset.supplyApy)?
-                                            (new BigNumber(selectedAsset.annSupplyApy).plus(selectedAsset.supplyApy)):0)
-                                        : ((selectedAsset.annBorrowApy && selectedAsset.borrowApy)?
-                                            (new BigNumber(selectedAsset.annBorrowApy).minus(selectedAsset.borrowApy)):0)
+                                        ? (selectedAsset ? ((selectedAsset.annSupplyApy && selectedAsset.supplyApy)?
+                                            (new BigNumber(selectedAsset.annSupplyApy).plus(selectedAsset.supplyApy)):0):0)
+                                        : (selectedAsset ? ((selectedAsset.annBorrowApy && selectedAsset.borrowApy)?
+                                            (new BigNumber(selectedAsset.annBorrowApy).minus(selectedAsset.borrowApy)):0):0)
                                 )
                                     .dp(2, 1)
                                     .isGreaterThan(100000000)
                                     ? "Infinity"
                                     : getBigNumber(
                                     activeType === TYPES.Supply
-                                        ? ((selectedAsset.annSupplyApy && selectedAsset.supplyApy)?
-                                            (new BigNumber(selectedAsset.annSupplyApy).plus(selectedAsset.supplyApy)):0)
-                                        : ((selectedAsset.annBorrowApy && selectedAsset.borrowApy)?
-                                            (new BigNumber(selectedAsset.annBorrowApy).minus(selectedAsset.borrowApy)):0)
+                                        ? (selectedAsset ? ((selectedAsset.annSupplyApy && selectedAsset.supplyApy)?
+                                            (new BigNumber(selectedAsset.annSupplyApy).plus(selectedAsset.supplyApy)):0):0)
+                                        : (selectedAsset ? ((selectedAsset.annBorrowApy && selectedAsset.borrowApy)?
+                                            (new BigNumber(selectedAsset.annBorrowApy).minus(selectedAsset.borrowApy)):0):0)
                                     )
                                     .dp(2, 1)
                                     .toString(10) + "%"}
