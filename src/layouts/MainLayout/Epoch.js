@@ -261,6 +261,24 @@ const Styles = styled.div`
         top: 46px;
         margin-left: -55px;
         border: none;
+        z-index: 1;
+        @media (max-width: 767px) {
+          display: none;
+          position: absolute;
+          bottom: auto;
+          color: #e2e2e2;
+          font-size: 12px;
+          width: 300px;
+          text-align: center;
+          background: #000;
+          padding: 18px;
+          border-radius: 5px;
+          background-color: #4f4f4f;
+          height: auto;
+          top: 30px;
+          margin-left: -48px;
+          border: none;
+        }
       }
       .tooltip-label:hover + .label {
         display: block;
