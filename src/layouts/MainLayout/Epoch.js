@@ -254,10 +254,12 @@ const Styles = styled.div`
         width: 300px;
         text-align: center;
         background: #000;
-        padding: 2px 0;
+        padding: 18px;
+        border-radius: 5px;
+        background-color: #4f4f4f;
         height: auto;
-        top: -112px;
-        margin-left: -50px;
+        top: 46px;
+        margin-left: -55px;
         border: none;
       }
       .tooltip-label:hover + .label {
