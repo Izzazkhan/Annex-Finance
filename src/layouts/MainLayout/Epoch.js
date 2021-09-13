@@ -249,15 +249,15 @@ const Styles = styled.div`
         display: none;
         position: absolute;
         bottom: auto;
-        left: calc(50% - 90px);
         color: #e2e2e2;
         font-size: 12px;
-        width: 180px;
+        width: 300px;
         text-align: center;
         background: #000;
         padding: 2px 0;
         height: auto;
-        top: -35px;
+        top: -112px;
+        margin-left: -50px;
         border: none;
       }
       .tooltip-label:hover + .label {
@@ -494,9 +494,8 @@ const Epoch = ({ setSetting, settings }) => {
             </>
           )}
           <div
-            className={` ${
-              showDetails && 'open'
-            } text-center font-bold text-2xl md:text-3xl text-border absolute title-text`}
+            className={` ${showDetails && 'open'
+              } text-center font-bold text-2xl md:text-3xl text-border absolute title-text`}
           >
             <div className="tooltip relative">
               <div className="tooltip-label">
@@ -511,9 +510,8 @@ const Epoch = ({ setSetting, settings }) => {
             </div>
           </div>
           <div
-            className={` ${
-              showDetails && 'custom-top mr-0'
-            } flex items-center font-bold md:mr-3 flex-col lg:flex-row`}
+            className={` ${showDetails && 'custom-top mr-0'
+              } flex items-center font-bold md:mr-3 flex-col lg:flex-row`}
           >
             <div className="text-md md:text-lg">ANN Holding Rewards : </div>
             <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
@@ -533,9 +531,8 @@ const Epoch = ({ setSetting, settings }) => {
                 <div
                   className="active-label flex font-bold items-center justify-center text-black"
                   style={{
-                    left: `calc(${
-                      Number(currentEpoch) > Number(eligibleEpochs) ? 30 : Number(currentEpoch)
-                    } * 3%)`,
+                    left: `calc(${Number(currentEpoch) > Number(eligibleEpochs) ? 30 : Number(currentEpoch)
+                      } * 3%)`,
                   }}
                 >
                   {currentEpoch}
