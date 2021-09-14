@@ -248,22 +248,27 @@ const Styles = styled.div`
       .label {
         display: none;
         position: absolute;
-        bottom: auto;
+        bottom: -25px;
+        left: 100%;
         color: #e2e2e2;
-        font-size: 12px;
-        width: 300px;
+        font-size: 14px;
+        font-weight: 400;
+        max-width: 270px;
+        width: max-content;
         text-align: center;
-        background: #000;
-        padding: 18px;
-        border-radius: 5px;
-        background-color: #4f4f4f;
+        background: #101016;
+        padding: 5px 10px;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        top: auto;
+        border-radius: 10px;
+        line-height: normal;
+        border: 2px solid #B068009C;
         height: auto;
-        top: 46px;
-        margin-left: -55px;
-        border: none;
       }
       .tooltip-label:hover + .label {
-        display: block;
+        display: flex;
       }
     }
   }
