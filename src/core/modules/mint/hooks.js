@@ -31,8 +31,6 @@ export function useMintState() {
 export function useDerivedMintInfo(currencyA, currencyB) {
   const { account, chainId } = useActiveWeb3React();
 
-  console.log('Qoute Amount');
-
   const { independentField, typedValue, otherTypedValue } = useMintState();
 
   const dependentField =
