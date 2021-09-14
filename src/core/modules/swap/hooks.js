@@ -134,7 +134,6 @@ export function useDerivedSwapInfo() {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     recipient,
   } = useSwapState();
-
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
   const recipientLookup = useENS(recipient || undefined);
@@ -255,8 +254,10 @@ function validatedRecipient(recipient) {
 }
 
 export function queryParametersToSwapState(parsedQs) {
-  let inputCurrency = parseCurrencyFromURLParameter(parsedQs?.inputCurrency);
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs?.outputCurrency);
+  let inputCurrency = parseCurrencyFromURLParameter(process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS
+    : process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS);
+  let outputCurrency = parseCurrencyFromURLParameter(process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS
+    : process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS);
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs?.outputCurrency === 'string') {
       inputCurrency = '';
@@ -300,7 +301,6 @@ export function useDefaultsFromURLSearch() {
         recipient: parsed.recipient,
       }),
     );
-
     setResult({
       inputCurrencyId: parsed[Field.INPUT].currencyId,
       outputCurrencyId: parsed[Field.OUTPUT].currencyId,
