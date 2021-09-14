@@ -269,7 +269,7 @@ const AccountOverview = ({
             icon={ANNRewards}
             iconFocus={ANNRewardsFocus}
             noData={!account || wrongNetwork}
-            status="red"
+            status="green"
             tooltip="Claim your lending rewards"
             action={handleCollect}
           />
@@ -284,7 +284,7 @@ const AccountOverview = ({
             }
             icon={AnnualEarning}
             noData={!account || wrongNetwork}
-            status="red"
+            status="green"
           />
         </div>
       )}
