@@ -206,65 +206,82 @@ const NavItems = ({
   history,
   activeMenu,
   toggleDropdown,
-}) => (
-  <div className={wrapperClassName}>
-    <div className="flex flex-col space-y-4 text-white">
-      {items?.map((i) => (
-        <div key={i.key}>
-          <div
-            className={`sidebar-item gap-x-4 items-center cursor-pointer
-                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${
-                         pathname?.includes(i?.href) ? 'bg-black' : ''
-                       }`}
-            onClick={() => {
-              if (i.href) {
-                history.push(i.href);
-              }
-            }}
-          >
-            <div className="flex items-center" onClick={() => toggleDropdown(i.title)}>
-              <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
-              <div className="text-23">{i.title}</div>
-            </div>
-            {i.subCats && (
-              <img
-                className={activeMenu === i.title ? 'transform rotate-90' : ''}
-                src={filledArrow}
-                alt={i.title}
-              />
+}) => {
+  console.log('items', items)
+  return (
+    <div className={wrapperClassName}>
+      <div className="flex flex-col space-y-4 text-white">
+        {items?.map((i) => (
+          <div key={i.key}>
+            {i.title === 'Farms' ? <a
+              target={'_blank'}
+              rel={'noreferrer noopener'}
+              href={'https://farm.annex.finance/'}
+            >
+              <div
+                className={`sidebar-item gap-x-4 items-center cursor-pointer
+                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${pathname?.includes(i?.href) ? 'bg-black' : ''
+                  }`}
+              >
+                <div className="flex items-center" onClick={() => toggleDropdown(i.title)}>
+                  <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
+                  <div className="text-23">{i.title}</div>
+                </div>
+              </div>
+            </a> : <div
+              className={`sidebar-item gap-x-4 items-center cursor-pointer
+                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${pathname?.includes(i?.href) ? 'bg-black' : ''
+                }`}
+              onClick={() => {
+                if (i.href) {
+                  history.push(i.href);
+                }
+              }}
+            >
+              <div className="flex items-center" onClick={() => toggleDropdown(i.title)}>
+                <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
+                <div className="text-23">{i.title}</div>
+              </div>
+              {i.subCats && (
+                <img
+                  className={activeMenu === i.title ? 'transform rotate-90' : ''}
+                  src={filledArrow}
+                  alt={i.title}
+                />
+              )}
+            </div>}
+            {activeMenu === i.title && (
+              <div
+                className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
+              >
+                {i.subCats?.map((cat) => (
+                  <div
+                    className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
+                    key={cat.key}
+                    onClick={() => {
+                      history.push(cat.href);
+                    }}
+                  >
+                    <img src={cat.icon} alt={cat.title} />
+                    <div
+                      className={
+                        `${pathname}${search}`?.includes(cat?.href)
+                          ? 'text-primary text-23'
+                          : 'text-23'
+                      }
+                    >
+                      {cat.title}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-          {activeMenu === i.title && (
-            <div
-              className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
-            >
-              {i.subCats?.map((cat) => (
-                <div
-                  className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
-                  key={cat.key}
-                  onClick={() => {
-                    history.push(cat.href);
-                  }}
-                >
-                  <img src={cat.icon} alt={cat.title} />
-                  <div
-                    className={
-                      `${pathname}${search}`?.includes(cat?.href)
-                        ? 'text-primary text-23'
-                        : 'text-23'
-                    }
-                  >
-                    {cat.title}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  )
+};
 
 function Sidebar({ isOpen, onClose, settings }) {
   const { pathname, search } = useLocation();
@@ -330,7 +347,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           wrapperClassName="block xl:hidden"
           onClose={onClose}
           totalLiquidity={settings.totalLiquidity}
-          // totalXaiMinted={totalXaiMinted}
+        // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8">
           <div className="font-bold text-white margin-bottom-20">{`ANN Price: $${settings.annPrice}`}</div>
