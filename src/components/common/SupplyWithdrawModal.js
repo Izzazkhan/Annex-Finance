@@ -340,6 +340,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
     const collateralFactor = getBigNumber(record.collateralFactor);
     if (!collateral) {
       setWithdrawSafeMaxBalance(supplyBalance);
+      setWithdrawAmount(supplyBalance)
       return;
     }
     const safeMax = BigNumber.maximum(
@@ -349,7 +350,8 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         .div(tokenPrice),
       new BigNumber(0),
     );
-    setWithdrawAmount(BigNumber.minimum(safeMax, supplyBalance));
+    setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
+    setWithdrawAmount(BigNumber.minimum(safeMax, supplyBalance))
   };
 
   const PrimaryList = () => (
@@ -388,9 +390,9 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           <div className="text-white">
             {!withdrawAmount.isNaN()
               ? new BigNumber(withdrawAmount)
-                  .times(withdrawFeePercent / 100)
-                  .dp(4)
-                  .toString(10)
+                .times(withdrawFeePercent / 100)
+                .dp(4)
+                .toString(10)
               : 0}{' '}
             {record.symbol} ({withdrawFeePercent.toString(10)}%)
           </div>
@@ -569,17 +571,17 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       )}
       <div className="flex mt-16 bg-black rounded-4xl border border-primary">
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
-            currentTab === 'supply' ? 'bg-primaryLight text-black' : 'bg-black'
-          }`}
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${currentTab === 'supply' ?
+            'bg-primaryLight text-black' : 'bg-black'
+            }`}
           onClick={() => setCurrentTab('supply')}
         >
           Supply
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
-            currentTab === 'withdraw' ? 'bg-primaryLight text-black' : 'bg-black'
-          }`}
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${currentTab === 'withdraw' ?
+            'bg-primaryLight text-black' : 'bg-black'
+            }`}
           onClick={() => setCurrentTab('withdraw')}
         >
           Withdraw
