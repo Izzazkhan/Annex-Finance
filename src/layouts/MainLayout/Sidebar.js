@@ -207,7 +207,6 @@ const NavItems = ({
   activeMenu,
   toggleDropdown,
 }) => {
-  console.log('items', items)
   return (
     <div className={wrapperClassName}>
       <div className="flex flex-col space-y-4 text-white">
