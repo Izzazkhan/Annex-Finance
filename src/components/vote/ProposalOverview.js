@@ -42,7 +42,7 @@ const ProposalOverview = ({
         if (p.state === 'Defeated') {
             return 'red';
         }
-        return 'lightGray';
+        return 'primary';
     };
 
     const getRemainTime = item => {

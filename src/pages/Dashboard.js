@@ -1043,11 +1043,11 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
       {displayWarning && (
         <div
-          className="bg-primary text-white rounded-lg py-3 px-6 mx-6 lg:mx-0 text-lg
+          className="bg-primary text-white rounded-lg py-3 px-3 md:px-6 mx-3 md:mx-6 lg:mx-0 text-lg
                 flex justify-between items-center space-x-4 mt-5"
         >
           <MiniLogo size="sm" />
-          <p className="text-black flex-grow">
+          <p className="text-black flex-grow flex-1">
             This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
             warranties, including that Annex is error-free or secure. Use it at your own risk.
           </p>
