@@ -68,7 +68,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       blockNumber: res.data.blockNumber,
     });
 
-    getTotalLiquidity(res.data.markets);
+    getTotalLiquidity(res.data.markets, res.data.farmTVL);
   };
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     }
   }, [account]);
 
-  const getTotalLiquidity = async (markets) => {
+  const getTotalLiquidity = async (markets, farmTVL) => {
     let totalLiquidity = new BigNumber(0);
 
     for (
@@ -108,6 +108,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       if (!market) market = {};
       totalLiquidity = totalLiquidity.plus(new BigNumber(market.totalSupplyUsd || 0));
     }
+    totalLiquidity = totalLiquidity.plus(farmTVL);
     setSetting({
       totalLiquidity: totalLiquidity.toString(10),
     });
