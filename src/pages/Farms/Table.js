@@ -44,6 +44,9 @@ const Styles = styled.div`
         border-right: 0;
       }
     }
+    td.padding-2rem {
+      padding: 2rem 2rem 2rem 1rem;
+    }
   }
 `;
 
@@ -71,24 +74,7 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
-function Table({ columns, data, renderRowSubComponent }) {
-  const filterTypes = React.useMemo(
-    () => ({
-      // Add a new fuzzyTextFilterFn filter type.
-      fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
-      text: (rows, id, filterValue) => {
-        return rows.filter((row) => {
-          const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
-            : true;
-        });
-      },
-    }),
-    [],
-  );
+function Table({ columns, data }) {
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -121,7 +107,6 @@ function Table({ columns, data, renderRowSubComponent }) {
       columns,
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
-      filterTypes,
       initialState: { pageIndex: 0 },
     },
     useFilters, // useFilters!
@@ -148,10 +133,10 @@ function Table({ columns, data, renderRowSubComponent }) {
       {/* <div className="absolute -top-8 right-60 pr-8">
         <Select type="basic" options={sortOptions} />
       </div> */}
-      <div className="bg-fadeBlack p-6 mt-10">
+      <div className="bg-fadeBlack p-6 mt-10 text-white text-base">
         <table {...getTableProps()}>
-          <thead>
-            {[headerGroups[1]].map((headerGroup) => (
+          <thead className="text-lg">
+            {[headerGroups[0]].map((headerGroup) => (
               // eslint-disable-next-line react/jsx-key
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, index) => {
@@ -162,8 +147,8 @@ function Table({ columns, data, renderRowSubComponent }) {
                       key={column.Header}
                     >
                       {column.render('Header')}
-                      {index !== 0 && (
-                        <span>
+                      {column.canSort && (
+                        <span className={column.sortedContainerClass}>
                           {column.isSorted ? (
                             column.isSortedDesc ? (
                               <img
@@ -182,10 +167,8 @@ function Table({ columns, data, renderRowSubComponent }) {
                           )}
                         </span>
                       )}
-                      {/* <div className="absolute -top-8 right-6">
-                        {column.canFilter ? column.render('Filter') : null}
-                      </div> */}
                     </th>
+
                   );
                 })}
               </tr>
@@ -197,32 +180,18 @@ function Table({ columns, data, renderRowSubComponent }) {
               return (
                 // eslint-disable-next-line react/jsx-key
                 <Fragment key={i}>
-                  <tr {...row.getRowProps()}>
+                  <tr {...row.getRowProps()} className="">
                     {row.cells.map((cell) => {
                       return (
                         // eslint-disable-next-line react/jsx-key
-                        <td {...cell.getCellProps()} className="">
-                          <div className={cell.value === 'detail' ? 'text-primary' : ''}>
+                        <td {...cell.getCellProps()} className="padding-2rem">
+                          <div className={(cell.column.containerClass || '') + (cell.value === 'detail' ? 'text-primary' : '')}>
                             {cell.render('Cell')}
                           </div>
                         </td>
                       );
                     })}
                   </tr>
-                  {row.isExpanded ? (
-                    <tr>
-                      <td className="bg-fadeBlue" colSpan={visibleColumns.length}>
-                        {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
-                        {renderRowSubComponent({ row })}
-                      </td>
-                    </tr>
-                  ) : null}
                 </Fragment>
               );
             })}
@@ -249,9 +218,8 @@ function Table({ columns, data, renderRowSubComponent }) {
                     p >= 1 && (
                       <div
                         key={p}
-                        className={`cursor-pointer text-lg ${
-                          p === pageIndex + 1 ? 'text-primary' : ''
-                        }`}
+                        className={`cursor-pointer text-lg ${p === pageIndex + 1 ? 'text-primary' : ''
+                          }`}
                         onClick={() => {
                           const page = Number(p) - 1;
                           gotoPage(page);
@@ -280,8 +248,7 @@ function Table({ columns, data, renderRowSubComponent }) {
   );
 }
 
-function App({ columns, data, tdClassName, subComponent }) {
-  const renderRowSubComponent = React.useCallback(({ row }) => subComponent);
+function App({ columns, data, tdClassName }) {
 
   return (
     <Styles>
@@ -289,7 +256,6 @@ function App({ columns, data, tdClassName, subComponent }) {
         columns={columns}
         data={data}
         tdClassName={tdClassName}
-        renderRowSubComponent={renderRowSubComponent}
       />
     </Styles>
   );
