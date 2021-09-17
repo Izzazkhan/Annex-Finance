@@ -21,24 +21,39 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
   const setDecimals = async () => {
     const decimals = {};
-    for (const item of Object.values(constants.CONTRACT_TOKEN_ADDRESS)) {
-      if (item.id && item.id != 'ann' && item.id != 'wbnb') {
-        decimals[`${item.id}`] = {};
+
+    const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS).filter(item => {
+      return item.id && item.id != 'ann'
+    });
+
+    const contractDecimals = await Promise.all(
+      contractAddresses.map(item => {
         if (item.id !== 'bnb') {
           const tokenContract = getTokenContract(item.id);
-          const tokenDecimals = await methods.call(tokenContract.methods.decimals, []);
           const aBepContract = getAbepContract(item.id);
-          const atokenDecimals = await methods.call(aBepContract.methods.decimals, []);
-          decimals[`${item.id}`].token = Number(tokenDecimals);
-          decimals[`${item.id}`].atoken = Number(atokenDecimals);
-          decimals[`${item.id}`].price = 18 + 18 - Number(tokenDecimals);
+          return Promise.all([
+            Promise.resolve(item.id),
+            methods.call(tokenContract.methods.decimals, []),
+            methods.call(aBepContract.methods.decimals, [])
+          ]);
         } else {
-          decimals[`${item.id}`].token = 18;
-          decimals[`${item.id}`].atoken = 8;
-          decimals[`${item.id}`].price = 18;
+          return Promise.all([
+            Promise.resolve(item.id),
+            Promise.resolve(18),
+            Promise.resolve(8),
+          ]);
         }
-      }
-    }
+      })
+    );
+
+    contractDecimals.forEach(item => {
+      decimals[`${item[0]}`] = {
+        token: Number(item[1]),
+        atoken: Number(item[2]),
+        price: 18 + 18 - Number(item[1]),
+      };
+    });
+
     decimals.mantissa = +process.env.REACT_APP_MANTISSA_DECIMALS;
     decimals.comptroller = +process.env.REACT_APP_COMPTROLLER_DECIMALS;
     await setSetting({ decimals });
@@ -78,7 +93,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
         if (checkIsValidNetwork('metamask')) {
           getMarkets();
         }
-      }, 3000);
+      }, 10000);
     }
     return function cleanup() {
       if (updateTimer) {
@@ -224,12 +239,21 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       })
     );
 
-    for (
-      let index = 0;
-      index < contractData.length;
-      index += 1
-    ) {
-      const data = contractData[index];
+    const hypotheticalLiquidities = await Promise.all(
+      contractData.map(data => {
+        return methods.call(
+          appContract.methods.getHypotheticalAccountLiquidity,
+          [accountAddress, constants.CONTRACT_ABEP_ADDRESS[data[0].id].address, data[6], 0],
+        )
+      })
+    );
+
+    // for (
+    //   let index = 0;
+    //   index < contractData.length;
+    //   index += 1
+    // ) {
+    contractData.forEach((data, index) => {
       const tokenDecimal = settings.decimals[data[0].id].token;
       const allowBalance = data[0].id !== 'bnb' ? new BigNumber(data[3]).div(new BigNumber(10).pow(tokenDecimal)) : 0;
       const walletBalance = new BigNumber(data[2]).div(new BigNumber(10).pow(tokenDecimal));
@@ -272,10 +296,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       }
 
       // hypotheticalLiquidity
-      asset.hypotheticalLiquidity = await methods.call(
-        appContract.methods.getHypotheticalAccountLiquidity,
-        [accountAddress, asset.atokenAddress, data[6], 0],
-      );
+      asset.hypotheticalLiquidity = hypotheticalLiquidities[index];
 
       assetList.push(asset);
 
@@ -290,7 +311,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       }
 
       totalLiquidity = totalLiquidity.plus(new BigNumber(data[1].totalSupplyUsd || 0));
-    }
+    });
 
     // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
     // 	constants.CONTRACT_XAI_VAULT_ADDRESS
