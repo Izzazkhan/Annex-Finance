@@ -168,7 +168,7 @@ export const CONTRACT_TOKEN_ADDRESS =
       },
       trx: {
         id: 'trx',
-        symbol: 'TRON',
+        symbol: 'TRX',
         address: process.env.REACT_APP_MAIN_TRX_TOKEN_ADDRESS,
         asset: trx,
         aAsset: atrx
