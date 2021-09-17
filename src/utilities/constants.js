@@ -102,19 +102,19 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: bnb,
         aAsset: abnb
       },
-      ann: {
-        id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS,
-        asset: ann,
-        aAsset: ann
-      },
       trx: {
         id: 'trx',
         symbol: 'TRX',
         address: process.env.REACT_APP_TEST_TRX_TOKEN_ADDRESS,
         asset: trx,
         aAsset: atrx
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS,
+        asset: ann,
+        aAsset: ann
       },
       // wbtc: {
       //   id: 'wbtc',
@@ -166,6 +166,13 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: eth,
         aAsset: aeth
       },
+      trx: {
+        id: 'trx',
+        symbol: 'TRON',
+        address: process.env.REACT_APP_MAIN_TRX_TOKEN_ADDRESS,
+        asset: trx,
+        aAsset: atrx
+      },
       ann: {
         id: 'ann',
         symbol: 'ANN',
@@ -179,13 +186,6 @@ export const CONTRACT_TOKEN_ADDRESS =
         address: process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
         asset: bnb,
         aAsset: bnb
-      },
-      trx: {
-        id: 'trx',
-        symbol: 'TRON',
-        address: process.env.REACT_APP_MAIN_TRX_TOKEN_ADDRESS,
-        asset: trx,
-        aAsset: atrx
       },
       //  wbtc: {
       //   id: 'wbtc',
@@ -251,15 +251,15 @@ export const CONTRACT_ABEP_ADDRESS =
         symbol: 'aBNB',
         address: process.env.REACT_APP_TEST_BNB_ABEP_ADDRESS
       },
-      ann: {
-        id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_TEST_ANN_ABEP_ADDRESS
-      },
       trx: {
         id: 'trx',
         symbol: 'TRX',
         address: process.env.REACT_APP_TEST_TRX_ABEP_ADDRESS
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_TEST_ANN_ABEP_ADDRESS
       },
       // wbtc: {
       //   id: 'wbtc',
@@ -298,15 +298,15 @@ export const CONTRACT_ABEP_ADDRESS =
         symbol: 'aETH',
         address: process.env.REACT_APP_MAIN_ETH_ABEP_ADDRESS
       },
-      ann: {
-        id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_MAIN_ANN_ABEP_ADDRESS
-      },
       trx: {
         id: 'trx',
         symbol: 'TRX',
         address: process.env.REACT_APP_MAIN_TRX_ABEP_ADDRESS
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_MAIN_ANN_ABEP_ADDRESS
       },
       //  wbtc: {
       //   id: 'wbtc',
