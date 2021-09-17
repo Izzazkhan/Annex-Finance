@@ -81,6 +81,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       markets: res.data.markets,
       dailyAnnex: res.data.dailyAnnex,
       blockNumber: res.data.blockNumber,
+      farmTVL: res.data.farmTVL,
     });
 
     getTotalLiquidity(res.data.markets, res.data.farmTVL);
@@ -340,7 +341,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
   useEffect(() => {
     updateMarketInfo();
-  }, [account]);
+  }, [account, settings.markets]);
 
   useEffect(async () => {
     if (!account) {
