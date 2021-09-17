@@ -15,6 +15,7 @@ import fil from '../assets/images/coins/fil.png';
 import beth from '../assets/images/coins/beth.png';
 import ada from '../assets/images/coins/ada.png';
 import doge from '../assets/images/coins/doge.png';
+import trx from '../assets/images/coins/trx.png';
 
 import asxp from '../assets/images/coins/asxp.png';
 import ausdc from '../assets/images/coins/ausdc.png';
@@ -34,6 +35,7 @@ import afil from '../assets/images/coins/afil.png';
 import abeth from '../assets/images/coins/abeth.png';
 import aada from '../assets/images/coins/aada.png';
 import adoge from '../assets/images/coins/adoge.png';
+import atrx from '../assets/images/coins/atrx.png';
 
 export const NOT_INSTALLED = 'MetaMask not installed';
 export const MISSING_PROVIDER = 'Missing provider';
@@ -107,6 +109,13 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: ann,
         aAsset: ann
       },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: process.env.REACT_APP_TEST_TRX_TOKEN_ADDRESS,
+        asset: trx,
+        aAsset: atrx
+      },
       // wbtc: {
       //   id: 'wbtc',
       //   symbol: 'wbtc',
@@ -170,6 +179,13 @@ export const CONTRACT_TOKEN_ADDRESS =
         address: process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
         asset: bnb,
         aAsset: bnb
+      },
+      wbnb: {
+        id: 'trx',
+        symbol: 'TRON',
+        address: process.env.REACT_APP_MAIN_TRX_TOKEN_ADDRESS,
+        asset: trx,
+        aAsset: atrx
       },
       //  wbtc: {
       //   id: 'wbtc',
@@ -237,6 +253,11 @@ export const CONTRACT_ABEP_ADDRESS =
         symbol: 'ANN',
         address: process.env.REACT_APP_TEST_ANN_ABEP_ADDRESS
       },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: process.env.REACT_APP_TEST_TRX_ABEP_ADDRESS
+      },
       // wbtc: {
       //   id: 'wbtc',
       //   symbol: 'WBTC',
@@ -278,6 +299,11 @@ export const CONTRACT_ABEP_ADDRESS =
         id: 'ann',
         symbol: 'ANN',
         address: process.env.REACT_APP_MAIN_ANN_ABEP_ADDRESS
+      },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: process.env.REACT_APP_MAIN_TRX_ABEP_ADDRESS
       },
       //  wbtc: {
       //   id: 'wbtc',
