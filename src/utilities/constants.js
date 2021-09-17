@@ -180,7 +180,7 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: bnb,
         aAsset: bnb
       },
-      wbnb: {
+      trx: {
         id: 'trx',
         symbol: 'TRON',
         address: process.env.REACT_APP_MAIN_TRX_TOKEN_ADDRESS,
