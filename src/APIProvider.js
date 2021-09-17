@@ -169,100 +169,112 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     let totalLiquidity = new BigNumber(0);
     const assetList = [];
 
+    const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS).filter(item => {
+      return settings.decimals[item.id]
+    });
+
+    let web3 = null;
+    if (window.ethereum) {
+      web3 = new Web3(
+        Web3.givenProvider ||
+          new Web3.providers.HttpProvider(process.env.REACT_APP_WEB3_PROVIDER),
+      );
+    }
+
+    const contractData = await Promise.all(
+      contractAddresses.map(item => {
+        let market = settings.markets.find((ele) => ele.underlyingSymbol === item.symbol);
+        if (!market) market = {};
+
+        const aBepContract = getAbepContract(item.id);
+        if (item.id !== 'bnb') {
+          const tokenContract = getTokenContract(item.id);
+
+          return Promise.all([
+            Promise.resolve(item),
+            Promise.resolve(market),
+            methods.call(tokenContract.methods.balanceOf, [accountAddress]),
+            methods.call(tokenContract.methods.allowance, [
+              accountAddress,
+              constants.CONTRACT_ABEP_ADDRESS[item.id].address,
+            ]),
+            methods.call(aBepContract.methods.balanceOfUnderlying, [
+              accountAddress,
+            ]),
+            methods.call(aBepContract.methods.borrowBalanceCurrent, [
+              accountAddress,
+            ]),
+            methods.call(aBepContract.methods.balanceOf, [accountAddress]),
+          ])
+        } else {
+          return Promise.all([
+            Promise.resolve(item),
+            Promise.resolve(market),
+            web3 ? web3.eth.getBalance(accountAddress) : Promise.resolve(0),
+            Promise.resolve(1),
+            methods.call(aBepContract.methods.balanceOfUnderlying, [
+              accountAddress,
+            ]),
+            methods.call(aBepContract.methods.borrowBalanceCurrent, [
+              accountAddress,
+            ]),
+            methods.call(aBepContract.methods.balanceOf, [accountAddress]),
+          ])
+        }
+      })
+    );
+
     for (
       let index = 0;
-      index < Object.values(constants.CONTRACT_TOKEN_ADDRESS).length;
+      index < contractData.length;
       index += 1
     ) {
-      const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
-      if (!settings.decimals[item.id]) {
-        break;
-      }
-
-      let market = settings.markets.find((ele) => ele.underlyingSymbol === item.symbol);
-      if (!market) market = {};
-      const asset = {
-        key: index,
-        id: item.id,
-        img: item.asset,
-        aimg: item.aAsset,
-        name: market.underlyingSymbol || item.symbol,
-        symbol: market.underlyingSymbol || item.symbol,
-        tokenAddress: item.address,
-        asymbol: market.symbol,
-        atokenAddress: constants.CONTRACT_ABEP_ADDRESS[item.id].address,
-        supplyApy: new BigNumber(market.supplyApy || 0),
-        borrowApy: new BigNumber(market.borrowApy || 0),
-        annSupplyApy: new BigNumber(market.supplyAnnexApy || 0),
-        annBorrowApy: new BigNumber(market.borrowAnnexApy || 0),
-        collateralFactor: new BigNumber(market.collateralFactor || 0).div(1e18),
-        tokenPrice: new BigNumber(market.tokenPrice || 0),
-        liquidity: new BigNumber(market.liquidity || 0),
-        borrowCaps: new BigNumber(market.borrowCaps || 0),
-        totalBorrows: new BigNumber(market.totalBorrows2 || 0),
-        walletBalance: new BigNumber(0),
-        supplyBalance: new BigNumber(0),
-        borrowBalance: new BigNumber(0),
-        isEnabled: false,
-        collateral: false,
-        percentOfLimit: '0',
-      };
-
-      const tokenDecimal = settings.decimals[item.id].token;
-      const aBepContract = getAbepContract(item.id);
-      asset.collateral = assetsIn.includes(asset.atokenAddress);
-      // wallet balance
-      if (item.id !== 'bnb') {
-        const tokenContract = getTokenContract(item.id);
-        const walletBalance = await methods.call(tokenContract.methods.balanceOf, [accountAddress]);
-        asset.walletBalance = new BigNumber(walletBalance).div(new BigNumber(10).pow(tokenDecimal));
-
-        // allowance
-        let allowBalance = await methods.call(tokenContract.methods.allowance, [
-          accountAddress,
-          asset.atokenAddress,
-        ]);
-        allowBalance = new BigNumber(allowBalance).div(new BigNumber(10).pow(tokenDecimal));
-        asset.isEnabled = allowBalance.isGreaterThan(asset.walletBalance);
-      } else if (window.ethereum) {
-        const web3 = new Web3(
-          Web3.givenProvider ||
-            new Web3.providers.HttpProvider(process.env.REACT_APP_WEB3_PROVIDER),
-        );
-        await web3.eth.getBalance(accountAddress, (err, res) => {
-          if (!err) {
-            asset.walletBalance = new BigNumber(res).div(new BigNumber(10).pow(tokenDecimal));
-          }
-        });
-        asset.isEnabled = true;
-      }
-      // supply balance
-      const supplyBalance = await methods.call(aBepContract.methods.balanceOfUnderlying, [
-        accountAddress,
-      ]);
-      asset.supplyBalance = new BigNumber(supplyBalance).div(new BigNumber(10).pow(tokenDecimal));
-
-      // borrow balance
-      const borrowBalance = await methods.call(aBepContract.methods.borrowBalanceCurrent, [
-        accountAddress,
-      ]);
-      asset.borrowBalance = new BigNumber(borrowBalance).div(new BigNumber(10).pow(tokenDecimal));
-
-      // percent of limit
-      asset.percentOfLimit = new BigNumber(settings.totalBorrowLimit).isZero()
+      const data = contractData[index];
+      const tokenDecimal = settings.decimals[data[0].id].token;
+      const allowBalance = data[0].id !== 'bnb' ? new BigNumber(data[3]).div(new BigNumber(10).pow(tokenDecimal)) : 0;
+      const walletBalance = new BigNumber(data[2]).div(new BigNumber(10).pow(tokenDecimal));
+      const isEnabled = data[0].id !== 'bnb' ? allowBalance.isGreaterThan(walletBalance) : true;
+      const borrowBalance = new BigNumber(data[5]).div(new BigNumber(10).pow(tokenDecimal));
+      const percentOfLimit = new BigNumber(settings.totalBorrowLimit).isZero()
         ? '0'
-        : asset.borrowBalance
-            .times(asset.tokenPrice)
+        : borrowBalance
+            .times(new BigNumber(data[1].tokenPrice || 0))
             .div(settings.totalBorrowLimit)
             .times(100)
             .dp(0, 1)
             .toString(10);
 
+      const asset = {
+        key: index,
+        id: data[0].id,
+        img: data[0].asset,
+        aimg: data[0].aAsset,
+        name: data[1].underlyingSymbol || data[0].symbol,
+        symbol: data[1].underlyingSymbol || data[0].symbol,
+        tokenAddress: data[0].address,
+        asymbol: data[1].symbol,
+        atokenAddress: constants.CONTRACT_ABEP_ADDRESS[data[0].id].address,
+        supplyApy: new BigNumber(data[1].supplyApy || 0),
+        borrowApy: new BigNumber(data[1].borrowApy || 0),
+        annSupplyApy: new BigNumber(data[1].supplyAnnexApy || 0),
+        annBorrowApy: new BigNumber(data[1].borrowAnnexApy || 0),
+        collateralFactor: new BigNumber(data[1].collateralFactor || 0).div(1e18),
+        tokenPrice: new BigNumber(data[1].tokenPrice || 0),
+        liquidity: new BigNumber(data[1].liquidity || 0),
+        borrowCaps: new BigNumber(data[1].borrowCaps || 0),
+        totalBorrows: new BigNumber(data[1].totalBorrows2 || 0),
+        walletBalance,
+        supplyBalance: new BigNumber(data[4]).div(new BigNumber(10).pow(tokenDecimal)),
+        borrowBalance,
+        isEnabled,
+        collateral: assetsIn.includes(constants.CONTRACT_ABEP_ADDRESS[data[0].id].address),
+        percentOfLimit,
+      }
+
       // hypotheticalLiquidity
-      const totalBalance = await methods.call(aBepContract.methods.balanceOf, [accountAddress]);
       asset.hypotheticalLiquidity = await methods.call(
         appContract.methods.getHypotheticalAccountLiquidity,
-        [accountAddress, asset.atokenAddress, totalBalance, 0],
+        [accountAddress, asset.atokenAddress, data[6], 0],
       );
 
       assetList.push(asset);
@@ -277,8 +289,9 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
         totalBorrowLimit = totalBorrowLimit.plus(supplyBalanceUSD.times(asset.collateralFactor));
       }
 
-      totalLiquidity = totalLiquidity.plus(new BigNumber(market.totalSupplyUsd || 0));
+      totalLiquidity = totalLiquidity.plus(new BigNumber(data[1].totalSupplyUsd || 0));
     }
+
     // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
     // 	constants.CONTRACT_XAI_VAULT_ADDRESS
     // ]);
