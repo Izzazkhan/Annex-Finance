@@ -168,7 +168,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     let totalBorrowLimit = new BigNumber(0);
     let totalLiquidity = new BigNumber(0);
     const assetList = [];
-    console.log('*********', Object.values(constants.CONTRACT_TOKEN_ADDRESS))
 
     for (
       let index = 0;
@@ -176,7 +175,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       index += 1
     ) {
       const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
-      console.log('===== ', item)
       if (!settings.decimals[item.id]) {
         break;
       }
