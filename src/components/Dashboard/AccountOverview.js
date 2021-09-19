@@ -88,8 +88,8 @@ const AccountOverview = ({
   const { account, chainId } = useActiveWeb3React();
   const [showDetails, setShowDetails] = useState(false);
   const { countUp: balanceCountUp, update: balanceUpdate } = useCountUp({ end: 0 });
-  const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0 });
-  const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0 });
+  const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0, decimals: 2 });
+  const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0, decimals: 2 });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -99,11 +99,11 @@ const AccountOverview = ({
   }, [balance]);
 
   useEffect(() => {
-    supplyUpdate(Number(settings.totalSupplyBalance));
+    supplyUpdate(settings.totalSupplyBalance);
   }, [settings.totalSupplyBalance]);
 
   useEffect(() => {
-    borrowUpdate(Number(settings.totalBorrowBalance));
+    borrowUpdate(settings.totalBorrowBalance);
   }, [settings.totalBorrowBalance]);
 
   const wrongNetwork = React.useMemo(() => {
