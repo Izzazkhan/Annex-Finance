@@ -651,15 +651,9 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
   const borrowData = React.useMemo(() => {
     return borrowedAssets.map((asset) => {
-      let apy;
-      if (withANN) {
-        apy = getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
-          ? new BigNumber(0)
-          : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
-        // apy = getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
-      } else {
-        apy = asset.borrowApy;
-      }
+      const apy = withANN
+        ? getBigNumber(asset.annBorrowApy).minus(asset.borrowApy)
+        : asset.borrowApy;
 
       return {
         Asset: (
@@ -674,24 +668,25 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         Apy: (
           <div
             className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
-              withANN ? 'green' : 'red'
+              !withANN
+                ? 'red'
+                : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
+                ? 'red'
+                : 'green'
             }`}
             onClick={() => handleBorrowClickRow(asset)}
           >
-            {withANN ? (
-              <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
+            {!withANN ? (
+              <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
+            ) : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative() ? (
+              <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
             ) : (
-              <img
-                src={arrowDown}
-                style={{ marginLeft: 40 }}
-                alt={'down'}
-                className={'h-3 md:h-4'}
-              />
+              <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
             )}
             <div className="w-20 ml-2 md:ml-3">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
-                : `${apy.dp(2, 1).toString(10)}%`}
+                : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
             </div>
           </div>
         ),
