@@ -509,7 +509,7 @@ const Epoch = ({ setSetting, settings }) => {
                 {currentEpoch} epoch <span className=""></span>
               </div>
               <span className="label">
-                1 epoch is 1 day, user will receive .2% reward daily after holding for 30 days plus
+                1 epoch is 1 day, user will receive 0.2% reward daily after holding for 30 days plus
                 6% for the first 30 days of holding if no ANN token was transfer out of their
                 wallet, no reward will be given if any ANN token was removed from your wallet and
                 epoch will be reset back to 0
