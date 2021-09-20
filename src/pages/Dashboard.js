@@ -192,53 +192,6 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         }
       },
     );
-    // for (let index = 0; index < Object.values(constants.CONTRACT_ABEP_ADDRESS).length; index += 1) {
-    //   const item = Object.values(constants.CONTRACT_ABEP_ADDRESS)[index];
-
-    //   if (item.id && item != 'ann') {
-    //     const aBepContract = getAbepContract(item.id);
-    //     const supplyState = await methods.call(appContract.methods.annexSupplyState, [
-    //       item.address,
-    //     ]);
-    //     const supplyIndex = supplyState.index;
-    //     let supplierIndex = await methods.call(appContract.methods.annexSupplierIndex, [
-    //       item.address,
-    //       myAddress,
-    //     ]);
-    //     if (+supplierIndex === 0 && +supplyIndex > 0) {
-    //       supplierIndex = annexInitialIndex;
-    //     }
-    //     let deltaIndex = new BigNumber(supplyIndex).minus(supplierIndex);
-
-    //     const supplierTokens = await methods.call(aBepContract.methods.balanceOf, [myAddress]);
-    //     const supplierDelta = new BigNumber(supplierTokens)
-    //       .multipliedBy(deltaIndex)
-    //       .dividedBy(1e36);
-
-    //     annexEarned = annexEarned.plus(supplierDelta);
-
-    //     const borrowState = await methods.call(appContract.methods.annexBorrowState, [
-    //       item.address,
-    //     ]);
-    //     let borrowIndex = borrowState.index;
-    //     const borrowerIndex = await methods.call(appContract.methods.annexBorrowerIndex, [
-    //       item.address,
-    //       myAddress,
-    //     ]);
-    //     if (+borrowerIndex > 0) {
-    //       deltaIndex = new BigNumber(borrowIndex).minus(borrowerIndex);
-    //       const borrowBalanceStored = await methods.call(aBepContract.methods.borrowBalanceStored, [
-    //         myAddress,
-    //       ]);
-    //       borrowIndex = await methods.call(aBepContract.methods.borrowIndex, []);
-    //       const borrowerAmount = new BigNumber(borrowBalanceStored)
-    //         .multipliedBy(1e18)
-    //         .dividedBy(borrowIndex);
-    //       const borrowerDelta = borrowerAmount.times(deltaIndex).dividedBy(1e36);
-    //       annexEarned = annexEarned.plus(borrowerDelta);
-    //     }
-    //   }
-    // }
 
     const annexAccrued = await methods.call(appContract.methods.annexAccrued, [myAddress]);
     annexEarned = annexEarned.plus(annexAccrued).dividedBy(1e18).dp(4, 1).toString(10);
@@ -698,15 +651,9 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
   const borrowData = React.useMemo(() => {
     return borrowedAssets.map((asset) => {
-      let apy;
-      if (withANN) {
-        apy = getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
-          ? new BigNumber(0)
-          : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
-        // apy = getBigNumber(asset.annBorrowApy).minus(asset.borrowApy);
-      } else {
-        apy = asset.borrowApy;
-      }
+      const apy = withANN
+        ? getBigNumber(asset.annBorrowApy).minus(asset.borrowApy)
+        : asset.borrowApy;
 
       return {
         Asset: (
@@ -721,24 +668,25 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         Apy: (
           <div
             className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
-              withANN ? 'green' : 'red'
+              !withANN
+                ? 'red'
+                : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
+                ? 'red'
+                : 'green'
             }`}
             onClick={() => handleBorrowClickRow(asset)}
           >
-            {withANN ? (
-              <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
+            {!withANN ? (
+              <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
+            ) : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative() ? (
+              <img src={arrowDown} alt={'down'} className={'h-3 md:h-4'} />
             ) : (
-              <img
-                src={arrowDown}
-                style={{ marginLeft: 40 }}
-                alt={'down'}
-                className={'h-3 md:h-4'}
-              />
+              <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
             )}
             <div className="w-20 ml-2 md:ml-3">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
-                : `${apy.dp(2, 1).toString(10)}%`}
+                : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
             </div>
           </div>
         ),
@@ -984,7 +932,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         netAPY={netAPY}
         settings={settings}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-stretch mt-5">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 items-stretch mt-5">
         <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
           {suppliedAssets.length === 0 && nonSuppliedAssets.length === 0 && (
             <DataTable
@@ -1043,11 +991,11 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
 
       {displayWarning && (
         <div
-          className="bg-primary text-white rounded-lg py-3 px-6 mx-6 lg:mx-0 text-lg
+          className="bg-primary text-white rounded-lg py-3 px-3 md:px-6 mx-3 md:mx-6 lg:mx-0 text-lg
                 flex justify-between items-center space-x-4 mt-5"
         >
           <MiniLogo size="sm" />
-          <p className="text-black flex-grow">
+          <p className="text-black flex-grow flex-1">
             This is Beta of <strong>aToken</strong> v1. It is provided "as is" and we don't make any
             warranties, including that Annex is error-free or secure. Use it at your own risk.
           </p>
