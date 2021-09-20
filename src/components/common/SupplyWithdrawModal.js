@@ -345,7 +345,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
     }
     const safeMax = BigNumber.maximum(
       totalBorrowLimit
-        .minus(totalBorrowBalance.div(10).times(15))
+        .minus(totalBorrowBalance.div(70).times(100))
         .div(collateralFactor)
         .div(tokenPrice),
       new BigNumber(0),
@@ -543,11 +543,11 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
               }}
               isAllowed={({ value }) => {
                 const temp = new BigNumber(value || 0);
-                const { totalBorrowLimit } = settings;
+                const { totalBorrowLimit, totalBorrowBalance } = settings;
                 const { tokenPrice, collateralFactor } = record;
                 return (
                   temp.isLessThanOrEqualTo(record.supplyBalance) &&
-                  getBigNumber(totalBorrowLimit).isGreaterThanOrEqualTo(
+                  getBigNumber(totalBorrowLimit).minus(totalBorrowBalance).isGreaterThanOrEqualTo(
                     temp.times(tokenPrice).times(collateralFactor),
                   )
                 );
