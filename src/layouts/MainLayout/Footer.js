@@ -4,6 +4,7 @@ import { useActiveWeb3React } from '../../hooks';
 import { getEtherscanLink } from '../../utils';
 import { bindActionCreators } from 'redux';
 import { accountActionCreators, connectAccount } from '../../core';
+import { CONTRACT_TOKEN_ADDRESS, NETWORK_ID } from '../../utilities/constants';
 
 const Footer = ({ settings }) => {
   //   const { account, chainId, library } = useActiveWeb3React();
@@ -34,7 +35,7 @@ const Footer = ({ settings }) => {
           target={'_blank'}
           rel={'noreferrer noopener'}
           href={getEtherscanLink(
-            process.env.REACT_APP_ENV === 'dev' ? 97 : 56,
+            NETWORK_ID,
             settings.blockNumber,
             'block',
           )}
@@ -48,10 +49,8 @@ const Footer = ({ settings }) => {
       ) : null}
       <a
         href={getEtherscanLink(
-          process.env.REACT_APP_ENV === 'dev' ? 97 : 56,
-          process.env.REACT_APP_ENV === 'dev'
-            ? process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS
-            : process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS,
+          NETWORK_ID,
+          CONTRACT_TOKEN_ADDRESS.ann.address,
           'token',
         )}
         target={'_blank'}
