@@ -20,6 +20,7 @@ const Market = ({ history, settings }) => {
   const [totalSupplier, setTotalSupplier] = useState('0');
   const [totalBorrower, setTotalBorrower] = useState('0');
   const [availableLiquidity, setAvailableLiquidity] = useState('0');
+  const [totalReserves, setTotalReserves] = useState(0);
 
   const markets = settings.markets.map(market => {
     market.utilization = new BigNumber(market.totalBorrowsUsd).div(market.totalSupplyUsd).times(100).dp(2, 1).toString(10);
@@ -53,32 +54,32 @@ const Market = ({ history, settings }) => {
     setTotalSupply(
       tempTS !== 0
         ? tempTS
-            // .plus(xaiBalance)
-            .dp(2, 1)
-            .toString(10)
+          // .plus(xaiBalance)
+          .dp(2, 1)
+          .toString(10)
         : tempTS,
     );
     setTotalBorrow(tempTB !== 0 ? tempTB.dp(2, 1).toString(10) : tempTB);
     setAvailableLiquidity(
       tempAL !== 0
         ? tempAL
-            // .plus(xaiBalance)
-            .dp(2, 1)
-            .toString(10)
+          // .plus(xaiBalance)
+          .dp(2, 1)
+          .toString(10)
         : tempAL,
     );
     setTotalSupplier(
       tempAL !== 0
         ? tempTSR
-            .dp(2, 1)
-            .toString(10)
+          .dp(2, 1)
+          .toString(10)
         : tempTSR,
     );
     setTotalBorrower(
       tempAL !== 0
         ? tempTBR
-            .dp(2, 1)
-            .toString(10)
+          .dp(2, 1)
+          .toString(10)
         : tempTBR,
     );
   };
@@ -88,6 +89,22 @@ const Market = ({ history, settings }) => {
       getTotalInfo();
     }
   }, [settings.markets]);
+
+  useEffect(() => {
+    const tokenArray = Object.keys(settings.decimals)
+    let totalReservesSum = 0;
+    settings.markets.forEach((market) => {
+      tokenArray.forEach((tokenElement) => {
+        if (tokenElement === market.underlyingSymbol.toLowerCase()) {
+          totalReservesSum +=
+            (market.totalReserves / Math.pow(10, settings.decimals[tokenElement.toLowerCase()].token)) * market.tokenPrice;
+        }
+      });
+    });
+    setTotalReserves(totalReservesSum.toFixed(4))
+  }, [])
+
+
 
   const columns = useMemo(() => {
     return [
@@ -117,6 +134,7 @@ const Market = ({ history, settings }) => {
             disableFilters: true,
             // eslint-disable-next-line react/display-name
             Cell: ({ value, row }) => {
+
               return (
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
@@ -149,9 +167,9 @@ const Market = ({ history, settings }) => {
                         .isLessThan(0.01)
                         ? '0.01'
                         : new BigNumber(value)
-                            .plus(new BigNumber(row?.original?.supplyAnnexApy))
-                            .dp(2, 1)
-                            .toString(10)}
+                          .plus(new BigNumber(row?.original?.supplyAnnexApy))
+                          .dp(2, 1)
+                          .toString(10)}
                       %
                     </div>
                     <div className="text-sm">
@@ -200,13 +218,46 @@ const Market = ({ history, settings }) => {
                         .isLessThan(0.01)
                         ? '0.01'
                         : new BigNumber(value)
-                            .minus(new BigNumber(row?.original?.borrowApy))
-                            .dp(2, 1)
-                            .toString(10)}
+                          .minus(new BigNumber(row?.original?.borrowApy))
+                          .dp(2, 1)
+                          .toString(10)}
                       %
                     </div>
                     <div className="text-sm">
                       {new BigNumber(row?.original?.borrowAnnexApy).dp(2, 1).toString(10)}%
+                    </div>
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            Header: 'Total Reserves',
+            accessor: 'totalReserves',
+            disableFilters: true,
+            // eslint-disable-next-line react/display-name
+            Cell: ({ value, row }) => {
+              let totalReservesTemp = 0
+              settings?.markets && settings?.markets.length > 0 ?
+                settings.markets.forEach(element => {
+                  element.underlyingSymbol &&
+                    element.underlyingSymbol == row.values.underlyingSymbol &&
+                    settings.decimals[element.underlyingSymbol.toLowerCase()]?.token ?
+                    totalReservesTemp =
+                    ((element.totalReserves / Math.pow(10, settings.decimals[element.underlyingSymbol.toLowerCase()]?.token)) * element.tokenPrice)
+                      .toFixed(4)
+                    :
+                    ''
+                })
+                :
+                ''
+
+              return (
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className="font-bold">{currencyFormatter(value, '')}</div>
+                    <div className="text-sm">
+                      {totalReservesTemp}
                     </div>
                   </div>
                 </div>
@@ -238,8 +289,8 @@ const Market = ({ history, settings }) => {
                         .isLessThan(0.01)
                         ? '0.01'
                         : new BigNumber(value)
-                            .dp(2, 1)
-                            .toString(10)}
+                          .dp(2, 1)
+                          .toString(10)}
                       %
                     </div>
                   </div>
@@ -266,13 +317,16 @@ const Market = ({ history, settings }) => {
   return (
     <Layout mainClassName="py-8" title={'Market'}>
       <div>
-        <div className="grid grid-cols-1 gap-y-5 md:gap-y-0 md:grid-cols-5 md:gap-x-5 px-10 md:px-0">
+        <div className="grid grid-cols-1 gap-y-6 md:gap-y-0 md:grid-cols-6 md:gap-x-6 px-10 md:px-0">
           <MarketSummaryCard title={'Total Supply'}>${format(totalSupply)}</MarketSummaryCard>
 
           <MarketSummaryCard title={'Total Borrow'}>${format(totalBorrow)}</MarketSummaryCard>
 
           <MarketSummaryCard title={'Available Liquidity'}>
             ${format(availableLiquidity)}
+          </MarketSummaryCard>
+          <MarketSummaryCard title={'Total Reserves'}>
+            ${format(totalReserves)}
           </MarketSummaryCard>
           <MarketSummaryCard title={'Total Suppliers'}>
             {totalSupplier}
