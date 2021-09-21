@@ -404,6 +404,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "symbol": "WBNB",
       "decimals": 18,
       "address": process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
+      asset: bnb,
       // "contract": "FaucetToken",
     },
     busd: {
@@ -412,6 +413,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "symbol": "BUSD",
       "decimals": 18,
       "address": process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS,
+      asset: busd,
       // "contract": "FaucetToken",
     },
     btcb: {
@@ -420,6 +422,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "symbol": "BTCB",
       "decimals": 18,
       "address": process.env.REACT_APP_MAIN_BTC_TOKEN_ADDRESS,
+      asset: btc,
       // "contract": "FaucetToken",
     },
     //  wbtc: {
