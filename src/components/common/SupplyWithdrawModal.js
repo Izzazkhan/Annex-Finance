@@ -332,7 +332,26 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
    * Max amount
    */
   const handleWithdrawMaxAmount = () => {
-    setWithdrawAmount(withdrawSafeMaxBalance);
+    const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
+    const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+    const tokenPrice = getBigNumber(record.tokenPrice);
+    const { collateral } = record;
+    const supplyBalance = getBigNumber(record.supplyBalance);
+    const collateralFactor = getBigNumber(record.collateralFactor);
+    if (!collateral) {
+      setWithdrawSafeMaxBalance(supplyBalance);
+      setWithdrawAmount(supplyBalance)
+      return;
+    }
+    const safeMax = BigNumber.maximum(
+      totalBorrowLimit
+        .minus(totalBorrowBalance.div(70).times(100))
+        .div(collateralFactor)
+        .div(tokenPrice),
+      new BigNumber(0),
+    );
+    setWithdrawSafeMaxBalance(BigNumber.minimum(safeMax, supplyBalance));
+    setWithdrawAmount(BigNumber.minimum(safeMax, supplyBalance))
   };
 
   const PrimaryList = () => (
@@ -371,9 +390,9 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           <div className="text-white">
             {!withdrawAmount.isNaN()
               ? new BigNumber(withdrawAmount)
-                  .times(withdrawFeePercent / 100)
-                  .dp(4)
-                  .toString(10)
+                .times(withdrawFeePercent / 100)
+                .dp(4)
+                .toString(10)
               : 0}{' '}
             {record.symbol} ({withdrawFeePercent.toString(10)}%)
           </div>
@@ -524,11 +543,11 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
               }}
               isAllowed={({ value }) => {
                 const temp = new BigNumber(value || 0);
-                const { totalBorrowLimit } = settings;
+                const { totalBorrowLimit, totalBorrowBalance } = settings;
                 const { tokenPrice, collateralFactor } = record;
                 return (
                   temp.isLessThanOrEqualTo(record.supplyBalance) &&
-                  getBigNumber(totalBorrowLimit).isGreaterThanOrEqualTo(
+                  getBigNumber(totalBorrowLimit).minus(totalBorrowBalance).isGreaterThanOrEqualTo(
                     temp.times(tokenPrice).times(collateralFactor),
                   )
                 );
@@ -552,17 +571,17 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
       )}
       <div className="flex mt-16 bg-black rounded-4xl border border-primary">
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
-            currentTab === 'supply' ? 'bg-primaryLight text-black' : 'bg-black'
-          }`}
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${currentTab === 'supply' ?
+            'bg-primaryLight text-black' : 'bg-black'
+            }`}
           onClick={() => setCurrentTab('supply')}
         >
           Supply
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
-            currentTab === 'withdraw' ? 'bg-primaryLight text-black' : 'bg-black'
-          }`}
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${currentTab === 'withdraw' ?
+            'bg-primaryLight text-black' : 'bg-black'
+            }`}
           onClick={() => setCurrentTab('withdraw')}
         >
           Withdraw
@@ -629,21 +648,20 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
             )}
           </div>
         )}
-        {currentTab === 'withdraw' ? (
+        <div>
           <div className="flex justify-between mt-6">
-            <div className="">Protocol Balance</div>
+            <div className="">Currently Supplying</div>
             <div className="">
-              {format(record.supplyBalance.dp(8, 1).toString(10))} {record.symbol}
+              {format(record?.supplyBalance?.dp(8, 1)?.toString(10))} {record.symbol}
             </div>
           </div>
-        ) : (
           <div className="flex justify-between mt-6">
             <div className="">Wallet Balance</div>
             <div className="">
               {format(record?.walletBalance?.dp(8, 1)?.toString(10))} {record.symbol}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

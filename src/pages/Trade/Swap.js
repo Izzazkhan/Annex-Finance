@@ -52,6 +52,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   );
   const handleConfirmTokenWarning = useCallback(() => {
     setDismissTokenWarning(true);
+    localStorage.setItem('tokenWarning', 'false')
   }, []);
 
   const handleConfirmSyrupWarning = useCallback(() => {
@@ -83,13 +84,13 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
 
   const parsedAmounts = showWrap
     ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount,
-      }
+      [Field.INPUT]: parsedAmount,
+      [Field.OUTPUT]: parsedAmount,
+    }
     : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-      };
+      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+    };
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } =
     useSwapActionHandlers();
@@ -133,8 +134,8 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   const route = trade?.route;
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] &&
-      currencies[Field.OUTPUT] &&
-      parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0)),
+    currencies[Field.OUTPUT] &&
+    parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0)),
   );
   const noRoute = !route;
 
@@ -267,15 +268,14 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
 
   return (
     <div className="py-10 w-full max-w-2xl mt-6">
-      <TokenWarningModal
+      {localStorage.getItem('tokenWarning') === 'false' ? undefined : <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
-      />
+      />}
       <div
-        className={`w-full max-w-2xl py-8 px-6 sm:px-10 rounded-2xl mb-4 ${
-          trade ? 'bg-primary' : 'bg-black'
-        }`}
+        className={`w-full max-w-2xl py-8 px-6 sm:px-10 rounded-2xl mb-4 ${trade ? 'bg-primary' : 'bg-black'
+          }`}
       >
         <div className="flex justify-between">
           <div className="">
@@ -361,9 +361,9 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
           {!account ? (
             <button
               disabled={true}
-              className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 disabled:opacity-50 bg-white rounded-lg ${
-                trade ? 'bg-white rounded-3xl' : 'bgPrimaryGradient rounded-lg'
-              }`}
+              className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 disabled:opacity-50 bg-white rounded-lg ${trade
+                ? 'bg-white rounded-3xl' : 'bgPrimaryGradient rounded-lg'
+                }`}
             >
               Connect Wallet
             </button>
@@ -372,27 +372,26 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
               disabled={Boolean(wrapInputError)}
               onClick={onWrap}
               className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14
-							 ${
-                 wrapInputError
-                   ? ' disabled:opacity-50 bg-white rounded-lg'
-                   : trade
-                   ? 'bg-white rounded-3xl'
-                   : 'bgPrimaryGradient rounded-lg'
-               }`}
+							 ${wrapInputError
+                  ? ' disabled:opacity-50 bg-white rounded-lg'
+                  : trade
+                    ? 'bg-white rounded-3xl'
+                    : 'bgPrimaryGradient rounded-lg'
+                }`}
             >
               {wrapInputError ||
                 (wrapType === WrapType.WRAP
                   ? 'Wrap'
                   : wrapType === WrapType.UNWRAP
-                  ? 'Unwrap'
-                  : null)}
+                    ? 'Unwrap'
+                    : null)}
             </button>
           ) : noRoute && userHasSpecifiedInputOutput ? (
             <button
               disabled={true}
-              className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 disabled:opacity-50 bg-white rounded-lg ${
-                trade ? 'rounded-3xl' : 'rounded-lg'
-              }`}
+              className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 disabled:opacity-50 bg-white rounded-lg ${trade
+                ? 'rounded-3xl' : 'rounded-lg'
+                }`}
             >
               Insufficient liquidity for this trade.
             </button>
@@ -407,19 +406,18 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
                 onClick={approveCallback}
                 disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                 className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-xl h-14
-								 ${
-                   approval !== ApprovalState.NOT_APPROVED || approvalSubmitted
-                     ? 'bg-white disabled:opacity-50 rounded-lg'
-                     : trade
-                     ? 'bg-white rounded-3xl'
-                     : 'bgPrimaryGradient rounded-lg'
-                 }`}
+								 ${approval !== ApprovalState.NOT_APPROVED || approvalSubmitted
+                    ? 'bg-white disabled:opacity-50 rounded-lg'
+                    : trade
+                      ? 'bg-white rounded-3xl'
+                      : 'bgPrimaryGradient rounded-lg'
+                  }`}
               >
                 {approval === ApprovalState.PENDING
                   ? 'Approving'
                   : approvalSubmitted && approval === ApprovalState.APPROVED
-                  ? 'Approved'
-                  : `Approve ${currencies[Field.INPUT]?.symbol}`}
+                    ? 'Approved'
+                    : `Approve ${currencies[Field.INPUT]?.symbol}`}
               </button>
               <button
                 onClick={() => {
@@ -435,13 +433,12 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
                   !isValid || approval !== ApprovalState.APPROVED || priceImpactSeverity > 3
                 }
                 className={`focus:outline-none py-2 px-12 flex-grow text-black text-xl 2xl:text-xl h-14 
-								${
-                  !isValid || approval !== ApprovalState.APPROVED || priceImpactSeverity > 3
+								${!isValid || approval !== ApprovalState.APPROVED || priceImpactSeverity > 3
                     ? ' disabled:opacity-50 bg-white rounded-lg'
                     : trade
-                    ? 'bg-white rounded-3xl'
-                    : 'bgPrimaryGradient rounded-lg'
-                }`}
+                      ? 'bg-white rounded-3xl'
+                      : 'bgPrimaryGradient rounded-lg'
+                  }`}
               >
                 {priceImpactSeverity > 3
                   ? `Price Impact High`
@@ -461,13 +458,12 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
               }}
               disabled={!isValid || priceImpactSeverity > 3 || !!swapCallbackError}
               className={`focus:outline-none py-2 px-12 text-black text-xl 2xl:text-xl h-14 
-							${
-                !isValid || priceImpactSeverity > 3 || !!swapCallbackError
+							${!isValid || priceImpactSeverity > 3 || !!swapCallbackError
                   ? 'bg-white disabled:opacity-50 rounded-lg'
                   : trade
-                  ? 'bg-white rounded-3xl'
-                  : 'bgPrimaryGradient rounded-lg'
-              }`}
+                    ? 'bg-white rounded-3xl'
+                    : 'bgPrimaryGradient rounded-lg'
+                }`}
             >
               {swapInputError ||
                 (priceImpactSeverity > 3

@@ -248,20 +248,27 @@ const Styles = styled.div`
       .label {
         display: none;
         position: absolute;
-        bottom: auto;
-        left: calc(50% - 90px);
+        bottom: -25px;
+        left: 100%;
         color: #e2e2e2;
-        font-size: 12px;
-        width: 180px;
+        font-size: 14px;
+        font-weight: 400;
+        max-width: 270px;
+        width: max-content;
         text-align: center;
-        background: #000;
-        padding: 2px 0;
+        background: #101016;
+        padding: 5px 10px;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        top: auto;
+        border-radius: 10px;
+        line-height: normal;
+        border: 2px solid #B068009C;
         height: auto;
-        top: -35px;
-        border: none;
       }
       .tooltip-label:hover + .label {
-        display: block;
+        display: flex;
       }
     }
   }
@@ -494,21 +501,24 @@ const Epoch = ({ setSetting, settings }) => {
             </>
           )}
           <div
-            className={` ${
-              showDetails && 'open'
-            } text-center font-bold text-2xl md:text-3xl text-border absolute title-text`}
+            className={` ${showDetails && 'open'
+              } text-center font-bold text-2xl md:text-3xl text-border absolute title-text`}
           >
             <div className="tooltip relative">
               <div className="tooltip-label">
                 {currentEpoch} epoch <span className=""></span>
               </div>
-              <span className="label">{currentEpoch} epoch</span>
+              <span className="label">
+                1 epoch is 1 day, user will receive 0.2% reward daily after holding for 30 days plus
+                6% for the first 30 days of holding if no ANN token was transfer out of their
+                wallet, no reward will be given if any ANN token was removed from your wallet and
+                epoch will be reset back to 0
+              </span>
             </div>
           </div>
           <div
-            className={` ${
-              showDetails && 'custom-top mr-0'
-            } flex items-center font-bold md:mr-3 flex-col lg:flex-row`}
+            className={` ${showDetails && 'custom-top mr-0'
+              } flex items-center font-bold md:mr-3 flex-col lg:flex-row`}
           >
             <div className="text-md md:text-lg">ANN Holding Rewards : </div>
             <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
@@ -528,9 +538,8 @@ const Epoch = ({ setSetting, settings }) => {
                 <div
                   className="active-label flex font-bold items-center justify-center text-black"
                   style={{
-                    left: `calc(${
-                      Number(currentEpoch) > Number(eligibleEpochs) ? 30 : Number(currentEpoch)
-                    } * 3%)`,
+                    left: `calc(${Number(currentEpoch) > Number(eligibleEpochs) ? 30 : Number(currentEpoch)
+                      } * 3%)`,
                   }}
                 >
                   {currentEpoch}

@@ -20,8 +20,6 @@ const TypeButton = styled.button`
   font-size: 1rem;
   transition: background-color 0.3s ease;
   border: none;
-
-
   &::before {
     content: "";
     width: 100%;
@@ -35,18 +33,15 @@ const TypeButton = styled.button`
     transform-origin: ${({ active, reverse }) => reverse ? "left center" : "right center"};
     transition: transform ease 0.3s;
   }
-
   &:hover {
     background-color: rgba(255, 171, 45, 0.05);
   }
-
   &:hover,
   &:focus,
   &:active {
     outline: none;
     box-shadow: none;
   }
-
   @media (max-width: 767px) {
     flex-grow: 1;
   }
@@ -153,21 +148,25 @@ const MarketHistory = ({
                         <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center lg:space-y-1">
                             <div className="text-base lg:text-center">Net APY</div>
                             <div className="font-bold text-lg text-right lg:text-center">
-                                {`${new BigNumber(
+                                {getBigNumber(
                                     activeType === TYPES.Supply
-                                        ? selectedAsset?.supplyBalance
-                                        : selectedAsset?.borrowBalance
+                                        ? (selectedAsset ? ((selectedAsset.annSupplyApy && selectedAsset.supplyApy)?
+                                            (new BigNumber(selectedAsset.annSupplyApy).plus(selectedAsset.supplyApy)):0):0)
+                                        : (selectedAsset ? ((selectedAsset.annBorrowApy && selectedAsset.borrowApy)?
+                                            (new BigNumber(selectedAsset.annBorrowApy).minus(selectedAsset.borrowApy)):0):0)
+                                )
+                                    .dp(2, 1)
+                                    .isGreaterThan(100000000)
+                                    ? "Infinity"
+                                    : getBigNumber(
+                                    activeType === TYPES.Supply
+                                        ? (selectedAsset ? ((selectedAsset.annSupplyApy && selectedAsset.supplyApy)?
+                                            (new BigNumber(selectedAsset.annSupplyApy).plus(selectedAsset.supplyApy)):0):0)
+                                        : (selectedAsset ? ((selectedAsset.annBorrowApy && selectedAsset.borrowApy)?
+                                            (new BigNumber(selectedAsset.annBorrowApy).minus(selectedAsset.borrowApy)):0):0)
                                     )
-                                        ?.times(selectedAsset?.tokenPrice || 0)
-                                        ?.times(apy?.toString(10))
-                                        ?.dividedBy(
-                                            activeType === TYPES.Supply
-                                                ? settings.totalSupplyBalance
-                                                : settings.totalBorrowBalance
-                                        )
-                                        ?.dp(2, 1)
-                                        ?.toString(10)}%`
-                                }
+                                    .dp(2, 1)
+                                    .toString(10) + "%"}
                             </div>
                         </div>
                         <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center lg:space-y-1 relative pl-8 lg:pl-5">
@@ -237,6 +236,14 @@ const MarketHistory = ({
                                     ).dp(2, 1).toString(10),
                                     2
                                 )}`}
+                                {/* {`$${activeType === TYPES.Supply
+                                      ? Number(marketInfo.totalSupplyUsd) < 1000000
+                                        ? Number(marketInfo.totalSupplyUsd).toFixed(2)
+                                        : `${Number(marketInfo.totalSupplyUsd) / 10000000}M`
+                                      : Number(marketInfo.totalBorrowsUsd) < 1000000
+                                      ? Number(marketInfo.totalBorrowsUsd).toFixed(2)
+                                      : `${Number(marketInfo.totalBorrowsUsd) / 10000000}M`
+                                  }`} */}
                             </div>
                         </div>
                     </div>
