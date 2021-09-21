@@ -20,7 +20,7 @@ const Market = ({ history, settings }) => {
   const [totalSupplier, setTotalSupplier] = useState('0');
   const [totalBorrower, setTotalBorrower] = useState('0');
   const [availableLiquidity, setAvailableLiquidity] = useState('0');
-  const [totalReserves, setTotalReserves] = useState('0');
+  const [totalReserves, setTotalReserves] = useState(0);
 
   const markets = settings.markets.map(market => {
     market.utilization = new BigNumber(market.totalBorrowsUsd).div(market.totalSupplyUsd).times(100).dp(2, 1).toString(10);
@@ -91,11 +91,11 @@ const Market = ({ history, settings }) => {
   }, [settings.markets]);
 
   useEffect(() => {
-    const tokenArray = ["USDC", "USDT", 'BNB', 'BUSD'];
+    const tokenArray = Object.keys(settings.decimals)
     let totalReservesSum = 0;
     settings.markets.forEach((market) => {
       tokenArray.forEach((tokenElement) => {
-        if (tokenElement === market.underlyingSymbol) {
+        if (tokenElement === market.underlyingSymbol.toLowerCase()) {
           totalReservesSum +=
             (market.totalReserves / Math.pow(10, settings.decimals[tokenElement.toLowerCase()].token)) * market.tokenPrice;
         }
@@ -103,7 +103,6 @@ const Market = ({ history, settings }) => {
     });
     setTotalReserves(totalReservesSum.toFixed(4))
   }, [])
-
 
 
 
@@ -238,13 +237,13 @@ const Market = ({ history, settings }) => {
             disableFilters: true,
             // eslint-disable-next-line react/display-name
             Cell: ({ value, row }) => {
-              let totalReserves = 0
+              let totalReservesTemp = 0
               settings?.markets && settings?.markets.length > 0 ?
                 settings.markets.forEach(element => {
                   element.underlyingSymbol &&
                     element.underlyingSymbol == row.values.underlyingSymbol &&
                     settings.decimals[element.underlyingSymbol.toLowerCase()]?.token ?
-                    totalReserves =
+                    totalReservesTemp =
                     ((element.totalReserves / Math.pow(10, settings.decimals[element.underlyingSymbol.toLowerCase()]?.token)) * element.tokenPrice)
                       .toFixed(4)
                     :
@@ -258,7 +257,7 @@ const Market = ({ history, settings }) => {
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">{currencyFormatter(value, '')}</div>
                     <div className="text-sm">
-                      {totalReserves}
+                      {totalReservesTemp}
                     </div>
                   </div>
                 </div>
