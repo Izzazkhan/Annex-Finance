@@ -267,11 +267,11 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
 
   return (
     <div className="py-10 w-full max-w-2xl mt-6">
-      {/* <TokenWarningModal
+      <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
-      /> */}
+      />
       <div
         className={`w-full max-w-2xl py-8 px-6 sm:px-10 rounded-2xl mb-4 ${
           trade ? 'bg-primary' : 'bg-black'
