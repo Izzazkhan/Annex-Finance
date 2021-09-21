@@ -188,10 +188,13 @@ function Trade() {
         <SettingsModal open={settingsOpen} onCloseModal={() => setSettingsOpen(false)} />
         <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
         <div
+          className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl"
+        >
+        {/* <div
           className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl 
             grid grid-cols-1 gap-y-6 lg:grid-cols-8 lg:gap-x-6 mt-8 p-5"
-        >
-          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar">
+        > */}
+          {/* <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar">
             <div className="text-white text-xl font-bold p-5 pt-6">Liquidity By </div>
             <div className=" scroll pr-2">
               {swapData.map((item, index) => {
@@ -251,8 +254,8 @@ function Trade() {
                 );
               })}
             </div>
-          </div>
-          <div className="col-span-4">
+          </div> */}
+          {/* <div className="col-span-4"> */}
             <div className="flex space-x-3 mt-14 justify-center">
               {buttons?.map((b) => (
                 <button
@@ -305,9 +308,9 @@ function Trade() {
                 <Redirect to={`${path}/swap`} />
               </Switch>
             </Switch>
-          </div>
+          {/* </div> */}
 
-          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right ">
+          {/* <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right ">
             <div className="text-white text-xl font-bold p-5 pt-6">24hrs Change</div>
             <div className=" scroll pl-2">
               {liquidity.map((item, index) => {
@@ -368,7 +371,7 @@ function Trade() {
               })}
 
             </div>
-          </div>
+          </div> */}
         </div>
       </Layout>
     </Styles>
