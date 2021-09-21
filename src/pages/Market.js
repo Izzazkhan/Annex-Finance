@@ -255,7 +255,7 @@ const Market = ({ history, settings }) => {
               return (
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
-                    <div className="font-bold">{currencyFormatter(value, '')}</div>
+                    <div className="font-bold">{currencyFormatter(value, 'reservesValue')}</div>
                     <div className="text-sm">
                       {totalReservesTemp}
                     </div>
