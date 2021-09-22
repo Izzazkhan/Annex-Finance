@@ -18,6 +18,7 @@ const Styles = styled.div`
 
 
 function Cards({ data, addLiquidity, settings }) {
+    console.log('data: ', data)
 
 
     const getTokenDetails = (symbol) => {
@@ -124,9 +125,35 @@ function Cards({ data, addLiquidity, settings }) {
                                     onClick={() => {
 
                                     }}>Add Liquidity</button>
-                                <div className="mt-5 flex justify-center text-2xl text-primary cursor-pointer" onClick={() => {
+                                {
+                                    new BigNumber(item.userData.allowance).isGreaterThan(0) ? (
+                                        <div>
+                                            <button
+                                                className={`py-2.5 px-28 text-black font-bold 
+                                                    bgPrimaryGradient rounded-3xl mt-5 w-full 
+                                                    text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
+                                                onClick={() => {
 
-                                }}>Approve Staking</div>
+                                                }}>Stake</button>
+                                            {
+                                                new BigNumber(item.userData.stakedBalance).isGreaterThan(0) && (
+                                                    <button
+                                                        className={`py-2.5 px-28 text-black font-bold 
+                                                            bgPrimaryGradient rounded-3xl mt-5 w-full 
+                                                            text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
+                                                        onClick={() => {
+
+                                                        }}>UnStake</button>
+                                                )
+                                            }
+                                        </div>
+                                    ) : (
+                                        <div className="mt-5 flex justify-center text-2xl text-primary cursor-pointer" onClick={() => {
+
+                                        }}>Approve Staking</div>
+                                    )
+                                }
+                                
                             </div>
                         )
                     })
