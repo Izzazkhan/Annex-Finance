@@ -23,6 +23,8 @@ const Market = ({ history, settings }) => {
   const [totalReserves, setTotalReserves] = useState(0);
 
   const markets = settings.markets.map(market => {
+    const decimals = market.underlyingSymbol ? settings.decimals[market.underlyingSymbol.toLowerCase()]?.token : 18;
+    market.reserveUSD = new BigNumber(market.totalReserves).div(new BigNumber(10).pow(decimals));
     market.utilization = new BigNumber(market.totalBorrowsUsd).div(market.totalSupplyUsd).times(100).dp(2, 1).toString(10);
     return market;
   });
@@ -44,6 +46,9 @@ const Market = ({ history, settings }) => {
     }, 0);
     const tempTBR = (settings.markets || []).reduce((accumulator, market) => {
       return new BigNumber(accumulator).plus(new BigNumber(market.borrowerCount));
+    }, 0);
+    const tempRSV = (settings.markets || []).reduce((accumulator, market) => {
+      return new BigNumber(accumulator).plus(new BigNumber(market.reserveUSD).times(market.tokenPrice));
     }, 0);
 
     // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
@@ -82,6 +87,13 @@ const Market = ({ history, settings }) => {
           .toString(10)
         : tempTBR,
     );
+    setTotalReserves(
+      tempRSV !== 0
+        ? tempRSV
+          .dp(2, 1)
+          .toString(10)
+        : tempRSV,
+    );
   };
 
   useEffect(() => {
@@ -89,22 +101,6 @@ const Market = ({ history, settings }) => {
       getTotalInfo();
     }
   }, [settings.markets]);
-
-  useEffect(() => {
-    const tokenArray = Object.keys(settings.decimals)
-    let totalReservesSum = 0;
-    settings.markets.forEach((market) => {
-      tokenArray.forEach((tokenElement) => {
-        if (tokenElement === market.underlyingSymbol.toLowerCase()) {
-          totalReservesSum +=
-            (market.totalReserves / Math.pow(10, settings.decimals[tokenElement.toLowerCase()].token)) * market.tokenPrice;
-        }
-      });
-    });
-    setTotalReserves(totalReservesSum.toFixed(4))
-  }, [])
-
-
 
   const columns = useMemo(() => {
     return [
@@ -233,31 +229,18 @@ const Market = ({ history, settings }) => {
           },
           {
             Header: 'Total Reserves',
-            accessor: 'totalReserves',
+            accessor: 'reserveUSD',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
             Cell: ({ value, row }) => {
-              let totalReservesTemp = 0
-              settings?.markets && settings?.markets.length > 0 ?
-                settings.markets.forEach(element => {
-                  element.underlyingSymbol &&
-                    element.underlyingSymbol == row.values.underlyingSymbol &&
-                    settings.decimals[element.underlyingSymbol.toLowerCase()]?.token ?
-                    totalReservesTemp =
-                    ((element.totalReserves / Math.pow(10, settings.decimals[element.underlyingSymbol.toLowerCase()]?.token)) * element.tokenPrice)
-                      .toFixed(4)
-                    :
-                    ''
-                })
-                :
-                ''
+              const reserveUSD = new BigNumber(value).times(row.values.tokenPrice).dp(2, 1).toString(10);
 
               return (
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
-                    <div className="font-bold">{currencyFormatter(value, 'reservesValue')}</div>
+                    <div className="font-bold">{currencyFormatter(reserveUSD, '')}</div>
                     <div className="text-sm">
-                      {totalReservesTemp}
+                      {value.dp(2, 1).toString(10)}
                     </div>
                   </div>
                 </div>
@@ -317,7 +300,7 @@ const Market = ({ history, settings }) => {
   return (
     <Layout mainClassName="py-8" title={'Market'}>
       <div>
-        <div className="grid grid-cols-1 gap-y-6 md:gap-y-0 md:grid-cols-6 md:gap-x-6 px-10 md:px-0">
+        <div className="grid grid-cols-1 gap-y-6 lg:gap-y-6 md:gap-y-6 xl:grid-cols-6 lg:grid-cols-3 md:grid-cols-2 md:gap-x-6 px-10 md:px-0">
           <MarketSummaryCard title={'Total Supply'}>${format(totalSupply)}</MarketSummaryCard>
 
           <MarketSummaryCard title={'Total Borrow'}>${format(totalBorrow)}</MarketSummaryCard>
