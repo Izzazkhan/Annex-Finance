@@ -224,7 +224,7 @@ const NavItems = ({
       <div className="flex flex-col space-y-4 text-white">
         {items?.map((i) => (
           <div key={i.key}>
-            {i.title === 'Farms' ? <a
+            {i.title === 'Monks Farms' ? <a
               target={'_blank'}
               rel={'noreferrer noopener'}
               href={'https://farm.annex.finance/'}
