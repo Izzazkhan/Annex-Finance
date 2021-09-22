@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import underscore from '../../assets/icons/underscore.svg';
 import filledArrow from '../../assets/icons/filledArrow.svg';
 import logo from '../../assets/icons/logo.svg';
+import annexLogo from '../../assets/images/annex-logo.png';
+import pcsLogo from '../../assets/images/pancakeswap-logo.png';
 import Navigation from '../../components/common/Navigation';
 import RouteMap from '../../routes/RouteMap';
 import { methods } from '../../utilities/ContractService';
@@ -145,6 +147,16 @@ const Wrapper = styled.aside`
 const Logo = styled.img`
   width: 160px;
   height: 40px;
+`;
+
+const PlatformLogo = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+`;
+
+const PlatformLink = styled.a`
+  color: #fff;
 `;
 
 const sidebarItems = [
@@ -349,7 +361,34 @@ function Sidebar({ isOpen, onClose, settings }) {
         // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8">
-          <div className="font-bold text-white margin-bottom-20">{`ANN Price: $${settings.annPrice}`}</div>
+          <div className="font-bold text-white margin-bottom-20">
+            <PlatformLink
+              href="https://pancakeswap.finance/swap"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <PlatformLogo
+                src={pcsLogo}
+                alt="plusButtonIcon"
+                className="inline cursor-pointer"
+              />
+              {`ANN Price: $${settings.annPricePCS}`}
+            </PlatformLink>
+          </div>
+          <div className="font-bold text-white margin-bottom-20">
+            <PlatformLink
+              href="/trade/swap"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <PlatformLogo
+                src={annexLogo}
+                alt="plusButtonIcon"
+                className="inline cursor-pointer"
+              />
+              {`ANN Price: $${settings.annPrice}`}
+            </PlatformLink>
+          </div>
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
