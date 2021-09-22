@@ -2,8 +2,6 @@ import {useDispatch, useSelector} from "react-redux";
 import useRefresh from "../../../hooks/useRefresh";
 import {useActiveWeb3React} from "../../../hooks";
 import {useEffect} from "react";
-import farmsConfig from '../../../constants/farms';
-import {nonArchivedFarms} from "../initialState";
 import BigNumber from "bignumber.js";
 import {BIG_ZERO} from "../../../utils/bigNumber";
 import {getBalanceAmount} from "../../../utils/formatBalance";

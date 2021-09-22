@@ -41,6 +41,7 @@ function Farms({ settings }) {
   const getTokenDetails = (symbol) => {
     return settings.assetList.find((obj => obj.symbol === symbol))
   }
+  console.log('pair: ', pairs)
 
   const columns = [
     {

@@ -106,8 +106,6 @@ const burn = {
 
 const farms = { data: [], userDataLoaded: false }
 
-export const nonArchivedFarms = []
-
 const pools = {
   data: [...poolsConfig],
   userDataLoaded: false,

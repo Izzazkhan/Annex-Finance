@@ -113,8 +113,25 @@ function Cards({ data, addLiquidity, settings }) {
                                     <div className="flex w-6/12">
                                         <img src={annCoin} alt="" className="mr-9 h-8" />
                                         <div className="flex flex-col">
-                                            <span className="font-bold">{item.earned} ANN</span>
-                                            <span className="mt-2 text-primary">No Rewards</span>
+                                            <span className="font-bold">
+                                                {new BigNumber(item.userData ? item.userData.earnings : 0)
+                                                    .div(1e18)
+                                                    .dp(2, 1)
+                                                    .toString(10)} ANN
+                                            </span>
+                                            {
+                                                new BigNumber(item.userData ? item.userData.earnings : 0).isGreaterThan(0) ? (
+                                                    <button
+                                                        className={`py-2.5 px-14 text-black font-bold 
+                                                            bgPrimaryGradient rounded-3xl mt-5 
+                                                            text-2xl outline-none}`}
+                                                        onClick={() => {
+
+                                                        }}>UnStake</button>
+                                                ) : (
+                                                    <span className="mt-2 text-primary">No Rewards</span>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                 </div>
