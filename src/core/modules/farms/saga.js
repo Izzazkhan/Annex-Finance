@@ -13,9 +13,9 @@ export function* asyncGetFarmsData({ payload }) {
             params: {}
         });
         if (response.status === 200) {
-            resolve({ error: false, ...response });
+            resolve({ error: false, ...response.data });
         } else {
-            resolve({ error: true, ...response });
+            resolve({ error: true, ...response.data });
         }
     } catch (e) {
         resolve({ error: true, err: e });

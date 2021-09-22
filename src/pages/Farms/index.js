@@ -180,53 +180,6 @@ function Farms({ settings, setSetting, account, database }) {
       )
     },
   ]
-  const databaseTemp = [
-    {
-      coin: 'Etherium',
-      coinAbbr: 'ETH',
-      yield: 0.43,
-      APY: 13.7,
-      liquidity: '$161,150.71',
-      staked: '$0.00',
-      earned: 0,
-    },
-    {
-      coin: 'Binance',
-      coinAbbr: 'BND',
-      yield: 0.43,
-      APY: 13.7,
-      liquidity: '$261,150.71',
-      staked: '$0.00',
-      earned: 0,
-    },
-    {
-      coin: 'Binance',
-      coinAbbr: 'BND',
-      yield: 0.43,
-      APY: 13.7,
-      liquidity: '$261,150.71',
-      staked: '$0.00',
-      earned: 0,
-    },
-    {
-      coin: 'Etherium',
-      coinAbbr: 'ETH',
-      yield: 0.43,
-      APY: 13.7,
-      liquidity: '$261,150.71',
-      staked: '$0.00',
-      earned: 0,
-    },
-    {
-      coin: 'Etherium',
-      coinAbbr: 'ETH',
-      yield: 0.43,
-      APY: 13.7,
-      liquidity: '$261,150.71',
-      staked: '$0.00',
-      earned: 0,
-    },
-  ]
   const sortOptions = [
     { name: 'Hot' },
     { name: 'APR' },
@@ -263,7 +216,7 @@ function Farms({ settings, setSetting, account, database }) {
 
       <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 pt-0 py-6
         ">
-        <div className="col-span-2 flex items-center">
+        <div className="col-span-5 flex items-center">
           <div className="list-icon">
             <a href="#" onClick={() => setIsGridView(false)}>
               <img
@@ -283,29 +236,11 @@ function Farms({ settings, setSetting, account, database }) {
             </a>
           </div>
         </div>
-        <div className="col-span-5 flex items-center">
-          <div className="relative flex border border-primary rounded-3xl">
-            <div
-              className={`flex absolute h-full w-6/12 bgPrimaryGradient rounded-3xl 
-              border border-primary transition-all ` + (cryptoToggle === "ETH" ? "" : "ml-40")}></div>
-            <a
-              className={`focus:outline-none bg-transparent py-2 px-4 
-                rounded-3xl w-40 text-center z-10 cursor-pointer ` + (cryptoToggle === "ETH" ? "text-black font-bold" : "text-primary")}
-              onClick={() => setCryptoToggle('ETH')}
-            >
-              Ethereum</a>
-            <a
-              className={`focus:outline-none bg-transparent py-2 px-4
-                rounded-3xl w-40 text-center z-10 cursor-pointer ` + (cryptoToggle === "ETH" ? "text-primary" : "text-black font-bold")}
-              onClick={() => setCryptoToggle('BNB')}
-            >Binance</a>
-          </div>
-          <div className="flex items-center text-white ml-5 pt-2">
+        <div className="col-span-7 flex items-center">
+          <div className="flex items-center text-white mr-5 pt-2">
             <Switch value={onlyStaked} onChange={() => setOnlyStaked((oldVal) => !oldVal)} />
             <div className="ml-2 mb-2">Staked only</div>
           </div>
-        </div>
-        <div className="col-span-5 flex items-center">
           <div className="mr-5">
             <Select className="border-primary" selectedClassName="px-4 py-2" type="custom-primary" options={sortOptions} />
           </div>
