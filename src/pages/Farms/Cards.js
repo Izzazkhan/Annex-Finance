@@ -123,11 +123,11 @@ function Cards({ data, addLiquidity, settings }) {
                                                 new BigNumber(item.userData ? item.userData.earnings : 0).isGreaterThan(0) ? (
                                                     <button
                                                         className={`py-2.5 px-14 text-black font-bold 
-                                                            bgPrimaryGradient rounded-3xl mt-5 
-                                                            text-2xl outline-none}`}
+                                                            bgPrimaryGradient rounded-md mt-5 
+                                                            text-md outline-none}`}
                                                         onClick={() => {
 
-                                                        }}>UnStake</button>
+                                                        }}>Harvest Now</button>
                                                 ) : (
                                                     <span className="mt-2 text-primary">No Rewards</span>
                                                 )
