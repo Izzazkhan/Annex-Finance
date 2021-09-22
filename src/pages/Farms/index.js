@@ -48,7 +48,7 @@ function Farms({ settings }) {
       // accessor: 'farms',
       disableSortBy: true,
       Cell: ({ value, row }) => {
-        const token1Details = getTokenDetails(row.original?.token1Name)
+        const token1Details = getTokenDetails(row.original?.token1Symbol)
         return (
           <div className="flex justify-center">
             <div className="flex flex-1">
@@ -57,8 +57,10 @@ function Farms({ settings }) {
                 {token1Details && <img src={token1Details.img} alt="" className="h-8 absolute right-0 bottom-0" />}
               </div>
               <div className="flex flex-col w-8/12">
-                <span className="font-bold">{row.original.token1Name && `${row.original.token1Name} Token Wrapped `}{row.original.token0Name}</span>
-                <span className="mt-1 text-xs font-light">{row.original.token0Name}{row.original.token1Name && ` - ${row.original.token1Name}`}</span>
+                <span className="font-bold">{row.original.token1Name && `${row.original.token1Name}`} {row.original.token0Name}</span>
+                <span className="mt-1 text-xs font-light">
+                  {row.original.token0Symbol}{row.original.token1Symbol && ` - ${row.original.token1Symbol}`}
+                </span>
               </div>
             </div>
             <div className="mr-4">

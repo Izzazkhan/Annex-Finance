@@ -32,7 +32,7 @@ function Cards({ data, addLiquidity, settings }) {
                 {/* <div> */}
                 {
                     data.map((item, key) => {
-                        const token1Details = getTokenDetails(item.token1Name)
+                        const token1Details = getTokenDetails(item.token1Symbol)
                         return (
                             <div key={key} className="text-white text-base py-7 px-6 m-6 rounded-3xl border border-primary">
                                 <div className="flex justify-between">
@@ -43,9 +43,9 @@ function Cards({ data, addLiquidity, settings }) {
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="font-bold">
-                                                {item.token1Name && (item.token1Name + "  Token Wrapped ")}{item.token0Name}
+                                                {item.token1Name && (item.token1Name + " ")}{item.token0Name}
                                             </span>
-                                            <span className="mt-2">{item.token0Name}{item.token1Name && ` - ${item.token1Name}`}</span>
+                                            <span className="mt-2">{item.token0Symbol}{item.token1Symbol && ` - ${item.token1Symbol}`}</span>
                                         </div>
                                     </div>
                                     <div className="mr-4">
