@@ -15,6 +15,8 @@ import farmsConfig from '../../../constants/farms';
 export const LOAD_ARCHIVED_FARMS_DATA = "LOAD_ARCHIVED_FARMS_DATA";
 export const SET_FARMS_PUBLIC_DATA = "SET_FARMS_PUBLIC_DATA";
 export const SET_FARMS_USER_DATA = "SET_FARMS_USER_DATA";
+export const GET_FARMS_ACCOUNT_DATA = "GET_FARMS_ACCOUNT_DATA";
+export const SET_FARMS_ACCOUNT_DATA = "SET_FARMS_ACCOUNT_DATA";
 
 
 /**
@@ -24,6 +26,8 @@ export const farmsActionCreators = {
     loadArchivedFarmsData: createAction(LOAD_ARCHIVED_FARMS_DATA),
     setFarmsPublicData: createAction(SET_FARMS_PUBLIC_DATA),
     setFarmsUserData: createAction(SET_FARMS_USER_DATA),
+    getFarmsData: createAction(GET_FARMS_ACCOUNT_DATA),
+    setFarmsAccountData: createAction(SET_FARMS_ACCOUNT_DATA),
 };
 
 

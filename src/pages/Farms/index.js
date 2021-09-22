@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../layouts/MainLayout/MainLayout';
 import Table from './Table';
 import Cards from './Cards';
@@ -19,51 +19,114 @@ import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
 import annCoin from '../../assets/images/coins/ann.png'
 import ethCoin from '../../assets/images/coins/ceth.png'
 import upArrow from '../../assets/icons/arrowUp.png'
+import annLogo from '../../assets/icons/logoSolid.svg'
+import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
+import { accountActionCreators, connectAccount, farmsActionCreators } from 'core';
+import { connect, useDispatch } from 'react-redux';
+import { promisify } from 'utilities';
+import { bindActionCreators } from 'redux';
+import BigNumber from 'bignumber.js';
+import commaNumber from 'comma-number';
+import _ from 'lodash';
 
 
-function Farms() {
+function Farms({ settings, setSetting, account, database }) {
   const [cryptoToggle, setCryptoToggle] = useState('ETH')
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
   const [showLiquidityModal, setShowLiquidityModal] = useState(false)
   const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
+  // const [database, setDatabase] = useState([])
+  const [filteredDatabase, setFilteredDatabase] = useState([])
+
+  const dispatch = useDispatch()
+
+  const format = commaNumber.bindWith(',', '.');
+
+  useEffect(() => {
+    const { getFarmsData, setFarmsAccountData } = farmsActionCreators;
+    dispatch(
+      getFarmsData({
+        resolve: (res) => {
+          if (!res.error && res.data?.pairs) {
+            dispatch(setFarmsAccountData(res.data.pairs))
+            setFilteredDatabase(res.data.pairs)
+          }
+        }
+      })
+    )
+  }, [])
+
+  useEffect(() => {
+    if ((database && database.length !== 0) && filteredDatabase.length === 0) {
+      setFilteredDatabase(database)
+    }
+  }, [database])
+
+  const getTokenDetails = (symbol) => {
+    return settings.assetList.find((obj => obj.symbol === symbol))
+  }
 
   const columns = [
     {
       Header: 'Farms',
       // accessor: 'farms',
       disableSortBy: true,
-      Cell: ({ value, row }) => (
-        <div className="flex justify-center">
-          <div className="mr-5 relative h-12 w-12">
-            <img src={annCoin} alt="" className="h-8" />
-            <img src={ethCoin} alt="" className="h-8 absolute right-0 bottom-0" />
+      Cell: ({ value, row }) => {
+        const token1Details = getTokenDetails(row.original.token1Name)
+        return (
+          <div className="flex justify-center">
+            <div className="flex flex-1">
+              <div className="mr-5 relative h-12 w-12">
+                <img src={annCoin} alt="" className="h-8" />
+                {token1Details && <img src={token1Details.img} alt="" className="h-8 absolute right-0 bottom-0" />}
+              </div>
+              <div className="flex flex-col w-8/12">
+                <span className="font-bold">{row.original.token1Name && `${row.original.token1Name} Token Wrapped `}{row.original.token0Name}</span>
+                <span className="mt-1 text-xs font-light">{row.original.token0Name}{row.original.token1Name && ` - ${row.original.token1Name}`}</span>
+              </div>
+            </div>
+            <div className="mr-4">
+              {
+                row.original.type === 'pancake_lp' ? (
+                  <img src={pancakeLogo} alt="" className="h-8" title={row.original.lpName} />
+                ) : (
+                  <img src={annLogo} alt="" className="h-8" title={row.original.lpName} />
+                )
+              }
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="font-bold">{row.original.coin} Token Wrapped ANN</span>
-            <span className="mt-1 text-xs font-light">ANN - {row.original.coinAbbr}</span>
-          </div>
-        </div>
-      ),
+        )
+      },
     },
     {
       Header: () => (<>Yield <span className="text-sm font-light">(per $1,000)</span></>),
-      accessor: 'yield',
+      accessor: 'rewardPerDay',
       disableSortBy: true,
       Cell: ({ value, row }) => (
         <div className="flex flex-col text-sm">
-          <span className="font-light">{value} ANN / Day</span>
-          <span className="text-primary font-bold">100 allocPoint</span>
+          <span className="font-light">
+            {format(
+              new BigNumber(value)
+                .dp(2)
+                .toString(10)
+            )} ANN / Day
+          </span>
+          <span className="text-primary font-bold">{row.original.allocPoint} allocPoint</span>
         </div>
       )
     },
     {
       Header: 'APY',
-      accessor: 'APY',
+      accessor: 'apy',
       Cell: ({ value, row }) => (
         <span className="font-bold flex items-center justify-center">
           <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
-          {value}%
+          {format(
+            new BigNumber(value)
+              .dp(2)
+              .toString(10)
+          )}%
         </span>
       )
     },
@@ -71,6 +134,13 @@ function Farms() {
       Header: 'Liquidity',
       accessor: 'liquidity',
       // sortedContainerClass: 'ml-6',
+      Cell: ({ value, row }) => (
+        `$${format(
+          new BigNumber(value)
+            .dp(2)
+            .toString(10)
+        )}`
+      )
     },
     {
       Header: 'Stacked',
@@ -101,16 +171,16 @@ function Farms() {
       disableSortBy: true,
       Cell: ({ value, row }) => (
         <div>
-          <button className="text-primary font-bold 
+          {row.original.token1 && <button className="text-primary font-bold 
               rounded-3xl p-2 outline-none border border-primary" onClick={() => { setShowLiquidityModal(true) }}>
             Add Liquidity
-          </button>
+          </button>}
           <div className="mt-2 flex justify-center cursor-pointer">Approve Staking</div>
         </div>
       )
     },
   ]
-  const database = [
+  const databaseTemp = [
     {
       coin: 'Etherium',
       coinAbbr: 'ETH',
@@ -164,8 +234,21 @@ function Farms() {
     { name: 'Earned' },
     { name: 'Liquidity' },
   ];
-  const data = React.useMemo(() => database, []);
+  const data = React.useMemo(() => filteredDatabase, [filteredDatabase]);
   const handleFocus = (event) => event.target.select();
+
+  const filterSearch = (search) => {
+    const data = database.filter((obj, index) => {
+      let check = false
+      _.forEach(obj, (val, key) => {
+        if (_.lowerCase(val).includes(search) || `${val}`.includes(search) || search.trim() === '') {
+          check = true
+        }
+      })
+      return check
+    })
+    setFilteredDatabase(data)
+  }
 
   return (
     <Layout mainClassName="min-h-screen py-8">
@@ -233,6 +316,9 @@ function Farms() {
                  rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
               type="text"
               placeholder="Search"
+              onChange={(event) => {
+                filterSearch(event.target.value)
+              }}
             />
           </div>
 
@@ -263,4 +349,42 @@ function Farms() {
   );
 }
 
-export default Farms;
+// Farms.defaultProps = {
+//   settings: {},
+// };
+
+// const mapStateToProps = ({ farms, account }) => ({
+//   farms,
+//   settings: account.settings
+// });
+
+// const mapDispatchToProps = (dispatch) => {
+//   // const { getFarmsData } = farmsActionCreators;
+
+//   return dispatch;
+// };
+
+// export default connectAccount(mapStateToProps, mapDispatchToProps)(Farms);
+
+Farms.defaultProps = {
+  settings: {},
+};
+
+const mapStateToProps = ({ account, farms }) => ({
+  account,
+  settings: account.setting,
+  database: farms.farmAccountData,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  const { setSetting, getMarketHistory } = accountActionCreators;
+
+  return bindActionCreators(
+    {
+      setSetting,
+      getMarketHistory,
+    },
+    dispatch,
+  );
+};
+export default connectAccount(mapStateToProps, mapDispatchToProps)(Farms);
