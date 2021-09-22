@@ -14,6 +14,7 @@ import upArrow from '../../assets/icons/arrowUp.png'
 import annLogo from '../../assets/icons/logoSolid.svg'
 import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
 import { connectAccount, useFarms, usePollFarmsData } from 'core';
+import { bindActionCreators } from 'redux';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import _ from 'lodash';
@@ -47,7 +48,7 @@ function Farms({ settings }) {
       // accessor: 'farms',
       disableSortBy: true,
       Cell: ({ value, row }) => {
-        const token1Details = getTokenDetails(row.original.token1Name)
+        const token1Details = getTokenDetails(row.original?.token1Name)
         return (
           <div className="flex justify-center">
             <div className="flex flex-1">
@@ -263,13 +264,13 @@ Farms.defaultProps = {
 };
 
 const mapStateToProps = ({ account }) => ({
-  settings: account.settings
+  settings: account.setting,
 });
 
 const mapDispatchToProps = (dispatch) => {
-  // const { getFarmsData } = farmsActionCreators;
-
-  return dispatch;
+  return bindActionCreators(
+    dispatch,
+  );
 };
 
 export default connectAccount(mapStateToProps, mapDispatchToProps)(Farms);

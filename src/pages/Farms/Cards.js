@@ -4,6 +4,7 @@ import annCoin from '../../assets/images/coins/ann.png'
 import annLogo from '../../assets/icons/logoSolid.svg'
 import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
 import upArrow from '../../assets/icons/arrowUp.png'
+import config from '../../constants/config';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import { accountActionCreators, connectAccount } from 'core';
@@ -117,18 +118,21 @@ function Cards({ data, addLiquidity, settings }) {
                                         </div>
                                     </div>
                                 </div>
-                                <button
+                                <a
                                     className={`py-2.5 px-28 text-black font-bold 
                                         bgPrimaryGradient rounded-3xl mt-5 w-full 
                                         text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
-                                    onClick={() => {
-
-                                    }}>Add Liquidity</button>
+                                    href={
+                                        `${item.type === 'annex_lp' 
+                                            ? config.annexAddLiquidityURL 
+                                            : config.pcsAddLiquidityURL}/${item.token0}/${item.token1}`
+                                        }
+                                    target="_new">Add Liquidity</a>
                                 {
                                     new BigNumber(item.userData ? item.userData.allowance : 0).isGreaterThan(0) ? (
-                                        <div>
+                                        <div className="flex justify-between">
                                             <button
-                                                className={`py-2.5 px-28 text-black font-bold 
+                                                className={`py-2.5 px-14 text-black font-bold 
                                                     bgPrimaryGradient rounded-3xl mt-5 w-full 
                                                     text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
                                                 onClick={() => {
@@ -137,7 +141,7 @@ function Cards({ data, addLiquidity, settings }) {
                                             {
                                                 new BigNumber(item.userData.stakedBalance).isGreaterThan(0) && (
                                                     <button
-                                                        className={`py-2.5 px-28 text-black font-bold 
+                                                        className={`py-2.5 px-14 text-black font-bold 
                                                             bgPrimaryGradient rounded-3xl mt-5 w-full 
                                                             text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
                                                         onClick={() => {
@@ -148,7 +152,7 @@ function Cards({ data, addLiquidity, settings }) {
                                         </div>
                                     ) : (
                                         <div className="mt-5 flex justify-center text-2xl text-primary cursor-pointer" onClick={() => {
-
+                                            // it should be the transparent button
                                         }}>Approve Staking</div>
                                     )
                                 }
