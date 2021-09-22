@@ -140,7 +140,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
     const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
     const tokenPrice = getBigNumber(asset.tokenPrice);
     const safeMax = BigNumber.maximum(
-      totalBorrowLimit.times(40).div(100).minus(totalBorrowBalance),
+      totalBorrowLimit.times(70).div(100).minus(totalBorrowBalance),
       new BigNumber(0),
     );
     setAmount(BigNumber.minimum(safeMax, asset.liquidity).div(tokenPrice));
@@ -483,7 +483,9 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
               isAllowed={({ value }) => {
                 const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
                 const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
+                console.log(totalBorrowBalance.toString(10), totalBorrowLimit.toString(10))
                 return new BigNumber(value || 0)
+                  .times(asset.tokenPrice)
                   .plus(totalBorrowBalance)
                   .isLessThanOrEqualTo(totalBorrowLimit);
               }}
@@ -578,22 +580,22 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
             </div>
           )}
         </div>
-        {currentTab === 'withdraw' ? (
+        <div>
           <div className="flex justify-between mt-6">
-            <div className="">Wallet Balance</div>
-            <div className="">
-              {format(asset?.walletBalance?.dp(2, 1)?.toString(10))} {asset.symbol}
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-between mt-6">
-            <div className="">Protocol Balance</div>
+            <div className="">Currently Borrowing</div>
             <div className="">
               {asset.borrowBalance && format(asset.borrowBalance.dp(2, 1).toString(10))}{' '}
               {asset.symbol}
             </div>
           </div>
-        )}
+          <div className="flex justify-between mt-6">
+            <div className="">Wallet Balance</div>
+            <div className="">
+              {asset.borrowBalance && format(asset.walletBalance.dp(2, 1).toString(10))}{' '}
+              {asset.symbol}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

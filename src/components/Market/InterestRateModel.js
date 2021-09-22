@@ -1,11 +1,11 @@
-import {compose} from "redux";
-import {withRouter} from "react-router-dom";
-import {connectAccount} from "../../core";
-import {useEffect, useState} from "react";
-import {CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, LineChart} from "recharts";
-import {getAbepContract, getInterestModelContract, methods} from "../../utilities/ContractService";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { connectAccount } from "../../core";
+import { useEffect, useState } from "react";
+import { CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, LineChart } from "recharts";
+import { getAbepContract, getInterestModelContract, methods } from "../../utilities/ContractService";
 import BigNumber from "bignumber.js";
-import {checkIsValidNetwork} from "../../utilities/common";
+import { checkIsValidNetwork } from "../../utilities/common";
 import styled from "styled-components";
 
 let flag = false;
@@ -163,7 +163,7 @@ const InterestRateModel = ({ settings, currentAsset }) => {
             .toString(10),
           1e4,
           0
-        ])  
+        ])
       )
     );
     const supplyRes = await Promise.all(
@@ -181,7 +181,7 @@ const InterestRateModel = ({ settings, currentAsset }) => {
     );
     urArray.forEach((ur, index) => {
       // supply apy, borrow apy
-      const blocksPerDay = 20 * 50* 24;
+      const blocksPerDay = 20 * 50 * 24;
       const daysPerYear = 365;
       const mantissa = 1e18;
       const supplyBase = new BigNumber(supplyRes[index])
@@ -234,10 +234,10 @@ const InterestRateModel = ({ settings, currentAsset }) => {
       return (
         <div className="custom-tooltip">
           <p className="label" style={{ color: '#de4993', fontWeight: 'bold' }}>
-            {`${new BigNumber(payload[0].value).dp(8, 1)}%`}
+            {`${new BigNumber(payload[0].value).dp(8, 1)}% Borrow APY`}
           </p>
           <p className="label" style={{ color: '#9dd562', fontWeight: 'bold' }}>
-            {`${new BigNumber(payload[1].value).dp(8, 1)}%`}
+            {`${new BigNumber(payload[1].value).dp(8, 1)}% Supply APY`}
           </p>
         </div>
       );

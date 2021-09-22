@@ -9,7 +9,7 @@ export default function CreateAuction(props) {
     return Object.keys(constants.BIDDING_AUCTION_TOKEN).map((key, index) => ({
       id: constants.BIDDING_AUCTION_TOKEN[key].id,
       name: constants.BIDDING_AUCTION_TOKEN[key].symbol,
-      logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
+      logo: constants.BIDDING_AUCTION_TOKEN[key].asset,
       addr: constants.BIDDING_AUCTION_TOKEN[key].address,
       decimal: constants.BIDDING_AUCTION_TOKEN[key].decimals,
     }));

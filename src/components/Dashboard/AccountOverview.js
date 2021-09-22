@@ -88,8 +88,8 @@ const AccountOverview = ({
   const { account, chainId } = useActiveWeb3React();
   const [showDetails, setShowDetails] = useState(false);
   const { countUp: balanceCountUp, update: balanceUpdate } = useCountUp({ end: 0 });
-  const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0 });
-  const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0 });
+  const { countUp: supplyCountUp, update: supplyUpdate } = useCountUp({ end: 0, decimals: 2 });
+  const { countUp: borrowCountUp, update: borrowUpdate } = useCountUp({ end: 0, decimals: 2 });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -99,11 +99,11 @@ const AccountOverview = ({
   }, [balance]);
 
   useEffect(() => {
-    supplyUpdate(Number(settings.totalSupplyBalance));
+    supplyUpdate(settings.totalSupplyBalance);
   }, [settings.totalSupplyBalance]);
 
   useEffect(() => {
-    borrowUpdate(Number(settings.totalBorrowBalance));
+    borrowUpdate(settings.totalBorrowBalance);
   }, [settings.totalBorrowBalance]);
 
   const wrongNetwork = React.useMemo(() => {
@@ -176,8 +176,8 @@ const AccountOverview = ({
               <div className="flex flex-col items-center space-y-1 md:space-y-2 mb-3 md:mb-3 flex-grow text-center">
                 <div className="text-primary font-bold text-lg md:text-xl">
                   <div className="tooltip relative">
-                    <div className="tooltip-label"> Net APY</div>
-                    <span className="label">Net APY</span>
+                    <div className="tooltip-label">Net APY</div>
+                    <span className="label">Interest earned and paid, plus ANN</span>
                   </div>
                 </div>
                 <div className="text-white font-bold text-xl md:text-2xl">
@@ -269,7 +269,7 @@ const AccountOverview = ({
             icon={ANNRewards}
             iconFocus={ANNRewardsFocus}
             noData={!account || wrongNetwork}
-            status="red"
+            status="green"
             tooltip="Claim your lending rewards"
             action={handleCollect}
           />
@@ -284,7 +284,7 @@ const AccountOverview = ({
             }
             icon={AnnualEarning}
             noData={!account || wrongNetwork}
-            status="red"
+            status="green"
           />
         </div>
       )}
