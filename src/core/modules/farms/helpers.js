@@ -120,7 +120,7 @@ export const fetchFarmUserAllowances = async (account, farmsToFetch) => {
     const masterChefAddress = getMasterChefAddress()
 
     const calls = farmsToFetch.map((farm) => {
-        const lpContractAddress = getAddress(farm.lpAddresses)
+        const lpContractAddress = farm.lpAddress
         return { address: lpContractAddress, name: 'allowance', params: [account, masterChefAddress] }
     })
 
@@ -133,7 +133,7 @@ export const fetchFarmUserAllowances = async (account, farmsToFetch) => {
 
 export const fetchFarmUserTokenBalances = async (account, farmsToFetch) => {
     const calls = farmsToFetch.map((farm) => {
-        const lpContractAddress = getAddress(farm.lpAddresses)
+        const lpContractAddress = farm.lpAddress
         return {
             address: lpContractAddress,
             name: 'balanceOf',
@@ -172,7 +172,7 @@ export const fetchFarmUserEarnings = async (account, farmsToFetch) => {
     const calls = farmsToFetch.map((farm) => {
         return {
             address: masterChefAddress,
-            name: 'pendingCake',
+            name: 'pendingAnnex',
             params: [farm.pid, account],
         }
     })

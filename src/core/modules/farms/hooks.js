@@ -21,11 +21,10 @@ export const usePollFarmsData = () => {
     const { data } = useFarms()
 
     useEffect(() => {
-        const pids = data ? data.map((farmToFetch) => farmToFetch.pid) : []
         dispatch(fetchFarmsPublicDataAsync())
 
         if (account) {
-            dispatch(fetchFarmsUserDataAsync({ account, pids }))
+            dispatch(fetchFarmsUserDataAsync({ account, data }))
         }
     }, [dispatch, fastRefresh, account])
 }

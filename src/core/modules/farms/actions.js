@@ -48,17 +48,18 @@ export const fetchFarmsPublicDataAsync = () => {
     }
 }
 
-export const fetchFarmsUserDataAsync = ({ account, pids }) => {
+export const fetchFarmsUserDataAsync = ({ account, data }) => {
     return async dispatch => {
-        const farmsToFetch = farmsConfig.filter((farmConfig) => pids.includes(farmConfig.pid))
-        const userFarmAllowances = await fetchFarmUserAllowances(account, farmsToFetch)
-        const userFarmTokenBalances = await fetchFarmUserTokenBalances(account, farmsToFetch)
-        const userStakedBalances = await fetchFarmUserStakedBalances(account, farmsToFetch)
-        const userFarmEarnings = await fetchFarmUserEarnings(account, farmsToFetch)
+        const [userFarmAllowances, userFarmTokenBalances, userStakedBalances, userFarmEarnings] = await Promise.all([
+            fetchFarmUserAllowances(account, data),
+            fetchFarmUserTokenBalances(account, data),
+            fetchFarmUserStakedBalances(account, data),
+            fetchFarmUserEarnings(account, data),
+        ])
 
         const farms = userFarmAllowances.map((farmAllowance, index) => {
             return {
-                pid: farmsToFetch[index].pid,
+                pid: data[index].pid,
                 allowance: userFarmAllowances[index],
                 tokenBalance: userFarmTokenBalances[index],
                 stakedBalance: userStakedBalances[index],
