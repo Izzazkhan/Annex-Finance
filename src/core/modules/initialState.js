@@ -4,9 +4,7 @@ import {Field as BurnField} from "./burn/actions";
 import {DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL} from "../../constants/lists";
 import DEFAULT_LIST from "../../constants/tokens/annex.json";
 import {DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE} from "../../constants/swap";
-import farmsConfig from '../../constants/farms'
 import poolsConfig from '../../constants/pools'
-import isArchivedPid from "../../utils/farmHelpers";
 
 const auth = {
   user: null
@@ -106,21 +104,9 @@ const burn = {
   typedValue: "0",
 }
 
+const farms = { data: [], userDataLoaded: false }
 
-
-const noAccountFarmConfig = farmsConfig.map((farm) => ({
-  ...farm,
-  userData: {
-    allowance: '0',
-    tokenBalance: '0',
-    stakedBalance: '0',
-    earnings: '0',
-  },
-}))
-
-const farms = { data: noAccountFarmConfig, loadArchivedFarmsData: false, userDataLoaded: false }
-
-export const nonArchivedFarms = farmsConfig.filter(({ pid }) => !isArchivedPid(pid))
+export const nonArchivedFarms = []
 
 const pools = {
   data: [...poolsConfig],

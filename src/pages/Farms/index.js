@@ -5,40 +5,26 @@ import Cards from './Cards';
 import { DepositWithdrawModal, LiquidityModal } from './Modal';
 import Select from '../../components/UI/Select';
 import Switch from "../../components/UI/Switch";
-import arrow from '../../assets/icons/arrow.svg';
-import expandBox from '../../assets/icons/expandBox.svg';
-import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
-import tick from '../../assets/icons/tick.svg';
-import Greentick from '../../assets/icons/green-tick.png';
 import ListIcon from '../../assets/images/card-list-btn.png';
 import GridIcon from '../../assets/images/card-grid-btn.png';
 import ListIconActive from '../../assets/images/card-list-btn-active.png';
 import GridIconActive from '../../assets/images/card-grid-btn-active.png';
-import ComingSoon from '../../assets/images/coming-soon.png';
-import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
 import annCoin from '../../assets/images/coins/ann.png'
 import upArrow from '../../assets/icons/arrowUp.png'
 import annLogo from '../../assets/icons/logoSolid.svg'
 import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
-import { useActiveWeb3React } from '../../hooks'
-import { accountActionCreators, connectAccount, farmsActionCreators, useFarms, usePollFarmsData } from 'core';
-import { connect, useDispatch } from 'react-redux';
-import { promisify } from 'utilities';
-import { bindActionCreators } from 'redux';
+import { connectAccount, useFarms, usePollFarmsData } from 'core';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import _ from 'lodash';
 
 
 function Farms({ settings }) {
-  const { account, chainId, library } = useActiveWeb3React()
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
   const [showLiquidityModal, setShowLiquidityModal] = useState(false)
   const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
   const [filteredPairs, setFilteredPairs] = useState([])
-
-  const dispatch = useDispatch()
 
   const format = commaNumber.bindWith(',', '.');
 
@@ -272,39 +258,18 @@ function Farms({ settings }) {
   );
 }
 
-// Farms.defaultProps = {
-//   settings: {},
-// };
-
-// const mapStateToProps = ({ farms, account }) => ({
-//   farms,
-//   settings: account.settings
-// });
-
-// const mapDispatchToProps = (dispatch) => {
-//   // const { getFarmsData } = farmsActionCreators;
-
-//   return dispatch;
-// };
-
-// export default connectAccount(mapStateToProps, mapDispatchToProps)(Farms);
-
 Farms.defaultProps = {
   settings: {},
 };
 
 const mapStateToProps = ({ account }) => ({
-  settings: account.setting,
+  settings: account.settings
 });
 
 const mapDispatchToProps = (dispatch) => {
-  const { setSetting } = accountActionCreators;
+  // const { getFarmsData } = farmsActionCreators;
 
-  return bindActionCreators(
-    {
-      setSetting,
-    },
-    dispatch,
-  );
+  return dispatch;
 };
+
 export default connectAccount(mapStateToProps, mapDispatchToProps)(Farms);

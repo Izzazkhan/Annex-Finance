@@ -1,29 +1,22 @@
 import { createAction } from "redux-actions";
 import {
-    fetchFarms,
-    fetchFarmsPrices,
     fetchFarmUserAllowances, fetchFarmUserEarnings,
     fetchFarmUserStakedBalances,
     fetchFarmUserTokenBalances
 } from "./helpers";
-import priceHelperLpsConfig from '../../../constants/priceHelperLPs';
-import farmsConfig from '../../../constants/farms';
 import { restService } from "utilities";
 
 /**
  * Action Types
  */
-export const LOAD_ARCHIVED_FARMS_DATA = "LOAD_ARCHIVED_FARMS_DATA";
 export const SET_FARMS_PUBLIC_DATA = "SET_FARMS_PUBLIC_DATA";
 export const SET_FARMS_USER_DATA = "SET_FARMS_USER_DATA";
-export const SET_FARMS_ACCOUNT_DATA = "SET_FARMS_ACCOUNT_DATA";
 
 
 /**
  * Action Creators
  */
 export const farmsActionCreators = {
-    loadArchivedFarmsData: createAction(LOAD_ARCHIVED_FARMS_DATA),
     setFarmsPublicData: createAction(SET_FARMS_PUBLIC_DATA),
     setFarmsUserData: createAction(SET_FARMS_USER_DATA),
 };

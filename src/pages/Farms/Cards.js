@@ -18,7 +18,6 @@ const Styles = styled.div`
 
 
 function Cards({ data, addLiquidity, settings }) {
-    console.log('data: ', data)
 
 
     const getTokenDetails = (symbol) => {
@@ -126,7 +125,7 @@ function Cards({ data, addLiquidity, settings }) {
 
                                     }}>Add Liquidity</button>
                                 {
-                                    new BigNumber(item.userData.allowance).isGreaterThan(0) ? (
+                                    new BigNumber(item.userData ? item.userData.allowance : 0).isGreaterThan(0) ? (
                                         <div>
                                             <button
                                                 className={`py-2.5 px-28 text-black font-bold 
