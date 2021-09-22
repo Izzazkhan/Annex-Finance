@@ -78,6 +78,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     }
     setSetting({
       annPrice: res.data.annexPrice,
+      annPricePCS: res.data.annexPricePCS,
       markets: res.data.markets,
       dailyAnnex: res.data.dailyAnnex,
       blockNumber: res.data.blockNumber,
@@ -182,7 +183,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     let totalSupplyBalance = new BigNumber(0);
     let totalBorrowBalance = new BigNumber(0);
     let totalBorrowLimit = new BigNumber(0);
-    let totalLiquidity = new BigNumber(0);
     const assetList = [];
 
     const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS).filter(item => {
@@ -310,8 +310,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       if (asset.collateral) {
         totalBorrowLimit = totalBorrowLimit.plus(supplyBalanceUSD.times(asset.collateralFactor));
       }
-
-      totalLiquidity = totalLiquidity.plus(new BigNumber(data[1].totalSupplyUsd || 0));
     });
 
     // let xaiBalance = await methods.call(xaiContract.methods.balanceOf, [
@@ -322,7 +320,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     setSetting({
       assetList,
       // xaiMinted,
-      totalLiquidity: totalLiquidity.toString(10),
       totalSupplyBalance: totalSupplyBalance.toString(10),
       totalBorrowBalance: totalBorrowBalance.toString(10),
       totalBorrowLimit: totalBorrowLimit.toString(10),
