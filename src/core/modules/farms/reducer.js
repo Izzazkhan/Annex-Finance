@@ -3,7 +3,6 @@ import {
     LOAD_ARCHIVED_FARMS_DATA,
     SET_FARMS_PUBLIC_DATA,
     SET_FARMS_USER_DATA,
-    SET_FARMS_ACCOUNT_DATA,
 } from "./actions";
 
 export default function farms(state = initialState.farms, action) {
@@ -33,20 +32,9 @@ export default function farms(state = initialState.farms, action) {
             }
         }
         case SET_FARMS_PUBLIC_DATA: {
-            const newData = state.data.map((farm) => {
-                const liveFarmData = action.payload.find((farmData) => farmData.pid === farm.pid)
-                return { ...farm, ...liveFarmData }
-            })
-
             return {
                 ...state,
-                data: newData
-            }
-        }
-        case SET_FARMS_ACCOUNT_DATA: {
-            return {
-                ...state,
-                farmAccountData: action.payload
+                data: action.payload
             }
         }
         default:

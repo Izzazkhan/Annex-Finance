@@ -17,11 +17,11 @@ import GridIconActive from '../../assets/images/card-grid-btn-active.png';
 import ComingSoon from '../../assets/images/coming-soon.png';
 import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
 import annCoin from '../../assets/images/coins/ann.png'
-import ethCoin from '../../assets/images/coins/ceth.png'
 import upArrow from '../../assets/icons/arrowUp.png'
 import annLogo from '../../assets/icons/logoSolid.svg'
 import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
-import { accountActionCreators, connectAccount, farmsActionCreators } from 'core';
+import { useActiveWeb3React } from '../../hooks'
+import { accountActionCreators, connectAccount, farmsActionCreators, useFarms, usePollFarmsData } from 'core';
 import { connect, useDispatch } from 'react-redux';
 import { promisify } from 'utilities';
 import { bindActionCreators } from 'redux';
@@ -30,38 +30,26 @@ import commaNumber from 'comma-number';
 import _ from 'lodash';
 
 
-function Farms({ settings, setSetting, account, database }) {
-  const [cryptoToggle, setCryptoToggle] = useState('ETH')
+function Farms({ settings }) {
+  const { account, chainId, library } = useActiveWeb3React()
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
   const [showLiquidityModal, setShowLiquidityModal] = useState(false)
   const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
-  // const [database, setDatabase] = useState([])
-  const [filteredDatabase, setFilteredDatabase] = useState([])
+  const [filteredPairs, setFilteredPairs] = useState([])
 
   const dispatch = useDispatch()
 
   const format = commaNumber.bindWith(',', '.');
 
-  useEffect(() => {
-    const { getFarmsData, setFarmsAccountData } = farmsActionCreators;
-    dispatch(
-      getFarmsData({
-        resolve: (res) => {
-          if (!res.error && res.data?.pairs) {
-            dispatch(setFarmsAccountData(res.data.pairs))
-            setFilteredDatabase(res.data.pairs)
-          }
-        }
-      })
-    )
-  }, [])
+  const { data: pairs } = useFarms()
+  usePollFarmsData()
 
   useEffect(() => {
-    if ((database && database.length !== 0) && filteredDatabase.length === 0) {
-      setFilteredDatabase(database)
+    if (pairs && pairs.length !== 0) {
+      setFilteredPairs(pairs)
     }
-  }, [database])
+  }, [pairs])
 
   const getTokenDetails = (symbol) => {
     return settings.assetList.find((obj => obj.symbol === symbol))
@@ -187,11 +175,11 @@ function Farms({ settings, setSetting, account, database }) {
     { name: 'Earned' },
     { name: 'Liquidity' },
   ];
-  const data = React.useMemo(() => filteredDatabase, [filteredDatabase]);
+  const data = React.useMemo(() => filteredPairs, [filteredPairs]);
   const handleFocus = (event) => event.target.select();
 
   const filterSearch = (search) => {
-    const data = database.filter((obj, index) => {
+    const data = pairs.filter((obj, index) => {
       let check = false
       _.forEach(obj, (val, key) => {
         if (_.lowerCase(val).includes(search) || `${val}`.includes(search) || search.trim() === '') {
@@ -200,7 +188,7 @@ function Farms({ settings, setSetting, account, database }) {
       })
       return check
     })
-    setFilteredDatabase(data)
+    setFilteredPairs(data)
   }
 
   return (
@@ -305,19 +293,16 @@ Farms.defaultProps = {
   settings: {},
 };
 
-const mapStateToProps = ({ account, farms }) => ({
-  account,
+const mapStateToProps = ({ account }) => ({
   settings: account.setting,
-  database: farms.farmAccountData,
 });
 
 const mapDispatchToProps = (dispatch) => {
-  const { setSetting, getMarketHistory } = accountActionCreators;
+  const { setSetting } = accountActionCreators;
 
   return bindActionCreators(
     {
       setSetting,
-      getMarketHistory,
     },
     dispatch,
   );

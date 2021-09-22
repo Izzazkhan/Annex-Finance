@@ -8,6 +8,7 @@ import {
 } from "./helpers";
 import priceHelperLpsConfig from '../../../constants/priceHelperLPs';
 import farmsConfig from '../../../constants/farms';
+import { restService } from "utilities";
 
 /**
  * Action Types
@@ -15,7 +16,6 @@ import farmsConfig from '../../../constants/farms';
 export const LOAD_ARCHIVED_FARMS_DATA = "LOAD_ARCHIVED_FARMS_DATA";
 export const SET_FARMS_PUBLIC_DATA = "SET_FARMS_PUBLIC_DATA";
 export const SET_FARMS_USER_DATA = "SET_FARMS_USER_DATA";
-export const GET_FARMS_ACCOUNT_DATA = "GET_FARMS_ACCOUNT_DATA";
 export const SET_FARMS_ACCOUNT_DATA = "SET_FARMS_ACCOUNT_DATA";
 
 
@@ -26,8 +26,6 @@ export const farmsActionCreators = {
     loadArchivedFarmsData: createAction(LOAD_ARCHIVED_FARMS_DATA),
     setFarmsPublicData: createAction(SET_FARMS_PUBLIC_DATA),
     setFarmsUserData: createAction(SET_FARMS_USER_DATA),
-    getFarmsData: createAction(GET_FARMS_ACCOUNT_DATA),
-    setFarmsAccountData: createAction(SET_FARMS_ACCOUNT_DATA),
 };
 
 
@@ -35,19 +33,18 @@ export const farmsActionCreators = {
  * Thunk functions
  */
 
-export const fetchFarmsPublicDataAsync = (pids) => {
+export const fetchFarmsPublicDataAsync = () => {
     return async (dispatch) => {
-        const farmsToFetch = farmsConfig.filter((farmConfig) => pids.includes(farmConfig.pid))
+        const response = await restService({
+            api: `https://api.annex.finance/api/v1/farming`,
+            third_party: true,
+            method: 'GET',
+            params: {}
+        });
 
-        const farms = await fetchFarms(farmsToFetch)
-        const farmsWithPrices = await fetchFarmsPrices(farms)
-
-        // Filter out price helper LP config farms
-        const farmsWithoutHelperLps = farmsWithPrices.filter((farm) => {
-            return farm.pid || farm.pid === 0
-        })
-
-        dispatch(farmsActionCreators.setFarmsPublicData(farmsWithoutHelperLps))
+        if (response.status === 200) {
+            dispatch(farmsActionCreators.setFarmsPublicData(response.data.data.pairs))
+        }
     }
 }
 
