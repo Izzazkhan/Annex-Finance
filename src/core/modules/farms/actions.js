@@ -1,6 +1,7 @@
 import { createAction } from "redux-actions";
 import {
-    fetchFarmUserAllowances, fetchFarmUserEarnings,
+    fetchFarmUserAllowances,
+    fetchFarmUserEarnings,
     fetchFarmUserStakedBalances,
     fetchFarmUserTokenBalances
 } from "./helpers";

@@ -237,7 +237,7 @@ export const DepositWithdrawModal = ({ data, close }) => {
                 </div>
 
 
-                <div className="border border-primary rounded-xl py-16 px-12 card flex flex-col items-center text-2xl withdraw-modal mt-36">
+                {/* <div className="border border-primary rounded-xl py-16 px-12 card flex flex-col items-center text-2xl withdraw-modal mt-36">
                     <div className="flex w-full justify-center items-center relative">
                         <span className="font-bold">Withdraw</span>
                         <a href="#" className="absolute right-0 top-0 h-full" onClick={close}>
@@ -258,7 +258,7 @@ export const DepositWithdrawModal = ({ data, close }) => {
                         <span>10000.87654321{"\t"}SWORD</span>
                     </div>
                     <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28">Confirm</button>
-                </div>
+                </div> */}
             </div>
         </Styles>
     )

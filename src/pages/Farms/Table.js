@@ -8,12 +8,21 @@ import {
   usePagination,
   useExpanded,
 } from 'react-table';
+import BigNumber from 'bignumber.js'
+import commaNumber from 'comma-number'
 import { matchSorter } from 'match-sorter';
+import config from '../../constants/config'
 import sortUp from '../../assets/icons/sortUp.svg';
 import sortDown from '../../assets/icons/sortDown.svg';
 import rightArrow from '../../assets/icons/rightArrow.svg';
-import Select from '../../components/UI/Select';
-import { useWindowSize } from 'hooks/useWindowSize';
+import annCoin from '../../assets/images/coins/ann.png'
+import { useWindowSize } from 'hooks/useWindowSize'
+import upArrow from '../../assets/icons/arrowUp.png'
+import annLogo from '../../assets/icons/logoSolid.svg'
+import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
+import useApproveFarm from 'hooks/farms/useApproveFarm'
+import useStakeFarms from 'hooks/farms/useStakeFarms'
+import { useLP } from "hooks/useContracts"
 
 const Styles = styled.div`
   width: 100%;
@@ -75,13 +84,192 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
-function Table({ columns, data }) {
+const format = commaNumber.bindWith(',', '.')
 
+const harvest = (obj) => { }
+const stake = (obj) => { }
+const unStake = (obj) => { }
+const approve = async (obj) => {
+  const lpContract = useLP(obj.lpAddress)
+  const { onApprove } = useApproveFarm(lpContract)
+  const [pendingTx, setPendingTx] = useState(false)
+  
+  setPendingTx(true)
+  await onApprove()
+  setPendingTx(false)
+}
+
+const columns = [
+  {
+    Header: 'Farms',
+    disableSortBy: true,
+    Cell: ({ value, row }) => {
+      return (
+        <div className="flex justify-center">
+          <div className="flex flex-1">
+            <div className="mr-5 relative h-12 w-12">
+              <img src={row.original.token0Img} alt="" className="h-8" />
+              {
+                row.original.token1Img && <img src={row.original.token1Img} alt="" className="h-8 absolute right-0 bottom-0" />
+              }
+            </div>
+            <div className="flex flex-col w-8/12">
+              <span className="font-bold">{row.original.token1Name && `${row.original.token1Name}`} {row.original.token0Name}</span>
+              <span className="mt-1 text-xs font-light">
+                {row.original.token0Symbol}{row.original.token1Symbol && ` - ${row.original.token1Symbol}`}
+              </span>
+            </div>
+          </div>
+          <div className="mr-4">
+            {
+              row.original.type === 'pancake_lp' ? (
+                <img src={pancakeLogo} alt="" className="h-8" title={row.original.lpName} />
+              ) : (
+                <img src={annLogo} alt="" className="h-8" title={row.original.lpName} />
+              )
+            }
+          </div>
+        </div>
+      )
+    },
+  },
+  {
+    Header: () => (<>Yield <span className="text-sm font-light">(per $1,000)</span></>),
+    accessor: 'rewardPerDay',
+    disableSortBy: true,
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col text-sm">
+        <span className="font-light">
+          {format(
+            new BigNumber(value)
+              .dp(2)
+              .toString(10)
+          )} ANN / Day
+        </span>
+        <span className="text-primary font-bold">{row.original.allocPoint} allocPoint</span>
+      </div>
+    )
+  },
+  {
+    Header: 'APY',
+    accessor: 'apy',
+    Cell: ({ value, row }) => (
+      <span className="font-bold flex items-center justify-center">
+        <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
+        {format(
+          new BigNumber(value)
+            .dp(2)
+            .toString(10)
+        )}%
+      </span>
+    )
+  },
+  {
+    Header: 'Liquidity',
+    accessor: 'liquidity',
+    Cell: ({ value, row }) => (
+      `$${format(
+        new BigNumber(value)
+          .dp(2)
+          .toString(10)
+      )}`
+    )
+  },
+  {
+    Header: 'Stacked',
+    accessor: 'staked',
+    // sortedContainerClass: 'ml-6',
+    // containerClass: 'flex justify-center text-right',
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col text-sm">
+        <span className="font-light">{value}</span>
+        <span className="font-bold">0 ANN / 0 ETH</span>
+      </div>
+    )
+  },
+  {
+    Header: 'Earned',
+    accessor: 'earned',
+    disableSortBy: true,
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col">
+        <span className="font-bold text-primary">
+          {new BigNumber(row.original.userData ? row.original.userData.earnings : 0)
+            .div(1e18)
+            .dp(2, 1)
+            .toString(10)} ANN
+        </span>
+        {
+          new BigNumber(row.original.userData ? row.original.userData.earnings : 0).isGreaterThan(0) ? (
+            <button
+              className={`text-black font-bold 
+                bgPrimaryGradient rounded-md
+                text-md outline-none`}
+              onClick={() => {
+                harvest(row.original)
+              }}>Harvest Now</button>
+          ) : (
+            <span className="font-normal">No Rewards</span>
+          )
+        }
+      </div>
+    )
+  },
+  {
+    Header: '',
+    accessor: 'empty',
+    disableSortBy: true,
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col">
+        <a
+          className={`text-primary font-bold 
+            rounded-3xl p-2 outline-none border 
+            border-primary outline-none ${row.original.token1 === null ? 'invisible' : ''}`}
+          href={
+            `${row.original.type === 'annex_lp'
+              ? config.annexAddLiquidityURL
+              : config.pcsAddLiquidityURL}/${row.original.token0}/${row.original.token1}`
+          }
+          target="_new">Add Liquidity</a>
+        {
+          new BigNumber(row.original.userData ? row.original.userData.allowance : 0).isGreaterThan(0) ? (
+            <>
+              <button
+                className={`text-primary font-bold 
+                rounded-3xl p-2 outline-none border mt-2 
+                border-primary ${row.original.token1 === null ? 'invisible' : ''}`}
+                onClick={() => {
+                  stake(row.original)
+                }}>Stake</button>
+              {
+                new BigNumber(row.original.userData.stakedBalance).isGreaterThan(0) && (
+                  <button
+                    className={`text-primary font-bold 
+                    rounded-3xl p-2 outline-none border mt-2 
+                    border-primary  ${row.original.token1 === null ? 'invisible' : ''}`}
+                    onClick={() => {
+                      unStake(row.original)
+                    }}>UnStake</button>
+                )
+              }
+            </>
+          ) : (
+            <div className="mt-2 flex justify-center cursor-pointer" onClick={() => {
+              approve(row.original)
+            }}>Approve Staking</div>
+          )
+        }
+      </div>
+    )
+  },
+]
+
+function Table({ data }) {
   const [isTableHorizontal, setIsTableHorizontal] = useState(true)
 
   const { width } = useWindowSize() || {};
   useEffect(() => {
-    if (width <= 1024) {
+    if (width <= 1280) {
       setIsTableHorizontal(false);
     } else {
       setIsTableHorizontal(true);
@@ -127,17 +315,6 @@ function Table({ columns, data }) {
     useExpanded,
     usePagination,
   );
-  // We don't want to render all of the rows for this example, so cap
-  // it for this use case
-  const firstPageRows = rows.slice(0, 10);
-
-  const sortOptions = [
-    { name: 'Hot' },
-    { name: 'APR' },
-    { name: 'Multiplier' },
-    { name: 'Earned' },
-    { name: 'Liquidity' },
-  ];
 
   // Render the UI for your table
   return (
@@ -285,12 +462,11 @@ function Table({ columns, data }) {
   );
 }
 
-function App({ columns, data, tdClassName }) {
+function App({ data, tdClassName }) {
 
   return (
     <Styles>
       <Table
-        columns={columns}
         data={data}
         tdClassName={tdClassName}
       />

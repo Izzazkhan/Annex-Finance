@@ -7,6 +7,7 @@ import {ChainId, WETH} from "@annex/sdk";
 import {getContract} from "../utils";
 import {useMemo} from "react";
 import {
+    getLpContract,
     getBep20Contract,
     getBunnyFactoryContract,
     getBunnySpecialCakeVaultContract,
@@ -81,6 +82,11 @@ export const useProfile = () => {
 export const useLotteryV2Contract = () => {
     const { library } = useActiveWeb3React()
     return useMemo(() => getLotteryV2Contract(library.getSigner()), [library])
+}
+
+export const useLP = (address) => {
+    const { library } = useActiveWeb3React()
+    return useMemo(() => getLpContract(address, library.getSigner()), [library])
 }
 
 export const useMasterchef = () => {
