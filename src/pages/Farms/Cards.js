@@ -18,18 +18,14 @@ const Styles = styled.div`
 `;
 
 
-function Cards({ data, addLiquidity, settings }) {
-
-
+function Cards({ data, settings, harvest, stake, upStake }) {
     const getTokenDetails = (symbol) => {
         return settings.assetList.find((obj => obj.symbol === symbol))
     }
-
     const format = commaNumber.bindWith(',', '.');
     return (
         <Styles>
             <div className="p-4 flex flex-row flex-wrap">
-                {/* <div> */}
                 {
                     data.map((item, key) => {
                         const token1Details = getTokenDetails(item.token1Symbol)
@@ -122,11 +118,11 @@ function Cards({ data, addLiquidity, settings }) {
                                             {
                                                 new BigNumber(item.userData ? item.userData.earnings : 0).isGreaterThan(0) ? (
                                                     <button
-                                                        className={`py-2.5 px-14 text-black font-bold 
-                                                            bgPrimaryGradient rounded-md mt-5 
-                                                            text-md outline-none}`}
+                                                        className={`p-1.5 text-black font-bold 
+                                                            bgPrimaryGradient rounded-md mt-2 
+                                                            text-md outline-none`}
                                                         onClick={() => {
-
+                                                            harvest(item)
                                                         }}>Harvest Now</button>
                                                 ) : (
                                                     <span className="mt-2 text-primary">No Rewards</span>
@@ -136,7 +132,7 @@ function Cards({ data, addLiquidity, settings }) {
                                     </div>
                                 </div>
                                 <a
-                                    className={`py-2.5 px-28 text-black font-bold 
+                                    className={`flex py-2.5 px-28 text-black font-bold 
                                         bgPrimaryGradient rounded-3xl mt-5 w-full 
                                         text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
                                     href={
@@ -153,7 +149,7 @@ function Cards({ data, addLiquidity, settings }) {
                                                     bgPrimaryGradient rounded-3xl mt-5 w-full 
                                                     text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
                                                 onClick={() => {
-
+                                                    stake(item)
                                                 }}>Stake</button>
                                             {
                                                 new BigNumber(item.userData.stakedBalance).isGreaterThan(0) && (
@@ -162,7 +158,7 @@ function Cards({ data, addLiquidity, settings }) {
                                                             bgPrimaryGradient rounded-3xl mt-5 w-full 
                                                             text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
                                                         onClick={() => {
-
+                                                            upStake(item)
                                                         }}>UnStake</button>
                                                 )
                                             }
@@ -178,7 +174,6 @@ function Cards({ data, addLiquidity, settings }) {
                         )
                     })
                 }
-                {/* </div> */}
             </div>
         </Styles>
     )

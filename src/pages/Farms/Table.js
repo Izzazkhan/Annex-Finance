@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   useTable,
@@ -13,6 +13,7 @@ import sortUp from '../../assets/icons/sortUp.svg';
 import sortDown from '../../assets/icons/sortDown.svg';
 import rightArrow from '../../assets/icons/rightArrow.svg';
 import Select from '../../components/UI/Select';
+import { useWindowSize } from 'hooks/useWindowSize';
 
 const Styles = styled.div`
   width: 100%;
@@ -23,7 +24,7 @@ const Styles = styled.div`
     background-color: #000;
     color: #fff;
     border-spacing: 0;
-    border: 1px solid #2b2b2b;
+    border: 4px solid #2b2b2b;
 
     tr {
       border-bottom: 1px solid #2b2b2b;
@@ -75,6 +76,17 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 function Table({ columns, data }) {
+
+  const [isTableHorizontal, setIsTableHorizontal] = useState(true)
+
+  const { width } = useWindowSize() || {};
+  useEffect(() => {
+    if (width <= 1024) {
+      setIsTableHorizontal(false);
+    } else {
+      setIsTableHorizontal(true);
+    }
+  }, [width]);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -130,72 +142,97 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <div className="relative">
-      {/* <div className="absolute -top-8 right-60 pr-8">
-        <Select type="basic" options={sortOptions} />
-      </div> */}
       <div className="bg-fadeBlack p-6 mt-10 text-white text-base">
         <table {...getTableProps()}>
-          <thead className="text-lg">
-            {[headerGroups[0]].map((headerGroup) => (
-              // eslint-disable-next-line react/jsx-key
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => {
-                  return (
-                    // eslint-disable-next-line react/jsx-key
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      key={column.Header}
-                    >
-                      {column.render('Header')}
-                      {column.canSort && (
-                        <span className={column.sortedContainerClass}>
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <img
-                                className="inline relative left-1"
-                                src={sortDown}
-                                alt="sort down"
-                              />
-                            ) : (
-                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                            )
-                          ) : (
-                            <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                            </div>
-                          )}
-                        </span>
-                      )}
-                    </th>
-
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-              prepareRow(row);
-              return (
-                // eslint-disable-next-line react/jsx-key
-                <Fragment key={i}>
-                  <tr {...row.getRowProps()} className="">
-                    {row.cells.map((cell) => {
+          {
+            isTableHorizontal ? (<>
+              <thead className="text-lg">
+                {[headerGroups[0]].map((headerGroup) => (
+                  // eslint-disable-next-line react/jsx-key
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column, index) => {
                       return (
                         // eslint-disable-next-line react/jsx-key
-                        <td {...cell.getCellProps()} className="padding-2rem">
-                          <div className={(cell.column.containerClass || '') + (cell.value === 'detail' ? 'text-primary' : '')}>
-                            {cell.render('Cell')}
-                          </div>
-                        </td>
+                        <th
+                          {...column.getHeaderProps(column.getSortByToggleProps())}
+                          key={column.Header}
+                        >
+                          {column.render('Header')}
+                          {column.canSort && (
+                            <span className={column.sortedContainerClass}>
+                              {column.isSorted ? (
+                                column.isSortedDesc ? (
+                                  <img
+                                    className="inline relative left-1"
+                                    src={sortDown}
+                                    alt="sort down"
+                                  />
+                                ) : (
+                                  <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                                )
+                              ) : (
+                                <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                                  <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                                  <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                                </div>
+                              )}
+                            </span>
+                          )}
+                        </th>
+
                       );
                     })}
                   </tr>
-                </Fragment>
-              );
-            })}
-          </tbody>
+                ))}
+              </thead>
+              <tbody {...getTableBodyProps()}>
+                {page.map((row, i) => {
+                  prepareRow(row);
+                  return (
+                    // eslint-disable-next-line react/jsx-key
+                    <Fragment key={i}>
+                      <tr {...row.getRowProps()} className="">
+                        {row.cells.map((cell) => {
+                          return (
+                            // eslint-disable-next-line react/jsx-key
+                            <td {...cell.getCellProps()} className="padding-2rem">
+                              <div className={(cell.column.containerClass || '') + (cell.value === 'detail' ? 'text-primary' : '')}>
+                                {cell.render('Cell')}
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </>) : (
+              <tbody {...getTableBodyProps()}>
+                {
+                  page.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <Fragment key={i}>
+                        {
+                          row.cells.map((cell, index) => (
+                            <tr {...row.getRowProps()} key={index} className={(index === (row.cells.length - 1)) ? "border-b-4" : ""}>
+                              {cell.column.Header !== '' && <td className="padding-2rem">
+                                {(typeof (cell.column.Header) === "string" ? (cell.column.Header) : (cell.column.Header()))}
+                              </td>}
+                              <td className="padding-2rem" colSpan={cell.column.Header !== '' ? (1) : (2)}>
+                                {cell.render('Cell')}
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </Fragment>
+                    )
+                  })
+                }
+              </tbody>
+            )
+          }
         </table>
         <br />
         <div className="flex justify-between">

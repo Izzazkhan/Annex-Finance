@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../layouts/MainLayout/MainLayout';
+import config from '../../constants/config';
 import Table from './Table';
 import Cards from './Cards';
 import { DepositWithdrawModal, LiquidityModal } from './Modal';
@@ -43,10 +44,13 @@ function Farms({ settings }) {
   }
   console.log('pair: ', pairs)
 
+  const harvest = (obj) => { }
+  const stake = (obj) => { }
+  const upStake = (obj) => { }
+
   const columns = [
     {
       Header: 'Farms',
-      // accessor: 'farms',
       disableSortBy: true,
       Cell: ({ value, row }) => {
         const token1Details = getTokenDetails(row.original?.token1Symbol)
@@ -111,7 +115,6 @@ function Farms({ settings }) {
     {
       Header: 'Liquidity',
       accessor: 'liquidity',
-      // sortedContainerClass: 'ml-6',
       Cell: ({ value, row }) => (
         `$${format(
           new BigNumber(value)
@@ -138,8 +141,25 @@ function Farms({ settings }) {
       disableSortBy: true,
       Cell: ({ value, row }) => (
         <div className="flex flex-col">
-          <span className="font-bold text-primary">{value} ANN</span>
-          <span className="font-normal">No Rewards</span>
+          <span className="font-bold text-primary">
+            {new BigNumber(row.original.userData ? row.original.userData.earnings : 0)
+              .div(1e18)
+              .dp(2, 1)
+              .toString(10)} ANN
+          </span>
+          {
+            new BigNumber(row.original.userData ? row.original.userData.earnings : 0).isGreaterThan(0) ? (
+              <button
+                className={`text-black font-bold 
+                  bgPrimaryGradient rounded-md
+                  text-md outline-none`}
+                onClick={() => {
+                  harvest(row.original)
+                }}>Harvest Now</button>
+            ) : (
+              <span className="font-normal">No Rewards</span>
+            )
+          }
         </div>
       )
     },
@@ -148,12 +168,45 @@ function Farms({ settings }) {
       accessor: 'empty',
       disableSortBy: true,
       Cell: ({ value, row }) => (
-        <div>
-          {row.original.token1 && <button className="text-primary font-bold 
-              rounded-3xl p-2 outline-none border border-primary" onClick={() => { setShowLiquidityModal(true) }}>
-            Add Liquidity
-          </button>}
-          <div className="mt-2 flex justify-center cursor-pointer">Approve Staking</div>
+        <div className="flex flex-col">
+          <a
+            className={`text-primary font-bold 
+              rounded-3xl p-2 outline-none border 
+              border-primary outline-none ${row.original.token1 === null ? 'invisible' : ''}`}
+            href={
+              `${row.original.type === 'annex_lp'
+                ? config.annexAddLiquidityURL
+                : config.pcsAddLiquidityURL}/${row.original.token0}/${row.original.token1}`
+            }
+            target="_new">Add Liquidity</a>
+          {
+            new BigNumber(row.original.userData ? row.original.userData.allowance : 0).isGreaterThan(0) ? (
+              <>
+                <button
+                  className={`text-primary font-bold 
+                  rounded-3xl p-2 outline-none border mt-2 
+                  border-primary ${row.original.token1 === null ? 'invisible' : ''}`}
+                  onClick={() => {
+                    stake(row.original)
+                  }}>Stake</button>
+                {
+                  new BigNumber(row.original.userData.stakedBalance).isGreaterThan(0) && (
+                    <button
+                      className={`text-primary font-bold 
+                      rounded-3xl p-2 outline-none border mt-2 
+                      border-primary  ${row.original.token1 === null ? 'invisible' : ''}`}
+                      onClick={() => {
+                        upStake(row.original)
+                      }}>UnStake</button>
+                  )
+                }
+              </>
+            ) : (
+              <div className="mt-2 flex justify-center cursor-pointer" onClick={() => {
+                // it should be the transparent button
+              }}>Approve Staking</div>
+            )
+          }
         </div>
       )
     },
@@ -181,20 +234,16 @@ function Farms({ settings }) {
     setFilteredPairs(data)
   }
 
+  const stakedFilterToggle = (value) => {
+    setOnlyStaked((oldVal) => !oldVal)
+    // Perform Action here
+
+  }
+
   return (
     <Layout mainClassName="min-h-screen py-8">
-      {/* <div className="flex justify-between items-center w-full text-white">
-        <div className="coming-soon">
-          <div className="image">
-            <img src={ComingSoon} alt="Coming Soon" className="" /> 
-          </div>
-        </div>
-      </div> */}
-
-
-      <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 pt-0 py-6
-        ">
-        <div className="col-span-5 flex items-center">
+      <div className="flex justify-between pt-0 py-6">
+        <div className="flex items-center">
           <div className="list-icon">
             <a href="#" onClick={() => setIsGridView(false)}>
               <img
@@ -214,9 +263,9 @@ function Farms({ settings }) {
             </a>
           </div>
         </div>
-        <div className="col-span-7 flex items-center">
+        <div className="flex items-center">
           <div className="flex items-center text-white mr-5 pt-2">
-            <Switch value={onlyStaked} onChange={() => setOnlyStaked((oldVal) => !oldVal)} />
+            <Switch value={onlyStaked} onChange={stakedFilterToggle} />
             <div className="ml-2 mb-2">Staked only</div>
           </div>
           <div className="mr-5">
@@ -229,14 +278,13 @@ function Farms({ settings }) {
                  rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
               type="text"
               placeholder="Search"
+              style={{ minWidth: '200px' }}
               onChange={(event) => {
                 filterSearch(event.target.value)
               }}
             />
           </div>
-
         </div>
-
       </div>
       {
         showLiquidityModal && (
@@ -252,7 +300,7 @@ function Farms({ settings }) {
         !showDepositeWithdrawModal &&
         !showLiquidityModal && (
           (isGridView) ? (
-            <Cards data={data} addLiquidity={() => { setShowLiquidityModal(true) }} />
+            <Cards data={data} harvest={harvest} stake={stake} upStake={upStake} />
           ) : (
             <Table columns={columns} data={data} tdClassName="" />
           )
