@@ -43,6 +43,22 @@
             "logoURI": "/images/coins/USDT.png"
         },
         {
+            "name": "DOT",
+            "symbol": "DOT",
+            "address": "0x49BD8c2f499a26ae042F217FeCd45C4a3E94EbfD",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "/images/coins/dot.png"
+        },
+        {
+            "name": "ADA",
+            "symbol": "ADA",
+            "address": "0x63085dF22A49573CfE85c5509CaE18bf1E5ccddd",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "/images/coins/ada.png"
+        },
+        {
             "name": "WBNB Token",
             "symbol": "WBNB",
             "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",

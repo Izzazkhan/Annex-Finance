@@ -123,6 +123,20 @@ export const CONTRACT_TOKEN_ADDRESS =
       //   asset: btc,
       //   aAsset: btc
       // }
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_TEST_DOT_TOKEN_ADDRESS,
+        asset: dot,
+        aAsset: adot
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_TEST_ADA_TOKEN_ADDRESS,
+        asset: ada,
+        aAsset: aada
+      },
     }
     : {
       usdc: {
@@ -193,7 +207,21 @@ export const CONTRACT_TOKEN_ADDRESS =
       //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
       //   asset: btc,
       //   aAsset: btc
-      // }
+      // },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_MAIN_DOT_TOKEN_ADDRESS,
+        asset: dot,
+        aAsset: adot
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_MAIN_ADA_TOKEN_ADDRESS,
+        asset: ada,
+        aAsset: aada
+      },
     };
 
 // eslint-disable-next-line max-len
@@ -261,6 +289,16 @@ export const CONTRACT_ABEP_ADDRESS =
         symbol: 'ANN',
         address: process.env.REACT_APP_TEST_ANN_ABEP_ADDRESS
       },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_TEST_DOT_ABEP_ADDRESS
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_TEST_ADA_ABEP_ADDRESS
+      },
       // wbtc: {
       //   id: 'wbtc',
       //   symbol: 'WBTC',
@@ -307,6 +345,16 @@ export const CONTRACT_ABEP_ADDRESS =
         id: 'ann',
         symbol: 'ANN',
         address: process.env.REACT_APP_MAIN_ANN_ABEP_ADDRESS
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_MAIN_DOT_ABEP_ADDRESS
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_MAIN_ADA_ABEP_ADDRESS
       },
       //  wbtc: {
       //   id: 'wbtc',
