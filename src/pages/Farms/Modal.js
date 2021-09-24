@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import toast from 'components/UI/Toast';
 import useStakeFarms from 'hooks/farms/useStakeFarms'
 import useUnstakeFarms from 'hooks/farms/useUnstakeFarms'
+import Loader from 'components/UI/Loader';
 
 const Styles = styled.div`
     width: 100%;
@@ -79,7 +80,6 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
 
     const [inputAmount, setInputAmount] = useState(0)
     const handleFocus = (event) => event.target.select();
-    console.log(item, 'sss.p')
     const onConfirm = async () => {
         if (stakeType === 'stake') {
             console.log(stakeType, item)
@@ -163,7 +163,15 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                             {item.lpSymbol}
                         </span>
                     </div>
-                    <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28" onClick={onConfirm}>Confirm</button>
+                    <button
+                        className={`rounded-xl flex justify-center items-center 
+                            font-bold mt-20 py-4 px-28
+                            ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bg-primary text-black "}`}
+                        onClick={onConfirm}
+                    >
+                        {pendingTx && <Loader size="20px" className="mr-4" stroke="#717579" />}
+                        Confirm
+                    </button>
                 </div>
 
 
