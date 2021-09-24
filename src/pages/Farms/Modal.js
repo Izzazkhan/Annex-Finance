@@ -9,6 +9,8 @@ import arrowDown from '../../assets/icons/keyboard_arrow_down.svg'
 import { ReactComponent as HelpIcon } from "../../assets/icons/helpOutline.svg";
 import { ReactComponent as PlusCircle } from "../../assets/icons/plusCircle.svg";
 import { ReactComponent as CloseIcon } from '../../assets/icons/close.svg'
+import BigNumber from 'bignumber.js';
+import toast from 'components/UI/Toast';
 
 const Styles = styled.div`
     width: 100%;
@@ -207,9 +209,20 @@ export const LiquidityModal = ({ data, back }) => {
 
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
 
+    const [inputAmount, setInputAmount] = useState(0)
     const handleFocus = (event) => event.target.select();
     const onConfirm = () => {
         // Do Something here
+        console.log(
+            item, 'sss.p', 
+            item.userData?.walletBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.walletBalance)) < 0
+        )
+        if (item.userData?.walletBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.walletBalance)) > 0) {
+            return
+        }
+        toast.error({
+            title: `Insufficient funds`
+        });
     }
     return (
         <Styles>
@@ -226,13 +239,20 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                             onFocus={handleFocus}
                             className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white font-bold m-0 flex input"
                             type="number"
-                            defaultValue={0.00}
+                            value={inputAmount}
+                            onChange={(e) => { setInputAmount(e.target.value) }}
                         />
-                        <span>MAX</span>
+                        <span className="cursor-pointer select-none" onClick={() => {
+                            setInputAmount(item.userData?.walletBalance ? item.userData.walletBalance : 0.00000000)
+                        }}>MAX</span>
                     </div>
                     <div className="flex w-full justify-between mt-10">
                         <span>Available Balance</span>
-                        <span>1234567.87654321{"\t"}SWORD</span>
+                        <span>
+                            {item.userData?.walletBalance ? item.userData.walletBalance : "0.00000000"}
+                            {"\t"}
+                            {item.token0Symbol}{item.token1Symbol && ` - ${item.token1Symbol}`}
+                        </span>
                     </div>
                     <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28" onClick={onConfirm}>Confirm</button>
                 </div>
