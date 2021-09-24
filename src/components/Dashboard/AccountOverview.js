@@ -256,12 +256,12 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : dailyEarning
-                ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
-                : '-'
+                  ? formatValue(getBigNumber(dailyEarning).dp(2, 1).toString(10))
+                  : '-'
             }
             icon={DailyEarning}
             noData={!account || wrongNetwork}
-            status="green"
+            status={dailyEarning && getBigNumber(dailyEarning).dp(2, 1).isNegative() ? 'red' : "green"}
           />
           <SummaryActionCard
             name="ANN Rewards"
@@ -279,12 +279,12 @@ const AccountOverview = ({
               !account || wrongNetwork
                 ? '-'
                 : annualEarning
-                ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
-                : '-'
+                  ? formatValue(getBigNumber(annualEarning).dp(2, 1).toString(10))
+                  : '-'
             }
             icon={AnnualEarning}
             noData={!account || wrongNetwork}
-            status="green"
+            status={annualEarning && getBigNumber(annualEarning).dp(2, 1).isNegative() ? 'red' : 'green'}
           />
         </div>
       )}
