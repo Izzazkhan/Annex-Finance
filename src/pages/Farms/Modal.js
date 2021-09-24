@@ -11,6 +11,7 @@ import { ReactComponent as PlusCircle } from "../../assets/icons/plusCircle.svg"
 import { ReactComponent as CloseIcon } from '../../assets/icons/close.svg'
 import BigNumber from 'bignumber.js';
 import toast from 'components/UI/Toast';
+import useStakeFarms from 'hooks/farms/useStakeFarms'
 
 const Styles = styled.div`
     width: 100%;
@@ -208,17 +209,34 @@ export const LiquidityModal = ({ data, back }) => {
 
 
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
+    const { onStake } = useStakeFarms(item.pid)
+    const [pendingTx, setPendingTx] = useState(false)
 
     const [inputAmount, setInputAmount] = useState(0)
     const handleFocus = (event) => event.target.select();
-    const onConfirm = () => {
+
+    const onConfirm = async () => {
         // Do Something here
-        if (item.userData?.walletBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.walletBalance)) > 0) {
-            return
+        if (stakeType === 'stake') {
+            console.log(stakeType, item)
+            // if (inputAmount <= 0) {
+            //     toast.error({
+            //         title: `Invalid amount`
+            //     });
+            //     return
+            // } else if (item.userData?.tokenBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.tokenBalance)) > 0) {
+            //     toast.error({
+            //         title: `Insufficient funds`
+            //     });
+            //     return
+            // }
+
+            setPendingTx(true)
+            await onStake(inputAmount)
+            setPendingTx(false)
+        } else {
+            console.log('unstake')
         }
-        toast.error({
-            title: `Insufficient funds`
-        });
     }
     return (
         <Styles>

@@ -7,7 +7,6 @@ import config from '../../constants/config';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import useApproveFarm from 'hooks/farms/useApproveFarm'
-import useStakeFarms from 'hooks/farms/useStakeFarms'
 import { useLP } from "hooks/useContracts"
 
 
@@ -20,7 +19,6 @@ function Card({ item, dipositWithdraw }) {
   const [pendingTx, setPendingTx] = useState(false)
   const lpContract = useLP(item.lpAddress)
   const { onApprove } = useApproveFarm(lpContract)
-  const { onStake } = useStakeFarms(item.pid)
 
   return (
     <div className="text-white text-base py-7 px-6 m-6 rounded-3xl border border-primary">
