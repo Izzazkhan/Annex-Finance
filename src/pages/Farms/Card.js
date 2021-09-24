@@ -15,7 +15,7 @@ const harvest = (obj) => { }
 const unStake = (obj) => { }
 
 
-function Card({ item }) {
+function Card({ item, dipositWithdraw }) {
   const format = commaNumber.bindWith(',', '.');
   const [pendingTx, setPendingTx] = useState(false)
   const lpContract = useLP(item.lpAddress)
@@ -32,7 +32,7 @@ function Card({ item }) {
           </div>
           <div className="flex flex-col">
             <span className="font-bold">
-                {item.token1Name && (item.token1Name + " ")}{item.token0Name}
+              {item.token1Name && (item.token1Name + " ")}{item.token0Name}
             </span>
             <span className="mt-2">{item.token0Symbol}{item.token1Symbol && ` - ${item.token1Symbol}`}</span>
           </div>
@@ -129,10 +129,10 @@ function Card({ item }) {
           bgPrimaryGradient rounded-3xl mt-5 w-full 
           text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
         href={
-          `${item.type === 'annex_lp' 
-            ? config.annexAddLiquidityURL 
+          `${item.type === 'annex_lp'
+            ? config.annexAddLiquidityURL
             : config.pcsAddLiquidityURL}/${item.token0}/${item.token1}`
-          }
+        }
         target="_new">Add Liquidity</a>
       {
         new BigNumber(item.userData ? item.userData.allowance : 0).isGreaterThan(0) ? (
@@ -142,7 +142,7 @@ function Card({ item }) {
                 bgPrimaryGradient rounded-3xl mt-5 w-full 
                 text-2xl outline-none`}
               onClick={async () => {
-                
+                dipositWithdraw(true, item)
               }}>Stake</button>
             {
               new BigNumber(item.userData ? item.userData.stakedBalance : 0).isGreaterThan(0) && (
@@ -152,6 +152,7 @@ function Card({ item }) {
                     text-2xl outline-none}`}
                   onClick={() => {
                     unStake(item)
+                    dipositWithdraw(true, item)
                   }}>UnStake</button>
               )
             }

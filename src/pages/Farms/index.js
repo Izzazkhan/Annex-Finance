@@ -26,8 +26,9 @@ function Farms({ settings }) {
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
   const [showLiquidityModal, setShowLiquidityModal] = useState(false)
-  const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(true)
+  const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
   const [filteredPairs, setFilteredPairs] = useState([])
+  const [selectedFarm, setSelectedFarm] = useState(null)
 
   let { data: pairs } = useFarms()
   usePollFarmsData()
@@ -82,6 +83,11 @@ function Farms({ settings }) {
 
   }
 
+  const openDepositWithdrawModal = (shouldOpen, item) => {
+    setShowDepositeWithdrawModal(shouldOpen)
+    setSelectedFarm(shouldOpen ? item : null)
+  }
+
   return (
     <Layout mainClassName="min-h-screen py-8">
       <div className="flex justify-between pt-0 py-6">
@@ -130,12 +136,12 @@ function Farms({ settings }) {
       </div>
       {
         showLiquidityModal && (
-          <LiquidityModal back={() => { setShowLiquidityModal(false) }} dipositWithdraw={() => { setShowDepositeWithdrawModal(true) }} />
+          <LiquidityModal back={() => { setShowLiquidityModal(false) }} />
         )
       }
       {
         showDepositeWithdrawModal && (
-          <DepositWithdrawModal close={() => { setShowDepositeWithdrawModal(false) }} />
+          <DepositWithdrawModal close={() => { setShowDepositeWithdrawModal(false) }} item={selectedFarm} type={selectedFarm?.type} />
         )
       }
       {
@@ -145,17 +151,17 @@ function Farms({ settings }) {
             // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
             <Styles>
               <div className="p-4 flex flex-row flex-wrap">
-              {
-                data.map((item, key) => {
-                  return (
-                    <Card key={key} item={item} />
-                  )
-                })
-              }
+                {
+                  data.map((item, key) => {
+                    return (
+                      <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
+                    )
+                  })
+                }
               </div>
             </Styles>
           ) : (
-            <Table data={data} tdClassName="" />
+            <Table data={data} tdClassName="" dipositWithdraw={openDepositWithdrawModal} />
           )
         )
       }

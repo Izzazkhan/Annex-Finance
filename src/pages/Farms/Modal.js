@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Select from '../../components/UI/Select';
 
@@ -67,7 +67,7 @@ const Styles = styled.div`
     }
 `;
 
-export const LiquidityModal = ({ data, back, dipositWithdraw }) => {
+export const LiquidityModal = ({ data, back }) => {
     const [slippageTolerance, setSlippageTolerance] = useState(0.5)
 
     const handleFocus = (event) => event.target.select();
@@ -196,7 +196,6 @@ export const LiquidityModal = ({ data, back, dipositWithdraw }) => {
                         </div>
                     </div>
                     <button className="py-4 px-20 rounded-xl text-black bg-primary font-bold text-2xl mt-16" onClick={() => {
-                        dipositWithdraw()
                         back()
                     }}>Approve ANN</button>
                 </div>
@@ -206,7 +205,7 @@ export const LiquidityModal = ({ data, back, dipositWithdraw }) => {
 }
 
 
-export const DepositWithdrawModal = ({ data, close }) => {
+export const DepositWithdrawModal = ({ close, item, type }) => {
 
     const handleFocus = (event) => event.target.select();
 

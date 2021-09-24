@@ -219,7 +219,7 @@ const columns = [
     Header: '',
     accessor: 'empty',
     disableSortBy: true,
-    Cell: ({ value, row }) => (
+    Cell: ({ value, row, dipositWithdraw }) => (
       <div className="flex flex-col">
         <a
           className={`text-primary font-bold 
@@ -237,18 +237,20 @@ const columns = [
               <button
                 className={`text-primary font-bold 
                 rounded-3xl p-2 outline-none border mt-2 
-                border-primary ${row.original.token1 === null ? 'invisible' : ''}`}
+                border-primary`}
                 onClick={() => {
                   stake(row.original)
+                  dipositWithdraw(true, row.original)
                 }}>Stake</button>
               {
                 new BigNumber(row.original.userData.stakedBalance).isGreaterThan(0) && (
                   <button
                     className={`text-primary font-bold 
                     rounded-3xl p-2 outline-none border mt-2 
-                    border-primary  ${row.original.token1 === null ? 'invisible' : ''}`}
+                    border-primary`}
                     onClick={() => {
                       unStake(row.original)
+                      dipositWithdraw(true, row.original)
                     }}>UnStake</button>
                 )
               }
@@ -264,7 +266,7 @@ const columns = [
   },
 ]
 
-function Table({ data }) {
+function Table({ data, dipositWithdraw }) {
   const [isTableHorizontal, setIsTableHorizontal] = useState(true)
 
   const { width } = useWindowSize() || {};
@@ -374,7 +376,7 @@ function Table({ data }) {
                             // eslint-disable-next-line react/jsx-key
                             <td {...cell.getCellProps()} className="padding-2rem">
                               <div className={(cell.column.containerClass || '') + (cell.value === 'detail' ? 'text-primary' : '')}>
-                                {cell.render('Cell')}
+                                {cell.render('Cell', { dipositWithdraw })}
                               </div>
                             </td>
                           );
@@ -398,7 +400,7 @@ function Table({ data }) {
                                 {(typeof (cell.column.Header) === "string" ? (cell.column.Header) : (cell.column.Header()))}
                               </td>}
                               <td className="padding-2rem" colSpan={cell.column.Header !== '' ? (1) : (2)}>
-                                {cell.render('Cell')}
+                                {cell.render('Cell', { dipositWithdraw })}
                               </td>
                             </tr>
                           ))
@@ -462,13 +464,14 @@ function Table({ data }) {
   );
 }
 
-function App({ data, tdClassName }) {
+function App({ data, tdClassName, dipositWithdraw }) {
 
   return (
     <Styles>
       <Table
         data={data}
         tdClassName={tdClassName}
+        dipositWithdraw={dipositWithdraw}
       />
     </Styles>
   );
