@@ -12,6 +12,7 @@ import { ReactComponent as CloseIcon } from '../../assets/icons/close.svg'
 import BigNumber from 'bignumber.js';
 import toast from 'components/UI/Toast';
 import useStakeFarms from 'hooks/farms/useStakeFarms'
+import useUnstakeFarms from 'hooks/farms/useUnstakeFarms'
 
 const Styles = styled.div`
     width: 100%;
@@ -211,13 +212,13 @@ export const LiquidityModal = ({ data, back }) => {
 
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
     const { onStake } = useStakeFarms(item.pid)
+    const { onUnstake } = useStakeFarms(item.pid)
     const [pendingTx, setPendingTx] = useState(false)
 
     const [inputAmount, setInputAmount] = useState(0)
     const handleFocus = (event) => event.target.select();
 
     const onConfirm = async () => {
-        // Do Something here
         if (stakeType === 'stake') {
             console.log(stakeType, item)
             if (inputAmount <= 0) {
@@ -236,8 +237,23 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
             await onStake(inputAmount)
             setPendingTx(false)
         } else {
-            console.log('unstake')
+            if (inputAmount <= 0) {
+                toast.error({
+                    title: `Invalid amount`
+                });
+                return
+            } else if (item.userData?.stakedBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.stakedBalance)) > 0) {
+                toast.error({
+                    title: `Insufficient funds`
+                });
+                return
+            }
+
+            setPendingTx(true)
+            await onUnstake(inputAmount)
+            setPendingTx(false)
         }
+        close()
     }
     return (
         <Styles>
@@ -259,16 +275,20 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                         />
                         <span className="cursor-pointer select-none" onClick={() => {
                             if (stakeType === 'stake') {
-                                setInputAmount(item.userData?.tokenBalance ? item.userData.tokenBalance : 0.00000000)
+                                setInputAmount(item.userData?.tokenBalance
+                                    ? new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
+                                    : 0.00000000)
                             }
                         }}>MAX</span>
                     </div>
                     <div className="flex w-full justify-between mt-10">
                         <span>Available Balance</span>
                         <span className="ml-4">
-                            {stakeType === 'stake' && item.userData?.tokenBalance ? item.userData.tokenBalance : "0.00000000"}
+                            {stakeType === 'stake' && item.userData?.tokenBalance
+                                ? new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
+                                : "0.00000000"}
                             {"\t"}
-                            {item.token0Symbol}{item.token1Symbol && `-${item.token1Symbol}`}
+                            {item.lpSymbol}
                         </span>
                     </div>
                     <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28" onClick={onConfirm}>Confirm</button>
