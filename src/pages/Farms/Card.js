@@ -7,12 +7,12 @@ import config from '../../constants/config';
 import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import useApproveFarm from 'hooks/farms/useApproveFarm'
+import useHarvestFarm from 'hooks/farms/useHarvestFarm'
 import { useLP } from "hooks/useContracts"
 import Loader from 'components/UI/Loader';
 
 
 const harvest = (obj) => { }
-const unStake = (obj) => { }
 
 
 function Card({ item, dipositWithdraw }) {
@@ -20,6 +20,7 @@ function Card({ item, dipositWithdraw }) {
   const [pendingTx, setPendingTx] = useState(false)
   const lpContract = useLP(item.lpAddress)
   const { onApprove } = useApproveFarm(lpContract)
+  const { onReward } = useHarvestFarm(item.pid)
 
   return (
     <div className="text-white text-base py-7 px-6 m-6 rounded-3xl border border-primary">
@@ -88,10 +89,17 @@ function Card({ item, dipositWithdraw }) {
       <div className="flex mt-5 justify-between">
         <div className="flex flex-col">
           <span className="font-bold text-primary text-lg">Stacked</span>
-          <span className="mt-2 font-bold mt-3.5">{item.staked}</span>
+          <span className="mt-2 font-bold mt-3.5">
+            {
+              item.userData ? '$' + format(item.userData.stakedAmountUSD) : 0
+            }
+          </span>
         </div>
         <div className="flex self-end w-2/6">
-          <span className="text-primary">0 ANN / 0 ETH</span>
+          <span className="text-primary">
+            {item.userData ? item.userData.token0Amount : 0} {item.token0Symbol} /&nbsp;
+            {item.userData ? item.userData.token1Amount : 0} {item.token1Symbol}
+          </span>
         </div>
       </div>
       <div className="flex mt-5 justify-between">
@@ -104,7 +112,7 @@ function Card({ item, dipositWithdraw }) {
             <span className="font-bold">
               {new BigNumber(item.userData ? item.userData.earnings : 0)
                 .div(1e18)
-                .dp(2, 1)
+                .dp(6, 1)
                 .toString(10)} ANN
             </span>
             {
@@ -114,8 +122,10 @@ function Card({ item, dipositWithdraw }) {
                     rounded-md mt-2 
                     text-md outline-none
                     ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
-                  onClick={() => {
-                    harvest(item)
+                  onClick={async () => {
+                    setPendingTx(true)
+                    await onReward(item.pid)
+                    setPendingTx(false)
                   }}>Harvest Now</button>
               ) : (
                 <span className="mt-2 text-primary mb-4">No Rewards</span>
@@ -154,7 +164,6 @@ function Card({ item, dipositWithdraw }) {
                     text-2xl outline-none ml-4
                     ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
                   onClick={() => {
-                    unStake(item)
                     dipositWithdraw(true, item, 'unstake')
                   }}>UnStake</button>
               )

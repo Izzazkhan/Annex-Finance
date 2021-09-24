@@ -75,7 +75,7 @@ const Styles = styled.div`
 
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
     const { onStake } = useStakeFarms(item.pid)
-    const { onUnstake } = useStakeFarms(item.pid)
+    const { onUnstake } = useUnstakeFarms(item.pid)
     const [pendingTx, setPendingTx] = useState(false)
 
     const [inputAmount, setInputAmount] = useState(0)
@@ -115,6 +115,9 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
             await onUnstake(inputAmount)
             setPendingTx(false)
         }
+        toast.error({
+            title: `Success`
+        });
         close()
     }
     return (

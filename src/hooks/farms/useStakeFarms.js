@@ -1,19 +1,20 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { useWeb3React } from '@web3-react/core'
-import { stakeFarm } from "../../utils/calls";
-import { useMasterchef } from "../useContracts";
+import { useActiveWeb3React } from 'hooks'
+import { stakeFarm } from '../../utils/calls'
+import { useMasterchef } from '../useContracts'
 import { fetchFarmsUserDataAsync, useFarms } from 'core'
 
 const useStakeFarms = (pid) => {
     const dispatch = useDispatch()
     const { data } = useFarms()
-    const { account } = useWeb3React()
+    const { account } = useActiveWeb3React()
     const masterChefContract = useMasterchef()
+    console.log('masterChefContract: ', masterChefContract)
 
     const handleStake = useCallback(
         async (amount) => {
-            const txHash = await stakeFarm(masterChefContract, pid, amount)
+            const txHash = await stakeFarm(masterChefContract, pid, amount, account)
             dispatch(fetchFarmsUserDataAsync({account, data}))
         },
         [masterChefContract, pid],

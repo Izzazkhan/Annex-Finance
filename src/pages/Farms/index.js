@@ -34,13 +34,38 @@ function Farms({ settings }) {
   usePollFarmsData()
 
   const attatchImgWithData = (data) => {
-    if (data && data.length !== 0) {
+    if (data && data.length > 0) {
       data = data.map(pair => {
         const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
         const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
+        const userPercent = pair.userData
+          ? new BigNumber(pair.userData.stakedBalance).div(1e18).div(pair.totalSupply)
+          : new BigNumber(0)
+        let token0Amount = 0
+        let token1Amount = 0
+        if (pair.userData) {
+          token0Amount = new BigNumber(pair.reserve0)
+            .div(new BigNumber(10).pow(pair.token0Decimals))
+            .times(userPercent)
+            .dp(2, 1)
+            .toString(10)
+          token1Amount = new BigNumber(pair.reserve1)
+            .div(new BigNumber(10).pow(pair.token1Decimals))
+            .times(userPercent)
+            .dp(2, 1)
+            .toString(10)
+          pair.userData.token0Amount = token0Amount
+          pair.userData.token1Amount = token1Amount
+          pair.userData.stakedAmountUSD = new BigNumber(pair.reserve0USD)
+            .plus(pair.reserve1USD)
+            .times(userPercent)
+            .dp(2, 1)
+            .toString(10)
+        }
 
         return {
           ...pair,
+          userPercent,
           token0Img: token0
             ? token0.img
             : annCoin,
@@ -112,13 +137,13 @@ function Farms({ settings }) {
       <div className="flex justify-between pt-0 py-6">
         <div className="flex items-center">
           <div className="list-icon">
-            <a href="#" onClick={() => setIsGridView(false)}>
+            {/* <a href="#" onClick={() => setIsGridView(false)}>
               <img
                 src={(isGridView) ? ListIcon : ListIconActive}
                 alt=""
                 className="h-6"
               />
-            </a>
+            </a> */}
           </div>
           <div className="grid-icon ml-3">
             <a href="#" onClick={() => setIsGridView(true)}>

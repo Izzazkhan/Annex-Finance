@@ -1,13 +1,20 @@
 import { useCallback } from 'react'
-import {useMasterchef} from "../useContracts";
-import {harvestFarm} from "../../utils/calls";
+import { useDispatch } from 'react-redux'
+import { useActiveWeb3React } from 'hooks'
+import { harvestFarm } from '../../utils/calls'
+import { useMasterchef } from '../useContracts'
+import { fetchFarmsUserDataAsync, useFarms } from 'core'
 
-const useHarvestFarm = (farmPid) => {
+const useHarvestFarm = (pid) => {
+    const dispatch = useDispatch()
+    const { data } = useFarms()
+    const { account } = useActiveWeb3React()
     const masterChefContract = useMasterchef()
 
     const handleHarvest = useCallback(async () => {
-        await harvestFarm(masterChefContract, farmPid)
-    }, [farmPid, masterChefContract])
+        await harvestFarm(masterChefContract, pid)
+        dispatch(fetchFarmsUserDataAsync({account, data}))
+    }, [pid, masterChefContract])
 
     return { onReward: handleHarvest }
 }
