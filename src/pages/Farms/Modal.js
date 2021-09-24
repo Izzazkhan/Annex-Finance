@@ -213,10 +213,6 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
     const handleFocus = (event) => event.target.select();
     const onConfirm = () => {
         // Do Something here
-        console.log(
-            item, 'sss.p', 
-            item.userData?.walletBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.walletBalance)) < 0
-        )
         if (item.userData?.walletBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.walletBalance)) > 0) {
             return
         }
