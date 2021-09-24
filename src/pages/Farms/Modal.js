@@ -219,17 +219,17 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
         // Do Something here
         if (stakeType === 'stake') {
             console.log(stakeType, item)
-            // if (inputAmount <= 0) {
-            //     toast.error({
-            //         title: `Invalid amount`
-            //     });
-            //     return
-            // } else if (item.userData?.tokenBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.tokenBalance)) > 0) {
-            //     toast.error({
-            //         title: `Insufficient funds`
-            //     });
-            //     return
-            // }
+            if (inputAmount <= 0) {
+                toast.error({
+                    title: `Invalid amount`
+                });
+                return
+            } else if (item.userData?.tokenBalance && new BigNumber(inputAmount).comparedTo(new BigNumber(item.userData.tokenBalance)) > 0) {
+                toast.error({
+                    title: `Insufficient funds`
+                });
+                return
+            }
 
             setPendingTx(true)
             await onStake(inputAmount)
