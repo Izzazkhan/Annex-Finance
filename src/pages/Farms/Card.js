@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import commaNumber from 'comma-number';
 import useApproveFarm from 'hooks/farms/useApproveFarm'
 import { useLP } from "hooks/useContracts"
+import Loader from 'components/UI/Loader';
 
 
 const harvest = (obj) => { }
@@ -109,23 +110,25 @@ function Card({ item, dipositWithdraw }) {
             {
               new BigNumber(item.userData ? item.userData.earnings : 0).isGreaterThan(0) ? (
                 <button
-                  className={`p-1.5 text-black font-bold 
-                    bgPrimaryGradient rounded-md mt-2 
-                    text-md outline-none`}
+                  className={`p-1.5 font-bold 
+                    rounded-md mt-2 
+                    text-md outline-none
+                    ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
                   onClick={() => {
                     harvest(item)
                   }}>Harvest Now</button>
               ) : (
-                <span className="mt-2 text-primary">No Rewards</span>
+                <span className="mt-2 text-primary mb-4">No Rewards</span>
               )
             }
           </div>
         </div>
       </div>
       <a
-        className={`flex py-2.5 px-28 text-black font-bold 
-          bgPrimaryGradient rounded-3xl mt-5 w-full 
-          text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}`}
+        className={`flex py-2.5 px-28 font-bold 
+          rounded-3xl mt-5 w-full 
+          text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}
+          ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
         href={
           `${item.type === 'annex_lp'
             ? config.annexAddLiquidityURL
@@ -136,18 +139,20 @@ function Card({ item, dipositWithdraw }) {
         new BigNumber(item.userData ? item.userData.allowance : 0).isGreaterThan(0) ? (
           <div className="flex justify-between">
             <button
-              className={`py-2.5 px-14 text-black font-bold 
-                bgPrimaryGradient rounded-3xl mt-5 w-full 
-                text-2xl outline-none`}
+              className={`py-2.5 px-14 font-bold 
+                rounded-3xl mt-5 w-full 
+                text-2xl outline-none
+                ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
               onClick={async () => {
                 dipositWithdraw(true, item, 'stake')
               }}>Stake</button>
             {
               new BigNumber(item.userData ? item.userData.stakedBalance : 0).isGreaterThan(0) && (
                 <button
-                  className={`py-2.5 px-14 text-black font-bold 
-                    bgPrimaryGradient rounded-3xl mt-5 w-full 
-                    text-2xl outline-none}`}
+                  className={`py-2.5 px-14 font-bold 
+                    rounded-3xl mt-5 w-full 
+                    text-2xl outline-none ml-4
+                    ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
                   onClick={() => {
                     unStake(item)
                     dipositWithdraw(true, item, 'unstake')
@@ -156,11 +161,14 @@ function Card({ item, dipositWithdraw }) {
             }
           </div>
         ) : (
-          <div className="mt-5 flex justify-center text-2xl text-primary cursor-pointer" onClick={async () => {
+          <div className="mt-5 flex justify-center items-center text-2xl text-primary cursor-pointer" onClick={async () => {
             setPendingTx(true)
             await onApprove()
             setPendingTx(false)
-          }}>Approve Staking</div>
+          }}>
+            {pendingTx && <Loader size="20px" className="mr-4" stroke="#ff9800" />}
+            Approve Staking
+          </div>
         )
       }
     </div>
