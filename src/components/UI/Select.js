@@ -41,7 +41,7 @@ function Select({
       >
         {({ open }) => (
           <>
-            <div className="relative z-10">
+            <div className="relative" style={{ zIndex: 1 }}>
               <Listbox.Button
                 className={`relative w-full pl-3 pr-10 text-left
               shadow-md cursor-default focus:outline-none

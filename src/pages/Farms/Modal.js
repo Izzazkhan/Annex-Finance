@@ -62,7 +62,8 @@ const Styles = styled.div`
             }
         }
         div.input-container {
-            width: 40rem;
+            width: 100%;
+            min-width: 40rem;
             input.input {
                 // color: #5F5F5F;
             }
@@ -257,15 +258,17 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                             onChange={(e) => { setInputAmount(e.target.value) }}
                         />
                         <span className="cursor-pointer select-none" onClick={() => {
-                            setInputAmount(item.userData?.walletBalance ? item.userData.walletBalance : 0.00000000)
+                            if (stakeType === 'stake') {
+                                setInputAmount(item.userData?.tokenBalance ? item.userData.tokenBalance : 0.00000000)
+                            }
                         }}>MAX</span>
                     </div>
                     <div className="flex w-full justify-between mt-10">
                         <span>Available Balance</span>
-                        <span>
-                            {item.userData?.walletBalance ? item.userData.walletBalance : "0.00000000"}
+                        <span className="ml-4">
+                            {stakeType === 'stake' && item.userData?.tokenBalance ? item.userData.tokenBalance : "0.00000000"}
                             {"\t"}
-                            {item.token0Symbol}{item.token1Symbol && ` - ${item.token1Symbol}`}
+                            {item.token0Symbol}{item.token1Symbol && `-${item.token1Symbol}`}
                         </span>
                     </div>
                     <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28" onClick={onConfirm}>Confirm</button>
