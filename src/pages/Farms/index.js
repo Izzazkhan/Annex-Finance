@@ -14,6 +14,7 @@ import ListIconActive from '../../assets/images/card-list-btn-active.png'
 import GridIconActive from '../../assets/images/card-grid-btn-active.png'
 import annCoin from '../../assets/images/coins/ann.png'
 import { connectAccount, useFarms, usePollFarmsData } from 'core'
+import BigNumber from 'bignumber.js';
 
 const Styles = styled.div`
   width: 100%;
@@ -33,9 +34,9 @@ function Farms({ settings }) {
   let { data: pairs } = useFarms()
   usePollFarmsData()
 
-  useEffect(() => {
-    if (pairs && pairs.length !== 0) {
-      pairs = pairs.map(pair => {
+  const attatchImgWithData = (data) => {
+    if (data && data.length !== 0) {
+      data = data.map(pair => {
         const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
         const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
 
@@ -49,8 +50,12 @@ function Farms({ settings }) {
             : null,
         }
       })
-      setFilteredPairs(pairs)
+      setFilteredPairs(data)
     }
+  }
+  
+  useEffect(() => {
+    attatchImgWithData(pairs)
   }, [pairs])
 
   const sortOptions = [
@@ -80,12 +85,27 @@ function Farms({ settings }) {
   const stakedFilterToggle = (value) => {
     setOnlyStaked((oldVal) => !oldVal)
     // Perform Action here
-
+    if (value) {
+      const data = pairs.filter((obj, index) => {
+        let check = false
+        if (new BigNumber(obj.userData ? obj.userData.stakedBalance : 0).isGreaterThan(0)) {
+          check = true
+        }
+        return check
+      })
+      if (data.length === 0) {
+        setFilteredPairs(data)
+      } else {
+        attatchImgWithData(data)
+      }
+    } else {
+      attatchImgWithData(pairs)
+    }
   }
 
-  const openDepositWithdrawModal = (shouldOpen, item) => {
+  const openDepositWithdrawModal = (shouldOpen, item, stakeType) => {
     setShowDepositeWithdrawModal(shouldOpen)
-    setSelectedFarm(shouldOpen ? item : null)
+    setSelectedFarm(shouldOpen ? { ...item, stakeType } : null)
   }
 
   return (
@@ -134,38 +154,54 @@ function Farms({ settings }) {
           </div>
         </div>
       </div>
-      {
-        showLiquidityModal && (
-          <LiquidityModal back={() => { setShowLiquidityModal(false) }} />
-        )
-      }
-      {
-        showDepositeWithdrawModal && (
-          <DepositWithdrawModal close={() => { setShowDepositeWithdrawModal(false) }} item={selectedFarm} type={selectedFarm?.type} />
-        )
-      }
-      {
-        !showDepositeWithdrawModal &&
-        !showLiquidityModal && (
-          (isGridView) ? (
-            // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
-            <Styles>
-              <div className="p-4 flex flex-row flex-wrap">
-                {
-                  data.map((item, key) => {
-                    return (
-                      <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
-                    )
-                  })
-                }
-              </div>
-            </Styles>
-          ) : (
-            <Table data={data} tdClassName="" dipositWithdraw={openDepositWithdrawModal} />
+      {(filteredPairs.length === 0) ? (
+        <Styles>
+
+          <div className="text-white text-base p-20 flex justify-center">
+            <span className="text-center text-grey text-2xl md:text-3xl 
+              text-border title-text">There are no pairs</span>
+          </div>
+        </Styles>
+      ) : (<>
+        {
+          showLiquidityModal && (
+            <LiquidityModal back={() => { setShowLiquidityModal(false) }} />
           )
-        )
+        }
+        {
+          showDepositeWithdrawModal && (
+            <DepositWithdrawModal
+              close={() => { setShowDepositeWithdrawModal(false) }}
+              item={selectedFarm}
+              type={selectedFarm?.type}
+              stakeType={selectedFarm.stakeType}
+            />
+          )
+        }
+        {
+          !showDepositeWithdrawModal &&
+          !showLiquidityModal && (
+            (isGridView) ? (
+              // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
+              <Styles>
+                <div className="p-4 flex flex-row flex-wrap">
+                  {
+                    data.map((item, key) => {
+                      return (
+                        <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
+                      )
+                    })
+                  }
+                </div>
+              </Styles>
+            ) : (
+              <Table data={data} tdClassName="" dipositWithdraw={openDepositWithdrawModal} />
+            )
+          )
+        }
+      </>)
       }
-    </Layout>
+    </Layout >
   );
 }
 

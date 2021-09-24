@@ -142,7 +142,7 @@ function Card({ item, dipositWithdraw }) {
                 bgPrimaryGradient rounded-3xl mt-5 w-full 
                 text-2xl outline-none`}
               onClick={async () => {
-                dipositWithdraw(true, item)
+                dipositWithdraw(true, item, 'stake')
               }}>Stake</button>
             {
               new BigNumber(item.userData ? item.userData.stakedBalance : 0).isGreaterThan(0) && (
@@ -152,7 +152,7 @@ function Card({ item, dipositWithdraw }) {
                     text-2xl outline-none}`}
                   onClick={() => {
                     unStake(item)
-                    dipositWithdraw(true, item)
+                    dipositWithdraw(true, item, 'unstake')
                   }}>UnStake</button>
               )
             }

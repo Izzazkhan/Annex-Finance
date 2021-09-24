@@ -93,7 +93,7 @@ const approve = async (obj) => {
   const lpContract = useLP(obj.lpAddress)
   const { onApprove } = useApproveFarm(lpContract)
   const [pendingTx, setPendingTx] = useState(false)
-  
+
   setPendingTx(true)
   await onApprove()
   setPendingTx(false)
@@ -240,7 +240,7 @@ const columns = [
                 border-primary`}
                 onClick={() => {
                   stake(row.original)
-                  dipositWithdraw(true, row.original)
+                  dipositWithdraw(true, row.original, 'stake')
                 }}>Stake</button>
               {
                 new BigNumber(row.original.userData.stakedBalance).isGreaterThan(0) && (
@@ -250,7 +250,7 @@ const columns = [
                     border-primary`}
                     onClick={() => {
                       unStake(row.original)
-                      dipositWithdraw(true, row.original)
+                      dipositWithdraw(true, row.original, 'unstake')
                     }}>UnStake</button>
                 )
               }

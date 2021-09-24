@@ -205,7 +205,7 @@ export const LiquidityModal = ({ data, back }) => {
 }
 
 
-export const DepositWithdrawModal = ({ close, item, type }) => {
+export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
 
     const handleFocus = (event) => event.target.select();
 
