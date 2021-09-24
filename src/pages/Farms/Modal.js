@@ -208,7 +208,9 @@ export const LiquidityModal = ({ data, back }) => {
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
 
     const handleFocus = (event) => event.target.select();
-
+    const onConfirm = () => {
+        // Do Something here
+    }
     return (
         <Styles>
             <div className="py-10 flex flex-col items-center justify-center text-white">
@@ -232,7 +234,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                         <span>Available Balance</span>
                         <span>1234567.87654321{"\t"}SWORD</span>
                     </div>
-                    <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28">Confirm</button>
+                    <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28" onClick={onConfirm}>Confirm</button>
                 </div>
 
 
