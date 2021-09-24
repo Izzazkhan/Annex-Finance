@@ -72,144 +72,6 @@ const Styles = styled.div`
     }
 `;
 
-export const LiquidityModal = ({ data, back }) => {
-    const [slippageTolerance, setSlippageTolerance] = useState(0.5)
-
-    const handleFocus = (event) => event.target.select();
-
-    return (
-        <Styles>
-            <div className="py-10 flex justify-center text-white">
-                <div className="border border-primary rounded-xl py-12 px-10 card flex flex-col items-center">
-                    <div className="flex justify-center relative w-full">
-                        {
-                            // eslint-disable-next-line
-                            <img src={arrowBack} alt={'Back'} className="absolute left-0 top-0.5" onClick={back} />
-                        }
-                        <span className="text-2xl font-bold">Add Liquidity</span>
-                    </div>
-                    <div className="bg-primary p-6 text-black max-w-sm mt-10 rounded-xl">
-                        <span><b>Tip:</b><br /><br />When you add liquidity,
-                            you will receive pool tokens representing your position.
-                            These tokens automatically earn fees proportional to your share of the pool,
-                            and can be redeemed at any time.</span>
-                    </div>
-                    <div className="flex justify-between mt-12 w-full">
-                        <div>
-                            <div className="flex items-center">
-                                <span className="text-lg font-thin">Slippage Tolerance</span>
-                                <HelpIcon className="ml-1.5 helpIcon" />
-                            </div>
-                            <div className="flex justify-between mt-3.5">
-                                <span className={
-                                    "p-1 text-lg rounded-xl w-14 text-center cursor-pointer "
-                                    +
-                                    ((slippageTolerance === 0.1) ? "bg-primary text-black" : "span-toggle")
-                                }
-                                    onClick={() => setSlippageTolerance(0.1)}
-                                >
-                                    0.1%
-                                </span>
-                                <span className={
-                                    "p-1 text-lg rounded-xl w-14 text-center cursor-pointer "
-                                    +
-                                    ((slippageTolerance === 0.5) ? 'bg-primary text-black' : "span-toggle")
-                                }
-                                    onClick={() => setSlippageTolerance(0.5)}
-                                >
-                                    0.5%
-                                </span>
-                                <span className={
-                                    "p-1 text-lg rounded-xl w-14 text-center cursor-pointer "
-                                    +
-                                    ((slippageTolerance === 1) ? 'bg-primary text-black' : "span-toggle")
-                                }
-                                    onClick={() => setSlippageTolerance(1)}
-                                >
-                                    1%
-                                </span>
-                            </div>
-                        </div>
-                        <div className="ml-16">
-                            <div className="flex items-center">
-                                <span className="text-lg font-thin">Transaction Deadline</span>
-                                <HelpIcon className="ml-1.5 helpIcon" />
-                            </div>
-                            <div className="flex justify-between items-center mt-3.5">
-                                <input
-                                    onFocus={handleFocus}
-                                    className="border border-solid border-primary bg-transparent w-32
-                                        rounded-xl focus:outline-none font-normal px-5 py-1 text-white"
-                                    type="number"
-                                    defaultValue={20}
-                                />
-                                <span className="text-lg font-thin">minutes</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="border border-solid border-primary rounded-xl px-5 py-3 mt-11 w-full flex justify-between">
-                        <div className="flex flex-col">
-                            <span className="font-thin">Input</span>
-                            <input
-                                onFocus={handleFocus}
-                                className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white font-bold mt-2"
-                                type="number"
-                                defaultValue={0.00}
-                            />
-                        </div>
-                        <div>
-                            <div className="flex justify-between">
-                                <span className="font-thin">Balance </span><span className="mr-2 text-primary">-</span>
-                            </div>
-                            <div className="flex items-center mt-2 w-32">
-                                {/* <img src={annCoinImg} alt="ANN" className="w-8" />
-                                <span className="mx-2 my-0">ANN</span>
-                                <img src={arrowDown} alt="Dropdown" className="" /> */}
-                                <Select
-                                    selectedClassName="py-1 pr-1 select-btn select-btn-mini"
-                                    selectedTextClassName="text-base"
-                                    type={'mini'}
-                                    dropDownClass="select-dropdown"
-                                    options={[{ name: 'ANN', logo: annCoinImg }, { name: 'BNB', logo: bnbCoinImg }]}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <PlusCircle className="w-8 self-start mt-6 circleIcon" />
-                    <div className="border border-solid border-primary rounded-xl px-5 py-3 mt-6 w-full flex justify-between">
-                        <div className="flex flex-col">
-                            <span className="font-thin">Input</span>
-                            <input
-                                onFocus={handleFocus}
-                                className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white font-bold mt-2"
-                                type="number"
-                                defaultValue={0.00}
-                            />
-                        </div>
-                        <div>
-                            <div className="flex justify-between">
-                                <span className="font-thin">Balance </span><span className="mr-2 text-primary">-</span>
-                            </div>
-                            <div className="flex mt-2 w-40">
-                                <Select
-                                    selectedClassName="bg-primary py-1 pr-1 pl-4 select-btn"
-                                    selectedTextClassName="select-text"
-                                    dropDownClass="select-dropdown-margin-offset"
-                                    options={[{ name: 'Select A Token' }, { name: 'ETH' }, { name: 'BNB' }]}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <button className="py-4 px-20 rounded-xl text-black bg-primary font-bold text-2xl mt-16" onClick={() => {
-                        back()
-                    }}>Approve ANN</button>
-                </div>
-            </div>
-        </Styles>
-    )
-}
-
-
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
     const { onStake } = useStakeFarms(item.pid)
     const { onUnstake } = useStakeFarms(item.pid)
@@ -217,7 +79,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
 
     const [inputAmount, setInputAmount] = useState(0)
     const handleFocus = (event) => event.target.select();
-
+    console.log(item, 'sss.p')
     const onConfirm = async () => {
         if (stakeType === 'stake') {
             console.log(stakeType, item)
@@ -278,15 +140,25 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                                 setInputAmount(item.userData?.tokenBalance
                                     ? new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
                                     : 0.00000000)
+                            } else {
+                                setInputAmount(item.userData?.stakedBalance
+                                    ? new BigNumber(item.userData.stakedBalance).div(1e18).toString(10)
+                                    : 0.00000000)
                             }
                         }}>MAX</span>
                     </div>
                     <div className="flex w-full justify-between mt-10">
                         <span>Available Balance</span>
                         <span className="ml-4">
-                            {stakeType === 'stake' && item.userData?.tokenBalance
-                                ? new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
-                                : "0.00000000"}
+                            {stakeType === 'stake' ? (
+                                item.userData?.tokenBalance
+                                    ? new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
+                                    : "0.00000000"
+                            ) : (
+                                item.userData?.stakedBalance
+                                    ? new BigNumber(item.userData.stakedBalance).div(1e18).toString(10)
+                                    : "0.00000000"
+                            )}
                             {"\t"}
                             {item.lpSymbol}
                         </span>

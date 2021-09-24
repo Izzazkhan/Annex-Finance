@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Layout from '../../layouts/MainLayout/MainLayout'
 import Table from './Table'
 import Card from './Card'
-import { DepositWithdrawModal, LiquidityModal } from './Modal'
+import { DepositWithdrawModal } from './Modal'
 import Select from '../../components/UI/Select'
 import Switch from "../../components/UI/Switch"
 import ListIcon from '../../assets/images/card-list-btn.png'
@@ -26,7 +26,6 @@ const Styles = styled.div`
 function Farms({ settings }) {
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
-  const [showLiquidityModal, setShowLiquidityModal] = useState(false)
   const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
   const [filteredPairs, setFilteredPairs] = useState([])
   const [selectedFarm, setSelectedFarm] = useState(null)
@@ -164,11 +163,6 @@ function Farms({ settings }) {
         </Styles>
       ) : (<>
         {
-          showLiquidityModal && (
-            <LiquidityModal back={() => { setShowLiquidityModal(false) }} />
-          )
-        }
-        {
           showDepositeWithdrawModal && (
             <DepositWithdrawModal
               close={() => { setShowDepositeWithdrawModal(false) }}
@@ -179,8 +173,7 @@ function Farms({ settings }) {
           )
         }
         {
-          !showDepositeWithdrawModal &&
-          !showLiquidityModal && (
+          !showDepositeWithdrawModal && (
             (isGridView) ? (
               // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
               <Styles>
