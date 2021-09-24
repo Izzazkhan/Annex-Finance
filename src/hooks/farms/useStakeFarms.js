@@ -10,7 +10,6 @@ const useStakeFarms = (pid) => {
     const { data } = useFarms()
     const { account } = useActiveWeb3React()
     const masterChefContract = useMasterchef()
-    console.log('masterChefContract: ', masterChefContract)
 
     const handleStake = useCallback(
         async (amount) => {
