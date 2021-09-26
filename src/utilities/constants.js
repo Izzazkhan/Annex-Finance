@@ -109,20 +109,6 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: trx,
         aAsset: atrx
       },
-      ann: {
-        id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_TEST_ANN_TOKEN,
-        asset: ann,
-        aAsset: ann
-      },
-      // wbtc: {
-      //   id: 'wbtc',
-      //   symbol: 'wbtc',
-      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-      //   asset: btc,
-      //   aAsset: btc
-      // }
       dot: {
         id: 'dot',
         symbol: 'DOT',
@@ -137,6 +123,20 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: ada,
         aAsset: aada
       },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_TEST_ANN_TOKEN,
+        asset: ann,
+        aAsset: ann
+      },
+      // wbtc: {
+      //   id: 'wbtc',
+      //   symbol: 'wbtc',
+      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+      //   asset: btc,
+      //   aAsset: btc
+      // }
     }
     : {
       usdc: {
