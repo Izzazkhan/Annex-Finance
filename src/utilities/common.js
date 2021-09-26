@@ -75,9 +75,9 @@ export const addToken = async (asset = 'xai', decimal, type) => {
         ? asset.toUpperCase()
         : `a${(asset === 'btcb' ? 'btc' : asset).toUpperCase()}`;
     tokenDecimals = decimal || (type === 'token' ? 18 : 8);
-    tokenImage = `${window.location.origin}/images/coins/${
-      type === 'token' ? (asset === 'ann' ? 'ANN' : asset.toLowerCase()) : `a${asset === 'btcb' ? 'btc' : asset.toLowerCase()}`
-    }.png`;
+    tokenImage = `${window.location.origin}/images/coins/${type === 'token' ? (asset === 'ann' ?
+      'ANN' : asset.toLowerCase()) : `a${asset === 'btcb' ? 'btc' : asset.toLowerCase()}`
+      }.png`;
   }
 
   try {
@@ -124,6 +124,9 @@ export const currencyFormatter = (labelValue, rowValue) => {
   const abs = Math.abs(Number(labelValue));
   if (rowValue === 'price') {
     return `$${new BigNumber(`${abs}`).dp(2, 1)}`;
+  }
+  else if (rowValue === 'reservesValue') {
+    return `$${(new BigNumber(`${abs}`).dp(2, 1)) / 1.0e6}M`;
   } else {
     if (abs >= 1.0e9) {
       // Nine Zeroes for Billions
