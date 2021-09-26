@@ -142,21 +142,21 @@ export const CONTRACT_TOKEN_ADDRESS =
       usdc: {
         id: 'usdc',
         symbol: 'USDC',
-        address: process.env.REACT_APP_MAIN_USDC_TOKEN,
+        address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
         asset: usdc,
         aAsset: ausdc
       },
       usdt: {
         id: 'usdt',
         symbol: 'USDT',
-        address: process.env.REACT_APP_MAIN_USDT_TOKEN,
+        address: '0x55d398326f99059fF775485246999027B3197955',
         asset: usdt,
         aAsset: ausdt
       },
       busd: {
         id: 'busd',
         symbol: 'BUSD',
-        address: process.env.REACT_APP_MAIN_BUSD_TOKEN,
+        address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
         asset: busd,
         aAsset: abusd
       },
@@ -169,35 +169,35 @@ export const CONTRACT_TOKEN_ADDRESS =
       btcb: {
         id: 'btcb',
         symbol: 'BTCB',
-        address: process.env.REACT_APP_MAIN_BTC_TOKEN,
+        address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
         asset: btc,
         aAsset: abtc
       },
       eth: {
         id: 'eth',
         symbol: 'ETH',
-        address: process.env.REACT_APP_MAIN_ETH_TOKEN,
+        address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
         asset: eth,
         aAsset: aeth
       },
       trx: {
         id: 'trx',
         symbol: 'TRX',
-        address: process.env.REACT_APP_MAIN_TRX_TOKEN,
+        address: '0x85EAC5Ac2F758618dFa09bDbe0cf174e7d574D5B',
         asset: trx,
         aAsset: atrx
       },
       dot: {
         id: 'dot',
         symbol: 'DOT',
-        address: process.env.REACT_APP_MAIN_DOT_TOKEN_ADDRESS,
+        address: '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402',
         asset: dot,
         aAsset: adot
       },
       ada: {
         id: 'ada',
         symbol: 'ADA',
-        address: process.env.REACT_APP_MAIN_ADA_TOKEN,
+        address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47',
         asset: ada,
         aAsset: aada
       },
@@ -211,7 +211,7 @@ export const CONTRACT_TOKEN_ADDRESS =
       // wbnb: {
       //   id: 'wbnb',
       //   symbol: 'WBNB',
-      //   address: process.env.REACT_APP_MAIN_WBNB_TOKEN,
+      //   address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
       //   asset: bnb,
       //   aAsset: bnb
       // },
@@ -449,7 +449,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
     //   "name": "Tether",
     //   "symbol": "USDT",
     //   "decimals": 6,
-    //   "address": process.env.REACT_APP_MAIN_USDT_TOKEN,
+    //   "address": '0x55d398326f99059fF775485246999027B3197955',
     //   "contract": "FaucetToken",
     // },
     wbnb: {
@@ -457,7 +457,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Wrapped BNB",
       "symbol": "WBNB",
       "decimals": 18,
-      "address": process.env.REACT_APP_MAIN_WBNB_TOKEN,
+      "address": '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
       asset: bnb,
       // "contract": "FaucetToken",
     },
@@ -466,7 +466,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Binance USD",
       "symbol": "BUSD",
       "decimals": 18,
-      "address": process.env.REACT_APP_MAIN_BUSD_TOKEN,
+      "address": '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
       asset: busd,
       // "contract": "FaucetToken",
     },
@@ -475,7 +475,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Binance Bitcoin",
       "symbol": "BTCB",
       "decimals": 18,
-      "address": process.env.REACT_APP_MAIN_BTC_TOKEN,
+      "address": '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
       asset: btc,
       // "contract": "FaucetToken",
     },
