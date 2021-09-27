@@ -115,7 +115,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
             await onUnstake(inputAmount)
             setPendingTx(false)
         }
-        toast.error({
+        toast.success({
             title: `Success`
         });
         close()

@@ -107,7 +107,7 @@ function Card({ item, dipositWithdraw }) {
           <span className="font-bold text-primary text-lg">Earned</span>
         </div>
         <div className="flex w-6/12">
-          <img src={annCoin} alt="" className="mr-9 h-8" />
+          <img src={annCoin} alt="" className={`h-8 ${pendingTx ? (" mr-4 "):(" mr-9 ")}`} />
           <div className="flex flex-col">
             <span className="font-bold">
               {new BigNumber(item.userData ? item.userData.earnings : 0)
@@ -118,15 +118,18 @@ function Card({ item, dipositWithdraw }) {
             {
               new BigNumber(item.userData ? item.userData.earnings : 0).isGreaterThan(0) ? (
                 <button
-                  className={`p-1.5 font-bold 
-                    rounded-md mt-2 
+                  className={`p-1.5 flex justify-center items-center 
+                    font-bold rounded-md mt-2 
                     text-md outline-none
                     ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
                   onClick={async () => {
                     setPendingTx(true)
                     await onReward(item.pid)
                     setPendingTx(false)
-                  }}>Harvest Now</button>
+                  }}>
+                  {pendingTx && <Loader size="20px" className="mr-1.5" stroke="#717579" />}
+                  Harvest Now
+                </button>
               ) : (
                 <span className="mt-2 text-primary mb-4">No Rewards</span>
               )
