@@ -83,7 +83,6 @@ function Farms({ settings }) {
   }, [pairs])
 
   const sortOptions = [
-    { name: 'Hot' },
     { name: 'APR' },
     { name: 'Multiplier' },
     { name: 'Earned' },
