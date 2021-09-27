@@ -78,21 +78,21 @@ export const CONTRACT_TOKEN_ADDRESS =
       usdc: {
         id: 'usdc',
         symbol: 'USDC',
-        address: process.env.REACT_APP_TEST_USDC_TOKEN_ADDRESS,
+        address: process.env.REACT_APP_TEST_USDC_TOKEN,
         asset: usdc,
         aAsset: ausdc
       },
       usdt: {
         id: 'usdt',
         symbol: 'USDT',
-        address: process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS,
+        address: process.env.REACT_APP_TEST_USDT_TOKEN,
         asset: usdt,
         aAsset: ausdt
       },
       busd: {
         id: 'busd',
         symbol: 'BUSD',
-        address: process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS,
+        address: process.env.REACT_APP_TEST_BUSD_TOKEN,
         asset: busd,
         aAsset: abusd
       },
@@ -105,14 +105,28 @@ export const CONTRACT_TOKEN_ADDRESS =
       trx: {
         id: 'trx',
         symbol: 'TRX',
-        address: process.env.REACT_APP_TEST_TRX_TOKEN_ADDRESS,
+        address: process.env.REACT_APP_TEST_TRX_TOKEN,
         asset: trx,
         aAsset: atrx
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_TEST_DOT_TOKEN,
+        asset: dot,
+        aAsset: adot
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_TEST_ADA_TOKEN,
+        asset: ada,
+        aAsset: aada
       },
       ann: {
         id: 'ann',
         symbol: 'ANN',
-        address: process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS,
+        address: process.env.REACT_APP_TEST_ANN_TOKEN,
         asset: ann,
         aAsset: ann
       },
@@ -123,40 +137,26 @@ export const CONTRACT_TOKEN_ADDRESS =
       //   asset: btc,
       //   aAsset: btc
       // }
-      dot: {
-        id: 'dot',
-        symbol: 'DOT',
-        address: process.env.REACT_APP_TEST_DOT_TOKEN_ADDRESS,
-        asset: dot,
-        aAsset: adot
-      },
-      ada: {
-        id: 'ada',
-        symbol: 'ADA',
-        address: process.env.REACT_APP_TEST_ADA_TOKEN_ADDRESS,
-        asset: ada,
-        aAsset: aada
-      },
     }
     : {
       usdc: {
         id: 'usdc',
         symbol: 'USDC',
-        address: process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS,
+        address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
         asset: usdc,
         aAsset: ausdc
       },
       usdt: {
         id: 'usdt',
         symbol: 'USDT',
-        address: process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
+        address: '0x55d398326f99059fF775485246999027B3197955',
         asset: usdt,
         aAsset: ausdt
       },
       busd: {
         id: 'busd',
         symbol: 'BUSD',
-        address: process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS,
+        address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
         asset: busd,
         aAsset: abusd
       },
@@ -169,35 +169,49 @@ export const CONTRACT_TOKEN_ADDRESS =
       btcb: {
         id: 'btcb',
         symbol: 'BTCB',
-        address: process.env.REACT_APP_MAIN_BTC_TOKEN_ADDRESS,
+        address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
         asset: btc,
         aAsset: abtc
       },
       eth: {
         id: 'eth',
         symbol: 'ETH',
-        address: process.env.REACT_APP_MAIN_ETH_TOKEN_ADDRESS,
+        address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
         asset: eth,
         aAsset: aeth
       },
       trx: {
         id: 'trx',
         symbol: 'TRX',
-        address: process.env.REACT_APP_MAIN_TRX_TOKEN_ADDRESS,
+        address: '0x85EAC5Ac2F758618dFa09bDbe0cf174e7d574D5B',
         asset: trx,
         aAsset: atrx
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402',
+        asset: dot,
+        aAsset: adot
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47',
+        asset: ada,
+        aAsset: aada
       },
       ann: {
         id: 'ann',
         symbol: 'ANN',
-        address: process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS,
+        address: process.env.REACT_APP_MAIN_ANN_TOKEN,
         asset: ann,
         aAsset: ann
       },
       // wbnb: {
       //   id: 'wbnb',
       //   symbol: 'WBNB',
-      //   address: process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
+      //   address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
       //   asset: bnb,
       //   aAsset: bnb
       // },
@@ -208,20 +222,6 @@ export const CONTRACT_TOKEN_ADDRESS =
       //   asset: btc,
       //   aAsset: btc
       // },
-      dot: {
-        id: 'dot',
-        symbol: 'DOT',
-        address: process.env.REACT_APP_MAIN_DOT_TOKEN_ADDRESS,
-        asset: dot,
-        aAsset: adot
-      },
-      ada: {
-        id: 'ada',
-        symbol: 'ADA',
-        address: process.env.REACT_APP_MAIN_ADA_TOKEN_ADDRESS,
-        asset: ada,
-        aAsset: aada
-      },
     };
 
 // eslint-disable-next-line max-len
@@ -235,8 +235,8 @@ export const CONTRACT_BUSD_TOKEN_ABI = '[{"inputs":[],"payable":false,"stateMuta
 
 export const CONTRACT_ANN_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_ANN_TOKEN_ADDRESS
-    : process.env.REACT_APP_MAIN_ANN_TOKEN_ADDRESS;
+    ? process.env.REACT_APP_TEST_ANN_TOKEN
+    : process.env.REACT_APP_MAIN_ANN_TOKEN;
 
 // eslint-disable-next-line max-len
 export const CONTRACT_ANN_TOKEN_ABI = '[{"inputs":[{"internalType":"address","name":"account","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"delegator","type":"address"},{"indexed":true,"internalType":"address","name":"fromDelegate","type":"address"},{"indexed":true,"internalType":"address","name":"toDelegate","type":"address"}],"name":"DelegateChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"delegate","type":"address"},{"indexed":false,"internalType":"uint256","name":"previousBalance","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newBalance","type":"uint256"}],"name":"DelegateVotesChanged","type":"event"},{"anonymous":false,"inputs":[],"name":"Freezed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_from","type":"address"},{"indexed":true,"internalType":"address","name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[],"name":"UnFreezed","type":"event"},{"constant":true,"inputs":[],"name":"DELEGATION_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DOMAIN_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"rawAmount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"}],"name":"checkpoints","outputs":[{"internalType":"uint32","name":"fromBlock","type":"uint32"},{"internalType":"uint96","name":"votes","type":"uint96"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"delegatee","type":"address"}],"name":"delegate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"delegatee","type":"address"},{"internalType":"uint256","name":"nonce","type":"uint256"},{"internalType":"uint256","name":"expiry","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"delegateBySig","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"delegates","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"freeze","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"getCurrentVotes","outputs":[{"internalType":"uint96","name":"","type":"uint96"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"}],"name":"getPriorVotes","outputs":[{"internalType":"uint96","name":"","type":"uint96"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"numCheckpoints","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"dst","type":"address"},{"internalType":"uint256","name":"rawAmount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"src","type":"address"},{"internalType":"address","name":"dst","type":"address"},{"internalType":"uint256","name":"rawAmount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"unfreeze","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
@@ -256,48 +256,54 @@ export const CONTRACT_WBNB_TOKEN_ABI = '[{"constant":true,"inputs":[],"name":"na
 // eslint-disable-next-line max-len
 export const CONTRACT_TRX_TOKEN_ABI = '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"address","name":"owner","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"mintable","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]';
 
+// eslint-disable-next-line max-len
+export const CONTRACT_DOT_TOKEN_ABI = '[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
+
+// eslint-disable-next-line max-len
+export const CONTRACT_ADA_TOKEN_ABI = '[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
+
 export const CONTRACT_ABEP_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? {
       usdc: {
         id: 'usdc',
         symbol: 'aUSDC',
-        address: process.env.REACT_APP_TEST_USDC_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_USDC_ABEP
       },
       usdt: {
         id: 'usdt',
         symbol: 'aUSDT',
-        address: process.env.REACT_APP_TEST_USDT_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_USDT_ABEP
       },
       busd: {
         id: 'busd',
         symbol: 'aBUSD',
-        address: process.env.REACT_APP_TEST_BUSD_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_BUSD_ABEP
       },
       bnb: {
         id: 'bnb',
         symbol: 'aBNB',
-        address: process.env.REACT_APP_TEST_BNB_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_BNB_ABEP
       },
       trx: {
         id: 'trx',
         symbol: 'TRX',
-        address: process.env.REACT_APP_TEST_TRX_ABEP_ADDRESS
-      },
-      ann: {
-        id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_TEST_ANN_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_TRX_ABEP
       },
       dot: {
         id: 'dot',
         symbol: 'DOT',
-        address: process.env.REACT_APP_TEST_DOT_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_DOT_ABEP
       },
       ada: {
         id: 'ada',
         symbol: 'ADA',
-        address: process.env.REACT_APP_TEST_ADA_ABEP_ADDRESS
+        address: process.env.REACT_APP_TEST_ADA_ABEP
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_TEST_ANN_ABEP
       },
       // wbtc: {
       //   id: 'wbtc',
@@ -309,52 +315,52 @@ export const CONTRACT_ABEP_ADDRESS =
       usdc: {
         id: 'usdc',
         symbol: 'aUSDC',
-        address: process.env.REACT_APP_MAIN_USDC_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_USDC_ABEP
       },
       usdt: {
         id: 'usdt',
         symbol: 'aUSDT',
-        address: process.env.REACT_APP_MAIN_USDT_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_USDT_ABEP
       },
       busd: {
         id: 'busd',
         symbol: 'aBUSD',
-        address: process.env.REACT_APP_MAIN_BUSD_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_BUSD_ABEP
       },
       bnb: {
         id: 'bnb',
         symbol: 'aBNB',
-        address: process.env.REACT_APP_MAIN_BNB_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_BNB_ABEP
       },
       btcb: {
         id: 'btcb',
         symbol: 'aBTC',
-        address: process.env.REACT_APP_MAIN_BTC_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_BTC_ABEP
       },
       eth: {
         id: 'eth',
         symbol: 'aETH',
-        address: process.env.REACT_APP_MAIN_ETH_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_ETH_ABEP
       },
       trx: {
         id: 'trx',
         symbol: 'TRX',
-        address: process.env.REACT_APP_MAIN_TRX_ABEP_ADDRESS
-      },
-      ann: {
-        id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_MAIN_ANN_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_TRX_ABEP
       },
       dot: {
         id: 'dot',
         symbol: 'DOT',
-        address: process.env.REACT_APP_MAIN_DOT_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_DOT_ABEP
       },
       ada: {
         id: 'ada',
         symbol: 'ADA',
-        address: process.env.REACT_APP_MAIN_ADA_ABEP_ADDRESS
+        address: process.env.REACT_APP_MAIN_ADA_ABEP
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_MAIN_ANN_ABEP
       },
       //  wbtc: {
       //   id: 'wbtc',
@@ -402,7 +408,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "USD Coin",
       "symbol": "USDC",
       "decimals": 6,
-      "address": process.env.REACT_APP_TEST_USDC_TOKEN_ADDRESS,
+      "address": process.env.REACT_APP_TEST_USDC_TOKEN,
       "contract": "FaucetToken",
     },
     usdt: {
@@ -410,7 +416,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Tether",
       "symbol": "USDT",
       "decimals": 6,
-      "address": process.env.REACT_APP_TEST_USDT_TOKEN_ADDRESS,
+      "address": process.env.REACT_APP_TEST_USDT_TOKEN,
       "contract": "FaucetToken",
     },
     busd: {
@@ -418,7 +424,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Binance USD",
       "symbol": "BUSD",
       "decimals": 18,
-      "address": process.env.REACT_APP_TEST_BUSD_TOKEN_ADDRESS,
+      "address": process.env.REACT_APP_TEST_BUSD_TOKEN,
       "contract": "FaucetToken",
     },
     // wbtc: {
@@ -435,7 +441,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
     //   "name": "USD Coin",
     //   "symbol": "USDC",
     //   "decimals": 6,
-    //   "address": process.env.REACT_APP_MAIN_USDC_TOKEN_ADDRESS,
+    //   "address": process.env.REACT_APP_MAIN_USDC_TOKEN,
     //   "contract": "FaucetToken",
     // },
     // usdt: {
@@ -443,7 +449,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
     //   "name": "Tether",
     //   "symbol": "USDT",
     //   "decimals": 6,
-    //   "address": process.env.REACT_APP_MAIN_USDT_TOKEN_ADDRESS,
+    //   "address": '0x55d398326f99059fF775485246999027B3197955',
     //   "contract": "FaucetToken",
     // },
     wbnb: {
@@ -451,7 +457,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Wrapped BNB",
       "symbol": "WBNB",
       "decimals": 18,
-      "address": process.env.REACT_APP_MAIN_WBNB_TOKEN_ADDRESS,
+      "address": '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
       asset: bnb,
       // "contract": "FaucetToken",
     },
@@ -460,7 +466,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Binance USD",
       "symbol": "BUSD",
       "decimals": 18,
-      "address": process.env.REACT_APP_MAIN_BUSD_TOKEN_ADDRESS,
+      "address": '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
       asset: busd,
       // "contract": "FaucetToken",
     },
@@ -469,7 +475,7 @@ export const BIDDING_AUCTION_TOKEN = process.env.REACT_APP_ENV === 'dev'
       "name": "Binance Bitcoin",
       "symbol": "BTCB",
       "decimals": 18,
-      "address": process.env.REACT_APP_MAIN_BTC_TOKEN_ADDRESS,
+      "address": '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
       asset: btc,
       // "contract": "FaucetToken",
     },

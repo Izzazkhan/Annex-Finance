@@ -3,21 +3,22 @@ import WalletConnect from '@walletconnect/client';
 import * as constants from './constants';
 
 const TOKEN_ABI = {
-  sxp: constants.CONTRACT_SXP_TOKEN_ABI,
+  // sxp: constants.CONTRACT_SXP_TOKEN_ABI,
   usdc: constants.CONTRACT_USDC_TOKEN_ABI,
   usdt: constants.CONTRACT_USDT_TOKEN_ABI,
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   ann: constants.CONTRACT_ANN_TOKEN_ABI,
   btcb: constants.CONTRACT_BTCB_TOKEN_ABI,
   eth: constants.CONTRACT_ETH_TOKEN_ABI,
-  ltc: constants.CONTRACT_LTC_TOKEN_ABI,
-  xrp: constants.CONTRACT_XRP_TOKEN_ABI,
-  bch: constants.CONTRACT_BCH_TOKEN_ABI,
+  // ltc: constants.CONTRACT_LTC_TOKEN_ABI,
+  // xrp: constants.CONTRACT_XRP_TOKEN_ABI,
+  // bch: constants.CONTRACT_BCH_TOKEN_ABI,
   dot: constants.CONTRACT_DOT_TOKEN_ABI,
-  link: constants.CONTRACT_LINK_TOKEN_ABI,
-  dai: constants.CONTRACT_DAI_TOKEN_ABI,
-  fil: constants.CONTRACT_FIL_TOKEN_ABI,
-  beth: constants.CONTRACT_BETH_TOKEN_ABI
+  ada: constants.CONTRACT_ADA_TOKEN_ABI,
+  // link: constants.CONTRACT_LINK_TOKEN_ABI,
+  // dai: constants.CONTRACT_DAI_TOKEN_ABI,
+  // fil: constants.CONTRACT_FIL_TOKEN_ABI,
+  // beth: constants.CONTRACT_BETH_TOKEN_ABI
 };
 
 export default class WalletConnectClass {

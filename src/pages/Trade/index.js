@@ -286,7 +286,7 @@ function Trade() {
                     onHistoryOpen={() => setHistoryOpen(true)}
                   />
                 </Route>
-                <Route exact strict path={`${path}/liquidity/remove`} component={RemoveLiquidity} />
+                <Route exact strict path={`${path}/liquidity/remove/:currencyIdA/:currencyIdB`} component={RemoveLiquidity} />
                 <Route
                   exact
                   strict
