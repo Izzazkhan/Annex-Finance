@@ -21,6 +21,9 @@ function Select({
   label,
   labelClassName,
   logoClassName,
+  selectedClassName,
+  selectedTextClassName,
+  dropDownClass,
   onChange,
 }) {
   const [selected, setSelected] = useState(options[0]);
@@ -38,7 +41,7 @@ function Select({
       >
         {({ open }) => (
           <>
-            <div className="relative z-10">
+            <div className="relative" style={{ zIndex: 1 }}>
               <Listbox.Button
                 className={`relative w-full pl-3 pr-10 text-left
               shadow-md cursor-default focus:outline-none
@@ -56,7 +59,7 @@ function Select({
                    : type === 'basic-xl'
                    ? 'border-gray  rounded-xl px-4 h-14'
                    : 'bg-primary rounded-4xl py-1.5'
-               }`}
+               } ${selectedClassName}`}
               >
                 <div className="flex items-center space-x-4">
                   {selected?.logo && (
@@ -79,7 +82,7 @@ function Select({
                           : type === 'basic'
                           ? 'text-white'
                           : type === 'mini'
-                      }`}
+                      } ${selectedTextClassName}`}
                     >
                       {selected.name}
                     </span>
@@ -95,7 +98,7 @@ function Select({
                         : type === 'basic'
                         ? 'text-white'
                         : type === 'mini'
-                    }`}
+                    } ${dropDownClass}`}
                     aria-hidden="true"
                   />
                 </span>

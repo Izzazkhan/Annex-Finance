@@ -83,25 +83,25 @@ function Trade() {
         {
           pairs(first: 5) {
             id
-        name
+            name
             token0{
               symbol
-        decimals
+              decimals
             }
             token1{
               symbol
               decimals
             }
             reserveUSD
-        token0Price
-        token1Price
+            token0Price
+            token1Price
           }
           pairDayDatas{
             id
           }
-        pairHourDatas{
+          pairHourDatas{
             id
-        reserveUSD
+          reserveUSD
           }
         }
         `,

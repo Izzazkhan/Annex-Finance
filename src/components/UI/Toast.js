@@ -3,7 +3,7 @@ import { toast as toastify } from 'react-toastify';
 
 export function Toast({ title, description, type, ...props }) {
 	return (
-		<div {...props} className={`toast_container_wrapper ${type}`}>
+		<div className={`toast_container_wrapper ${type}`}>
 			{title && <p className="title">{title}</p>}
 			{description && <p className="description">{description}</p>}
 		</div>

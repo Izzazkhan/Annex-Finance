@@ -24,4 +24,8 @@ export default {
   // API
   apiBaseUrl: '',
   mediaBaseUrl: '',
+
+  // URLs
+  annexAddLiquidityURL: '/trade/liquidity/add',
+  pcsAddLiquidityURL: 'https://pncakeswap.finance/add',
 };
