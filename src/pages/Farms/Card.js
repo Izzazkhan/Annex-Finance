@@ -103,8 +103,11 @@ function Card({ item, dipositWithdraw }) {
           </div>
           <div className="flex self-end right-col-width">
             <span className="text-primary">
-              {item.userData ? item.userData.token0Amount : 0} {item.token0Symbol} /&nbsp;
-              {item.userData ? item.userData.token1Amount : 0} {item.token1Symbol}
+              {item.userData ? item.userData.token0Amount : 0} {item.token0Symbol}
+              {
+                item.token1Symbol &&
+                ` / ${item.userData ? item.userData.token1Amount : 0} ${item.token1Symbol}`
+              }
             </span>
           </div>
         </div>

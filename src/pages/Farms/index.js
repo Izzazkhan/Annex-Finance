@@ -83,7 +83,6 @@ function Farms({ settings }) {
   }, [pairs])
 
   const sortOptions = [
-    { name: 'Default' },
     { name: 'APY' },
     { name: 'Multiplier' },
     { name: 'Earned' },

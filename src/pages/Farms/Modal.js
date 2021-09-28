@@ -143,7 +143,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                     <div className="border border-primary rounded-xl flex justify-between items-center py-2.5 px-3.5 mt-10 input-container">
                         <input
                             onFocus={handleFocus}
-                            className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white font-bold m-0 flex input"
+                            className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white font-bold m-0 flex input mr-2.5 flex-1"
                             type="number"
                             value={inputAmount}
                             onChange={(e) => { setInputAmount(e.target.value) }}
