@@ -179,7 +179,18 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                     <button
                         className={`rounded-xl flex justify-center items-center 
                             font-bold mt-20 py-4 px-28
-                            ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bg-primary text-black "}`}
+                            ${(
+                                pendingTx
+                                || (
+                                    stakeType === 'stake'
+                                    &&
+                                    new BigNumber(inputAmount).toString(10) > new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
+                                ) || (
+                                    stakeType === 'unstake'
+                                    &&
+                                    new BigNumber(inputAmount).toString(10) > new BigNumber(item.userData.stakedBalance).div(1e18).toString(10)
+                                )
+                            ) ? " bg-lightGray text-gray pointer-events-none " : " bg-primary text-black "}`}
                         onClick={onConfirm}
                     >
                         {pendingTx && <Loader size="20px" className="mr-4" stroke="#717579" />}
