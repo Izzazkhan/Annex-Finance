@@ -38,6 +38,7 @@ function Farms({ settings }) {
   const attatchImgWithData = (data) => {
     if (data && data.length > 0) {
       data = data.map(pair => {
+        console.log('pair: ', pair)
         const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
         const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
         const userPercent = pair.userData
@@ -46,11 +47,16 @@ function Farms({ settings }) {
         let token0Amount = 0
         let token1Amount = 0
         if (pair.userData) {
-          token0Amount = new BigNumber(pair.reserve0)
-            .div(new BigNumber(10).pow(pair.token0Decimals))
-            .times(userPercent)
-            .dp(2, 1)
-            .toString(10)
+          token0Amount = pair.token1Symbol 
+            ? new BigNumber(pair.reserve0)
+              .div(new BigNumber(10).pow(pair.token0Decimals))
+              .times(userPercent)
+              .dp(2, 1)
+              .toString(10)
+            : new BigNumber(pair.userData.stakedBalance)
+              .div(new BigNumber(10).pow(pair.token0Decimals))
+              .dp(2, 1)
+              .toString(10)
           token1Amount = new BigNumber(pair.reserve1)
             .div(new BigNumber(10).pow(pair.token1Decimals))
             .times(userPercent)
@@ -58,11 +64,16 @@ function Farms({ settings }) {
             .toString(10)
           pair.userData.token0Amount = token0Amount
           pair.userData.token1Amount = token1Amount
-          pair.userData.stakedAmountUSD = new BigNumber(pair.reserve0USD)
-            .plus(pair.reserve1USD)
-            .times(userPercent)
-            .dp(2, 1)
-            .toString(10)
+          pair.userData.stakedAmountUSD = pair.token1Symbol
+            ? new BigNumber(pair.reserve0USD)
+              .plus(pair.reserve1USD)
+              .times(userPercent)
+              .dp(2, 1)
+              .toString(10)
+            : new BigNumber(token0Amount)
+              .times(pair.token0Price)
+              .dp(2, 1)
+              .toString(10)
         }
 
         return {

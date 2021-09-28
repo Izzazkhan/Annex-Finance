@@ -92,7 +92,6 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
     const handleFocus = (event) => event.target.select();
     const onConfirm = async () => {
         if (stakeType === 'stake') {
-            console.log(stakeType, item)
             if (inputAmount <= 0) {
                 toast.error({
                     title: `Invalid amount`
