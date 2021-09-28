@@ -9,14 +9,7 @@ export const stakeFarm = async (masterChefContract, pid, amount, account) => {
     const value = new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString()
     const tx = await masterChefContract.deposit(pid, value, options)
     const receipt = await tx.wait()
-    console.log('receipt: ', receipt)
     return receipt.status
-    // return masterChefContract
-    //     .deposit(pid, value)
-    //     .send({ from: account })
-    //     .on('transactionHash', (tx) => {
-    //         return tx.transactionHash
-    //     })
 }
 
 export const unstakeFarm = async (masterChefContract, pid, amount) => {
