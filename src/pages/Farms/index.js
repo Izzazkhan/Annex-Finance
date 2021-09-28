@@ -38,7 +38,6 @@ function Farms({ settings }) {
   const attatchImgWithData = (data) => {
     if (data && data.length > 0) {
       data = data.map(pair => {
-        console.log('pair: ', pair)
         const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
         const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
         const userPercent = pair.userData
