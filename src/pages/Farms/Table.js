@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   useTable,
@@ -8,11 +8,21 @@ import {
   usePagination,
   useExpanded,
 } from 'react-table';
+import BigNumber from 'bignumber.js'
+import commaNumber from 'comma-number'
 import { matchSorter } from 'match-sorter';
+import config from '../../constants/config'
 import sortUp from '../../assets/icons/sortUp.svg';
 import sortDown from '../../assets/icons/sortDown.svg';
 import rightArrow from '../../assets/icons/rightArrow.svg';
-import Select from '../../components/UI/Select';
+import annCoin from '../../assets/images/coins/ann.png'
+import { useWindowSize } from 'hooks/useWindowSize'
+import upArrow from '../../assets/icons/arrowUp.png'
+import annLogo from '../../assets/icons/logoSolid.svg'
+import pancakeLogo from '../../assets/images/pancakeswap-logo.png'
+import useApproveFarm from 'hooks/farms/useApproveFarm'
+import useStakeFarms from 'hooks/farms/useStakeFarms'
+import { useLP } from "hooks/useContracts"
 
 const Styles = styled.div`
   width: 100%;
@@ -23,7 +33,7 @@ const Styles = styled.div`
     background-color: #000;
     color: #fff;
     border-spacing: 0;
-    border: 1px solid #2b2b2b;
+    border: 4px solid #2b2b2b;
 
     tr {
       border-bottom: 1px solid #2b2b2b;
@@ -43,6 +53,9 @@ const Styles = styled.div`
       :last-child {
         border-right: 0;
       }
+    }
+    td.padding-2rem {
+      padding: 2rem 2rem 2rem 1rem;
     }
   }
 `;
@@ -71,24 +84,199 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
-function Table({ columns, data, renderRowSubComponent }) {
-  const filterTypes = React.useMemo(
-    () => ({
-      // Add a new fuzzyTextFilterFn filter type.
-      fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
-      text: (rows, id, filterValue) => {
-        return rows.filter((row) => {
-          const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
-            : true;
-        });
-      },
-    }),
-    [],
-  );
+const format = commaNumber.bindWith(',', '.')
+
+const harvest = (obj) => { }
+const stake = (obj) => { }
+const unStake = (obj) => { }
+const approve = async (obj) => {
+  const lpContract = useLP(obj.lpAddress)
+  const { onApprove } = useApproveFarm(lpContract)
+  const [pendingTx, setPendingTx] = useState(false)
+
+  setPendingTx(true)
+  await onApprove()
+  setPendingTx(false)
+}
+
+const columns = [
+  {
+    Header: 'Farms',
+    disableSortBy: true,
+    Cell: ({ value, row }) => {
+      return (
+        <div className="flex justify-center">
+          <div className="flex flex-1">
+            <div className="mr-5 relative h-12 w-12">
+              <img src={row.original.token0Img} alt="" className="h-8" />
+              {
+                row.original.token1Img && <img src={row.original.token1Img} alt="" className="h-8 absolute right-0 bottom-0" />
+              }
+            </div>
+            <div className="flex flex-col w-8/12">
+              <span className="font-bold">{row.original.token1Name && `${row.original.token1Name}`} {row.original.token0Name}</span>
+              <span className="mt-1 text-xs font-light">
+                {row.original.token0Symbol}{row.original.token1Symbol && ` - ${row.original.token1Symbol}`}
+              </span>
+            </div>
+          </div>
+          <div className="mr-4">
+            {
+              row.original.type === 'pancake_lp' ? (
+                <img src={pancakeLogo} alt="" className="h-8" title={row.original.lpName} />
+              ) : (
+                <img src={annLogo} alt="" className="h-8" title={row.original.lpName} />
+              )
+            }
+          </div>
+        </div>
+      )
+    },
+  },
+  {
+    Header: () => (<>Yield <span className="text-sm font-light">(per $1,000)</span></>),
+    accessor: 'rewardPerDay',
+    disableSortBy: true,
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col text-sm">
+        <span className="font-light">
+          {format(
+            new BigNumber(value)
+              .dp(2)
+              .toString(10)
+          )} ANN / Day
+        </span>
+        <span className="text-primary font-bold">{row.original.allocPoint} allocPoint</span>
+      </div>
+    )
+  },
+  {
+    Header: 'APY',
+    accessor: 'apy',
+    Cell: ({ value, row }) => (
+      <span className="font-bold flex items-center justify-center">
+        <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
+        {format(
+          new BigNumber(value)
+            .dp(2)
+            .toString(10)
+        )}%
+      </span>
+    )
+  },
+  {
+    Header: 'Liquidity',
+    accessor: 'liquidity',
+    Cell: ({ value, row }) => (
+      `$${format(
+        new BigNumber(value)
+          .dp(2)
+          .toString(10)
+      )}`
+    )
+  },
+  {
+    Header: 'Stacked',
+    accessor: 'staked',
+    // sortedContainerClass: 'ml-6',
+    // containerClass: 'flex justify-center text-right',
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col text-sm">
+        <span className="font-light">{value}</span>
+        <span className="font-bold">0 ANN / 0 ETH</span>
+      </div>
+    )
+  },
+  {
+    Header: 'Earned',
+    accessor: 'earned',
+    disableSortBy: true,
+    Cell: ({ value, row }) => (
+      <div className="flex flex-col">
+        <span className="font-bold text-primary">
+          {new BigNumber(row.original.userData ? row.original.userData.earnings : 0)
+            .div(1e18)
+            .dp(2, 1)
+            .toString(10)} ANN
+        </span>
+        {
+          new BigNumber(row.original.userData ? row.original.userData.earnings : 0).isGreaterThan(0) ? (
+            <button
+              className={`text-black font-bold 
+                bgPrimaryGradient rounded-md
+                text-md outline-none`}
+              onClick={() => {
+                harvest(row.original)
+              }}>Harvest Now</button>
+          ) : (
+            <span className="font-normal">No Rewards</span>
+          )
+        }
+      </div>
+    )
+  },
+  {
+    Header: '',
+    accessor: 'empty',
+    disableSortBy: true,
+    Cell: ({ value, row, dipositWithdraw }) => (
+      <div className="flex flex-col">
+        <a
+          className={`text-primary font-bold 
+            rounded-3xl p-2 outline-none border 
+            border-primary outline-none ${row.original.token1 === null ? 'invisible' : ''}`}
+          href={
+            `${row.original.type === 'annex_lp'
+              ? config.annexAddLiquidityURL
+              : config.pcsAddLiquidityURL}/${row.original.token0}/${row.original.token1}`
+          }
+          target="_new">Add Liquidity</a>
+        {
+          new BigNumber(row.original.userData ? row.original.userData.allowance : 0).isGreaterThan(0) ? (
+            <>
+              <button
+                className={`text-primary font-bold 
+                rounded-3xl p-2 outline-none border mt-2 
+                border-primary`}
+                onClick={() => {
+                  stake(row.original)
+                  dipositWithdraw(true, row.original, 'stake')
+                }}>Stake</button>
+              {
+                new BigNumber(row.original.userData.stakedBalance).isGreaterThan(0) && (
+                  <button
+                    className={`text-primary font-bold 
+                    rounded-3xl p-2 outline-none border mt-2 
+                    border-primary`}
+                    onClick={() => {
+                      unStake(row.original)
+                      dipositWithdraw(true, row.original, 'unstake')
+                    }}>UnStake</button>
+                )
+              }
+            </>
+          ) : (
+            <div className="mt-2 flex justify-center cursor-pointer" onClick={() => {
+              approve(row.original)
+            }}>Approve Staking</div>
+          )
+        }
+      </div>
+    )
+  },
+]
+
+function Table({ data, dipositWithdraw }) {
+  const [isTableHorizontal, setIsTableHorizontal] = useState(true)
+
+  const { width } = useWindowSize() || {};
+  useEffect(() => {
+    if (width <= 1280) {
+      setIsTableHorizontal(false);
+    } else {
+      setIsTableHorizontal(true);
+    }
+  }, [width]);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -121,7 +309,6 @@ function Table({ columns, data, renderRowSubComponent }) {
       columns,
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
-      filterTypes,
       initialState: { pageIndex: 0 },
     },
     useFilters, // useFilters!
@@ -130,103 +317,101 @@ function Table({ columns, data, renderRowSubComponent }) {
     useExpanded,
     usePagination,
   );
-  // We don't want to render all of the rows for this example, so cap
-  // it for this use case
-  const firstPageRows = rows.slice(0, 10);
-
-  const sortOptions = [
-    { name: 'Hot' },
-    { name: 'APR' },
-    { name: 'Multiplier' },
-    { name: 'Earned' },
-    { name: 'Liquidity' },
-  ];
 
   // Render the UI for your table
   return (
     <div className="relative">
-      {/* <div className="absolute -top-8 right-60 pr-8">
-        <Select type="basic" options={sortOptions} />
-      </div> */}
-      <div className="bg-fadeBlack p-6 mt-10">
+      <div className="bg-fadeBlack p-6 mt-10 text-white text-base">
         <table {...getTableProps()}>
-          <thead>
-            {[headerGroups[1]].map((headerGroup) => (
-              // eslint-disable-next-line react/jsx-key
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => {
-                  return (
-                    // eslint-disable-next-line react/jsx-key
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      key={column.Header}
-                    >
-                      {column.render('Header')}
-                      {index !== 0 && (
-                        <span>
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <img
-                                className="inline relative left-1"
-                                src={sortDown}
-                                alt="sort down"
-                              />
-                            ) : (
-                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                            )
-                          ) : (
-                            <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                            </div>
-                          )}
-                        </span>
-                      )}
-                      {/* <div className="absolute -top-8 right-6">
-                        {column.canFilter ? column.render('Filter') : null}
-                      </div> */}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-              prepareRow(row);
-              return (
-                // eslint-disable-next-line react/jsx-key
-                <Fragment key={i}>
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
+          {
+            isTableHorizontal ? (<>
+              <thead className="text-lg">
+                {[headerGroups[0]].map((headerGroup) => (
+                  // eslint-disable-next-line react/jsx-key
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column, index) => {
                       return (
                         // eslint-disable-next-line react/jsx-key
-                        <td {...cell.getCellProps()} className="">
-                          <div className={cell.value === 'detail' ? 'text-primary' : ''}>
-                            {cell.render('Cell')}
-                          </div>
-                        </td>
+                        <th
+                          {...column.getHeaderProps(column.getSortByToggleProps())}
+                          key={column.Header}
+                        >
+                          {column.render('Header')}
+                          {column.canSort && (
+                            <span className={column.sortedContainerClass}>
+                              {column.isSorted ? (
+                                column.isSortedDesc ? (
+                                  <img
+                                    className="inline relative left-1"
+                                    src={sortDown}
+                                    alt="sort down"
+                                  />
+                                ) : (
+                                  <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                                )
+                              ) : (
+                                <div className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                                  <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                                  <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                                </div>
+                              )}
+                            </span>
+                          )}
+                        </th>
+
                       );
                     })}
                   </tr>
-                  {row.isExpanded ? (
-                    <tr>
-                      <td className="bg-fadeBlue" colSpan={visibleColumns.length}>
-                        {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
-                        {renderRowSubComponent({ row })}
-                      </td>
-                    </tr>
-                  ) : null}
-                </Fragment>
-              );
-            })}
-          </tbody>
+                ))}
+              </thead>
+              <tbody {...getTableBodyProps()}>
+                {page.map((row, i) => {
+                  prepareRow(row);
+                  return (
+                    // eslint-disable-next-line react/jsx-key
+                    <Fragment key={i}>
+                      <tr {...row.getRowProps()} className="">
+                        {row.cells.map((cell) => {
+                          return (
+                            // eslint-disable-next-line react/jsx-key
+                            <td {...cell.getCellProps()} className="padding-2rem">
+                              <div className={(cell.column.containerClass || '') + (cell.value === 'detail' ? 'text-primary' : '')}>
+                                {cell.render('Cell', { dipositWithdraw })}
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </>) : (
+              <tbody {...getTableBodyProps()}>
+                {
+                  page.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <Fragment key={i}>
+                        {
+                          row.cells.map((cell, index) => (
+                            <tr {...row.getRowProps()} key={index} className={(index === (row.cells.length - 1)) ? "border-b-4" : ""}>
+                              {cell.column.Header !== '' && <td className="padding-2rem">
+                                {(typeof (cell.column.Header) === "string" ? (cell.column.Header) : (cell.column.Header()))}
+                              </td>}
+                              <td className="padding-2rem" colSpan={cell.column.Header !== '' ? (1) : (2)}>
+                                {cell.render('Cell', { dipositWithdraw })}
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </Fragment>
+                    )
+                  })
+                }
+              </tbody>
+            )
+          }
         </table>
         <br />
         <div className="flex justify-between">
@@ -249,9 +434,8 @@ function Table({ columns, data, renderRowSubComponent }) {
                     p >= 1 && (
                       <div
                         key={p}
-                        className={`cursor-pointer text-lg ${
-                          p === pageIndex + 1 ? 'text-primary' : ''
-                        }`}
+                        className={`cursor-pointer text-lg ${p === pageIndex + 1 ? 'text-primary' : ''
+                          }`}
                         onClick={() => {
                           const page = Number(p) - 1;
                           gotoPage(page);
@@ -280,16 +464,14 @@ function Table({ columns, data, renderRowSubComponent }) {
   );
 }
 
-function App({ columns, data, tdClassName, subComponent }) {
-  const renderRowSubComponent = React.useCallback(({ row }) => subComponent);
+function App({ data, tdClassName, dipositWithdraw }) {
 
   return (
     <Styles>
       <Table
-        columns={columns}
         data={data}
         tdClassName={tdClassName}
-        renderRowSubComponent={renderRowSubComponent}
+        dipositWithdraw={dipositWithdraw}
       />
     </Styles>
   );

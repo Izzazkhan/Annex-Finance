@@ -15,19 +15,6 @@ export const fetchFarm = async (farm) => {
     return { ...farm, ...farmPublicData }
 }
 
-// Fetch Farms
-export const fetchFarms = async (farmsToFetch) => {
-    // eslint-disable-next-line no-undef
-    const data = await Promise.all(
-        farmsToFetch.map(async (farmConfig) => {
-            const farm = await fetchFarm(farmConfig)
-            return farm
-        }),
-    )
-    return data
-}
-
-
 // Fetch Farm prices
 const getFarmFromTokenSymbol = (farms, tokenSymbol, preferredQuoteTokens) => {
     const farmsWithTokenSymbol = farms.filter((farm) => farm.token.symbol === tokenSymbol)
@@ -98,29 +85,12 @@ const getFarmQuoteTokenPrice = (farm, quoteTokenFarm, bnbPriceBusd) => {
     return BIG_ZERO
 }
 
-export const fetchFarmsPrices = async (farms) => {
-    const bnbBusdFarm = farms.find((farm) => farm.pid === 0)
-    const bnbPriceBusd = bnbBusdFarm.tokenPriceVsQuote ? BIG_ONE.div(bnbBusdFarm.tokenPriceVsQuote) : BIG_ZERO
-
-    const farmsWithPrices = farms.map((farm) => {
-        const quoteTokenFarm = getFarmFromTokenSymbol(farms, farm.quoteToken.symbol)
-        const baseTokenPrice = getFarmBaseTokenPrice(farm, quoteTokenFarm, bnbPriceBusd)
-        const quoteTokenPrice = getFarmQuoteTokenPrice(farm, quoteTokenFarm, bnbPriceBusd)
-        const token = { ...farm.token, busdPrice: baseTokenPrice.toJSON() }
-        const quoteToken = { ...farm.quoteToken, busdPrice: quoteTokenPrice.toJSON() }
-        return { ...farm, token, quoteToken }
-    })
-
-    return farmsWithPrices
-}
-
-
 // Fetch Farm users
 export const fetchFarmUserAllowances = async (account, farmsToFetch) => {
     const masterChefAddress = getMasterChefAddress()
 
     const calls = farmsToFetch.map((farm) => {
-        const lpContractAddress = getAddress(farm.lpAddresses)
+        const lpContractAddress = farm.lpAddress
         return { address: lpContractAddress, name: 'allowance', params: [account, masterChefAddress] }
     })
 
@@ -133,7 +103,7 @@ export const fetchFarmUserAllowances = async (account, farmsToFetch) => {
 
 export const fetchFarmUserTokenBalances = async (account, farmsToFetch) => {
     const calls = farmsToFetch.map((farm) => {
-        const lpContractAddress = getAddress(farm.lpAddresses)
+        const lpContractAddress = farm.lpAddress
         return {
             address: lpContractAddress,
             name: 'balanceOf',
@@ -172,7 +142,7 @@ export const fetchFarmUserEarnings = async (account, farmsToFetch) => {
     const calls = farmsToFetch.map((farm) => {
         return {
             address: masterChefAddress,
-            name: 'pendingCake',
+            name: 'pendingAnnex',
             params: [farm.pid, account],
         }
     })

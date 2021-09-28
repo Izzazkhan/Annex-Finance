@@ -1,354 +1,273 @@
-import React from 'react';
-import Layout from '../../layouts/MainLayout/MainLayout';
-import Table from './Table';
-import arrow from '../../assets/icons/arrow.svg';
-import expandBox from '../../assets/icons/expandBox.svg';
-import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
-import tick from '../../assets/icons/tick.svg';
-import Greentick from '../../assets/icons/green-tick.png';
-import ListIcon from '../../assets/images/card-list-btn.png';
-import GridIcon from '../../assets/images/card-grid-btn.png';
-import ListIconActive from '../../assets/images/card-list-btn-active.png';
-import GridIconActive from '../../assets/images/card-grid-btn-active.png';
-import Select from '../../components/UI/Select';
-import Switch from "../../components/UI/Switch";
-import ComingSoon from '../../assets/images/coming-soon.png';
-import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
+import React, { useEffect, useState } from 'react'
+import { bindActionCreators } from 'redux'
+import _ from 'lodash'
+import styled from 'styled-components';
+import Layout from '../../layouts/MainLayout/MainLayout'
+import Table from './Table'
+import Card from './Card'
+import { DepositWithdrawModal } from './Modal'
+import Select from '../../components/UI/Select'
+import Switch from "../../components/UI/Switch"
+import ListIcon from '../../assets/images/card-list-btn.png'
+import GridIcon from '../../assets/images/card-grid-btn.png'
+import ListIconActive from '../../assets/images/card-list-btn-active.png'
+import GridIconActive from '../../assets/images/card-grid-btn-active.png'
+import annCoin from '../../assets/images/coins/ann.png'
+import { connectAccount, useFarms, usePollFarmsData } from 'core'
+import BigNumber from 'bignumber.js';
 
+const Styles = styled.div`
+  width: 100%;
+  overflow: auto;
+  background-color: #101016;
+  border-radius: 1.5rem;
+  display: flex;
+  justify-content: center;
+`;
 
-function Farms() {
-  const subComponent = (
-    <div className="flex justify-between w-full text-white p-6 lg:px-16">
-      <div className="w-full flex flex-col items-start ">
-        <div className="flex space-x-6 items-center">
-          <div className="">Get ANN-BNB LP</div>
-          <img src={OrangeexpandBox} alt="" />
-        </div>
-        <div className="flex space-x-6 my-2 items-center">
-          <div className="">View Contract</div>
-          <img src={OrangeexpandBox} alt="" />
-        </div>
-        <div className="flex space-x-6 items-center">
-          <div className="">See Pair Info</div>
-          <img src={OrangeexpandBox} alt="" />
-        </div>
-        <button
-          className="font-bold text-white bg-primary px-4 py-1 mt-5
-                           rounded-3xl flex items-center space-x-2"
-        >
-          <img src={Greentick} alt="" />
-          <div className="text-lg text-black">Core</div>
-        </button>
-      </div>
-      <div className="flex flex-col space-y-4 xl:space-y-0 xl:flex-row xl:justify-center xl:space-x-8 w-full">
-        <div className="border border-solid border-blue bg-transparent p-4 rounded-lg w-92 flex flex-col justify-between">
-          <div className="font-bold text-primary text-left">ANN EARNED</div>
-          <div className="flex items-center justify-between">
-            <div className="font-bold text-white">9845.558</div>
-            <button className="font-bold text-white bg-lightBlue py-2 px-4 rounded">Harvest</button>
-          </div>
-        </div>
-        <div className="bg-primary p-4 rounded-lg w-92 flex flex-col justify-between">
-          <div className="font-bold text-black text-left">ENABLE FARM</div>
-          <button className="font-bold text-white bg-lightBlue py-2 px-4 rounded w-full">
-            Enable
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+function Farms({ settings }) {
+  const [onlyStaked, setOnlyStaked] = useState(false)
+  const [isGridView, setIsGridView] = useState(true)
+  const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
+  const [filteredPairs, setFilteredPairs] = useState([])
+  const [selectedFarm, setSelectedFarm] = useState(null)
 
-  const columns = [
-    {
-      // Make an expander cell
-      Header: () => null, // No header
-      id: 'expander', // It needs an ID
-      // eslint-disable-next-line react/display-name
-      Cell: ({ row }) => (
-        // Use Cell to render an expander for each row.
-        // We can use the getToggleRowExpandedProps prop-getter
-        // to build the expander.
-        <span {...row.getToggleRowExpandedProps()}>
-          {row.isExpanded ? (
-            <img className="transform -rotate-90 w-2 mx-auto" src={arrow} alt="arrow" />
-          ) : (
-            <img className="transform rotate-180 w-2 mx-auto" src={arrow} alt="arrow" />
-          )}
-        </span>
-      ),
-    },
-    {
-      Header: 'Name',
-      columns: [
-        {
-          Header: 'Coin',
-          accessor: 'coin',
-        },
-        {
-          Header: 'Earned',
-          accessor: 'earned',
-          disableFilters: true,
-        },
-        {
-          Header: 'APR',
-          accessor: 'APR',
-          disableFilters: true,
-        },
-        {
-          Header: 'Liquidity',
-          accessor: 'liquidity',
-          disableFilters: true,
-        },
-        {
-          Header: 'Multiplier',
-          accessor: 'multiplier',
-          disableFilters: true,
-        },
-        {
-          Header: 'Action',
-          accessor: 'action',
-          disableFilters: true,
-        },
-      ],
-    },
-  ];
+  let { data: pairs } = useFarms()
+  usePollFarmsData()
 
-  const database = [
-    {
-      coin: 'Bitcoin',
-      earned: '?',
-      APR: 13.7,
-      liquidity: 869.34,
-      multiplier: 12,
-      action: 'detail',
-    },
-    {
-      coin: 'Ethereum',
-      earned: '?',
-      APR: 135.07,
-      liquidity: 869.34,
-      multiplier: 9,
-      action: 'detail',
-    },
-    {
-      coin: 'Ripple',
-      earned: '?',
-      APR: 132.27,
-      liquidity: 869.34,
-      multiplier: 10,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-    {
-      coin: 'Litecoin',
-      earned: '?',
-      APR: 13.227,
-      liquidity: 12869.34,
-      multiplier: 11,
-      action: 'detail',
-    },
-  ];
+  const attatchImgWithData = (data) => {
+    if (data && data.length > 0) {
+      data = data.map(pair => {
+        console.log('pair: ', pair)
+        const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
+        const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
+        const userPercent = pair.userData
+          ? new BigNumber(pair.userData.stakedBalance).div(1e18).div(pair.totalSupply)
+          : new BigNumber(0)
+        let token0Amount = 0
+        let token1Amount = 0
+        if (pair.userData) {
+          token0Amount = pair.token1Symbol 
+            ? new BigNumber(pair.reserve0)
+              .div(new BigNumber(10).pow(pair.token0Decimals))
+              .times(userPercent)
+              .dp(2, 1)
+              .toString(10)
+            : new BigNumber(pair.userData.stakedBalance)
+              .div(new BigNumber(10).pow(pair.token0Decimals))
+              .dp(2, 1)
+              .toString(10)
+          token1Amount = new BigNumber(pair.reserve1)
+            .div(new BigNumber(10).pow(pair.token1Decimals))
+            .times(userPercent)
+            .dp(2, 1)
+            .toString(10)
+          pair.userData.token0Amount = token0Amount
+          pair.userData.token1Amount = token1Amount
+          pair.userData.stakedAmountUSD = pair.token1Symbol
+            ? new BigNumber(pair.reserve0USD)
+              .plus(pair.reserve1USD)
+              .times(userPercent)
+              .dp(2, 1)
+              .toString(10)
+            : new BigNumber(token0Amount)
+              .times(pair.token0Price)
+              .dp(2, 1)
+              .toString(10)
+        }
+
+        return {
+          ...pair,
+          userPercent,
+          token0Img: token0
+            ? token0.img
+            : annCoin,
+          token1Img: token1
+            ? token1.img
+            : null,
+        }
+      })
+      setFilteredPairs(data)
+    }
+  }
+
+  useEffect(() => {
+    attatchImgWithData(pairs)
+  }, [pairs])
+
   const sortOptions = [
-    { name: 'Hot' },
-    { name: 'APR' },
+    { name: 'APY' },
     { name: 'Multiplier' },
     { name: 'Earned' },
     { name: 'Liquidity' },
   ];
-  const data = React.useMemo(() => database, []);
+
+  const data = React.useMemo(() => filteredPairs, [filteredPairs]);
+  const handleFocus = (event) => event.target.select();
+
+  const filterSearch = (search) => {
+    const data = pairs.filter((obj, index) => {
+      let check = false
+      _.forEach(obj, (val, key) => {
+        if (_.lowerCase(val).includes(search) || `${val}`.includes(search) || search.trim() === '') {
+          check = true
+        }
+      })
+      return check
+    })
+    if (data.length === 0) {
+      setFilteredPairs(data)
+      return
+    }
+    attatchImgWithData(data)
+  }
+
+  const stakedFilterToggle = (value) => {
+    setOnlyStaked((oldVal) => !oldVal)
+    // Perform Action here
+    if (value) {
+      const data = pairs.filter((obj, index) => {
+        let check = false
+        if (new BigNumber(obj.userData ? obj.userData.stakedBalance : 0).isGreaterThan(0)) {
+          check = true
+        }
+        return check
+      })
+      if (data.length === 0) {
+        setFilteredPairs(data)
+      } else {
+        attatchImgWithData(data)
+      }
+    } else {
+      attatchImgWithData(pairs)
+    }
+  }
+
+  const sortFilter = (value) => {
+    const data = pairs.sort((a, b) => {
+      switch (value.name) {
+        case 'APY':
+          return new BigNumber(b.apy).isGreaterThan(new BigNumber(a.apy)) ? 1 : -1
+        case 'Multiplier':
+          return new BigNumber(b.rewardPerDay).isGreaterThan(new BigNumber(a.rewardPerDay)) ? 1 : -1
+        case 'Earned':
+          return new BigNumber(b.userData ? b.userData.earnings : 0).isGreaterThan(new BigNumber(a.userData ? a.userData.earnings : 0)) ? 1 : -1
+        case 'Liquidity':
+          return new BigNumber(b.liquidity).isGreaterThan(new BigNumber(a.liquidity)) ? 1 : -1
+        default:
+          return 0
+      }
+    })
+    attatchImgWithData(data)
+  }
+
+  const openDepositWithdrawModal = (shouldOpen, item, stakeType) => {
+    setShowDepositeWithdrawModal(shouldOpen)
+    setSelectedFarm(shouldOpen ? { ...item, stakeType } : null)
+  }
 
   return (
     <Layout mainClassName="min-h-screen py-8">
-      <div className="flex justify-between items-center w-full text-white">
-        <div className="coming-soon">
-          <div className="image">
-            <img src={ComingSoon} alt="Coming Soon" className="" /> 
-          </div>
-        </div>
-      </div>
-
-
-      {/* <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
- pl-6 lg:pr-5 ">
-        <div className="col-span-2 flex items-center">
+      <div className="flex justify-between pt-0 py-6">
+        <div className="flex items-center">
           <div className="list-icon">
-            <a href="#"><img src={ListIconActive} alt="" className="" /></a>
+            {/* <a href="#" onClick={() => setIsGridView(false)}>
+              <img
+                src={(isGridView) ? ListIcon : ListIconActive}
+                alt=""
+                className="h-6"
+              />
+            </a> */}
           </div>
           <div className="grid-icon ml-3">
-            <a href="#"><img src={GridIcon} alt="" className="" /></a>
+            <a href="#" onClick={() => setIsGridView(true)}>
+              <img
+                src={(isGridView) ? GridIconActive : GridIcon}
+                alt=""
+                className="h-6"
+              />
+            </a>
           </div>
         </div>
-        <div className="col-span-5 flex items-center">
-          <a href="" className="focus:outline-none bgPrimaryGradient py-2 px-4 rounded-3xl text-white w-40 text-center">Live</a>
-          <a href="" className="focus:outline-none bg-transparent border border-primary py-2 px-4 
-          rounded-3xl text-white ml-5 w-40 text-center">Finished</a>
-          <div className="flex items-center text-white ml-5 pt-2">
-            <Switch />
+        <div className="flex items-center">
+          <div className="flex items-center text-white mr-5 pt-2">
+            <Switch value={onlyStaked} onChange={stakedFilterToggle} />
             <div className="ml-2 mb-2">Staked only</div>
           </div>
-        </div>
-        <div className="col-span-5 flex items-center">
           <div className="mr-5">
-            <Select className="border-primary" type="custom-primary" options={sortOptions} />
+            <Select className="border-primary" selectedClassName="px-4 py-2" type="custom-primary" options={sortOptions} onChange={sortFilter} />
           </div>
           <div className="search flex-1">
             <input
+              onFocus={handleFocus}
               className="border border-solid border-primary bg-transparent
-                 rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
+                rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
               type="text"
               placeholder="Search"
+              style={{ minWidth: '200px' }}
+              onChange={(event) => {
+                filterSearch(event.target.value)
+              }}
             />
           </div>
-
         </div>
-
       </div>
-      <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} /> */}
-    </Layout>
+      {(filteredPairs.length === 0) ? (
+        <Styles>
+          <div className="text-white text-base p-20 flex justify-center">
+            <span className="text-center text-grey text-2xl md:text-3xl 
+              text-border title-text">There are no pairs</span>
+          </div>
+        </Styles>
+      ) : (<>
+        {
+          showDepositeWithdrawModal && (
+            <DepositWithdrawModal
+              close={() => { setShowDepositeWithdrawModal(false) }}
+              item={selectedFarm}
+              type={selectedFarm?.type}
+              stakeType={selectedFarm.stakeType}
+            />
+          )
+        }
+        {
+          !showDepositeWithdrawModal && (
+            (isGridView) ? (
+              // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
+              <Styles>
+                <div className="p-4 flex flex-row flex-wrap">
+                  {
+                    data.map((item, key) => {
+                      return (
+                        <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
+                      )
+                    })
+                  }
+                </div>
+              </Styles>
+            ) : (
+              <Table data={data} tdClassName="" dipositWithdraw={openDepositWithdrawModal} />
+            )
+          )
+        }
+      </>)
+      }
+    </Layout >
   );
 }
 
-export default Farms;
+Farms.defaultProps = {
+  settings: {},
+};
+
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(
+    dispatch,
+  );
+};
+
+export default connectAccount(mapStateToProps, mapDispatchToProps)(Farms);
