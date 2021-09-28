@@ -184,11 +184,11 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                                 || (
                                     stakeType === 'stake'
                                     &&
-                                    new BigNumber(inputAmount).toString(10) > new BigNumber(item.userData.tokenBalance).div(1e18).toString(10)
+                                    new BigNumber(inputAmount).isGreaterThan(new BigNumber(item.userData.tokenBalance).div(1e18))
                                 ) || (
                                     stakeType === 'unstake'
                                     &&
-                                    new BigNumber(inputAmount).toString(10) > new BigNumber(item.userData.stakedBalance).div(1e18).toString(10)
+                                    new BigNumber(inputAmount).isGreaterThan(new BigNumber(item.userData.stakedBalance).div(1e18))
                                 )
                             ) ? " bg-lightGray text-gray pointer-events-none " : " bg-primary text-black "}`}
                         onClick={onConfirm}

@@ -21,6 +21,8 @@ const Styles = styled.div`
   overflow: auto;
   background-color: #101016;
   border-radius: 1.5rem;
+  display: flex;
+  justify-content: center;
 `;
 
 function Farms({ settings }) {
@@ -102,7 +104,11 @@ function Farms({ settings }) {
       })
       return check
     })
-    setFilteredPairs(data)
+    if (data.length === 0) {
+      setFilteredPairs(data)
+      return
+    }
+    attatchImgWithData(data)
   }
 
   const stakedFilterToggle = (value) => {
@@ -197,7 +203,6 @@ function Farms({ settings }) {
       </div>
       {(filteredPairs.length === 0) ? (
         <Styles>
-
           <div className="text-white text-base p-20 flex justify-center">
             <span className="text-center text-grey text-2xl md:text-3xl 
               text-border title-text">There are no pairs</span>
