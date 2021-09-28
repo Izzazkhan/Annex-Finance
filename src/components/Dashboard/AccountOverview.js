@@ -180,7 +180,7 @@ const AccountOverview = ({
                     <span className="label">Interest earned and paid, plus ANN</span>
                   </div>
                 </div>
-                <div className="text-white font-bold text-xl md:text-2xl">
+                <div className={`${new BigNumber(netAPY).isNegative() ? 'text-red' : 'text-white'} font-bold text-xl md:text-2xl`}>
                   {!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}
                 </div>
               </div>
