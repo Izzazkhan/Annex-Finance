@@ -71,6 +71,16 @@ const Styles = styled.div`
             }
         }
     }
+
+    @media (max-width: 770px) {
+        div.input-container {
+            min-width: 10rem !important;
+        }
+        div.available-balance-container {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    }
 `;
 
 export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
@@ -150,7 +160,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                             }
                         }}>MAX</span>
                     </div>
-                    <div className="flex w-full justify-between mt-10">
+                    <div className="flex w-full justify-between mt-10 available-balance-container">
                         <span>Available Balance</span>
                         <span className="ml-4">
                             {stakeType === 'stake' ? (

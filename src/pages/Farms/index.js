@@ -77,13 +77,14 @@ function Farms({ settings }) {
       setFilteredPairs(data)
     }
   }
-  
+
   useEffect(() => {
     attatchImgWithData(pairs)
   }, [pairs])
 
   const sortOptions = [
-    { name: 'APR' },
+    { name: 'Default' },
+    { name: 'APY' },
     { name: 'Multiplier' },
     { name: 'Earned' },
     { name: 'Liquidity' },
@@ -126,6 +127,24 @@ function Farms({ settings }) {
     }
   }
 
+  const sortFilter = (value) => {
+    const data = pairs.sort((a, b) => {
+      switch (value.name) {
+        case 'APY':
+          return new BigNumber(b.apy).isGreaterThan(new BigNumber(a.apy)) ? 1 : -1
+        case 'Multiplier':
+          return new BigNumber(b.rewardPerDay).isGreaterThan(new BigNumber(a.rewardPerDay)) ? 1 : -1
+        case 'Earned':
+          return new BigNumber(b.userData ? b.userData.earnings : 0).isGreaterThan(new BigNumber(a.userData ? a.userData.earnings : 0)) ? 1 : -1
+        case 'Liquidity':
+          return new BigNumber(b.liquidity).isGreaterThan(new BigNumber(a.liquidity)) ? 1 : -1
+        default:
+          return 0
+      }
+    })
+    attatchImgWithData(data)
+  }
+
   const openDepositWithdrawModal = (shouldOpen, item, stakeType) => {
     setShowDepositeWithdrawModal(shouldOpen)
     setSelectedFarm(shouldOpen ? { ...item, stakeType } : null)
@@ -160,7 +179,7 @@ function Farms({ settings }) {
             <div className="ml-2 mb-2">Staked only</div>
           </div>
           <div className="mr-5">
-            <Select className="border-primary" selectedClassName="px-4 py-2" type="custom-primary" options={sortOptions} />
+            <Select className="border-primary" selectedClassName="px-4 py-2" type="custom-primary" options={sortOptions} onChange={sortFilter} />
           </div>
           <div className="search flex-1">
             <input
