@@ -197,11 +197,12 @@ const sidebarItems = [
     key: 7,
     icon: (fill) => <PoolsIcon fill={fill} />,
     title: 'Games',
+    href: `${RouteMap.games}`,
     subCats: [
-      { key: 1, icon: underscore, title: 'Barbell', href: `http://treasurekey.bet/barbell-roll?partner=ANNEX`, type: 'link' },
-      { key: 2, icon: underscore, title: 'Roultte', href: 'http://treasurekey.bet/roulette?partner=ANNEX', type: 'link' },
-      { key: 3, icon: underscore, title: 'Coin Flip', href: 'http://treasurekey.bet/coin-flip?partner=ANNEX', type: 'link' },
-      { key: 4, icon: underscore, title: 'Dice', href: 'http://treasurekey.bet/dice-it?partner=ANNEX', type: 'link' },
+      { key: 1, icon: underscore, title: 'Barbell', href: `${RouteMap.games}/barbell` },
+      { key: 2, icon: underscore, title: 'Roultte', href: `${RouteMap.games}/roultte` },
+      { key: 3, icon: underscore, title: 'Coin Flip', href: `${RouteMap.games}/coin-flip` },
+      { key: 4, icon: underscore, title: 'Dice', href: `${RouteMap.games}/dice` },
     ]
   },
   {
