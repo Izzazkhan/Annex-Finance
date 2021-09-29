@@ -32,6 +32,15 @@ const StyledNumberFormat = styled(NumberFormat)`
   }
 `;
 
+const Styles = styled.div`
+.tooltip {
+  .label{
+    left: auto;
+    right: 0;
+  }
+}
+`
+
 const format = commaNumber.bindWith(',', '.');
 
 function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settings, setSetting }) {
@@ -344,14 +353,14 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
           ? borrowPercentRepay.toFixed(2)
           : newBorrowPercentRepay.toFixed(2)
         : amount.isZero() || amount.isNaN()
-        ? borrowPercent.toFixed(2)
-        : newBorrowPercent.toFixed(2);
+          ? borrowPercent.toFixed(2)
+          : newBorrowPercent.toFixed(2);
     return (
       <div className="flex flex-col space-y-4 px-2 mt-8">
         <div className="flex justify-between items-center text-white">
           <div className="text-white">Borrow Balance</div>
           {(currentTab === 'repayBorrow' && (amountRepay.isZero() || amountRepay.isNaN())) ||
-          (currentTab === 'borrow' && (amount.isZero() || amount.isNaN())) ? (
+            (currentTab === 'borrow' && (amount.isZero() || amount.isNaN())) ? (
             <span>
               $
               {(currentTab === 'repayBorrow' ? borrowBalanceRepay : borrowBalance)
@@ -381,7 +390,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         <div className="flex justify-between items-center text-white">
           <div className="text-white">Borrow Limit Used</div>
           {(currentTab === 'repayBorrow' && (amountRepay.isZero() || amountRepay.isNaN())) ||
-          (currentTab === 'borrow' && (amount.isZero() || amount.isNaN())) ? (
+            (currentTab === 'borrow' && (amount.isZero() || amount.isNaN())) ? (
             <span>
               {(currentTab === 'repayBorrow' ? borrowPercentRepay : borrowPercent)
                 .dp(2, 1)
@@ -502,17 +511,17 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
       </div>
       <div className="flex mt-16 bg-black rounded-4xl border border-primary">
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
-            currentTab === 'borrow' ? 'bg-primaryLight text-black' : 'bg-black'
-          }`}
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${currentTab === 'borrow' ?
+            'bg-primaryLight text-black' : 'bg-black'
+            }`}
           onClick={() => setCurrentTab('borrow')}
         >
           Borrow
         </button>
         <button
-          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${
-            currentTab === 'repayBorrow' ? 'bg-primaryLight text-black' : 'bg-black'
-          }`}
+          className={`py-4 px-10 w-full focus:outline-none rounded-4xl font-bold ${currentTab === 'repayBorrow' ?
+            'bg-primaryLight text-black' : 'bg-black'
+            }`}
           onClick={() => setCurrentTab('repayBorrow')}
         >
           Repay Borrow
@@ -583,17 +592,29 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         <div>
           <div className="flex justify-between mt-6">
             <div className="">Currently Borrowing</div>
-            <div className="">
-              {asset.borrowBalance && format(asset.borrowBalance.dp(2, 1).toString(10))}{' '}
-              {asset.symbol}
-            </div>
+            <Styles>
+              <div className="tooltip relative">
+                <div className="tooltip-label">
+                  {asset.borrowBalance && format(asset.borrowBalance.dp(2, 1).toString(10))}{' '}
+                  {asset.symbol}
+                </div>
+                <span className="label">{asset.borrowBalance && format(asset.borrowBalance.toString(10))}{' '}
+                  {asset.symbol}</span>
+              </div>
+            </Styles>
           </div>
           <div className="flex justify-between mt-6">
             <div className="">Wallet Balance</div>
-            <div className="">
-              {asset.borrowBalance && format(asset.walletBalance.dp(2, 1).toString(10))}{' '}
-              {asset.symbol}
-            </div>
+            <Styles>
+              <div className="tooltip relative">
+                <div className="tooltip-label">
+                  {asset.borrowBalance && format(asset.walletBalance.dp(2, 1).toString(10))}{' '}
+                  {asset.symbol}
+                </div>
+                <span className="label">{asset.borrowBalance && format(asset.walletBalance.toString(10))}{' '}
+                  {asset.symbol}</span>
+              </div>
+            </Styles>
           </div>
         </div>
       </div>
