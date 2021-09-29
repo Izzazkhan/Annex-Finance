@@ -193,7 +193,18 @@ const sidebarItems = [
   // eslint-disable-next-line react/display-name
   { key: 6, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
   // eslint-disable-next-line react/display-name
-  { key: 7, icon: (fill) => <PoolsIcon fill={fill} />, title: 'Pools', href: RouteMap.pools },
+  {
+    key: 7,
+    icon: (fill) => <PoolsIcon fill={fill} />,
+    title: 'Games',
+    href: `${RouteMap.games}`,
+    subCats: [
+      { key: 1, icon: underscore, title: 'Barbell', href: `${RouteMap.games}/barbell` },
+      { key: 2, icon: underscore, title: 'Roultte', href: `${RouteMap.games}/roultte` },
+      { key: 3, icon: underscore, title: 'Coin Flip', href: `${RouteMap.games}/coin-flip` },
+      { key: 4, icon: underscore, title: 'Dice', href: `${RouteMap.games}/dice` },
+    ]
+  },
   {
     key: 8,
     // eslint-disable-next-line react/display-name
@@ -224,7 +235,7 @@ const NavItems = ({
       <div className="flex flex-col space-y-4 text-white">
         {items?.map((i) => (
           <div key={i.key}>
-            {i.title === 'Monks Farms' ? <a
+            {i.type === 'link' ? <a
               target={'_blank'}
               rel={'noreferrer noopener'}
               href={'https://farm.annex.finance/'}
@@ -266,6 +277,26 @@ const NavItems = ({
                 className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
               >
                 {i.subCats?.map((cat) => (
+                  cat.type === 'link' ? (
+                    <a
+                      className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
+                      key={cat.key}
+                      href={cat.href}
+                      rel={'noreferrer noopener'}
+                      target={'_blank'}
+                    >
+                      <img src={cat.icon} alt={cat.title} />
+                      <div
+                        className={
+                          `${pathname}${search}`?.includes(cat?.href)
+                            ? 'text-primary text-23'
+                            : 'text-23'
+                        }
+                      >
+                        {cat.title}
+                      </div>
+                    </a>
+                  ) : (
                   <div
                     className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
                     key={cat.key}
@@ -284,6 +315,7 @@ const NavItems = ({
                       {cat.title}
                     </div>
                   </div>
+                  )
                 ))}
               </div>
             )}

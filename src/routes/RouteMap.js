@@ -7,6 +7,7 @@ export default {
     marketDetails: '/market/:asset',
   },
   pools: '/pools',
+  games: '/games',
   trade: '/trade',
   vault: '/vault',
   auction: '/auction',

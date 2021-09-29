@@ -27,5 +27,5 @@ export default {
 
   // URLs
   annexAddLiquidityURL: '/trade/liquidity/add',
-  pcsAddLiquidityURL: 'https://pncakeswap.finance/add',
+  pcsAddLiquidityURL: 'https://pancakeswap.finance/add',
 };
