@@ -37,6 +37,15 @@ const StyledNumberFormat = styled(NumberFormat)`
   }
 `;
 
+const Styles = styled.div`
+.tooltip {
+  .label{
+    left: auto;
+    right: 0;
+  }
+}
+`
+
 const format = commaNumber.bindWith(',', '.');
 
 function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, setSetting }) {
@@ -651,15 +660,25 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         <div>
           <div className="flex justify-between mt-6">
             <div className="">Currently Supplying</div>
-            <div className="">
-              {format(record?.supplyBalance?.dp(8, 1)?.toString(10))} {record.symbol}
-            </div>
+            <Styles>
+              <div className="tooltip relative">
+                <div className="tooltip-label">
+                  {format(record?.supplyBalance?.dp(8, 1)?.toString(10))} {record.symbol}
+                </div>
+                <span className="label">{format(record?.supplyBalance?.toString(10))} {record.symbol}</span>
+              </div>
+            </Styles>
           </div>
           <div className="flex justify-between mt-6">
             <div className="">Wallet Balance</div>
-            <div className="">
-              {format(record?.walletBalance?.dp(8, 1)?.toString(10))} {record.symbol}
-            </div>
+            <Styles>
+              <div className="tooltip relative">
+                <div className="tooltip-label">
+                  {format(record?.walletBalance?.dp(8, 1)?.toString(10))} {record.symbol}
+                </div>
+                <span className="label">{format(record?.walletBalance?.toString(10))} {record.symbol}</span>
+              </div>
+            </Styles>
           </div>
         </div>
       </div>
