@@ -1,7 +1,7 @@
 export default {
   dashboard: '/dashboard',
   annex: '/annex',
-  farms: '/farms',
+  // farms: '/farms',
   market: {
     index: '/market',
     marketDetails: '/market/:asset',
