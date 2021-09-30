@@ -191,7 +191,7 @@ const sidebarItems = [
     ],
   },
   // eslint-disable-next-line react/display-name
-  { key: 6, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+  { key: 6, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', type: 'link' },
   // eslint-disable-next-line react/display-name
   {
     key: 7,
