@@ -109,6 +109,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                 await onStake(inputAmount)
                 setPendingTx(false)
             } catch(e) {
+                console.log(e)
                 setPendingTx(false)
                 toast.error({
                     title: `Rejected by user`
@@ -133,6 +134,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                 await onUnstake(inputAmount)
                 setPendingTx(false)
             } catch(e) {
+                console.log(e)
                 setPendingTx(false)
                 toast.error({
                     title: `Rejected by user`
