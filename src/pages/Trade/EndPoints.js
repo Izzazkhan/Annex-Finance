@@ -1,1 +1,1 @@
-export const ANNEX_SWAP_EXCHANGE = 'https://api.thegraph.com/subgraphs/name/iadeeldev/annex-swap-exchange'
+export const ANNEX_SWAP_EXCHANGE = 'https://api.studio.thegraph.com/query/6267/mainnet-swap-subgraph/v1.0.3'
