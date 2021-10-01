@@ -34,7 +34,7 @@ const Routes = () => {
           <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
           <Route exact path={routes.dashboard} component={Dashboard} />
           <Route exact path={routes.annex} component={Annex} />
-          {/* <Route exact path={routes.farms} component={Farms} /> */}
+          <Route exact path={routes.farms} component={Farms} />
           <Route exact path={routes.market.index} component={Market} />
           <Route exact path={routes.market.marketDetails} component={MarketDetails} />
           <Route exact path={routes.pools} component={Pools} />
