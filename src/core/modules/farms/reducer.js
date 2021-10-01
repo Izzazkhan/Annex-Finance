@@ -2,6 +2,7 @@ import {initialState} from "../initialState";
 import {
     SET_FARMS_PUBLIC_DATA,
     SET_FARMS_USER_DATA,
+    SET_LOADING
 } from "./actions";
 
 export default function farms(state = initialState.farms, action) {
@@ -22,6 +23,12 @@ export default function farms(state = initialState.farms, action) {
             return {
                 ...newState,
                 userDataLoaded: true
+            }
+        }
+        case SET_LOADING: {
+            return {
+                ...state,
+                loading: action.payload
             }
         }
         case SET_FARMS_PUBLIC_DATA: {

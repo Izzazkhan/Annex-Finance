@@ -15,6 +15,7 @@ import GridIconActive from '../../assets/images/card-grid-btn-active.png'
 import annCoin from '../../assets/images/coins/ann.png'
 import { connectAccount, useFarms, usePollFarmsData } from 'core'
 import BigNumber from 'bignumber.js';
+import Loader from 'components/UI/Loader';
 
 const Styles = styled.div`
   width: 100%;
@@ -32,7 +33,7 @@ function Farms({ settings }) {
   const [filteredPairs, setFilteredPairs] = useState([])
   const [selectedFarm, setSelectedFarm] = useState(null)
 
-  let { data: pairs } = useFarms()
+  let { data: pairs, loading } = useFarms()
   usePollFarmsData()
 
   const attatchImgWithData = (data) => {
@@ -236,11 +237,15 @@ function Farms({ settings }) {
               <Styles>
                 <div className="p-4 flex flex-row flex-wrap">
                   {
-                    data.map((item, key) => {
-                      return (
-                        <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
-                      )
-                    })
+                    loading ? (
+                      <Loader size="160px" className="m-40" stroke="#ff9800" />
+                    ) : (
+                      data.map((item, key) => {
+                        return (
+                          <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
+                        )
+                      })
+                    )
                   }
                 </div>
               </Styles>
