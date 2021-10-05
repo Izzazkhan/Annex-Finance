@@ -55,7 +55,7 @@ function Card({ item, dipositWithdraw }) {
           </div>
         </div>
         <div className="flex mt-7 justify-between">
-          <div className="font-bold text-primary text-lg">Yield (per $1,000)</div>
+          <div className="font-bold text-primary text-lg invisible">Yield (per $1,000)</div>
           <div className="flex w-6/12">
             <img src={annCoin} alt="" className="h-8 mr-4" />
             <div className="flex flex-col">
@@ -95,7 +95,7 @@ function Card({ item, dipositWithdraw }) {
         </div>
         <div className="flex mt-5 justify-between">
           <div className="flex flex-col">
-            <span className="font-bold text-primary text-lg">Stacked</span>
+            <span className="font-bold text-primary text-lg">Staked</span>
             <span className="mt-2 font-bold mt-3.5">
               {
                 item.userData ? '$' + format(item.userData.stakedAmountUSD) : 0
