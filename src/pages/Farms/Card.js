@@ -61,7 +61,7 @@ function Card({ item, dipositWithdraw }) {
             <div className="flex flex-col">
               <span className="font-bold">
                 {format(
-                  new BigNumber(item.rewardPerDay)
+                  new BigNumber(item.rewardPerDayPerThousand)
                     .dp(2)
                     .toString(10)
                 )} ANN / Day
