@@ -395,7 +395,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         <div className="mt-auto mb-10 pl-8 pr-8">
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
-              href="https://pancakeswap.finance/swap?inputCurrency=0xe9e7cea3dedca5984780bafc599bd69add087d56&outputCurrency=0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067"
+              href={process.env.REACT_APP_PANCAKESWAP_URL}
               target="_blank"
               rel="noreferrer"
             >
