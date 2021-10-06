@@ -26,6 +26,7 @@ import {
   Auction,
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
+import { CONTRACT_TOKEN_ADDRESS } from 'utilities/constants';
 
 const Wrapper = styled.aside`
   @media (min-width: 1024px) {
@@ -395,7 +396,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         <div className="mt-auto mb-10 pl-8 pr-8">
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
-              href={process.env.REACT_APP_PANCAKESWAP_URL}
+              href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS.busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS.ann.address}`}
               target="_blank"
               rel="noreferrer"
             >
