@@ -55,7 +55,7 @@ function Card({ item, dipositWithdraw }) {
           </div>
         </div>
         <div className="flex mt-7 justify-between">
-          <div className="font-bold text-primary text-lg invisible">Yield (per $1,000)</div>
+          <div className="font-bold text-primary text-lg">Yield (per $1,000)</div>
           <div className="flex w-6/12">
             <img src={annCoin} alt="" className="h-8 mr-4" />
             <div className="flex flex-col">
