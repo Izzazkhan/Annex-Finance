@@ -87,7 +87,6 @@ function Farms({ settings }) {
             : null,
         }
       })
-      console.log('data: ', data)
       setFilteredPairs(data)
     }
   }
