@@ -7,7 +7,6 @@ import { NetworkContextName } from '../constants';
 export function useActiveWeb3React() {
   const context = useWeb3ReactCore();
   const contextNetwork = useWeb3ReactCore(NetworkContextName);
-  context.account = '0x30bF1Ef6174550752967382Ef0283749f3B38C7D'
   return context.active ? context : contextNetwork;
 }
 
