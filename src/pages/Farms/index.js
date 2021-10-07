@@ -64,14 +64,14 @@ function Farms({ settings }) {
             .toString(10)
           pair.userData.token0Amount = token0Amount
           pair.userData.token1Amount = token1Amount
+          pair.userData.token0AmountUSD = new BigNumber(token0Amount).times(pair.token0Price)
+          pair.userData.token1AmountUSD = new BigNumber(token1Amount).times(pair.token1Price)
           pair.userData.stakedAmountUSD = pair.token1Symbol
-            ? new BigNumber(pair.reserve0USD)
-              .plus(pair.reserve1USD)
-              .times(userPercent)
+            ? new BigNumber(pair.userData.token0AmountUSD)
+              .plus(pair.userData.token1AmountUSD)
               .dp(2, 1)
               .toString(10)
-            : new BigNumber(token0Amount)
-              .times(pair.token0Price)
+            : new BigNumber(pair.userData.token0AmountUSD)
               .dp(2, 1)
               .toString(10)
         }
@@ -87,6 +87,7 @@ function Farms({ settings }) {
             : null,
         }
       })
+      console.log('data: ', data)
       setFilteredPairs(data)
     }
   }
