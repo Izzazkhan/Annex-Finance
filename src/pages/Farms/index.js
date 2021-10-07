@@ -64,8 +64,8 @@ function Farms({ settings }) {
             .toString(10)
           pair.userData.token0Amount = token0Amount
           pair.userData.token1Amount = token1Amount
-          pair.userData.token0AmountUSD = new BigNumber(token0Amount).times(pair.token0Price)
-          pair.userData.token1AmountUSD = new BigNumber(token1Amount).times(pair.token1Price)
+          pair.userData.token0AmountUSD = new BigNumber(pair.reserve0USD).times(userPercent).toString(10)
+          pair.userData.token1AmountUSD = new BigNumber(pair.reserve1USD).times(userPercent).toString(10)
           pair.userData.stakedAmountUSD = pair.token1Symbol
             ? new BigNumber(pair.userData.token0AmountUSD)
               .plus(pair.userData.token1AmountUSD)
@@ -78,7 +78,7 @@ function Farms({ settings }) {
 
         return {
           ...pair,
-          userPercent,
+          userPercent: userPercent.toString(10),
           token0Img: token0
             ? token0.img
             : annCoin,
@@ -87,6 +87,7 @@ function Farms({ settings }) {
             : null,
         }
       })
+      console.log('data: ', data)
       setFilteredPairs(data)
     }
   }
