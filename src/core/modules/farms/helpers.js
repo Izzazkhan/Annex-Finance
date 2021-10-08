@@ -131,7 +131,7 @@ export const fetchFarmUserStakedBalances = async (account, farmsToFetch) => {
 
     const rawStakedBalances = await multicall(masterchefABI, calls)
     const parsedStakedBalances = rawStakedBalances.map((stakedBalance) => {
-        return new BigNumber(stakedBalance[0]._hex).toJSON()
+        return new BigNumber(stakedBalance[0]._hex).toString(10)
     })
     return parsedStakedBalances
 }

@@ -61,7 +61,7 @@ function Card({ item, dipositWithdraw }) {
             <div className="flex flex-col">
               <span className="font-bold">
                 {format(
-                  new BigNumber(item.rewardPerDay)
+                  new BigNumber(item.rewardPerDayPerThousand)
                     .dp(2)
                     .toString(10)
                 )} ANN / Day
@@ -95,7 +95,7 @@ function Card({ item, dipositWithdraw }) {
         </div>
         <div className="flex mt-5 justify-between">
           <div className="flex flex-col">
-            <span className="font-bold text-primary text-lg">Stacked</span>
+            <span className="font-bold text-primary text-lg">Staked</span>
             <span className="mt-2 font-bold mt-3.5">
               {
                 item.userData ? '$' + format(item.userData.stakedAmountUSD) : 0

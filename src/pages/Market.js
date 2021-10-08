@@ -254,9 +254,17 @@ const Market = ({ history, settings }) => {
             accessor: 'liquidity',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
-            Cell: ({ value }) => {
+            Cell: ({ value, row }) => {
+              const liquidityTokens = new BigNumber(value).div(row.values.tokenPrice).dp(2, 1).toString(10);
               return (
-                <div className="font-bold ml-6 text-right">{currencyFormatter(value, '')}</div>
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className="font-bold">{currencyFormatter(value, '')}</div>
+                    <div className="text-sm">
+                      {liquidityTokens}
+                    </div>
+                  </div>
+                </div>
               );
             },
           },
