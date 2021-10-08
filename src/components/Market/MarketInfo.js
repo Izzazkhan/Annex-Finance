@@ -32,14 +32,12 @@ const MarketInfo = ({
                             .dp(2, 1)
                             .toString(10)
                         : new BigNumber(
-                            +marketInfo.borrowApy < 0.01 ? 0.01 : marketInfo.borrowApy
+                            marketInfo.borrowAnnexApy < 0.01
+                                ? 0.01
+                                : marketInfo.borrowAnnexApy
                         )
-                            .plus(
-                                new BigNumber(
-                                    marketInfo.borrowAnnexApy < 0.01
-                                        ? 0.01
-                                        : marketInfo.borrowAnnexApy
-                                )
+                            .minus(
+                                +marketInfo.borrowApy < 0.01 ? 0.01 : marketInfo.borrowApy
                             )
                             .dp(2, 1)
                             .toString(10)}
