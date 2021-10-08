@@ -34,7 +34,7 @@ const MarketInfo = ({
                         : new BigNumber(
                             +marketInfo.borrowApy < 0.01 ? 0.01 : marketInfo.borrowApy
                         )
-                            .plus(
+                            .minus(
                                 new BigNumber(
                                     marketInfo.borrowAnnexApy < 0.01
                                         ? 0.01
