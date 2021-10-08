@@ -43,6 +43,11 @@ const Styles = styled.div`
       border: 2px solid #B068009C;
       height: auto;
     }
+    .tooltip-label {
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 5px;
+    }
     .tooltip-label:hover + .label {
       display: flex;
     }
