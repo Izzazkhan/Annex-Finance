@@ -85,16 +85,16 @@ export default function Form(props) {
         value: props.biddingTokenOptions[0] ? props.biddingTokenOptions[0] : [],
         colspan: 6,
       },
-      {
-        type: 'select',
-        id: 'swapExchange',
-        placeholder: 'Swap Exchange',
-        description: 'This will use to generate your LP Tokens after settle.',
-        options: props.annexSwapOptions,
-        value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
-        colspan: 12,
-        label: 'Exchange',
-      },
+      // {
+      //   type: 'select',
+      //   id: 'swapExchange',
+      //   placeholder: 'Swap Exchange',
+      //   description: 'This will use to generate your LP Tokens after settle.',
+      //   options: props.annexSwapOptions,
+      //   value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
+      //   colspan: 12,
+      //   label: 'Exchange',
+      // },
       {
         type: 'number',
         id: 'sellAmount',
@@ -532,11 +532,11 @@ export default function Form(props) {
   const validURL = (str) => {
     var pattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$',
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$',
       'i',
     ); // fragment locator
     return !!pattern.test(str);
