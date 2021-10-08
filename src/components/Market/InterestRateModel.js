@@ -183,7 +183,7 @@ const InterestRateModel = ({ settings, currentAsset }) => {
     );
     urArray.forEach((ur, index) => {
       // supply apy, borrow apy
-      const blocksPerDay = 20 * 50 * 24;
+      const blocksPerDay = 28800;
       const daysPerYear = 365;
       const mantissa = 1e18;
       const supplyBase = new BigNumber(supplyRes[index])
