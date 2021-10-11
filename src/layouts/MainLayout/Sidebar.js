@@ -24,6 +24,7 @@ import {
   VaultIcon,
   VoteIcon,
   Auction,
+  LiquidateIcon
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
 import { CONTRACT_TOKEN_ADDRESS } from 'utilities/constants';
@@ -182,6 +183,12 @@ const sidebarItems = [
   },
   {
     key: 5,
+    icon: (fill) => <LiquidateIcon fill={fill} />,
+    title: 'Liquidate',
+    link: "https://liquidation.annex.finance/liquidator",
+  },
+  {
+    key: 6,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <TradeIcon fill={fill} />,
     title: 'Trade',
@@ -192,10 +199,10 @@ const sidebarItems = [
     ],
   },
   // eslint-disable-next-line react/display-name
-  { key: 6, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+  { key: 7, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
   // eslint-disable-next-line react/display-name
   {
-    key: 7,
+    key: 8,
     icon: (fill) => <PoolsIcon fill={fill} />,
     title: 'Games',
     href: `${RouteMap.games}`,
@@ -207,7 +214,7 @@ const sidebarItems = [
     ]
   },
   {
-    key: 8,
+    key: 9,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <Auction fill={fill} />,
     title: 'Auction',
@@ -236,18 +243,17 @@ const NavItems = ({
       <div className="flex flex-col space-y-4 text-white">
         {items?.map((i) => (
           <div key={i.key}>
-            {i.type === 'link' ? <a
+            {i.link ? <a
               target={'_blank'}
               rel={'noreferrer noopener'}
-              href={'https://farm.annex.finance/'}
+              href={i.link}
             >
               <div
                 className={`sidebar-item gap-x-4 items-center cursor-pointer
-                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${pathname?.includes(i?.href) ? 'bg-black' : ''
-                  }`}
+                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20`}
               >
-                <div className="flex items-center" onClick={() => toggleDropdown(i.title)}>
-                  <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
+                <div className="flex items-center">
+                  <div className="w-10">{i.icon('')}</div>
                   <div className="text-23">{i.title}</div>
                 </div>
               </div>
