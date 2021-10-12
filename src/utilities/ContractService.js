@@ -15,7 +15,7 @@ const TOKEN_ABI = {
   trx: constants.CONTRACT_TRX_TOKEN_ABI,
   dot: constants.CONTRACT_DOT_TOKEN_ABI,
   ada: constants.CONTRACT_ADA_TOKEN_ABI,
-  // tusd: constants.CONTRACT_TUSD_TOKEN_ABI,
+  tusd: constants.CONTRACT_TUSD_TOKEN_ABI,
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
