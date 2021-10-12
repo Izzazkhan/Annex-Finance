@@ -144,7 +144,9 @@ const ProposalHistory = ({ proposalInfo }) => {
                         src={require('../../../assets/images/info.svg').default}
                         alt=""
                       />
-                      <span className="label">Executable date</span>
+                      <span className="label" style={{ left: '-35%', bottom: '30px' }}>
+                        Execuatable after: {moment(proposalInfo?.eta * 1000).format('LLLL')}
+                      </span>
                     </div>
                   </div>
                   <div className="text-gray text-base">
