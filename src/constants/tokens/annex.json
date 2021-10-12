@@ -132,10 +132,18 @@
         {
             "name": "Cardano Token",
             "symbol": "ADA",
-            "address": "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47",
+            "address": "0x14016E85a25aeb13065688cAFB43044C2ef86784",
             "chainId": 56,
             "decimals": 18,
             "logoURI": "/images/coins/ada.png"
+        },
+        {
+            "name": "TrueUSD Token",
+            "symbol": "TUSD",
+            "address": "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47",
+            "chainId": 56,
+            "decimals": 18,
+            "logoURI": "/images/coins/tusd.png"
         },
         {
             "name": "Zcash Token",
