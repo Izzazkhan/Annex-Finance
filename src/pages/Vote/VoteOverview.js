@@ -246,7 +246,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
                             {isLoading && <Loading size={'18px'} margin={'8px'} />}
                             {status === 'pending' || status === 'failure' ? 'Execute' : 'Executed'}
                           </button>
-                          {!isPossibleExecuted && <span className="label">Execuatable after: {moment(proposalInfo?.eta * 1000).format('LLLL')}</span>}
+                          {!isPossibleExecuted && <span className="label">Executable after: {moment(proposalInfo?.eta * 1000).format('LLLL')}</span>}
                         </div>
                       </div>
                     </Styles>

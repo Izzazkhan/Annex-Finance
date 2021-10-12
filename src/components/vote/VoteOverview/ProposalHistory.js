@@ -145,7 +145,7 @@ const ProposalHistory = ({ proposalInfo }) => {
                         alt=""
                       />
                       <span className="label" style={{ left: '-35%', bottom: '30px' }}>
-                        Execuatable after: {moment(proposalInfo?.eta * 1000).format('LLLL')}
+                        Executable after: {moment(proposalInfo?.eta * 1000).format('LLLL')}
                       </span>
                     </div>
                   </div>
