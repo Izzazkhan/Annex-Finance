@@ -30,13 +30,22 @@ import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
 import { CONTRACT_TOKEN_ADDRESS } from 'utilities/constants';
 
 const Wrapper = styled.aside`
-  @media (min-width: 1024px) {
-    min-width: 244px;
+  // @media (min-width: 1024px) {
+  //   min-width: 244px;
+  // }
+  .sidebar-item {
+    padding: 0.7rem 1rem 0.7em 1rem;
+    font-size: 0.8vw;
+  }
+  .sidebar-footer {
+    padding: 0 1rem;
+    font-size: 0.7vw;
   }
 
   .certik-container {
     // position: fixed;
     display: flex;
+    width: fit-content;
     height: 45px;
     margin-bottom: 10px;
     margin-top: 10px;
@@ -147,8 +156,8 @@ const Wrapper = styled.aside`
 `;
 
 const Logo = styled.img`
-  width: 160px;
-  height: 40px;
+  width: auto;
+  height: 2rem;
 `;
 
 const PlatformLogo = styled.img`
@@ -240,7 +249,7 @@ const NavItems = ({
 }) => {
   return (
     <div className={wrapperClassName}>
-      <div className="flex flex-col space-y-4 text-white">
+      <div className="flex flex-col text-white">
         {items?.map((i) => (
           <div key={i.key}>
             {i.link ? <a
@@ -281,7 +290,7 @@ const NavItems = ({
             </div>}
             {activeMenu === i.title && (
               <div
-                className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
+                className={`bg-blue-500 overflow-hidden pl-0 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
               >
                 {i.subCats?.map((cat) => (
                   cat.type === 'link' ? (
@@ -305,7 +314,7 @@ const NavItems = ({
                     </a>
                   ) : (
                   <div
-                    className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
+                    className="flex items-center space-x-4 ml-16 mb-2 mt-4 cursor-pointer"
                     key={cat.key}
                     onClick={() => {
                       history.push(cat.href);
@@ -399,7 +408,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           totalLiquidity={settings.totalLiquidity}
         // totalXaiMinted={totalXaiMinted}
         />
-        <div className="mt-auto mb-10 pl-8 pr-8">
+        <div className="mt-auto mb-10 pl-8 pr-8 sidebar-footer">
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
               href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS.busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS.ann.address}`}
