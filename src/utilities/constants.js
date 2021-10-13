@@ -199,7 +199,7 @@ export const CONTRACT_TOKEN_ADDRESS =
       tusd: {
         id: 'tusd',
         symbol: 'TUSD',
-        address: process.env.REACT_APP_MAIN_TUSD_TOKEN,
+        address: '0x14016E85a25aeb13065688cAFB43044C2ef86784',
         asset: tusd,
         aAsset: atusd
       },
