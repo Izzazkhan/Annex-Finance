@@ -290,7 +290,7 @@ const NavItems = ({
             </div>}
             {activeMenu === i.title && (
               <div
-                className={`bg-blue-500 overflow-hidden pl-0 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
+                className={`bg-blue-500 overflow-hidden pl-0 transform transition-all duration-300 ease-in-out`}
               >
                 {i.subCats?.map((cat) => (
                   cat.type === 'link' ? (
@@ -394,7 +394,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         </div>
         <NavItems
           items={sidebarItems}
-          wrapperClassName="pt-10"
+          wrapperClassName="pt-6"
           search={search}
           history={history}
           pathname={pathname}
