@@ -35,11 +35,11 @@ const Wrapper = styled.aside`
   // }
   .sidebar-item {
     padding: 0.7rem 1rem 0.7em 1rem;
-    font-size: 0.8vw;
+    font-size: 1rem;
   }
   .sidebar-footer {
     padding: 0 1rem;
-    font-size: 0.7vw;
+    font-size: 0.875rem;
   }
 
   .certik-container {
