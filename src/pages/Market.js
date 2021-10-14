@@ -273,7 +273,7 @@ const Market = ({ history, settings }) => {
             accessor: 'utilization',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
-            Cell: ({ value, row }) => {
+            Cell: ({ value }) => {
               return (
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
@@ -296,9 +296,16 @@ const Market = ({ history, settings }) => {
             accessor: 'tokenPrice',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
-            Cell: ({ value }) => {
+            Cell: ({ value, row }) => {
               return (
-                <div className="font-bold ml-6 text-right">{currencyFormatter(value, 'price')}</div>
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className="font-bold">{currencyFormatter(value, 'price')}</div>
+                    <div className="text-sm">
+                      {new Date(row?.original?.priceUpdatedTime * 1000).toLocaleTimeString()}
+                    </div>
+                  </div>
+                </div>
               );
             },
           },
