@@ -9,46 +9,57 @@ function AuctionItem(props) {
   const [orderArr, setOrderArr] = useState([]);
 
   useEffect(() => {
-    const priceMapped = props.orders.map((item) => {
-      return {
-        ...item,
-        priceValue: Number(item.price.split(' ')[0]),
-      };
-    });
-    const mappedOrderData = priceMapped
-      .sort((a, b) => a.priceValue - b.priceValue)
-      .map((item) => {
-        const buyAmount = item.buyAmount.split(' ')[0];
-        const price = Number(item.price.split(' ')[0]).toFixed(2);
+    if (props.type === 'BATCH') {
+      const priceMapped = props.orders.map((item) => {
         return {
           ...item,
-          auctionDivBuyAmount: buyAmount,
-          price: price,
-          minFundingThresholdNotReached: props.minFundingThresholdNotReached,
+          priceValue: Number(item.price.split(' ')[0]),
         };
       });
-
-    let isSuccessfullArr = [];
-    props.data
-      .sort((a, b) => a.price - b.price)
-      .map((item) => {
-        isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+      const mappedOrderData = priceMapped
+        .sort((a, b) => a.priceValue - b.priceValue)
+        .map((item) => {
+          const buyAmount = item.buyAmount.split(' ')[0];
+          const price = Number(item.price.split(' ')[0]).toFixed(2);
+          return {
+            ...item,
+            auctionDivBuyAmount: buyAmount,
+            price: price,
+            minFundingThresholdNotReached: props.minFundingThresholdNotReached,
+          };
+        });
+      let isSuccessfullArr = [];
+      props.data
+        .sort((a, b) => a.price - b.price)
+        .map((item) => {
+          isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+        });
+      mappedOrderData.map((item, i) => {
+        item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
+        item.auctionEndDate = props.auctionEndDate;
       });
-
-    mappedOrderData.map((item, i) => {
-      item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
-      item.auctionEndDate = props.auctionEndDate;
-    });
-    setOrderArr(mappedOrderData);
+      setOrderArr(mappedOrderData);
+    }
   }, []);
 
   const history = useHistory();
   const redirectToUrl = (url) => {
-    history.push(url);
+    // history.push(url);
+    props.history.push({
+      pathname: url,
+      state: { auctionType: 'batch', data: props },
+    });
   };
   return (
     <div className="col-span-12 lg:col-span-4 md:col-span-6 bg-black rounded-2xl p-6 flex flex-col mb-4">
-      <Link className="flex flex-col h-full justify-between" to={`detail/${props.id}`}>
+      <Link
+        className="flex flex-col h-full justify-between"
+        to={{
+          pathname:
+            props.type === 'BATCH' ? `batch-detail/${props.id}` : `dutch-detail/${props.id}`,
+          state: { auctionType: props.type === 'BATCH' ? 'batch' : 'dutch', data: props },
+        }}
+      >
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-5">
           <div className="flex flex-col items-start justify-start ">
             <div className="text-white text-2xl ">{props.title}</div>
@@ -61,7 +72,7 @@ function AuctionItem(props) {
           </div>
         </div>
         <div className="graph">
-          {props.chartType === 'block' ? (
+          {props.type === 'BATCH' ? (
             <Fragment>
               <div className="flex justify-between chart-top-label mb-5">
                 <div className="flex flex-col text-sm font-normal">
@@ -130,10 +141,24 @@ function AuctionItem(props) {
         </div>
 
         <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
-          <div className="items-start " onClick={() => redirectToUrl('/auction/detail')}>
+          <div
+            className="items-start "
+            onClick={() =>
+              redirectToUrl(
+                props.type === 'BATCH' ? '/auction/batch-detail' : '/auction/dutch-detail',
+              )
+            }
+          >
             <div className="text-primary text-sm font-normal">{props.type} auction</div>
           </div>
-          <div className="items-center " onClick={() => redirectToUrl('/auction/detail')}>
+          <div
+            className="items-center "
+            onClick={() =>
+              redirectToUrl(
+                props.type === 'BATCH' ? '/auction/batch-detail' : '/auction/dutch-detail',
+              )
+            }
+          >
             <div className="flex items-center text-primary text-sm font-bold">
               Enter
               <img

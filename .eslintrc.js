@@ -31,7 +31,6 @@ module.exports = {
   plugins: ['react', 'react-hooks'],
   rules: {
     'react/react-in-jsx-scope': 'off',
-    'max-len': [2, { code: 150, tabWidth: 2, ignoreUrls: true }],
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'react/jsx-wrap-multilines': ['error', { declaration: false, assignment: false }],
     'global-require': 'off',
@@ -64,6 +63,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'react/prop-types': 0,
     'react/display-name': 'off',
-    "no-debugger": "off"
+    'no-debugger': 'off',
+    'max-len': 'off',
   },
 };

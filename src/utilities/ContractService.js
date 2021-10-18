@@ -136,6 +136,13 @@ export const getEpochContract = () => {
   );
 };
 
+export const dutchAuctionContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.DUTCH_AUCTION_ABI),
+    constants.CONTRACT_DUTCH_AUCTION_ADDRESS,
+  );
+};
+
 export const methods = {
   call,
   send,

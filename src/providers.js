@@ -6,6 +6,7 @@ import getLibrary from './utils/getLibrary';
 import { NetworkContextName } from './constants';
 import { store } from './core';
 import { SubGraphProvider } from './common/SubGraphProvider';
+import { DutchAuctionProvider } from './common/DutchAuctionProvider';
 import APIProvider from './APIProvider';
 import React from 'react';
 
@@ -18,7 +19,9 @@ const Providers = (props) => {
         <Provider store={store}>
           <Router>
             <APIProvider />
-            <SubGraphProvider>{props.children}</SubGraphProvider>
+            <SubGraphProvider>
+              <DutchAuctionProvider>{props.children}</DutchAuctionProvider>
+            </SubGraphProvider>
           </Router>
         </Provider>
       </Web3ProviderNetwork>

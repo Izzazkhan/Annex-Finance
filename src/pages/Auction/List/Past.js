@@ -1,7 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
+import Web3 from 'web3';
+import * as constants from '../../../utilities/constants';
+const instance = new Web3(window.ethereum);
 import AuctionItem from './item';
 import subGraphContext from '../../../contexts/subgraph';
+import dutchAuctionContext from '../../../contexts/dutchAuction';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
+import { dutchAuctionContract, methods } from '../../../utilities/ContractService';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
@@ -74,6 +79,34 @@ function Past(props) {
       }
     }
   `);
+
+  let dutchQuery = gql`
+    {
+      auctions(where: { auctionEndDate_lt: "${currentTimeStamp}"}) {
+        id
+        type
+        auctioner_address
+        auctioningToken
+        biddingToken
+        auctionStartDate
+        auctionEndDate
+        auctionedSellAmount
+        amountMax1
+        amountMin1
+        about {
+          id
+        }
+        timestamp
+      }
+    }
+  `;
+
+  const { dutchAuctionInstance } = useContext(dutchAuctionContext);
+  const { useQuery: useQueryDutch } = useSubgraph(dutchAuctionInstance);
+  const { error: dutchError, loading: dutchLoading, data: dutchData } = useQueryDutch(dutchQuery);
+  const [dutchAuction, setDutchAuction] = useState([]);
+  const [allAuctions, setAllAuctions] = useState([]);
+
   useEffect(() => {
     if (data && data.auctions) {
       let arr = [];
@@ -117,18 +150,62 @@ function Past(props) {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (dutchData && dutchData !== undefined && dutchData.auctions && dutchData.auctions.length) {
+      let arr = [];
+      dutchData.auctions.forEach(async (element) => {
+        let formatedAuctionDate = moment
+          .unix(element['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+        // const biddingToken = new instance.eth.Contract(
+        //   JSON.parse(constants.CONTRACT_ABEP_ABI),
+        //   element.biddingToken,
+        // );
+        // let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+        let biddingDecimal = 6;
+        let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
+        let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
+        let graphData = [
+          {
+            value: startingPrice,
+          },
+          {
+            value: reservedPrice,
+          },
+        ];
+        arr.push({
+          ...element,
+          data: graphData,
+          formatedAuctionDate,
+          title: element.type + ' Auction',
+        });
+      });
+      setDutchAuction(arr);
+    }
+  }, [dutchData]);
+
+  useEffect(() => {
+    let all = [];
+    let batchAuction = [...auction];
+    let dutch = [...dutchAuction];
+    all = batchAuction.concat(dutch);
+    setAllAuctions(all);
+  }, [auction, dutchAuction]);
+
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
       <h2 className="text-white ml-5 text-4xl font-normal">Past Auctions</h2>
-      {loading ? (
+      {loading || dutchLoading ? (
         <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
           <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
         </div>
       ) : error ? (
         <div>{error}</div>
-      ) : auction.length > 0 ? (
+      ) : dutchError ? (
+        <div>{error}</div>
+      ) : allAuctions.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
-          {auction.map((item, index) => {
+          {allAuctions.map((item, index) => {
             return <AuctionItem key={index} {...item} />;
           })}
         </div>

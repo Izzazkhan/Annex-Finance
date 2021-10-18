@@ -1,15 +1,20 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
-
+import Web3 from 'web3';
+import * as constants from '../../../utilities/constants';
+const instance = new Web3(window.ethereum);
 import Countdown from 'react-countdown';
 import Table from './Table';
+import DutchTable from './dutchTable';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
 import subGraphContext from '../../../contexts/subgraph';
+import dutchAuctionContext from '../../../contexts/dutchAuction';
 import { gql } from '@apollo/client';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import {
   getAuctionContract,
+  dutchAuctionContract,
   methods,
   getTokenContractWithDynamicAbi,
 } from '../../../utilities/ContractService';
@@ -45,7 +50,7 @@ const ArrowDown = styled.button`
 `;
 
 const Wrapper = styled.div`
-  .show-icon{
+  .show-icon {
     right: calc(50% - 56px);
     bottom: 15%;
     z-index: 9;
@@ -160,9 +165,62 @@ function Detail(props) {
       }
   }
 `;
+
+  let dutchQuery = gql`
+  {
+    auction(id: ${props.match.params.id}){
+      type
+  auctioner_address
+  auctioningToken
+  biddingToken
+  auctionStartDate
+  auctionEndDate
+  auctionedSellAmount
+  amountMax1
+  amountMin1
+  about {
+    id
+    website
+  description
+  telegram
+  discord
+  medium
+  twitter
+  }
+  timestamp
+  orders {
+    id
+  auctioner_address
+  auctionId {
+    id
+  }
+  buyAmount
+  sellAmount
+  txHash
+  blockNumber
+  timestamp
+  }
+    }
+  }
+`;
   const { account } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
+  const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
+
   const auctionContract = getAuctionContract(state.type);
+  const dutchContract = dutchAuctionContract();
+  const auctioningToken =
+    props.location.state.auctionType === 'dutch' &&
+    new instance.eth.Contract(
+      JSON.parse(constants.CONTRACT_ABEP_ABI),
+      props.location.state.data.auctioningToken,
+    );
+  const biddingToken =
+    props.location.state.auctionType === 'dutch' &&
+    new instance.eth.Contract(
+      JSON.parse(constants.CONTRACT_ABEP_ABI),
+      props.location.state.data.biddingToken,
+    );
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
@@ -170,7 +228,11 @@ function Detail(props) {
   }, []);
   useEffect(async () => {
     try {
-      if (data && typeof data.auctions !== 'undefined') {
+      if (
+        data &&
+        typeof data.auctions !== 'undefined' &&
+        props.location.state.auctionType === 'batch'
+      ) {
         let elem = data.auctions[0];
         let type = elem['type'];
         let auctionStatus = '';
@@ -380,6 +442,107 @@ function Detail(props) {
           auctionStatus,
         });
         setLoading(false);
+      } else {
+        let elem = data;
+        let type = elem['type'];
+        let auctionStatus = '';
+        let auctionTokenId = elem['auctioningToken'];
+        let biddingTokenId = elem['biddingToken'];
+        let auctionerAddress = elem['auctioner_address'];
+        let auctionSymbol = await methods.call(auctioningToken.methods.symbol, []);
+        let auctionTokenName = await methods.call(auctioningToken.methods.name, []);
+        let biddingSymbol = await methods.call(biddingToken.methods.symbol, []);
+        let auctionDecimal = await methods.call(auctioningToken.methods.decimals, []);
+        let totalAuctionedValue = elem['auctionedSellAmount'] / Math.pow(10, auctionDecimal);
+        totalAuctionedValue = convertExponentToNum(totalAuctionedValue);
+        let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+        let minimumPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
+        let currentBalance = await methods.call(dutchContract.methods.currentPrice, [
+          props.location.state.data.id,
+        ]);
+        let currentPrice = currentBalance / Math.pow(10, biddingDecimal);
+        currentPrice = Number(convertExponentToNum(currentPrice));
+        let auctionEndDateFormatted = moment
+          .unix(elem['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+        let auctionEndDate = elem['auctionEndDate'];
+        let auctionStartDate = elem['auctionStartDate'];
+        let endDateDiff = getDateDiff(auctionEndDate);
+        let startDateDiff = getDateDiff(auctionStartDate);
+        if (startDateDiff > 0) {
+          auctionStatus = 'upcoming';
+        } else if (endDateDiff < 0) {
+          auctionStatus = 'completed';
+        } else {
+          auctionStatus = 'inprogress';
+        }
+        let startingPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
+        let reservedPrice = elem['amountMax1'] / Math.pow(10, biddingDecimal);
+        let graphData = [
+          {
+            value: startingPrice,
+          },
+          {
+            value: reservedPrice,
+          },
+        ];
+        let orders = [];
+        let placeHolderMinBuyAmount = 0;
+        let placeholderSellAmount = 0;
+
+        let userOrders = [];
+        data.orders.forEach((order, index) => {
+          let auctionDivBuyAmount = order['buyAmount'] / Math.pow(10, auctionDecimal);
+          auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
+          let auctionDivSellAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
+          auctionDivSellAmount = convertExponentToNum(auctionDivSellAmount);
+          userOrders.push({
+            ...order,
+            auctionDivBuyAmount,
+            auctionDivSellAmount,
+            auctionSymbol,
+            biddingSymbol,
+          });
+        });
+        orders = userOrders;
+        let detail = {
+          auctionTokenId,
+          auctionerAddress,
+          biddingTokenId,
+          minimumPrice,
+          currentPrice,
+          type,
+          id: elem.about.id,
+          totalAuctionedValue,
+          auctionTokenName,
+          auctionSymbol,
+          auctionDecimal,
+          biddingSymbol,
+          biddingDecimal,
+          chartType: 'line',
+          data: graphData,
+          telegramLink: elem['about']['telegram'],
+          discordLink: elem['about']['discord'],
+          mediumLink: elem['about']['medium'],
+          twitterLink: elem['about']['twitter'],
+          title: type + ' Auction',
+          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          token: elem['auctioningToken'],
+          website: elem['about']['website'],
+          description: elem['about']['description'],
+          placeHolderMinBuyAmount,
+          placeholderSellAmount,
+          auctionEndDateFormatted,
+        };
+        setState({
+          ...state,
+          detail,
+          auctionStartDate,
+          auctionEndDate,
+          orders,
+          auctionStatus,
+        });
+        setLoading(false);
       }
     } catch (error) {
       console.log('error', error);
@@ -404,7 +567,6 @@ function Detail(props) {
       auctionDecimal,
       biddingDecimal,
     );
-    // console.log('clearingPriceOrder.price', clearingPriceOrder.price.toString());
     orders &&
       orders.forEach((item) => {
         graphData.push({
@@ -445,18 +607,28 @@ function Detail(props) {
     return 1;
   };
   const getData = () => {
+    let apollo;
+    if (props.location.state.auctionType === 'dutch') {
+      apollo = dutchApollo;
+    } else {
+      apollo = apolloClient;
+    }
     try {
       setLoading(true);
       setData([]);
       setTimeout(() => {
-        apolloClient
+        apollo
           .query({
-            query: query,
+            query: props.location.state.auctionType === 'dutch' ? dutchQuery : query,
             variables: {},
           })
           .then((response) => {
             let { data } = response;
-            setData(data);
+            if (props.location.state.auctionType === 'dutch') {
+              setData(data.auction);
+            } else {
+              setData(data);
+            }
           })
           .catch((err) => {
             setData([]);
@@ -724,8 +896,7 @@ function Detail(props) {
           </div>
         </div>
 
-        <div
-          className="show-icon flex items-center justify-end text-right text-white absolute">
+        <div className="show-icon flex items-center justify-end text-right text-white absolute">
           <span className="mr-2 text-sm">{showDetails ? 'Less' : 'More Details'} </span>
           <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
             <ArrowContainer active={showDetails}>
@@ -735,7 +906,7 @@ function Detail(props) {
         </div>
       </div>
 
-      {showDetails && (
+      {showDetails && props.location.state.auctionType === 'batch' ? (
         <div
           className="grid grid-cols-3
         text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
@@ -921,7 +1092,69 @@ function Detail(props) {
             </div>
           </div>
         </div>
-      )}
+      ) : showDetails ? (
+        <div
+          className="grid grid-cols-3
+    text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
+        >
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.totalAuctionedValue} {state.detail.auctionSymbol}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Amount For Sale
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Amount For Sale</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.orders &&
+                  state.orders.reduce(function (acc, obj) {
+                    return acc + Number(obj.auctionDivSellAmount);
+                  }, 0)}{' '}
+                {state.detail.biddingSymbol}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Amount Raised
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Amount Raised</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">{state.orders.length}</div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Participants
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Participants</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : undefined}
       <div className="grid grid-cols-1 md:grid-cols-8 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-15">
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -1026,27 +1259,42 @@ function Detail(props) {
             biddingSymbol={state.detail.biddingSymbol}
             account={account}
             auctionId={state.detail.id}
+            auctionerAddress={state.detail.auctionerAddress}
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
-            auctionContract={auctionContract}
+            auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
             auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
             getData={getData}
             orders={state.orders}
+            auctionType={state.detail.type}
           />
         </div>
       </div>
-      <Table
-        data={state.orders}
-        loading={loading}
-        isAlreadySettle={state.detail['isAlreadySettle']}
-        isAllowCancellation={state.detail['isAllowCancellation']}
-        auctionContract={auctionContract}
-        account={account}
-        auctionStatus={state.auctionStatus}
-        getData={getData}
-        auctionId={state.detail.id}
-      />
+      {props.location.state.auctionType === 'batch' ? (
+        <Table
+          data={state.orders}
+          loading={loading}
+          isAlreadySettle={state.detail['isAlreadySettle']}
+          isAllowCancellation={state.detail['isAllowCancellation']}
+          auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
+          account={account}
+          auctionStatus={state.auctionStatus}
+          getData={getData}
+          auctionId={state.detail.id}
+        />
+      ) : (
+        <DutchTable
+          data={state.orders}
+          loading={loading}
+          isAllowCancellation={false}
+          auctionContract={auctionContract}
+          account={account}
+          auctionStatus={state.auctionStatus}
+          getData={getData}
+          auctionId={state.detail.id}
+        />
+      )}
     </Wrapper>
   );
 }
