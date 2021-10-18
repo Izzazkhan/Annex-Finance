@@ -108,7 +108,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                 setPendingTx(true)
                 await onStake(inputAmount)
                 setPendingTx(false)
-            } catch(e) {
+            } catch (e) {
                 console.log(e)
                 setPendingTx(false)
                 toast.error({
@@ -133,7 +133,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                 setPendingTx(true)
                 await onUnstake(inputAmount)
                 setPendingTx(false)
-            } catch(e) {
+            } catch (e) {
                 console.log(e)
                 setPendingTx(false)
                 toast.error({
@@ -152,7 +152,7 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
             <div className="py-10 flex flex-col items-center justify-center text-white">
                 <div className="border border-primary rounded-xl py-16 px-12 card flex flex-col items-center text-2xl deposit-modal">
                     <div className="flex w-full justify-center items-center relative">
-                        <span className="font-bold">Deposit</span>
+                        <span className="font-bold">{stakeType === 'stake' ? "Deposit" : "Withdraw"}</span>
                         <a href="#" className="absolute right-0 top-0 h-full" onClick={close}>
                             <CloseIcon className="close h-full" />
                         </a>
@@ -214,30 +214,6 @@ export const DepositWithdrawModal = ({ close, item, type, stakeType }) => {
                         Confirm
                     </button>
                 </div>
-
-
-                {/* <div className="border border-primary rounded-xl py-16 px-12 card flex flex-col items-center text-2xl withdraw-modal mt-36">
-                    <div className="flex w-full justify-center items-center relative">
-                        <span className="font-bold">Withdraw</span>
-                        <a href="#" className="absolute right-0 top-0 h-full" onClick={close}>
-                            <CloseIcon className="close h-full" />
-                        </a>
-                    </div>
-                    <div className="border border-primary rounded-xl flex justify-between items-center py-2.5 px-3.5 mt-10 input-container">
-                        <input
-                            onFocus={handleFocus}
-                            className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white font-bold m-0 flex input"
-                            type="number"
-                            defaultValue={0.00}
-                        />
-                        <span>MAX</span>
-                    </div>
-                    <div className="flex w-full justify-between mt-10">
-                        <span>Available Balance</span>
-                        <span>10000.87654321{"\t"}SWORD</span>
-                    </div>
-                    <button className="bg-primary rounded-xl text-black font-bold mt-20 py-4 px-28">Confirm</button>
-                </div> */}
             </div>
         </Styles>
     )

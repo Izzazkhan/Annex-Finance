@@ -38,8 +38,16 @@ import PendingTransaction from '../components/Dashboard/PendingTransaction.js';
 import toast from '../components/UI/Toast';
 import AccountOverview from '../components/Dashboard/AccountOverview.js';
 import MarketHistory from '../components/Dashboard/MarketHistory.js';
+import styled from 'styled-components';
 
 const format = commaNumber.bindWith(',', '.');
+
+const Styles = styled.div`
+    th {
+      padding: 0.5rem 1rem !important;
+    }
+  }
+`;
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
   // debugger;
@@ -550,7 +558,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-20 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-20 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.name} />
@@ -559,12 +567,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-4 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
-            <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
+            <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
 
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.dp(2, 1).toString(10)}%`}
@@ -574,7 +582,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         Wallet: (
           <div
             className="h-20 font-bold cursor-pointer text-green w-full
-                  px-8 py-6 text-green flex flex-col items-end justify-center"
+                  px-4 py-6 text-green flex flex-col items-end justify-center"
             onClick={() => handleSupplyClickRow(asset)}
           >
             ${format(asset.supplyBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
@@ -584,7 +592,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           </div>
         ),
         Collateral: +asset.collateralFactor ? (
-          <div className="h-20 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+          <div className="h-20 font-bold cursor-pointer w-full flex items-center px-4 py-3 justify-end">
             <Switch
               wrapperClassName="pt-1 pb-0"
               value={asset.collateral}
@@ -602,7 +610,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.name} />
@@ -611,12 +619,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-4 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
-            <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
+            <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
 
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.dp(2, 1).toString(10)}%`}
@@ -625,14 +633,14 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Wallet: (
           <div
-            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-4 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
             {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
           </div>
         ),
         Collateral: +asset.collateralFactor ? (
-          <div className="h-13 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+          <div className="h-13 font-bold cursor-pointer w-full flex items-center px-4 py-3 justify-end">
             <Switch
               wrapperClassName="pt-1 pb-0"
               value={asset.collateral}
@@ -658,7 +666,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-20 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-20 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.symbol} />
@@ -667,13 +675,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
-              !withANN
+            className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-4 py-3 text-${!withANN
                 ? 'red'
                 : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
-                ? 'red'
-                : 'green'
-            }`}
+                  ? 'red'
+                  : 'green'
+              }`}
             onClick={() => handleBorrowClickRow(asset)}
           >
             {!withANN ? (
@@ -683,7 +690,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             ) : (
               <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
             )}
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
@@ -692,7 +699,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Wallet: (
           <div
-            className="h-20 font-bold cursor-pointer w-full px-8 py-6 text-green flex flex-col items-end justify-center"
+            className="h-20 font-bold cursor-pointer w-full px-4 py-6 text-green flex flex-col items-end justify-center"
             onClick={() => handleBorrowClickRow(asset)}
           >
             ${format(asset.borrowBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
@@ -703,7 +710,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         percentOfLimit: (
           <div
-            className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-primary"
+            className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-4 py-3 text-primary"
             onClick={() => handleBorrowClickRow(asset)}
           >
             {asset.percentOfLimit}%
@@ -722,7 +729,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.symbol} />
@@ -731,13 +738,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
-              !withANN
+            className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-4 py-3 text-${!withANN
                 ? 'red'
                 : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
-                ? 'red'
-                : 'green'
-            }`}
+                  ? 'red'
+                  : 'green'
+              }`}
             onClick={() => handleBorrowClickRow(asset)}
           >
             {!withANN ? (
@@ -747,7 +753,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             ) : (
               <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
             )}
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy.absoluteValue()).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
@@ -756,7 +762,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Wallet: (
           <div
-            className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-8 py-3"
+            className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
@@ -764,7 +770,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Liquidity: (
           <div
-            className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-8 py-3"
+            className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             ${format(asset.liquidity.dp(2, 1).toString(10))}
@@ -932,52 +938,55 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         netAPY={netAPY}
         settings={settings}
       />
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 items-stretch mt-5">
-        <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
-          {suppliedAssets.length === 0 && nonSuppliedAssets.length === 0 && (
-            <DataTable
-              title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6" />}
-              columns={supplyColumns}
-              data={loadingData}
-            />
-          )}
-          {suppliedAssets.length > 0 && (
-            <DataTable title="Supply" columns={supplyColumns} data={supplyData} />
-          )}
+      <Styles>
 
-          {settings.pendingInfo &&
-            settings.pendingInfo.status &&
-            ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && <PendingTransaction />}
-          {nonSuppliedAssets.length > 0 && (
-            <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
-          )}
-        </div>
-        <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
-          {borrowedAssets.length === 0 && nonBorrowedAssets.length === 0 && (
-            <DataTable
-              title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6" />}
-              columns={supplyColumns}
-              data={loadingData}
-            />
-          )}
-
-          {borrowedAssets.length > 0 && (
-            <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
-          )}
-          {settings.pendingInfo &&
-            settings.pendingInfo.status &&
-            ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
-              <PendingTransaction />
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 items-stretch mt-5">
+          <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
+            {suppliedAssets.length === 0 && nonSuppliedAssets.length === 0 && (
+              <DataTable
+                title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6" />}
+                columns={supplyColumns}
+                data={loadingData}
+              />
             )}
-          {nonBorrowedAssets.length > 0 && (
-            <DataTable
-              title="All Borrow Markets"
-              columns={borrowColumns}
-              data={allBorrowMarketData}
-            />
-          )}
+            {suppliedAssets.length > 0 && (
+              <DataTable title="Supply" columns={supplyColumns} data={supplyData} />
+            )}
+
+            {settings.pendingInfo &&
+              settings.pendingInfo.status &&
+              ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && <PendingTransaction />}
+            {nonSuppliedAssets.length > 0 && (
+              <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
+            )}
+          </div>
+          <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
+            {borrowedAssets.length === 0 && nonBorrowedAssets.length === 0 && (
+              <DataTable
+                title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6" />}
+                columns={supplyColumns}
+                data={loadingData}
+              />
+            )}
+
+            {borrowedAssets.length > 0 && (
+              <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
+            )}
+            {settings.pendingInfo &&
+              settings.pendingInfo.status &&
+              ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
+                <PendingTransaction />
+              )}
+            {nonBorrowedAssets.length > 0 && (
+              <DataTable
+                title="All Borrow Markets"
+                columns={borrowColumns}
+                data={allBorrowMarketData}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </Styles>
       <MarketHistory
         options={options}
         handleChangeAsset={handleChangeAsset}

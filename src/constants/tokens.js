@@ -55,6 +55,7 @@ export const USDT = new Token(ChainId.MAINNET, '0x55d398326f99059fF7754852469990
 export const DOT = new Token(ChainId.MAINNET, '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402', 18, 'DOT', 'DOT')
 export const ADA = new Token(ChainId.MAINNET, '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47', 18, 'ADA', 'ADA')
 export const BTCB = new Token(ChainId.MAINNET, '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', 18, 'BTCB', 'Binance BTC')
+export const TUSD = new Token(ChainId.MAINNET, '0x14016E85a25aeb13065688cAFB43044C2ef86784', 18, 'TUSD', 'True USD')
 export const UST = new Token(
     ChainId.MAINNET,
     '0x23396cF899Ca06c4472205fC903bDB4de249D6fC',
