@@ -1313,7 +1313,6 @@ const ProgressBar = ({
   //   ((currentTimeStamp - auctionStartDate) / (auctionEndDate - auctionStartDate)) * 100;
 
   const calculatePercentage = (auctionStartDate, auctionEndDate) => {
-    console.log('');
     let currentTimeStamp = Date.now();
     var total = auctionEndDate - auctionStartDate;
     var current = currentTimeStamp - auctionStartDate;
