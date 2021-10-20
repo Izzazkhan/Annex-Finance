@@ -47,7 +47,8 @@ const Styles = styled.div`
     }
   }
 
-  table.no-data, table.loading {
+  table.no-data,
+  table.loading {
     font-size: 1.2rem;
     th {
       border-right: 1px solid #2b2b2b;
@@ -58,7 +59,8 @@ const Styles = styled.div`
   }
 
   @media (max-width: 372px) {
-    table.no-data, table.loading {
+    table.no-data,
+    table.loading {
       div.loader-container {
         min-width: auto;
       }
@@ -76,7 +78,7 @@ function Table(props) {
   const [priceUpDownValue, setPriceUpDownValue] = useState(true);
   const [propsData, setPropsData] = useState([]);
   const [currentSort, setCurrentSort] = useState('default');
-  const [isTableHorizontal, setIsTableHorizontal] = useState(true)
+  const [isTableHorizontal, setIsTableHorizontal] = useState(true);
 
   const { width } = useWindowSize() || {};
   useEffect(() => {
@@ -248,217 +250,384 @@ function Table(props) {
           </div>
         </div>
         <Styles>
-          <table className={`text-left ${!isTableHorizontal && 'border-thick'} ${propsData.length === 0 && 'no-data'}`}>
-            {
-              isTableHorizontal ? (
-                <>
-                  <thead>
+          <table
+            className={`text-left ${!isTableHorizontal && 'border-thick'} ${
+              propsData.length === 0 && 'no-data'
+            }`}
+          >
+            {isTableHorizontal ? (
+              <>
+                <thead>
+                  <tr>
+                    <th>Address</th>
+                    <th>
+                      Price{' '}
+                      <button onClick={() => onSortChange('Price')}>
+                        {sortTypes[currentSort].class === 'price-sort-down' ? (
+                          <img
+                            className="inline relative left-1"
+                            src={sortDown}
+                            alt="price-sort-down"
+                          />
+                        ) : sortTypes[currentSort].class === 'price-sort-up' ? (
+                          <img
+                            className="inline relative left-1"
+                            src={sortUp}
+                            alt="price-sort up"
+                          />
+                        ) : (
+                          <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                            <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
+                            <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>Amount Committed</th>
+                    <th>Tokens Claimable</th>
+                    <th>TX Hash</th>
+                    <th>
+                      Block Number{' '}
+                      <button onClick={() => onSortChange('BlockNumber')}>
+                        {sortTypes[currentSort].class === 'sort-down' ? (
+                          <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                        ) : sortTypes[currentSort].class === 'sort-up' ? (
+                          <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                        ) : (
+                          <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                            <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                            <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>Buy Amount</th>
+                    <th>Sell Amount</th>
+                    <th className="text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {props.loading ? (
                     <tr>
-                      <th>Address</th>
-                      <th>
-                        Price{' '}
-                        <button onClick={() => onSortChange('Price')}>
-                          {sortTypes[currentSort].class === 'price-sort-down' ? (
-                            <img
-                              className="inline relative left-1"
-                              src={sortDown}
-                              alt="price-sort-down"
-                            />
-                          ) : sortTypes[currentSort].class === 'price-sort-up' ? (
-                            <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
-                          ) : (
-                            <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                              <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
-                              <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
-                            </span>
-                          )}
-                        </button>
-                      </th>
-                      <th>Amount Committed</th>
-                      <th>LP Tokens Claimable</th>
-                      <th>TX Hash</th>
-                      <th>
-                        Block Number{' '}
-                        <button onClick={() => onSortChange('BlockNumber')}>
-                          {sortTypes[currentSort].class === 'sort-down' ? (
-                            <img className="inline relative left-1" src={sortDown} alt="sort down" />
-                          ) : sortTypes[currentSort].class === 'sort-up' ? (
-                            <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                          ) : (
-                            <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                              <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                              <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                            </span>
-                          )}
-                        </button>
-                      </th>
-                      <th>Buy Amount</th>
-                      <th>Sell Amount</th>
-                      <th className="text-center">Status</th>
+                      <td colSpan="12">
+                        <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+                          <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {props.loading ? (
-                      <tr>
-                        <td colSpan="12">
-                          <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
-                            <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
-                          </div>
-                        </td>
-                      </tr>
-                    ) : propsData.length === 0 ? (
-                      <tr>
-                        <td colSpan="12">
-                          <div className="text-center">No Data Found</div>
-                        </td>
-                      </tr>
-                    ) : (
-                      propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                        let userId = item.userId.address.toLowerCase();
-                        let account = props.account ? props.account.toLowerCase() : '0x';
-                        return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
-                          <tr key={index}>
-                            <td>
-                              <div className="flex justify-start items-center space-x-2">
-                                <div className="text-primary">
-                                  <a
-                                    href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
-                                    target="_blank"
-                                  >
-                                    {item.userId ? item.userId.address.substring(0, 5) + '...' : 'xxx'}
-                                  </a>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div>
-                                {item.price} {item.priceUnit}
-                              </div>
-                            </td>
-                            <td>
-                              <div>{item.sellAmount}</div>
-                            </td>
-                            <td>
-                              <div>{item.claimableLP}</div>
-                            </td>
-                            <td>
+                  ) : propsData.length === 0 ? (
+                    <tr>
+                      <td colSpan="12">
+                        <div className="text-center">No Data Found</div>
+                      </td>
+                    </tr>
+                  ) : (
+                    propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
+                      let userId = item.userId.address.toLowerCase();
+                      let account = props.account ? props.account.toLowerCase() : '0x';
+                      return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
+                        <tr key={index}>
+                          <td>
+                            <div className="flex justify-start items-center space-x-2">
                               <div className="text-primary">
                                 <a
-                                  href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                                  href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
                                   target="_blank"
                                 >
-                                  {trimAddress(item.txHash)}
+                                  {item.userId
+                                    ? item.userId.address.substring(0, 5) + '...'
+                                    : 'xxx'}
                                 </a>
                               </div>
-                            </td>
-                            <td>
-                              <div>{item.blockNumber}</div>
-                            </td>
-                            <td>
-                              <div>{item.buyAmount}</div>
-                            </td>
-                            <td>
-                              <div>{item.sellAmount}</div>
-                            </td>
-                            <td>
-                              {account === userId &&
-                                props.auctionStatus === 'completed' &&
-                                props.isAlreadySettle &&
-                                item.status !== 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label
-                                    className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
-                                      }`}
+                            </div>
+                          </td>
+                          <td>
+                            <div>
+                              {item.price} {item.priceUnit}
+                            </div>
+                          </td>
+                          <td>
+                            <div>{item.sellAmount}</div>
+                          </td>
+                          <td>
+                            <div>{item.claimableLP}</div>
+                          </td>
+                          <td>
+                            <div className="text-primary">
+                              <a
+                                href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                                target="_blank"
+                              >
+                                {trimAddress(item.txHash)}
+                              </a>
+                            </div>
+                          </td>
+                          <td>
+                            <div>{item.blockNumber}</div>
+                          </td>
+                          <td>
+                            <div>{item.buyAmount}</div>
+                          </td>
+                          <td>
+                            <div>{item.sellAmount}</div>
+                          </td>
+                          <td>
+                            {account === userId &&
+                            props.auctionStatus === 'completed' &&
+                            props.isAlreadySettle &&
+                            item.status !== 'CANCELLED' ? (
+                              <div className="flex items-center custom-check">
+                                <label
+                                  className={`container text-base ml-2 font-normal ${
+                                    loading || !props.isAlreadySettle ? 'disabled' : ''
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    disabled={
+                                      loading ||
+                                      !props.isAlreadySettle ||
+                                      item.status === 'PROCESSED'
+                                    }
+                                    checked={
+                                      item.status === 'PROCESSED' ||
+                                      selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
+                                    }
+                                    onChange={() => {}}
+                                    onClick={() => handleClaimCheckbox(item)}
+                                  />
+                                  <span
+                                    className={`checkmark ${
+                                      item.status === 'PROCESSED' ? 'green' : ''
+                                    }`}
                                   >
-                                    <input
-                                      type="checkbox"
-                                      disabled={
-                                        loading || !props.isAlreadySettle || item.status === 'PROCESSED'
-                                      }
-                                      checked={
-                                        item.status === 'PROCESSED' ||
-                                        selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
-                                      }
-                                      onChange={() => { }}
-                                      onClick={() => handleClaimCheckbox(item)}
-                                    />
-                                    <span
-                                      className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''
-                                        }`}
-                                    >
-                                      <span style={{ display: 'none' }} className="text">
-                                        {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
-                                      </span>
+                                    <span style={{ display: 'none' }} className="text">
+                                      {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
                                     </span>
-                                  </label>
-                                </div>
-                              ) : account === userId &&
-                                props.isAllowCancellation &&
-                                props.auctionStatus !== 'completed' &&
-                                item.status !== 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label
-                                    className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                      }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled={loading || item.status === 'CANCELLED'}
-                                      checked={
-                                        item.status === 'CANCELLED' ||
-                                        selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
-                                      }
-                                      onChange={() => { }}
-                                      onClick={() => handleCancelCheckbox(item)}
-                                    />
-                                    <span className="checkmark">
-                                      <span style={{ display: 'none' }} className="text">
-                                        Cancel
-                                      </span>
+                                  </span>
+                                </label>
+                              </div>
+                            ) : account === userId &&
+                              props.isAllowCancellation &&
+                              props.auctionStatus !== 'completed' &&
+                              item.status !== 'CANCELLED' ? (
+                              <div className="flex items-center custom-check">
+                                <label
+                                  className={`container text-base ml-2 font-normal ${
+                                    loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    disabled={loading || item.status === 'CANCELLED'}
+                                    checked={
+                                      item.status === 'CANCELLED' ||
+                                      selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
+                                    }
+                                    onChange={() => {}}
+                                    onClick={() => handleCancelCheckbox(item)}
+                                  />
+                                  <span className="checkmark">
+                                    <span style={{ display: 'none' }} className="text">
+                                      Cancel
                                     </span>
-                                  </label>
-                                </div>
-                              ) : item.status === 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label className={`container text-base ml-2 font-normal `}>
-                                    <input
-                                      type="checkbox"
-                                      disabled={true}
-                                      checked={true}
-                                      onChange={() => { }}
-                                    />
-                                    <span className="checkmark red">
-                                      <span style={{ display: 'none' }} className="text">
-                                        {' '}
-                                        Cancelled
-                                      </span>
+                                  </span>
+                                </label>
+                              </div>
+                            ) : item.status === 'CANCELLED' ? (
+                              <div className="flex items-center custom-check">
+                                <label className={`container text-base ml-2 font-normal `}>
+                                  <input
+                                    type="checkbox"
+                                    disabled={true}
+                                    checked={true}
+                                    onChange={() => {}}
+                                  />
+                                  <span className="checkmark red">
+                                    <span style={{ display: 'none' }} className="text">
+                                      {' '}
+                                      Cancelled
                                     </span>
-                                  </label>
-                                </div>
-                              ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
-                                <div>Waiting to settle</div>
-                              ) : (
-                                'Bid'
-                              )}
-                            </td>
-                          </tr>
+                                  </span>
+                                </label>
+                              </div>
+                            ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
+                              <div>Waiting to settle</div>
+                            ) : (
+                              'Bid'
+                            )}
+                          </td>
+                        </tr>
+                      ) : (
+                        ''
+                      );
+                    })
+                  )}
+                </tbody>
+              </>
+            ) : props.loading ? (
+              <>
+                <tbody>
+                  <tr colSpan={'100%'}>
+                    <th colSpan={'50%'}>Address</th>
+                    <td className={'expand'} rowSpan={9} colSpan={'50%'}>
+                      <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg loader-container">
+                        <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      Price{' '}
+                      <button onClick={() => onSortChange('Price')}>
+                        {sortTypes[currentSort].class === 'price-sort-down' ? (
+                          <img
+                            className="inline relative left-1"
+                            src={sortDown}
+                            alt="price-sort-down"
+                          />
+                        ) : sortTypes[currentSort].class === 'price-sort-up' ? (
+                          <img
+                            className="inline relative left-1"
+                            src={sortUp}
+                            alt="price-sort up"
+                          />
                         ) : (
-                          ''
-                        );
-                      })
-                    )}
-                  </tbody>
-                </>
-              ) : (
-                props.loading ? (
-                  <>
-                    <tbody>
-
-                      <tr colSpan={'100%'}>
-                        <th colSpan={'50%'}>Address</th>
-                        <td className={'expand'} rowSpan={9} colSpan={'50%'}>
-                          <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg loader-container">
-                            <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+                          <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                            <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
+                            <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Amount Committed</th>
+                  </tr>
+                  <tr>
+                    <th>Tokens Claimable</th>
+                  </tr>
+                  <tr>
+                    <th>TX Hash</th>
+                  </tr>
+                  <tr>
+                    <th>
+                      Block Number{' '}
+                      <button onClick={() => onSortChange('BlockNumber')}>
+                        {sortTypes[currentSort].class === 'sort-down' ? (
+                          <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                        ) : sortTypes[currentSort].class === 'sort-up' ? (
+                          <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                        ) : (
+                          <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                            <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                            <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Buy Amount</th>
+                  </tr>
+                  <tr>
+                    <th>Sell Amount</th>
+                  </tr>
+                  <tr className={'border-bottom-none'}>
+                    <th className="text-center">Status</th>
+                  </tr>
+                </tbody>
+              </>
+            ) : propsData.length === 0 ? (
+              <>
+                <tbody>
+                  <tr colSpan={'100%'}>
+                    <th colSpan={'50%'}>Address</th>
+                    <td className={'content'} rowSpan={9} colSpan={'50%'}>
+                      <div className="text-center">No Data Found</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      Price{' '}
+                      <button onClick={() => onSortChange('Price')}>
+                        {sortTypes[currentSort].class === 'price-sort-down' ? (
+                          <img
+                            className="inline relative left-1"
+                            src={sortDown}
+                            alt="price-sort-down"
+                          />
+                        ) : sortTypes[currentSort].class === 'price-sort-up' ? (
+                          <img
+                            className="inline relative left-1"
+                            src={sortUp}
+                            alt="price-sort up"
+                          />
+                        ) : (
+                          <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                            <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
+                            <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Amount Committed</th>
+                  </tr>
+                  <tr>
+                    <th>Tokens Claimable</th>
+                  </tr>
+                  <tr>
+                    <th>TX Hash</th>
+                  </tr>
+                  <tr>
+                    <th>
+                      Block Number{' '}
+                      <button onClick={() => onSortChange('BlockNumber')}>
+                        {sortTypes[currentSort].class === 'sort-down' ? (
+                          <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                        ) : sortTypes[currentSort].class === 'sort-up' ? (
+                          <img className="inline relative left-1" src={sortUp} alt="sort up" />
+                        ) : (
+                          <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
+                            <img className="inline w-2.5" src={sortUp} alt="sort up" />
+                            <img className="inline w-2.5" src={sortDown} alt="sort down" />
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Buy Amount</th>
+                  </tr>
+                  <tr>
+                    <th>Sell Amount</th>
+                  </tr>
+                  <tr className={'border-bottom-none'}>
+                    <th className="text-center">Status</th>
+                  </tr>
+                </tbody>
+              </>
+            ) : (
+              <tbody>
+                {propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
+                  let userId = item.userId.address.toLowerCase();
+                  let account = props.account ? props.account.toLowerCase() : '0x';
+                  return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
+                    <React.Fragment key={index}>
+                      <tr className={'top-border-thick'}>
+                        <th>Address</th>
+                        <td>
+                          <div className="flex justify-start items-center space-x-2">
+                            <div className="text-primary">
+                              <a
+                                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                                target="_blank"
+                              >
+                                {item.userId ? item.userId.address.substring(0, 5) + '...' : 'xxx'}
+                              </a>
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -473,80 +642,64 @@ function Table(props) {
                                 alt="price-sort-down"
                               />
                             ) : sortTypes[currentSort].class === 'price-sort-up' ? (
-                              <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
+                              <img
+                                className="inline relative left-1"
+                                src={sortUp}
+                                alt="price-sort up"
+                              />
                             ) : (
                               <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
                                 <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
-                                <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
+                                <img
+                                  className="inline w-2.5"
+                                  src={sortDown}
+                                  alt="price-sort-down"
+                                />
                               </span>
                             )}
                           </button>
                         </th>
+                        <td>
+                          <div>
+                            {item.price} {item.priceUnit}
+                          </div>
+                        </td>
                       </tr>
-                      <tr><th>Amount Committed</th></tr>
-                      <tr><th>LP Tokens Claimable</th></tr>
-                      <tr><th>TX Hash</th></tr>
                       <tr>
-                        <th>
-                          Block Number{' '}
-                          <button onClick={() => onSortChange('BlockNumber')}>
-                            {sortTypes[currentSort].class === 'sort-down' ? (
-                              <img className="inline relative left-1" src={sortDown} alt="sort down" />
-                            ) : sortTypes[currentSort].class === 'sort-up' ? (
-                              <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                            ) : (
-                              <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                                <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                              </span>
-                            )}
-                          </button>
-                        </th>
+                        <th>Amount Committed</th>
+                        <td>
+                          <div>{item.sellAmount}</div>
+                        </td>
                       </tr>
-                      <tr><th>Buy Amount</th></tr>
-                      <tr><th>Sell Amount</th></tr>
-                      <tr className={'border-bottom-none'}><th className="text-center">Status</th></tr>
-                    </tbody>
-                  </>
-                ) : propsData.length === 0 ? (
-                  <>
-                    <tbody>
-                      <tr colSpan={'100%'}>
-                        <th colSpan={'50%'}>Address</th>
-                        <td className={'content'} rowSpan={9} colSpan={'50%'}>
-                          <div className="text-center">No Data Found</div>
+                      <tr>
+                        <th>Tokens Claimable</th>
+                        <td>
+                          <div>{item.claimableLP}</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>TX Hash</th>
+                        <td>
+                          <div className="text-primary">
+                            <a
+                              href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                              target="_blank"
+                            >
+                              {trimAddress(item.txHash)}
+                            </a>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <th>
-                          Price{' '}
-                          <button onClick={() => onSortChange('Price')}>
-                            {sortTypes[currentSort].class === 'price-sort-down' ? (
-                              <img
-                                className="inline relative left-1"
-                                src={sortDown}
-                                alt="price-sort-down"
-                              />
-                            ) : sortTypes[currentSort].class === 'price-sort-up' ? (
-                              <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
-                            ) : (
-                              <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
-                                <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
-                              </span>
-                            )}
-                          </button>
-                        </th>
-                      </tr>
-                      <tr><th>Amount Committed</th></tr>
-                      <tr><th>LP Tokens Claimable</th></tr>
-                      <tr><th>TX Hash</th></tr>
-                      <tr>
-                        <th>
                           Block Number{' '}
                           <button onClick={() => onSortChange('BlockNumber')}>
                             {sortTypes[currentSort].class === 'sort-down' ? (
-                              <img className="inline relative left-1" src={sortDown} alt="sort down" />
+                              <img
+                                className="inline relative left-1"
+                                src={sortDown}
+                                alt="sort down"
+                              />
                             ) : sortTypes[currentSort].class === 'sort-up' ? (
                               <img className="inline relative left-1" src={sortUp} alt="sort up" />
                             ) : (
@@ -557,216 +710,120 @@ function Table(props) {
                             )}
                           </button>
                         </th>
+                        <td>
+                          <div>{item.blockNumber}</div>
+                        </td>
                       </tr>
-                      <tr><th>Buy Amount</th></tr>
-                      <tr><th>Sell Amount</th></tr>
-                      <tr className={'border-bottom-none'}><th className="text-center">Status</th></tr>
-                    </tbody>
-                  </>
-                ) : (
-                  <tbody>
-                    {
-                      propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                        let userId = item.userId.address.toLowerCase();
-                        let account = props.account ? props.account.toLowerCase() : '0x';
-                        return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
-                          <React.Fragment key={index}>
-                            <tr className={'top-border-thick'}>
-                              <th>Address</th>
-                              <td>
-                                <div className="flex justify-start items-center space-x-2">
-                                  <div className="text-primary">
-                                    <a
-                                      href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
-                                      target="_blank"
-                                    >
-                                      {item.userId ? item.userId.address.substring(0, 5) + '...' : 'xxx'}
-                                    </a>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>
-                                Price{' '}
-                                <button onClick={() => onSortChange('Price')}>
-                                  {sortTypes[currentSort].class === 'price-sort-down' ? (
-                                    <img
-                                      className="inline relative left-1"
-                                      src={sortDown}
-                                      alt="price-sort-down"
-                                    />
-                                  ) : sortTypes[currentSort].class === 'price-sort-up' ? (
-                                    <img className="inline relative left-1" src={sortUp} alt="price-sort up" />
-                                  ) : (
-                                    <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                      <img className="inline w-2.5" src={sortUp} alt="price-sort-up" />
-                                      <img className="inline w-2.5" src={sortDown} alt="price-sort-down" />
-                                    </span>
-                                  )}
-                                </button>
-                              </th>
-                              <td>
-                                <div>
-                                  {item.price} {item.priceUnit}
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>Amount Committed</th>
-                              <td>
-                                <div>{item.sellAmount}</div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>LP Tokens Claimable</th>
-                              <td>
-                                <div>{item.claimableLP}</div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>TX Hash</th>
-                              <td>
-                                <div className="text-primary">
-                                  <a
-                                    href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
-                                    target="_blank"
-                                  >
-                                    {trimAddress(item.txHash)}
-                                  </a>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>
-                                Block Number{' '}
-                                <button onClick={() => onSortChange('BlockNumber')}>
-                                  {sortTypes[currentSort].class === 'sort-down' ? (
-                                    <img className="inline relative left-1" src={sortDown} alt="sort down" />
-                                  ) : sortTypes[currentSort].class === 'sort-up' ? (
-                                    <img className="inline relative left-1" src={sortUp} alt="sort up" />
-                                  ) : (
-                                    <span className="inline inline-flex flex-col space-y-0.5 relative bottom-1 left-1">
-                                      <img className="inline w-2.5" src={sortUp} alt="sort up" />
-                                      <img className="inline w-2.5" src={sortDown} alt="sort down" />
-                                    </span>
-                                  )}
-                                </button>
-                              </th>
-                              <td>
-                                <div>{item.blockNumber}</div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>Buy Amount</th>
-                              <td>
-                                <div>{item.buyAmount}</div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>Sell Amount</th>
-                              <td>
-                                <div>{item.sellAmount}</div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th className="text-center">Status</th>
-                              <td>
-                                {account === userId &&
-                                  props.auctionStatus === 'completed' &&
-                                  props.isAlreadySettle &&
-                                  item.status !== 'CANCELLED' ? (
-                                  <div className="flex items-center custom-check">
-                                    <label
-                                      className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
-                                        }`}
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        disabled={
-                                          loading || !props.isAlreadySettle || item.status === 'PROCESSED'
-                                        }
-                                        checked={
-                                          item.status === 'PROCESSED' ||
-                                          selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
-                                        }
-                                        onChange={() => { }}
-                                        onClick={() => handleClaimCheckbox(item)}
-                                      />
-                                      <span
-                                        className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''
-                                          }`}
-                                      >
-                                        <span style={{ display: 'none' }} className="text">
-                                          {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
-                                        </span>
-                                      </span>
-                                    </label>
-                                  </div>
-                                ) : account === userId &&
-                                  props.isAllowCancellation &&
-                                  props.auctionStatus !== 'completed' &&
-                                  item.status !== 'CANCELLED' ? (
-                                  <div className="flex items-center custom-check">
-                                    <label
-                                      className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                        }`}
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        disabled={loading || item.status === 'CANCELLED'}
-                                        checked={
-                                          item.status === 'CANCELLED' ||
-                                          selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
-                                        }
-                                        onChange={() => { }}
-                                        onClick={() => handleCancelCheckbox(item)}
-                                      />
-                                      <span className="checkmark">
-                                        <span style={{ display: 'none' }} className="text">
-                                          Cancel
-                                        </span>
-                                      </span>
-                                    </label>
-                                  </div>
-                                ) : item.status === 'CANCELLED' ? (
-                                  <div className="flex items-center custom-check">
-                                    <label className={`container text-base ml-2 font-normal `}>
-                                      <input
-                                        type="checkbox"
-                                        disabled={true}
-                                        checked={true}
-                                        onChange={() => { }}
-                                      />
-                                      <span className="checkmark red">
-                                        <span style={{ display: 'none' }} className="text">
-                                          {' '}
-                                          Cancelled
-                                        </span>
-                                      </span>
-                                    </label>
-                                  </div>
-                                ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
-                                  <div>Waiting to settle</div>
-                                ) : (
-                                  'Bid'
-                                )}
-                              </td>
-                            </tr>
-                          </React.Fragment>
-                        ) : (
-                          ''
-                        );
-                      })
-                    }
-                  </tbody>
-                )
-              )
-            }
+                      <tr>
+                        <th>Buy Amount</th>
+                        <td>
+                          <div>{item.buyAmount}</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Sell Amount</th>
+                        <td>
+                          <div>{item.sellAmount}</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="text-center">Status</th>
+                        <td>
+                          {account === userId &&
+                          props.auctionStatus === 'completed' &&
+                          props.isAlreadySettle &&
+                          item.status !== 'CANCELLED' ? (
+                            <div className="flex items-center custom-check">
+                              <label
+                                className={`container text-base ml-2 font-normal ${
+                                  loading || !props.isAlreadySettle ? 'disabled' : ''
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  disabled={
+                                    loading || !props.isAlreadySettle || item.status === 'PROCESSED'
+                                  }
+                                  checked={
+                                    item.status === 'PROCESSED' ||
+                                    selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
+                                  }
+                                  onChange={() => {}}
+                                  onClick={() => handleClaimCheckbox(item)}
+                                />
+                                <span
+                                  className={`checkmark ${
+                                    item.status === 'PROCESSED' ? 'green' : ''
+                                  }`}
+                                >
+                                  <span style={{ display: 'none' }} className="text">
+                                    {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
+                                  </span>
+                                </span>
+                              </label>
+                            </div>
+                          ) : account === userId &&
+                            props.isAllowCancellation &&
+                            props.auctionStatus !== 'completed' &&
+                            item.status !== 'CANCELLED' ? (
+                            <div className="flex items-center custom-check">
+                              <label
+                                className={`container text-base ml-2 font-normal ${
+                                  loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  disabled={loading || item.status === 'CANCELLED'}
+                                  checked={
+                                    item.status === 'CANCELLED' ||
+                                    selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
+                                  }
+                                  onChange={() => {}}
+                                  onClick={() => handleCancelCheckbox(item)}
+                                />
+                                <span className="checkmark">
+                                  <span style={{ display: 'none' }} className="text">
+                                    Cancel
+                                  </span>
+                                </span>
+                              </label>
+                            </div>
+                          ) : item.status === 'CANCELLED' ? (
+                            <div className="flex items-center custom-check">
+                              <label className={`container text-base ml-2 font-normal `}>
+                                <input
+                                  type="checkbox"
+                                  disabled={true}
+                                  checked={true}
+                                  onChange={() => {}}
+                                />
+                                <span className="checkmark red">
+                                  <span style={{ display: 'none' }} className="text">
+                                    {' '}
+                                    Cancelled
+                                  </span>
+                                </span>
+                              </label>
+                            </div>
+                          ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
+                            <div>Waiting to settle</div>
+                          ) : (
+                            'Bid'
+                          )}
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  ) : (
+                    ''
+                  );
+                })}
+              </tbody>
+            )}
           </table>
         </Styles>
       </div>
-    </div >
+    </div>
   );
 }
 

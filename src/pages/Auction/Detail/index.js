@@ -178,6 +178,7 @@ function Detail(props) {
   auctionedSellAmount
   amountMax1
   amountMin1
+  startingPrice
   about {
     id
     website
@@ -194,6 +195,7 @@ function Detail(props) {
   auctionId {
     id
   }
+  currentPriceOnOrder
   buyAmount
   sellAmount
   txHash
@@ -266,7 +268,6 @@ function Detail(props) {
         maxAvailable = convertExponentToNum(maxAvailable);
         currentPrice = Number(convertExponentToNum(currentPrice));
         minBuyAmount = convertExponentToNum(minBuyAmount);
-
         let minFundingThreshold = convertExponentToNum(
           new BigNumber(elem['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
         );
@@ -278,7 +279,6 @@ function Detail(props) {
         let minimumBiddingAmountPerOrderValue = elem['minimumBiddingAmountPerOrder'];
 
         let minFundingThresholdNotReached = elem['minFundingThresholdNotReached'];
-
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold_eth'])
             .dividedBy(auctionDecimal)
@@ -307,6 +307,7 @@ function Detail(props) {
         } else {
           auctionStatus = 'inprogress';
         }
+
         let cancelDateDiff = getDateDiff(elem['orderCancellationEndDate']);
         if (cancelDateDiff > 0) {
           isAllowCancellation = true;
@@ -318,6 +319,7 @@ function Detail(props) {
           auctionDecimal: elem['auctioningToken']['decimals'],
           biddingDecimal: elem['biddingToken']['decimals'],
         });
+
         let orders = [];
         let placeHolderMinBuyAmount = 0;
         let placeholderSellAmount = 0;
@@ -335,7 +337,6 @@ function Detail(props) {
         }
         let userOrders = [];
         let otherUserOrders = [];
-
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
           let userId = order.userId.address.toLowerCase();
@@ -357,6 +358,7 @@ function Detail(props) {
               placeholderSellAmount = maxAvailable;
             }
           }
+
           if (userId === accountId) {
             userOrders.push({
               ...order,
@@ -476,14 +478,15 @@ function Detail(props) {
         } else {
           auctionStatus = 'inprogress';
         }
-        let startingPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
-        let reservedPrice = elem['amountMax1'] / Math.pow(10, biddingDecimal);
+        let startingPrice = elem['startingPrice'] / Math.pow(10, auctionDecimal);
+        Number(convertExponentToNum(startingPrice));
+        // let reservedPrice = elem['amountMax1'] / Math.pow(10, biddingDecimal);
         let graphData = [
           {
             value: startingPrice,
           },
           {
-            value: reservedPrice,
+            value: currentPrice,
           },
         ];
         let orders = [];

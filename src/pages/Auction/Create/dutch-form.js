@@ -10,6 +10,7 @@ import {
   getTokenContractWithDynamicAbi,
   methods,
   dutchAuctionContract,
+  fixedAuctionContract,
 } from '../../../utilities/ContractService';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import Modal from './modal';
@@ -233,6 +234,7 @@ export default function DutchForm(props) {
   const annTokenContract = getANNTokenContract();
   const auctionContract = getAuctionContract(state.type);
   const dutchAuction = dutchAuctionContract();
+  const fixedAuction = fixedAuctionContract();
 
   useEffect(async () => {
     if (showModal) {
@@ -439,11 +441,18 @@ export default function DutchForm(props) {
           ];
           console.log('************ auction data ************: ', data);
           let whiteListerArr = whiteLister.includes('') ? [] : whiteLister;
-          let auctionTxDetail = await methods.send(
-            dutchAuction.methods.initiateAuction,
-            [data, whiteListerArr],
-            accountId,
-          );
+          let auctionTxDetail =
+            props.activeTab === 'dutch'
+              ? await methods.send(
+                  dutchAuction.methods.initiateAuction,
+                  [data, whiteListerArr],
+                  accountId,
+                )
+              : await methods.send(
+                  fixedAuction.methods.initiateAuction,
+                  [data, whiteListerArr],
+                  accountId,
+                );
           // let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
           setLoading(false);
           updateShowModal(true);

@@ -91,11 +91,18 @@ const AuctionStatus = ({
       e.preventDefault();
       setLoading(true);
       let sellAmount = modalError.payload.sellAmount;
-      let buyAmount = modalError.payload.sellAmount / modalError.payload.minBuyAmount;
-      // let allowListCallData = modalError.payload.allowListCallData;
-      // let prevOrder = modalError.payload.prevOrder;
-      sellAmount = new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10);
-      buyAmount = new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10);
+      let buyAmount =
+        auctionType === 'BATCH'
+          ? modalError.payload.sellAmount / modalError.payload.minBuyAmount
+          : modalError.payload.minBuyAmount;
+      sellAmount =
+        auctionType === 'BATCH'
+          ? new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10)
+          : new BigNumber(sellAmount).multipliedBy(Number('1e' + biddingDecimal)).toString(10);
+      buyAmount =
+        auctionType === 'BATCH'
+          ? new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10)
+          : new BigNumber(buyAmount).multipliedBy(Number('1e' + auctionDecimal)).toString(10);
       let data;
       if (auctionType === 'BATCH') {
         data = [
@@ -133,17 +140,16 @@ const AuctionStatus = ({
     }
   };
   const settlAuction = async (e) => {
-    console.log('account', auctionerAddress);
     try {
       e.preventDefault();
       setLoading(true);
       if (auctionType === 'BATCH') {
         await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       } else {
-        if (account === auctionerAddress) {
-          await methods.send(auctionContract.methods.creatorClaim, [auctionerAddress], account);
+        if (account === auctionId) {
+          await methods.send(auctionContract.methods.creatorClaim, [auctionId], account);
         } else {
-          await methods.send(auctionContract.methods.bidderClaim, [auctionerAddress], account);
+          await methods.send(auctionContract.methods.bidderClaim, [auctionId], account);
         }
       }
       getData();
@@ -368,6 +374,20 @@ const AuctionProgress = (props) => {
       }
     }
 
+    if (props.detail.type === 'DUTCH') {
+      let desiredBid =
+        props.orders && props.orders.length
+          ? props.detail.totalAuctionedValue -
+            props.orders.reduce(function (acc, obj) {
+              return acc + Number(obj.auctionDivBuyAmount);
+            }, 0)
+          : props.detail.totalAuctionedValue;
+      if (Number(state.minBuyAmount) > Number(desiredBid)) {
+        errorMessage = `Desired bid price must be smaller than max available`;
+        isValid = false;
+      }
+    }
+
     if (!isValid) {
       Swal.fire({
         title: 'Error',
@@ -392,9 +412,15 @@ const AuctionProgress = (props) => {
 
   const onChangeSlider = (newValue) => {
     setValue(newValue);
+    let fieldValue;
+    if (props.detail.type === 'BATCH') {
+      fieldValue = 'sellAmount';
+    } else {
+      fieldValue = 'minBuyAmount';
+    }
     setState({
       ...state,
-      ['sellAmount']: newValue,
+      ['minBuyAmount']: newValue,
     });
   };
 
@@ -419,7 +445,12 @@ const AuctionProgress = (props) => {
             </span>
             {/*  */}
             {orderArr && orderArr.length > 0 ? (
-              <BarChart width="100%" height="211px" data={orderArr} />
+              <BarChart
+                width="100%"
+                height="211px"
+                data={orderArr}
+                maxAvailable={props.detail.maxAvailable}
+              />
             ) : (
               <div
                 className="relative pt-5"
@@ -472,7 +503,12 @@ const AuctionProgress = (props) => {
               <div className="flex flex-col text-right">
                 <div className="text-sm ">Max Available</div>
                 <div className="text-lg font-bold">
-                  {props.detail.type === 'DUTCH'
+                  {props.detail.type === 'DUTCH' && props.orders && props.orders.length
+                    ? props.detail.totalAuctionedValue -
+                      props.orders.reduce(function (acc, obj) {
+                        return acc + Number(obj.auctionDivBuyAmount);
+                      }, 0)
+                    : props.detail.type === 'DUTCH'
                     ? props.detail.totalAuctionedValue
                     : props.detail.biddingBalance}
                 </div>
@@ -482,8 +518,13 @@ const AuctionProgress = (props) => {
               <Slider
                 min={props.detail.type === 'DUTCH' ? Number(0) : Number(props.minBuyAmount)}
                 max={
-                  props.detail.type === 'DUTCH'
-                    ? Number(props.detail.totalAuctionedValue)
+                  props.detail.type === 'DUTCH' && props.orders && props.orders.length
+                    ? props.detail.totalAuctionedValue -
+                      props.orders.reduce(function (acc, obj) {
+                        return acc + Number(obj.auctionDivBuyAmount);
+                      }, 0)
+                    : props.detail.type === 'DUTCH'
+                    ? props.detail.totalAuctionedValue
                     : Number(props.detail.biddingBalance)
                 }
                 value={Number(value)}
@@ -508,13 +549,14 @@ const AuctionProgress = (props) => {
                     </div>
                   </div>
                 )}
-
-                <div className="flex justify-between mb-3">
-                  <div className="text-md ">
-                    <b>To calculate the buy amount:</b> Sell amount/ Desired Bid Price.
+                {props.detail.type === 'BATCH' && (
+                  <div className="flex justify-between mb-3">
+                    <div className="text-md ">
+                      <b>To calculate the buy amount:</b> Sell amount/ Desired Bid Price.
+                    </div>
                   </div>
-                </div>
-                {state.sellAmount && state.minBuyAmount ? (
+                )}
+                {state.sellAmount && state.minBuyAmount && props.detail.type === 'BATCH' ? (
                   <div className="text-md ">
                     {' '}
                     <b>Buy Amount: </b>
@@ -547,6 +589,7 @@ const AuctionProgress = (props) => {
                 className="border border-solid border-gray bg-transparent
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
                 type="number"
+                value={state.minBuyAmount}
                 onChange={handleInputChange}
               />
             </div>

@@ -79,7 +79,7 @@ function Live(props) {
 
   let dutchQuery = gql`
     {
-      auctions(where: { auctionEndDate_gt: "${currentTimeStamp}"}) {
+      auctions(first: 15) {
         id
         type
         auctioner_address
@@ -155,16 +155,15 @@ function Live(props) {
   useEffect(() => {
     if (dutchData && dutchData !== undefined && dutchData.auctions && dutchData.auctions.length) {
       let arr = [];
-      dutchData.auctions.forEach((element) => {
+      dutchData.auctions.forEach(async (element) => {
         let formatedAuctionDate = moment
           .unix(element['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
-        // const biddingToken = new instance.eth.Contract(
-        //   JSON.parse(constants.CONTRACT_ABEP_ABI),
-        //   element.biddingToken,
-        // );
-        // let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
-        let biddingDecimal = 6;
+        const biddingToken = new instance.eth.Contract(
+          JSON.parse(constants.CONTRACT_ABEP_ABI),
+          element.biddingToken,
+        );
+        let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
         let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
         let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
         let graphData = [
@@ -198,11 +197,7 @@ function Live(props) {
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
       <h2 className="text-white ml-5 text-4xl font-normal">Live Auctions</h2>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
-          <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
-        </div>
-      ) : dutchLoading ? (
+      {loading || dutchLoading ? (
         <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
           <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
         </div>

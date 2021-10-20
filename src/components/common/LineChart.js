@@ -14,7 +14,7 @@ export default function Chart({ width, height, data, biddingSymbol }) {
         </div>
       </div>
       <div className="absolute right-2 top-0 right-top flex flex-col text-right">
-        <div className="text-xs font-normal">Reserve Price</div>
+        <div className="text-xs font-normal">Current Price</div>
         <div className="text-base font-bold">
           {data[1].value} {biddingSymbol}
         </div>

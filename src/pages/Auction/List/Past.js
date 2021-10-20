@@ -82,7 +82,7 @@ function Past(props) {
 
   let dutchQuery = gql`
     {
-      auctions(where: { auctionEndDate_lt: "${currentTimeStamp}"}) {
+      auctions(first: 15) {
         id
         type
         auctioner_address
@@ -157,12 +157,12 @@ function Past(props) {
         let formatedAuctionDate = moment
           .unix(element['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
-        // const biddingToken = new instance.eth.Contract(
-        //   JSON.parse(constants.CONTRACT_ABEP_ABI),
-        //   element.biddingToken,
-        // );
-        // let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
-        let biddingDecimal = 6;
+        const biddingToken = new instance.eth.Contract(
+          JSON.parse(constants.CONTRACT_ABEP_ABI),
+          element.biddingToken,
+        );
+        let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+        // let biddingDecimal = 6;
         let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
         let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
         let graphData = [

@@ -188,6 +188,8 @@ function Table(props) {
     setPropsData(descendingSort);
   }, [props.data]);
 
+  console.log('props.data', props.data);
+
   const onSortChange = (sortColum) => {
     if (sortColum === 'BlockNumber') {
       let nextSort;

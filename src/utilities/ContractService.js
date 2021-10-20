@@ -144,6 +144,13 @@ export const dutchAuctionContract = () => {
   );
 };
 
+export const fixedAuctionContract = () => {
+  return new instance.eth.Contract(
+    JSON.parse(constants.FIXED_AUCTION_ABI),
+    constants.CONTRACT_FIXED_AUCTION_ADDRESS,
+  );
+};
+
 export const methods = {
   call,
   send,
