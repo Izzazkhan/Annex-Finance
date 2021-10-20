@@ -65,6 +65,5 @@ module.exports = {
     'react/prop-types': 0,
     'react/display-name': 'off',
     'no-debugger': 'off',
-    'max-len': 'off',
   },
 };
