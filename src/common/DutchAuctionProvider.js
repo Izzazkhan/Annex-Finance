@@ -20,21 +20,17 @@ const getDutchAuctionSource = (path) => {
     case '/auction/past': {
       if (process.env.REACT_APP_ENV === 'dev') {
         return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
       }
+      break;
     }
     case '/auction/live': {
       if (process.env.REACT_APP_ENV === 'dev') {
         return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
       }
+      break;
     }
     default: {
       if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
         return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
       }
     }

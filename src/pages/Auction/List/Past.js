@@ -195,7 +195,11 @@ function Past(props) {
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
       <h2 className="text-white ml-5 text-4xl font-normal">Past Auctions</h2>
-      {loading || dutchLoading ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+          <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+        </div>
+      ) : dutchLoading ? (
         <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
           <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
         </div>
