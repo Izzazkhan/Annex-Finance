@@ -56,8 +56,16 @@ function AuctionItem(props) {
         className="flex flex-col h-full justify-between"
         to={{
           pathname:
-            props.type === 'BATCH' ? `batch-detail/${props.id}` : `dutch-detail/${props.id}`,
-          state: { auctionType: props.type === 'BATCH' ? 'batch' : 'dutch', data: props },
+            props.type === 'BATCH'
+              ? `batch-detail/${props.id}`
+              : props.type === 'FIXED'
+              ? `fixed-detail/${props.id}`
+              : `dutch-detail/${props.id}`,
+          state: {
+            auctionType:
+              props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch',
+            data: props,
+          },
         }}
       >
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-5">
@@ -97,6 +105,8 @@ function AuctionItem(props) {
                     height="230px"
                     style={{ marginTop: '-25px' }}
                     data={orderArr.length && orderArr}
+                    auctionType={props.type}
+                    yMaximum={props.minFundingThreshold}
                   />
                 ) : (
                   <div
@@ -119,7 +129,7 @@ function AuctionItem(props) {
                 <span className=" border last "></span>
               </div>
             </Fragment>
-          ) : (
+          ) : props.type === 'DUTCH' ? (
             <Fragment>
               <div className="flex items-end relative ">
                 <LineChart width="310px" height="211px" data={props.data} />
@@ -137,6 +147,42 @@ function AuctionItem(props) {
                 </div>
               </div>
             </Fragment>
+          ) : (
+            <Fragment>
+              <div className="flex justify-between chart-top-label mb-5">
+                <div className="flex flex-col text-sm font-normal">
+                  <span className="font-bold">No. of order</span>
+                  <span>{props.orders ? props.orders.length : 0}</span>
+                </div>
+                <div className="flex flex-col text-sm font-normal">
+                  <span className="font-bold">{props.dateLabel ? props.dateLabel : 'Date'}</span>
+                  <span>{props.formatedAuctionDate}</span>
+                </div>
+              </div>
+              <div className="chart flex items-end relative">
+                {props.orders && props.orders.length > 0 ? (
+                  <BarChart
+                    width="310px"
+                    height="230px"
+                    style={{ marginTop: '-25px' }}
+                    data={props.orders}
+                    auctionType={props.type}
+                    yMaximum={props.yMaximum}
+                  />
+                ) : (
+                  <div
+                    className="flex items-center justify-center relative pt-5"
+                    style={{
+                      width: '100%',
+                      height: '230px',
+                      marginBottom: '-29px',
+                    }}
+                  >
+                    <div>No Graph Data found</div>
+                  </div>
+                )}
+              </div>
+            </Fragment>
           )}
         </div>
 
@@ -145,7 +191,11 @@ function AuctionItem(props) {
             className="items-start "
             onClick={() =>
               redirectToUrl(
-                props.type === 'BATCH' ? '/auction/batch-detail' : '/auction/dutch-detail',
+                props.type === 'BATCH'
+                  ? '/auction/batch-detail'
+                  : props.type === 'FIXED'
+                  ? '/auction/fixed-detail'
+                  : '/auction/dutch-detail',
               )
             }
           >
@@ -155,7 +205,11 @@ function AuctionItem(props) {
             className="items-center "
             onClick={() =>
               redirectToUrl(
-                props.type === 'BATCH' ? '/auction/batch-detail' : '/auction/dutch-detail',
+                props.type === 'BATCH'
+                  ? '/auction/batch-detail'
+                  : props.type === 'FIXED'
+                  ? '/auction/fixed-detail'
+                  : '/auction/dutch-detail',
               )
             }
           >

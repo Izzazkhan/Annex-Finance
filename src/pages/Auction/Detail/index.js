@@ -10,11 +10,13 @@ import AuctionStatus from './status';
 import moment from 'moment';
 import subGraphContext from '../../../contexts/subgraph';
 import dutchAuctionContext from '../../../contexts/dutchAuction';
+import fixedAuctionContext from '../../../contexts/fixedAuction';
 import { gql } from '@apollo/client';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import {
   getAuctionContract,
   dutchAuctionContract,
+  fixedAuctionContract,
   methods,
   getTokenContractWithDynamicAbi,
 } from '../../../utilities/ContractService';
@@ -26,6 +28,7 @@ import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { maxHeight } from 'styled-system';
 
 const ArrowDown = styled.button`
   align-items: center;
@@ -178,7 +181,6 @@ function Detail(props) {
   auctionedSellAmount
   amountMax1
   amountMin1
-  startingPrice
   about {
     id
     website
@@ -195,7 +197,7 @@ function Detail(props) {
   auctionId {
     id
   }
-  currentPriceOnOrder
+  
   buyAmount
   sellAmount
   txHash
@@ -205,20 +207,24 @@ function Detail(props) {
     }
   }
 `;
+  // startingPrice
+  // currentPriceOnOrder
   const { account } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
+  const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
 
   const auctionContract = getAuctionContract(state.type);
   const dutchContract = dutchAuctionContract();
+  const fixedContract = fixedAuctionContract();
   const auctioningToken =
-    props.location.state.auctionType === 'dutch' &&
+    props.location.state.auctionType !== 'batch' &&
     new instance.eth.Contract(
       JSON.parse(constants.CONTRACT_ABEP_ABI),
       props.location.state.data.auctioningToken,
     );
   const biddingToken =
-    props.location.state.auctionType === 'dutch' &&
+    props.location.state.auctionType !== 'batch' &&
     new instance.eth.Contract(
       JSON.parse(constants.CONTRACT_ABEP_ABI),
       props.location.state.data.biddingToken,
@@ -450,7 +456,6 @@ function Detail(props) {
         let auctionStatus = '';
         let auctionTokenId = elem['auctioningToken'];
         let biddingTokenId = elem['biddingToken'];
-        let auctionerAddress = elem['auctioner_address'];
         let auctionSymbol = await methods.call(auctioningToken.methods.symbol, []);
         let auctionTokenName = await methods.call(auctioningToken.methods.name, []);
         let biddingSymbol = await methods.call(biddingToken.methods.symbol, []);
@@ -459,11 +464,18 @@ function Detail(props) {
         totalAuctionedValue = convertExponentToNum(totalAuctionedValue);
         let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
         let minimumPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
-        let currentBalance = await methods.call(dutchContract.methods.currentPrice, [
-          props.location.state.data.id,
-        ]);
-        let currentPrice = currentBalance / Math.pow(10, biddingDecimal);
+        let currentBalance =
+          type === 'DUTCH' &&
+          (await methods.call(dutchContract.methods.currentPrice, [props.location.state.data.id]));
+
+        let currentPrice =
+          type === 'DUTCH'
+            ? currentBalance / Math.pow(10, biddingDecimal)
+            : ((elem['amountMin1'] / elem['amountMax1']) * Math.pow(10, auctionDecimal)) /
+              Math.pow(10, biddingDecimal);
         currentPrice = Number(convertExponentToNum(currentPrice));
+        let amountMax1 = elem['amountMax1'];
+        let amountMin1 = elem['amountMin1'];
         let auctionEndDateFormatted = moment
           .unix(elem['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
@@ -480,8 +492,7 @@ function Detail(props) {
         }
         let startingPrice = elem['startingPrice'] / Math.pow(10, auctionDecimal);
         Number(convertExponentToNum(startingPrice));
-        // let reservedPrice = elem['amountMax1'] / Math.pow(10, biddingDecimal);
-        let graphData = [
+        let graphData = type === 'DUTCH' && [
           {
             value: startingPrice,
           },
@@ -499,8 +510,11 @@ function Detail(props) {
           auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
           let auctionDivSellAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
           auctionDivSellAmount = convertExponentToNum(auctionDivSellAmount);
+          let price = order['buyAmount'] / Math.pow(10, auctionDecimal);
+          price = convertExponentToNum(price);
           userOrders.push({
             ...order,
+            price,
             auctionDivBuyAmount,
             auctionDivSellAmount,
             auctionSymbol,
@@ -510,9 +524,10 @@ function Detail(props) {
         orders = userOrders;
         let detail = {
           auctionTokenId,
-          auctionerAddress,
           biddingTokenId,
           minimumPrice,
+          amountMax1,
+          amountMin1,
           currentPrice,
           type,
           id: elem.about.id,
@@ -523,7 +538,7 @@ function Detail(props) {
           biddingSymbol,
           biddingDecimal,
           chartType: 'line',
-          data: graphData,
+          data: type === 'DUTCH' ? graphData : [],
           telegramLink: elem['about']['telegram'],
           discordLink: elem['about']['discord'],
           mediumLink: elem['about']['medium'],
@@ -613,6 +628,8 @@ function Detail(props) {
     let apollo;
     if (props.location.state.auctionType === 'dutch') {
       apollo = dutchApollo;
+    } else if (props.location.state.auctionType === 'fixed') {
+      apollo = fixedApollo;
     } else {
       apollo = apolloClient;
     }
@@ -622,15 +639,16 @@ function Detail(props) {
       setTimeout(() => {
         apollo
           .query({
-            query: props.location.state.auctionType === 'dutch' ? dutchQuery : query,
+            query: props.location.state.auctionType === 'batch' ? query : dutchQuery,
             variables: {},
           })
           .then((response) => {
             let { data } = response;
-            if (props.location.state.auctionType === 'dutch') {
-              setData(data.auction);
-            } else {
+            console.log('response', data);
+            if (props.location.state.auctionType === 'batch') {
               setData(data);
+            } else {
+              setData(data.auction);
             }
           })
           .catch((err) => {
@@ -1262,11 +1280,16 @@ function Detail(props) {
             biddingSymbol={state.detail.biddingSymbol}
             account={account}
             auctionId={state.detail.id}
-            auctionerAddress={state.detail.auctionerAddress}
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
-            auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
+            auctionContract={
+              state.detail.type === 'DUTCH'
+                ? dutchContract
+                : state.detail.type === 'FIXED'
+                ? fixedContract
+                : auctionContract
+            }
             auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
             getData={getData}
             orders={state.orders}
@@ -1280,7 +1303,8 @@ function Detail(props) {
           loading={loading}
           isAlreadySettle={state.detail['isAlreadySettle']}
           isAllowCancellation={state.detail['isAllowCancellation']}
-          auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
+          // auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
+          auctionContract={auctionContract}
           account={account}
           auctionStatus={state.auctionStatus}
           getData={getData}
@@ -1291,7 +1315,8 @@ function Detail(props) {
           data={state.orders}
           loading={loading}
           isAllowCancellation={false}
-          auctionContract={auctionContract}
+          // auctionContract={auctionContract}
+          auctionContract={state.detail.type === 'DUTCH' ? dutchContract : fixedContract}
           account={account}
           auctionStatus={state.auctionStatus}
           getData={getData}

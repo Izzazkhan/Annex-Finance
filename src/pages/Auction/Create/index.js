@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Form from './form';
 import DutchForm from './dutch-form';
+import FixedForm from './fixed-form';
 import styled from 'styled-components';
 import * as constants from '../../../utilities/constants';
 import { useActiveWeb3React } from '../../../hooks';
@@ -145,7 +146,7 @@ export default function CreateAuction(props) {
           <h2 className="text-white text-4xl font-normal">Fixed</h2>
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
           {/* <form> */}
-          <DutchForm
+          <FixedForm
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}

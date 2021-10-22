@@ -5,6 +5,7 @@ const instance = new Web3(window.ethereum);
 import AuctionItem from './item';
 import subGraphContext from '../../../contexts/subgraph';
 import dutchAuctionContext from '../../../contexts/dutchAuction';
+import fixedAuctionContext from '../../../contexts/fixedAuction';
 import { calculateClearingPrice } from '../../../utilities/graphClearingPrice';
 import { dutchAuctionContract, methods } from '../../../utilities/ContractService';
 import { gql } from '@apollo/client';
@@ -105,6 +106,11 @@ function Past(props) {
   const { useQuery: useQueryDutch } = useSubgraph(dutchAuctionInstance);
   const { error: dutchError, loading: dutchLoading, data: dutchData } = useQueryDutch(dutchQuery);
   const [dutchAuction, setDutchAuction] = useState([]);
+
+  const { fixedAuctionInstance } = useContext(fixedAuctionContext);
+  const { useQuery: useQueryFixed } = useSubgraph(fixedAuctionInstance);
+  const { error: fixedError, loading: fixedLoading, data: fixedData } = useQueryFixed(dutchQuery);
+  const [fixedAuction, setFixedAuction] = useState([]);
   const [allAuctions, setAllAuctions] = useState([]);
 
   useEffect(() => {
@@ -123,6 +129,10 @@ function Past(props) {
           biddingDecimal,
           auctionEndDate,
         );
+        let maxAvailable = new BigNumber(element['maxAvailable_eth'])
+          .dividedBy(auctionDecimal)
+          .toNumber();
+        maxAvailable = convertExponentToNum(maxAvailable);
         let formatedAuctionDate = moment
           .unix(element['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
@@ -150,10 +160,27 @@ function Past(props) {
     }
   }, [data]);
 
-  useEffect(() => {
+  const convertExponentToNum = (x) => {
+    if (Math.abs(x) < 1.0) {
+      let e = parseInt(x.toString().split('e-')[1]);
+      if (e) {
+        x *= Math.pow(10, e - 1);
+        x = '0.' + new Array(e).join('0') + x.toString().substring(2);
+      }
+    } else {
+      let e = parseInt(x.toString().split('+')[1]);
+      if (e > 20) {
+        e -= 20;
+        x /= Math.pow(10, e);
+        x += new Array(e + 1).join('0');
+      }
+    }
+    return x;
+  };
+
+  useEffect(async () => {
     if (dutchData && dutchData !== undefined && dutchData.auctions && dutchData.auctions.length) {
-      let arr = [];
-      dutchData.auctions.forEach(async (element) => {
+      let arr = dutchData.auctions.map(async (element) => {
         let formatedAuctionDate = moment
           .unix(element['auctionEndDate'])
           .format('MM/DD/YYYY HH:mm:ss');
@@ -162,7 +189,6 @@ function Past(props) {
           element.biddingToken,
         );
         let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
-        // let biddingDecimal = 6;
         let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
         let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
         let graphData = [
@@ -173,33 +199,86 @@ function Past(props) {
             value: reservedPrice,
           },
         ];
-        arr.push({
+        return {
           ...element,
           data: graphData,
           formatedAuctionDate,
           title: element.type + ' Auction',
-        });
+          biddingDecimal: biddingDecimal,
+        };
       });
-      setDutchAuction(arr);
+      const resolvedArray = await Promise.all(arr);
+      setDutchAuction(resolvedArray);
     }
+    return () => {
+      console.log('‘cleanup on change of player props’');
+    };
   }, [dutchData]);
+
+  useEffect(async () => {
+    if (fixedData && fixedData !== undefined && fixedData.auctions && fixedData.auctions.length) {
+      let arr = fixedData.auctions.map(async (element) => {
+        let formatedAuctionDate = moment
+          .unix(element['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+        const biddingToken = new instance.eth.Contract(
+          JSON.parse(constants.CONTRACT_ABEP_ABI),
+          element.biddingToken,
+        );
+        let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+        const auctioningToken = new instance.eth.Contract(
+          JSON.parse(constants.CONTRACT_ABEP_ABI),
+          element.auctioningToken,
+        );
+        let auctionDecimal = await methods.call(auctioningToken.methods.decimals, []);
+        let yMaximum = element['amountMin1'] / Math.pow(10, biddingDecimal);
+        let orders = [];
+        element['orders'].forEach((order, index) => {
+          let price = order['buyAmount'] / Math.pow(10, auctionDecimal);
+          price = convertExponentToNum(price);
+          let auctionDivBuyAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
+          auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
+
+          orders.push({
+            ...order,
+            price,
+            auctionDivBuyAmount,
+          });
+        });
+        return {
+          ...element,
+          data: [],
+          formatedAuctionDate,
+          title: element.type + ' Auction',
+          biddingDecimal: biddingDecimal,
+          yMaximum: yMaximum,
+          orders: orders,
+        };
+      });
+      const resolvedArray = await Promise.all(arr);
+      setFixedAuction(resolvedArray);
+    }
+    return () => {
+      console.log('clean up');
+    };
+  }, [fixedData]);
 
   useEffect(() => {
     let all = [];
     let batchAuction = [...auction];
     let dutch = [...dutchAuction];
-    all = batchAuction.concat(dutch);
+    let fixed = [...fixedAuction];
+    all = batchAuction.concat(dutch).concat(fixed);
     setAllAuctions(all);
-  }, [auction, dutchAuction]);
+    return () => {
+      console.log('clean up');
+    };
+  }, [auction, dutchAuction, fixedAuction]);
 
   return (
     <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
       <h2 className="text-white ml-5 text-4xl font-normal">Past Auctions</h2>
-      {loading ? (
-        <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
-          <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
-        </div>
-      ) : dutchLoading ? (
+      {loading || dutchLoading || fixedLoading ? (
         <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
           <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
         </div>

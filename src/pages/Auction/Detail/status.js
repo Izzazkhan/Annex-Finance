@@ -17,7 +17,6 @@ const AuctionStatus = ({
   biddingSymbol,
   account,
   auctionId,
-  auctionerAddress,
   biddingDecimal,
   auctionDecimal,
   auctionStatus,
@@ -41,13 +40,25 @@ const AuctionStatus = ({
     label: '',
   });
   const [auctionThreshold, setAuctionThreshold] = useState('');
+  const [showClaimButton, setShowClaimButton] = useState(false);
   useEffect(async () => {
     if (showModal) {
       const threshold = await methods.call(auctionContract.methods.threshold, []);
       setAuctionThreshold(threshold);
     }
   }, [showModal]);
-  const showCommitModal = async (minBuyAmount, sellAmount) => {
+
+  useEffect(async () => {
+    if (auctionStatus === 'completed') {
+      const showClaimButton = await methods.call(auctionContract.methods.myClaimed, [
+        account,
+        auctionId,
+      ]);
+      setShowClaimButton(showClaimButton);
+    }
+  }, []);
+
+  const showCommitModal = async (minBuyAmount, sellAmount, fixedAmount) => {
     updateShowModal(true);
     let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
     let biddingTokenBalance = await methods.call(biddingTokenContract.methods.balanceOf, [account]);
@@ -55,13 +66,13 @@ const AuctionStatus = ({
       setModalError({
         type: 'error',
         message: 'Insufficient Bidding Token Balance',
-        payload: { minBuyAmount, sellAmount },
+        payload: { minBuyAmount, sellAmount, fixedAmount },
       });
     } else {
       setModalError({
         type: '',
         message: '',
-        payload: { minBuyAmount, sellAmount },
+        payload: { minBuyAmount, sellAmount, fixedAmount },
       });
     }
     await handleApproveBiddingToken();
@@ -103,6 +114,10 @@ const AuctionStatus = ({
         auctionType === 'BATCH'
           ? new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10)
           : new BigNumber(buyAmount).multipliedBy(Number('1e' + auctionDecimal)).toString(10);
+      let fixedAmount = Number(modalError.payload.fixedAmount);
+      fixedAmount = new BigNumber(fixedAmount)
+        .multipliedBy(Number('1e' + biddingDecimal))
+        .toString(10);
       let data;
       if (auctionType === 'BATCH') {
         data = [
@@ -112,15 +127,21 @@ const AuctionStatus = ({
           ['0x0000000000000000000000000000000000000000000000000000000000000001'],
           '0x',
         ];
-      } else {
+      } else if (auctionType === 'DUTCH') {
         data = [auctionId, buyAmount, sellAmount];
+      } else {
+        data = [auctionId, fixedAmount];
       }
 
-      let auctionTxDetail = await methods.send(
-        auctionContract.methods.placeSellOrders,
-        data,
-        account,
-      );
+      if (auctionType !== 'FIXED') {
+        let auctionTxDetail = await methods.send(
+          auctionContract.methods.placeSellOrders,
+          data,
+          account,
+        );
+      } else {
+        await methods.send(auctionContract.methods.swap, data, account);
+      }
       setLoading(false);
       updateShowModal(true);
       updateModalType('success');
@@ -193,12 +214,12 @@ const AuctionStatus = ({
         <AuctionCompleted
           settlAuction={settlAuction}
           isAlreadySettle={detail['isAlreadySettle']}
-          auctionTye={auctionType === 'BATCH' ? 'BATCH' : 'DUTCH'}
+          auctionTye={auctionType}
+          showClaimButton={auctionType === 'FIXED' && showClaimButton}
         />
       ) : (
         ''
       )}
-      {/* */}
 
       <Modal
         open={showModal}
@@ -250,7 +271,7 @@ const AuctionCountDown = ({ auctionStartDate }) => {
   );
 };
 
-const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye }) => {
+const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye, showClaimButton }) => {
   return (
     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
       <div className="w-full flex flex-col items-center justify-center ">
@@ -262,13 +283,25 @@ const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye }) => {
             {/* <div className="text-white text-base mb-10">
               you are able to claim 1 Non-Fungible Bible
             </div> */}
-            <button
-              className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
+            {auctionTye === 'DUTCH' || (auctionTye === 'FIXED' && showClaimButton) ? (
+              <button
+                className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
          h-14 bg-white rounded-lg bgPrimaryGradient rounded-lg"
-              onClick={settlAuction}
-            >
-              {auctionTye === 'DUTCH' ? 'Claim' : 'Settle Auction'}
-            </button>
+                onClick={settlAuction}
+              >
+                Claim
+              </button>
+            ) : (
+              auctionTye === 'BATCH' && (
+                <button
+                  className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
+         h-14 bg-white rounded-lg bgPrimaryGradient rounded-lg"
+                  onClick={settlAuction}
+                >
+                  Settle Auction
+                </button>
+              )
+            )}
           </Fragment>
         ) : (
           <div className="text-white text-4xl mt-10 mb-3">
@@ -317,6 +350,7 @@ const AuctionProgress = (props) => {
     // allowListCallData: '0x0000000000000000000000000000000000000000000000000000000000000001',
     // prevOrder: '0x',
   });
+  const [fixedAmount, setFixedAmount] = useState('');
 
   const [value, setValue] = useState(props.detail.type === 'DUTCH' ? 0 : props.minBuyAmount);
   const handleInputChange = (e) => {
@@ -326,6 +360,7 @@ const AuctionProgress = (props) => {
       ...state,
       [id]: value,
     });
+    setFixedAmount(value);
     setValue(value);
   };
 
@@ -399,15 +434,16 @@ const AuctionProgress = (props) => {
     return isValid;
   };
   const showCommitModal = () => {
-    let isValid = validateForm();
-    if (isValid) {
-      props.handleSubmit(
-        state.minBuyAmount,
-        state.sellAmount,
-        // state.allowListCallData,
-        // state.prevOrder,
-      );
-    }
+    // let isValid = validateForm();
+    // if (isValid) {
+    props.handleSubmit(
+      state.minBuyAmount,
+      state.sellAmount,
+      fixedAmount,
+      // state.allowListCallData,
+      // state.prevOrder,
+    );
+    // }
   };
 
   const onChangeSlider = (newValue) => {
@@ -420,7 +456,7 @@ const AuctionProgress = (props) => {
     }
     setState({
       ...state,
-      ['minBuyAmount']: newValue,
+      [fieldValue]: newValue,
     });
   };
 
@@ -449,7 +485,8 @@ const AuctionProgress = (props) => {
                 width="100%"
                 height="211px"
                 data={orderArr}
-                maxAvailable={props.detail.maxAvailable}
+                auctionType={props.detail.type}
+                yMaximum={props.detail.minFundingThreshold}
               />
             ) : (
               <div
@@ -472,7 +509,7 @@ const AuctionProgress = (props) => {
             <span className=" border last "></span>
           </div>
         </Fragment>
-      ) : (
+      ) : props.detail.type === 'Fixed' ? (
         <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
           <LineChart
             width="100%"
@@ -489,54 +526,103 @@ const AuctionProgress = (props) => {
             </div>
           </div>
         </div>
+      ) : (
+        <Fragment>
+          <div className="chart flex items-end relative mt-5 pl-10 mr-2">
+            <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
+              <span className="border first"></span>
+              <span className="label my-2 font-normal">
+                No. of orders <b>{props.orders ? props.orders && props.orders.length : 0}</b>
+              </span>
+              <span className=" border last"></span>
+            </div>
+            {props.orders && props.orders.length > 0 ? (
+              <BarChart
+                width="100%"
+                height="211px"
+                data={props.orders}
+                auctionType={props.detail.type}
+                yMaximum={props.detail.minimumPrice}
+              />
+            ) : (
+              <div
+                className="relative pt-5"
+                style={{
+                  width: '100%',
+                  height: '211px',
+                  marginBottom: '-29px',
+                }}
+              >
+                <div>No Graph Data found</div>
+              </div>
+            )}
+          </div>
+        </Fragment>
       )}
       <div className="text-white flex flex-col items-stretch justify-between items-center p-6 ">
         <div className="">
-          <div className="mb-7">
-            <div className="label flex flex-row justify-between items-center mb-4">
-              <div className="flex flex-col">
-                <div className="text-sm ">Minimum Token Amount</div>
-                <div className="text-lg font-bold">
-                  {props.detail.type === 'DUTCH' ? 0 : props.minBuyAmount}
+          {props.detail.type !== 'FIXED' && (
+            <div className="mb-7">
+              <div className="label flex flex-row justify-between items-center mb-4">
+                <div className="flex flex-col">
+                  <div className="text-sm ">Minimum Token Amount</div>
+                  <div className="text-lg font-bold">
+                    {props.detail.type === 'DUTCH' ? 0 : props.minBuyAmount}
+                  </div>
+                </div>
+                <div className="flex flex-col text-right">
+                  <div className="text-sm ">Max Available</div>
+                  <div className="text-lg font-bold">
+                    {props.detail.type === 'DUTCH' && props.orders && props.orders.length
+                      ? props.detail.totalAuctionedValue -
+                        props.orders.reduce(function (acc, obj) {
+                          return acc + Number(obj.auctionDivBuyAmount);
+                        }, 0)
+                      : props.detail.type === 'DUTCH'
+                      ? props.detail.totalAuctionedValue
+                      : props.detail.biddingBalance}
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col text-right">
-                <div className="text-sm ">Max Available</div>
-                <div className="text-lg font-bold">
-                  {props.detail.type === 'DUTCH' && props.orders && props.orders.length
-                    ? props.detail.totalAuctionedValue -
-                      props.orders.reduce(function (acc, obj) {
-                        return acc + Number(obj.auctionDivBuyAmount);
-                      }, 0)
-                    : props.detail.type === 'DUTCH'
-                    ? props.detail.totalAuctionedValue
-                    : props.detail.biddingBalance}
-                </div>
+              <div className="custom-range">
+                <Slider
+                  min={props.detail.type === 'DUTCH' ? Number(0) : Number(props.minBuyAmount)}
+                  max={
+                    props.detail.type === 'DUTCH' && props.orders && props.orders.length
+                      ? props.detail.totalAuctionedValue -
+                        props.orders.reduce(function (acc, obj) {
+                          return acc + Number(obj.auctionDivBuyAmount);
+                        }, 0)
+                      : props.detail.type === 'DUTCH'
+                      ? props.detail.totalAuctionedValue
+                      : Number(props.detail.biddingBalance)
+                  }
+                  value={Number(value)}
+                  onChange={onChangeSlider}
+                />
+                {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
               </div>
             </div>
-            <div className="custom-range">
-              <Slider
-                min={props.detail.type === 'DUTCH' ? Number(0) : Number(props.minBuyAmount)}
-                max={
-                  props.detail.type === 'DUTCH' && props.orders && props.orders.length
-                    ? props.detail.totalAuctionedValue -
-                      props.orders.reduce(function (acc, obj) {
-                        return acc + Number(obj.auctionDivBuyAmount);
-                      }, 0)
-                    : props.detail.type === 'DUTCH'
-                    ? props.detail.totalAuctionedValue
-                    : Number(props.detail.biddingBalance)
-                }
-                value={Number(value)}
-                onChange={onChangeSlider}
-              />
-              {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
-            </div>
-          </div>
+          )}
           <div className="mb-7">
             <div className="label flex flex-row justify-between items-center mb-4">
               <div className="flex flex-col">
                 <div className="text-md text-primary font-bold mb-2 ">Commitment</div>
+                {props.detail.type === 'FIXED' && (
+                  <div className="flex justify-between mb-3">
+                    <div className="text-md mr-3">
+                      <b>
+                        You will get :{' '}
+                        {(fixedAmount *
+                          Math.pow(10, props.detail.biddingDecimal) *
+                          props.detail.amountMax1) /
+                          props.detail.amountMin1 /
+                          Math.pow(10, props.detail.auctionDecimal)}{' '}
+                        {props.detail.auctionSymbol}
+                      </b>
+                    </div>
+                  </div>
+                )}
                 {props.detail && props.detail.biddingBalance && props.detail.auctionBalance && (
                   <div className="flex justify-between mb-3">
                     <div className="text-md mr-3">
@@ -568,32 +654,49 @@ const AuctionProgress = (props) => {
               </div>
             </div>
           </div>
-          <div className="flex justify-between">
-            <div className="mb-3 w-full">
-              <span className="label">Sell Amount - {props.detail.biddingSymbol}</span>
-              <input
-                placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
-                id="sellAmount"
-                onChange={handleInputChange}
-                className="border border-solid border-gray bg-transparent
-                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
-                type="number"
-                value={state.sellAmount}
-              />
+          {props.detail.type === 'FIXED' ? (
+            <div className="flex justify-between">
+              <div className="mb-3 w-full">
+                <span className="label">Amount</span>
+                <input
+                  placeholder={0}
+                  id="amount"
+                  onChange={handleInputChange}
+                  className="border border-solid border-gray bg-transparent
+                         rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                  type="number"
+                  value={fixedAmount}
+                />
+              </div>
             </div>
-            <div className="mb-3 w-full pl-2">
-              <span className="label">Desired Bid Price - {props.detail.auctionSymbol}</span>
-              <input
-                placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
-                id="minBuyAmount"
-                className="border border-solid border-gray bg-transparent
+          ) : (
+            <div className="flex justify-between">
+              <div className="mb-3 w-full">
+                <span className="label">Sell Amount - {props.detail.biddingSymbol}</span>
+                <input
+                  placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
+                  id="sellAmount"
+                  onChange={handleInputChange}
+                  className="border border-solid border-gray bg-transparent
                            rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
-                type="number"
-                value={state.minBuyAmount}
-                onChange={handleInputChange}
-              />
+                  type="number"
+                  value={state.sellAmount}
+                />
+              </div>
+              <div className="mb-3 w-full pl-2">
+                <span className="label">Desired Bid Price - {props.detail.auctionSymbol}</span>
+                <input
+                  placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
+                  id="minBuyAmount"
+                  className="border border-solid border-gray bg-transparent
+                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
+                  type="number"
+                  value={state.minBuyAmount}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
-          </div>
+          )}
           {/* <div className="flex justify-between">
             <div className="mb-3 w-full">
               <span className="label">Allow List Call Data</span>

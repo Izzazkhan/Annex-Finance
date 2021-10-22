@@ -9,7 +9,7 @@ import {
   getAuctionContract,
   getTokenContractWithDynamicAbi,
   methods,
-  dutchAuctionContract,
+  fixedAuctionContract,
 } from '../../../utilities/ContractService';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import Modal from './modal';
@@ -102,15 +102,6 @@ export default function DutchForm(props) {
       },
       {
         type: 'number',
-        id: 'buyAmount',
-        placeholder: 'Minimum buy amount',
-        description: 'The minimium amount to buy the auction.',
-        value: '',
-        colspan: 6,
-        isValid: true,
-      },
-      {
-        type: 'number',
         id: 'minBidAmount',
         placeholder: 'Minimum bidding amount per order',
         description: 'The minimium amount to bid on the auction.',
@@ -120,10 +111,10 @@ export default function DutchForm(props) {
       },
       {
         type: 'number',
-        id: 'decreasingAuctionPrice',
-        placeholder: 'Decreasing Price',
+        id: 'maxPurchased',
+        placeholder: 'Max purchased per wallet/account',
         min: '0',
-        description: 'Auction price Decreasing Times',
+        description: 'The Maximum amount purchased per wallet/account.',
         value: '',
         colspan: 6,
         isValid: true,
@@ -143,6 +134,23 @@ export default function DutchForm(props) {
         id: 'endDate',
         placeholder: 'Auction end date',
         description: 'The date on which auction end.',
+        value: new Date(),
+        colspan: 6,
+        isValid: true,
+      },
+      {
+        type: 'checkbox',
+        id: 'isClaim',
+        placeholder: '',
+        description: 'Claim Auction',
+        value: false,
+        colspan: 6,
+      },
+      {
+        type: 'date',
+        id: 'claimDate',
+        placeholder: 'Claim date',
+        description: 'The date on which auction claimed.',
         value: new Date(),
         colspan: 6,
         isValid: true,
@@ -228,11 +236,11 @@ export default function DutchForm(props) {
         colspan: 12,
       },
     ],
-    type: 'batch',
+    type: 'fixed',
   });
   const annTokenContract = getANNTokenContract();
   const auctionContract = getAuctionContract(state.type);
-  const dutchAuction = dutchAuctionContract();
+  const fixedAuction = fixedAuctionContract();
 
   useEffect(async () => {
     if (showModal) {
@@ -299,9 +307,10 @@ export default function DutchForm(props) {
     return isValid;
   };
   const handleInputChange = (e, type, index, isAdvance) => {
-    let key = isAdvance ? 'advanceInputs' : 'inputs';
-    let inputs = isAdvance ? [...state.advanceInputs] : [...state.inputs];
+    let key = isAdvance && index !== 7 ? 'advanceInputs' : 'inputs';
+    let inputs = isAdvance && index !== 7 ? [...state.advanceInputs] : [...state.inputs];
     let input = inputs[index];
+
     if (input) {
       let value = '';
       if (index === 0) {
@@ -320,6 +329,23 @@ export default function DutchForm(props) {
           input['description'] = 'The amount to sell should be greater than or equal to 1';
           input['isValid'] = false;
         }
+      } else if (index === 3) {
+        if (e.target.value >= 1) {
+          input['isValid'] = true;
+          input['description'] = 'The minimium amount to bid on the auction.';
+        } else {
+          input['description'] = 'The amount to bid should be greater than or equal to 1';
+          input['isValid'] = false;
+        }
+      } else if (index === 4) {
+        if (e.target.value >= 1) {
+          input['isValid'] = true;
+          input['description'] = 'The Maximum amount purchased per wallet/account.';
+        } else {
+          input['description'] =
+            'The maximum amount purchased should be greater than or equal to 1';
+          input['isValid'] = false;
+        }
       }
 
       if (type === 'text' || type === 'textarea' || type === 'url' || type === 'number') {
@@ -331,49 +357,14 @@ export default function DutchForm(props) {
       } else if (type === 'date') {
         value = e[0];
       }
-
-      if (index === 3) {
-        let b = inputs.find((item) => item.id === 'minBidAmount');
-        input['value'] = value;
-        if (b.value !== '' && Number(e.target.value) < Number(b.value)) {
-          input['description'] = 'Amount to buy should be greater than amount to bid';
-          input['isValid'] = false;
-        } else {
-          input['isValid'] = true;
-          input['description'] = 'The minimium amount to buy the auction.';
-          b['isValid'] = true;
-          b['description'] = 'The minimium amount to bid the auction.';
-        }
-      } else if (index === 4) {
-        let a = inputs.find((item) => item.id === 'buyAmount');
-        input['value'] = value;
-        if (a.value !== '' && Number(e.target.value) > Number(a.value)) {
-          input['description'] = 'Amount to bid should be less than amount to buy';
-          input['isValid'] = false;
-        } else {
-          input['isValid'] = true;
-          input['description'] = 'The minimium amount to bid the auction.';
-          a['isValid'] = true;
-          a['description'] = 'The minimium amount to buy the auction.';
-        }
-      } else if (index === 5) {
-        input['value'] = value;
-        if (value >= 1) {
-          input['isValid'] = true;
-          input['description'] = 'Auction price Decreasing Times';
-        } else {
-          input['description'] = 'Auction price decreasing should be greater than or equal to 1';
-          input['isValid'] = false;
-        }
-      } else if (index !== 3 && index !== 4) {
-        input['value'] = value;
-      }
+      input['value'] = value;
     }
     setState({
       ...state,
       [key]: inputs,
     });
   };
+
   const handleSubmit = async (e) => {
     const whiteLister = state.advanceInputs
       .find((item) => item.id === 'accessContractAddr')
@@ -383,16 +374,17 @@ export default function DutchForm(props) {
     const isDataValid = state.inputs.map((item) => item.isValid && item.isValid);
     const isValid = isDataValid.every(Boolean);
     const advanceCheckBox = state.advanceInputs.find((item) => item.type === 'checkbox');
-
     try {
-      if (!isValid) {
-        Swal.fire({
-          title: 'Error',
-          text: 'Please Enter the valid data',
-          icon: 'error',
-          showCancelButton: false,
-        });
-      } else if (
+      // if (!isValid) {
+      //   Swal.fire({
+      //     title: 'Error',
+      //     text: 'Please Enter the valid data',
+      //     icon: 'error',
+      //     showCancelButton: false,
+      //   });
+      // }
+      // else
+      if (
         (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
           !checker) ||
         (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
@@ -401,6 +393,15 @@ export default function DutchForm(props) {
         Swal.fire({
           title: 'Error',
           text: 'Please add the correct addresses',
+          icon: 'error',
+          showCancelButton: false,
+        });
+      } else if (
+        new Date().valueOf() > state.inputs.find((item) => item.id === 'startDate').value.valueOf()
+      ) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Start time must be greater than the current time',
           icon: 'error',
           showCancelButton: false,
         });
@@ -421,11 +422,11 @@ export default function DutchForm(props) {
             formatedStateData.auctionToken,
             formatedStateData.biddingToken,
             formatedStateData.sellAmount,
-            formatedStateData.buyAmount,
             formatedStateData.minBidAmount,
-            formatedStateData.decreasingAuctionPrice,
             formatedStateData.startDate,
             formatedStateData.endDate,
+            0,
+            formatedStateData.maxPurchased,
             false,
             advanceCheckBox.value,
             [
@@ -437,13 +438,17 @@ export default function DutchForm(props) {
               formatedStateData.twitterLink,
             ],
           ];
-          console.log('************ auction data ************: ', data);
+          console.log(
+            '************ auction data ************: ',
+            data,
+            formatedStateData.endDate.valueOf(),
+          );
           let whiteListerArr = whiteLister.includes('') ? [] : whiteLister;
           let auctionTxDetail = await methods.send(
-                  dutchAuction.methods.initiateAuction,
-                  [data, whiteListerArr],
-                  accountId,
-                )
+            fixedAuction.methods.initiateAuction,
+            [data, whiteListerArr],
+            accountId,
+          );
           // let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
           setLoading(false);
           updateShowModal(true);
@@ -567,11 +572,7 @@ export default function DutchForm(props) {
         } else {
           obj[element.id] = element.value.value;
         }
-      } else if (
-        element.id === 'minBidAmount' ||
-        element.id === 'minFundThreshold' ||
-        element.id === 'buyAmount'
-      ) {
+      } else if (element.id === 'minBidAmount') {
         obj[element.id] = enocodeParamToUint(element.value, biddingDecimal);
       } else if (element.id === 'sellAmount') {
         obj[element.id] = enocodeParamToUint(element.value, auctionDecimal);
@@ -580,7 +581,7 @@ export default function DutchForm(props) {
         element.value === ''
       ) {
         obj[element.id] = emptyAddr;
-      } else if (['cancellationDate', 'endDate', 'startDate'].indexOf(element.id) !== -1) {
+      } else if (['claimDate', 'endDate', 'startDate'].indexOf(element.id) !== -1) {
         let timeStamp = moment(element.value).valueOf();
         timeStamp = Math.floor(timeStamp / 1000);
         obj[element.id] = timeStamp;
@@ -651,6 +652,13 @@ export default function DutchForm(props) {
                     isAdvance={false}
                     handleInputChange={handleInputChange}
                   />
+                ) : input.type === 'checkbox' ? (
+                  <Checkbox
+                    {...input}
+                    index={index}
+                    isAdvance={true}
+                    handleInputChange={handleInputChange}
+                  />
                 ) : input.type === 'date' ? (
                   <DateInput
                     key={index}
@@ -658,6 +666,7 @@ export default function DutchForm(props) {
                     {...input}
                     isAdvance={false}
                     handleInputChange={handleInputChange}
+                    state={state.inputs}
                   />
                 ) : input.type === 'textarea' ? (
                   <Textarea
@@ -681,16 +690,6 @@ export default function DutchForm(props) {
                 ) : (
                   ''
                 )}
-                {/* {index !== 0 && input.label ? (
-                  <Fragment>
-                    <div className=" col-span-12 flex flex-col my-5"></div>
-                    <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
-                      {input.label}
-                    </div>
-                  </Fragment>
-                ) : (
-                  ''
-                )} */}
               </Fragment>
             );
           })}
@@ -823,8 +822,6 @@ const Input = ({
           </div>
         </div>
       )}
-
-      {/* <div className="invalid-feedback">title is required.</div> */}
     </>
   );
 };
@@ -893,17 +890,43 @@ const SelectInput = ({
   );
 };
 
-const DateInput = ({ index, type, value, isAdvance, description, handleInputChange }) => {
+const DateInput = ({
+  index,
+  type,
+  value,
+  isAdvance,
+  description,
+  handleInputChange,
+  state,
+  id,
+}) => {
   return (
-    <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
-      <Flatpickr
-        className="border border-solid border-gray
+    <>
+      {id === state.find((item) => item.id === 'claimDate').id ? (
+        state.find((item) => item.id === 'isClaim').value && (
+          <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
+            <Flatpickr
+              className="border border-solid border-gray
                  bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
-        data-enable-time={true}
-        value={value}
-        onChange={(e) => handleInputChange(e, type, index, isAdvance)}
-      />
-      <div className="text-gray text-sm font-normal mt-3">{description}</div>
-    </div>
+              data-enable-time={true}
+              value={value}
+              onChange={(e) => handleInputChange(e, type, index, isAdvance)}
+            />
+            <div className="text-gray text-sm font-normal mt-3">{description}</div>
+          </div>
+        )
+      ) : (
+        <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
+          <Flatpickr
+            className="border border-solid border-gray
+                 bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
+            data-enable-time={true}
+            value={value}
+            onChange={(e) => handleInputChange(e, type, index, isAdvance)}
+          />
+          <div className="text-gray text-sm font-normal mt-3">{description}</div>
+        </div>
+      )}
+    </>
   );
 };

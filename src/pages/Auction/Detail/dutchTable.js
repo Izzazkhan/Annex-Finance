@@ -69,13 +69,6 @@ const Styles = styled.div`
 `;
 
 function Table(props) {
-  const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
-  const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [blockNumberSorted, setBlockNumberSorted] = useState(true);
-  const [upDownValue, setUpDownValue] = useState(true);
-  const [sortPrice, setSortPrice] = useState(true);
-  const [priceUpDownValue, setPriceUpDownValue] = useState(true);
   const [propsData, setPropsData] = useState([]);
   const [currentSort, setCurrentSort] = useState('default');
   const [isTableHorizontal, setIsTableHorizontal] = useState(true);
@@ -97,63 +90,7 @@ function Table(props) {
     }
     return address;
   };
-  const claimAuction = async (item) => {
-    try {
-      setLoading(true);
-      let auctionId = props['auctionId'];
-      let orders = [];
-      for (let index = 0; index < selectedClaimOrders.length; index++) {
-        const element = selectedClaimOrders[index];
-        let sellAmount = element['sellAmount_eth'];
-        let buyAmount = element['buyAmount_eth'];
-        sellAmount = toHex(sellAmount, { addPrefix: true });
-        buyAmount = toHex(buyAmount, { addPrefix: true });
 
-        let orderData = encodeOrder(sellAmount, buyAmount);
-        orders.push(orderData);
-      }
-      await methods.send(
-        props.auctionContract.methods.claimFromParticipantOrder,
-        [auctionId, orders],
-        props.account,
-      );
-      props.getData();
-      setLoading(false);
-    } catch (error) {
-      updateSelectedClaimOrders([]);
-      setLoading(false);
-    }
-  };
-  const cancelAuction = async () => {
-    try {
-      setLoading(true);
-      let auctionId = props['auctionId'];
-      let orders = [];
-      for (let index = 0; index < selectedCancelOrders.length; index++) {
-        const element = selectedCancelOrders[index];
-        // let userId = element['userId']['id'];
-        let sellAmount = element['sellAmount'];
-        let buyAmount = element['buyAmount'];
-        // userId = toHex(userId, { addPrefix: true });
-        sellAmount = toHex(sellAmount, { addPrefix: true });
-        buyAmount = toHex(buyAmount, { addPrefix: true });
-        // let orderData = encodeOrder(userId, sellAmount, buyAmount);
-        let orderData = encodeOrder(sellAmount, buyAmount);
-        orders.push(orderData);
-      }
-      await methods.send(
-        props.auctionContract.methods.cancelSellOrders,
-        [auctionId, orders],
-        props.account,
-      );
-      // updateSelectedCancelOrders([]);
-      props.getData();
-      setLoading(false);
-    } catch (error) {
-      updateSelectedCancelOrders([]);
-      setLoading(false);
-    }
-  };
   const encodeOrder = (sellAmount, buyAmount) => {
     return (
       '0x' +
@@ -162,33 +99,11 @@ function Table(props) {
       sellAmount.slice(2).padStart(24, '0')
     );
   };
-  const handleClaimCheckbox = (item) => {
-    let arr = [...selectedClaimOrders];
-    let index = arr.findIndex((x) => x.id === item.id);
-    if (index !== -1) {
-      arr.splice(index, 1);
-    } else {
-      arr.push(item);
-    }
-    updateSelectedClaimOrders(arr);
-  };
-  const handleCancelCheckbox = (item) => {
-    let arr = [...selectedCancelOrders];
-    let index = arr.findIndex((x) => x.id === item.id);
-    if (index !== -1) {
-      arr.splice(index, 1);
-    } else {
-      arr.push(item);
-    }
-    updateSelectedCancelOrders(arr);
-  };
 
   useEffect(() => {
     let descendingSort = props.data.sort((a, b) => b.blockNumber - a.blockNumber);
     setPropsData(descendingSort);
   }, [props.data]);
-
-  console.log('props.data', props.data);
 
   const onSortChange = (sortColum) => {
     if (sortColum === 'BlockNumber') {
@@ -226,25 +141,6 @@ function Table(props) {
               />
               <span className="checkmark"></span>
             </label>
-            {props.auctionStatus !== 'completed' ? (
-              <button
-                disabled={loading || selectedCancelOrders.length === 0}
-                onClick={() => cancelAuction()}
-                className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
-              >
-                Cancel
-              </button>
-            ) : props.auctionStatus === 'completed' ? (
-              <button
-                disabled={loading || selectedClaimOrders.length === 0}
-                onClick={() => claimAuction()}
-                className="focus:outline-none bg-primary py-2 md:px-6 px-6 rounded-2xl text-md  max-w-full  text-black"
-              >
-                Claim
-              </button>
-            ) : (
-              ''
-            )}
           </div>
         </div>
         <Styles>
@@ -276,9 +172,6 @@ function Table(props) {
                         )}
                       </button>
                     </th>
-                    {/* <th>Buy Amount</th>
-                    <th>Sell Amount</th> */}
-                    {/* <th className="text-center">Status</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -298,10 +191,7 @@ function Table(props) {
                     </tr>
                   ) : (
                     propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                      // let userId = item.userId.address.toLowerCase();
-                      // let account = props.account ? props.account.toLowerCase() : '0x';
                       return !isShowMyOrder ? (
-                        // || (isShowMyOrder && userId === account)
                         <tr key={index}>
                           <td>
                             <div className="flex justify-start items-center space-x-2">
@@ -340,93 +230,6 @@ function Table(props) {
                           <td>
                             <div>{item.blockNumber}</div>
                           </td>
-                          {/* <td>
-                            <div>{item.buyAmount}</div>
-                          </td>
-                          <td>
-                            <div>{item.sellAmount}</div>
-                          </td> */}
-                          {/* <td>
-                            {
-                              props.auctionStatus === 'completed' && item.status !== 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label
-                                    className={`container text-base ml-2 font-normal ${
-                                      loading ? 'disabled' : ''
-                                    }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled={loading || item.status === 'PROCESSED'}
-                                      checked={
-                                        item.status === 'PROCESSED' ||
-                                        selectedClaimOrders.findIndex((x) => x.id === item.id) !==
-                                          -1
-                                      }
-                                      onChange={() => {}}
-                                      onClick={() => handleClaimCheckbox(item)}
-                                    />
-                                    <span
-                                      className={`checkmark ${
-                                        item.status === 'PROCESSED' ? 'green' : ''
-                                      }`}
-                                    >
-                                      <span style={{ display: 'none' }} className="text">
-                                        {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
-                                      </span>
-                                    </span>
-                                  </label>
-                                </div>
-                              ) : 
-                              props.auctionStatus !== 'completed' && item.status !== 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label
-                                    className={`container text-base ml-2 font-normal ${
-                                      loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                    }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled={loading || item.status === 'CANCELLED'}
-                                      checked={
-                                        item.status === 'CANCELLED' ||
-                                        selectedCancelOrders.findIndex((x) => x.id === item.id) !==
-                                          -1
-                                      }
-                                      onChange={() => {}}
-                                      onClick={() => handleCancelCheckbox(item)}
-                                    />
-                                    <span className="checkmark">
-                                      <span style={{ display: 'none' }} className="text">
-                                        Cancel
-                                      </span>
-                                    </span>
-                                  </label>
-                                </div>
-                              ) : item.status === 'CANCELLED' ? (
-                                <div className="flex items-center custom-check">
-                                  <label className={`container text-base ml-2 font-normal `}>
-                                    <input
-                                      type="checkbox"
-                                      disabled={true}
-                                      checked={true}
-                                      onChange={() => {}}
-                                    />
-                                    <span className="checkmark red">
-                                      <span style={{ display: 'none' }} className="text">
-                                        {' '}
-                                        Cancelled
-                                      </span>
-                                    </span>
-                                  </label>
-                                </div>
-                              ) : props.auctionStatus === 'completed' ? (
-                                <div>Waiting to settle</div>
-                              ) : (
-                                'Bid'
-                              )
-                            }
-                          </td> */}
                         </tr>
                       ) : (
                         ''
@@ -473,15 +276,6 @@ function Table(props) {
                       </button>
                     </th>
                   </tr>
-                  {/* <tr>
-                    <th>Buy Amount</th>
-                  </tr>
-                  <tr>
-                    <th>Sell Amount</th>
-                  </tr> */}
-                  {/* <tr className={'border-bottom-none'}>
-                    <th className="text-center">Status</th>
-                  </tr> */}
                 </tbody>
               </>
             ) : propsData.length === 0 ? (
@@ -519,24 +313,12 @@ function Table(props) {
                       </button>
                     </th>
                   </tr>
-                  {/* <tr>
-                    <th>Buy Amount</th>
-                  </tr>
-                  <tr>
-                    <th>Sell Amount</th>
-                  </tr> */}
-                  {/* <tr className={'border-bottom-none'}>
-                    <th className="text-center">Status</th>
-                  </tr> */}
                 </tbody>
               </>
             ) : (
               <tbody>
                 {propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                  // let userId = item.userId.address.toLowerCase();
-                  // let account = props.account ? props.account.toLowerCase() : '0x';
                   return !isShowMyOrder ? (
-                    // || (isShowMyOrder && userId === account)
                     <React.Fragment key={index}>
                       <tr className={'top-border-thick'}>
                         <th>Address</th>
@@ -609,100 +391,7 @@ function Table(props) {
                           <div>{item.blockNumber}</div>
                         </td>
                       </tr>
-                      {/* <tr>
-                        <th>Buy Amount</th>
-                        <td>
-                          <div>{item.buyAmount}</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Sell Amount</th>
-                        <td>
-                          <div>{item.sellAmount}</div>
-                        </td>
-                      </tr> */}
-                      <tr>
-                        {/* <th className="text-center">Status</th>
-                        <td>
-                          {
-                            props.auctionStatus === 'completed' && item.status !== 'CANCELLED' ? (
-                              <div className="flex items-center custom-check">
-                                <label
-                                  className={`container text-base ml-2 font-normal ${
-                                    loading ? 'disabled' : ''
-                                  }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    disabled={loading || item.status === 'PROCESSED'}
-                                    checked={
-                                      item.status === 'PROCESSED' ||
-                                      selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
-                                    }
-                                    onChange={() => {}}
-                                    onClick={() => handleClaimCheckbox(item)}
-                                  />
-                                  <span
-                                    className={`checkmark ${
-                                      item.status === 'PROCESSED' ? 'green' : ''
-                                    }`}
-                                  >
-                                    <span style={{ display: 'none' }} className="text">
-                                      {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
-                                    </span>
-                                  </span>
-                                </label>
-                              </div>
-                            ) : 
-                            props.auctionStatus !== 'completed' && item.status !== 'CANCELLED' ? (
-                              <div className="flex items-center custom-check">
-                                <label
-                                  className={`container text-base ml-2 font-normal ${
-                                    loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                  }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    disabled={loading || item.status === 'CANCELLED'}
-                                    checked={
-                                      item.status === 'CANCELLED' ||
-                                      selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
-                                    }
-                                    onChange={() => {}}
-                                    onClick={() => handleCancelCheckbox(item)}
-                                  />
-                                  <span className="checkmark">
-                                    <span style={{ display: 'none' }} className="text">
-                                      Cancel
-                                    </span>
-                                  </span>
-                                </label>
-                              </div>
-                            ) : item.status === 'CANCELLED' ? (
-                              <div className="flex items-center custom-check">
-                                <label className={`container text-base ml-2 font-normal `}>
-                                  <input
-                                    type="checkbox"
-                                    disabled={true}
-                                    checked={true}
-                                    onChange={() => {}}
-                                  />
-                                  <span className="checkmark red">
-                                    <span style={{ display: 'none' }} className="text">
-                                      {' '}
-                                      Cancelled
-                                    </span>
-                                  </span>
-                                </label>
-                              </div>
-                            ) : props.auctionStatus === 'completed' ? (
-                              <div>Waiting to settle</div>
-                            ) : (
-                              'Bid'
-                            )
-                          }
-                        </td> */}
-                      </tr>
+                      <tr></tr>
                     </React.Fragment>
                   ) : (
                     ''
@@ -725,18 +414,4 @@ function App(props) {
   );
 }
 
-const Checkbox = (disabled, checked, item) => {
-  <div className="flex items-center custom-check">
-    <label className={`container text-base ml-2 font-normal ${disabled}`}>
-      <input
-        type="checkbox"
-        disabled={disabled}
-        checked={checked}
-        onChange={() => {}}
-        onClick={() => handleCancelCheckbox(item)}
-      />
-      <span className="checkmark"></span>
-    </label>
-  </div>;
-};
 export default App;

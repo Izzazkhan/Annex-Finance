@@ -423,6 +423,8 @@ function Auction(props) {
   let pathname;
   if (props.location.state !== undefined && props.location.state.auctionType === 'dutch') {
     pathname = 'dutch-detail';
+  } else if (props.location.state !== undefined && props.location.state.auctionType === 'fixed') {
+    pathname = 'fixed-detail';
   } else {
     pathname = 'batch-detail';
   }

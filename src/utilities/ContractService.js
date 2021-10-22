@@ -19,6 +19,7 @@ const TOKEN_ABI = {
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
+  fixed: constants.FIXED_AUCTION_ABI,
 };
 
 const call = (method, params) => {
