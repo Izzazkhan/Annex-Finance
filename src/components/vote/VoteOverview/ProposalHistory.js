@@ -139,11 +139,13 @@ const ProposalHistory = ({ proposalInfo }) => {
                       {proposalInfo.state === 'Expired'
                         ? proposalInfo.state
                         : `${proposalInfo.state === 'Executed' ? 'Executed' : 'Execute'}`}
-                      <img
-                        className="ml-3 tooltip-label"
-                        src={require('../../../assets/images/info.svg').default}
-                        alt=""
-                      />
+                      {
+                        proposalInfo?.eta !== 0 && <img
+                          className="ml-3 tooltip-label"
+                          src={require('../../../assets/images/info.svg').default}
+                          alt=""
+                        />
+                      }
                       <span className="label" style={{ left: '-35%', bottom: '30px' }}>
                         Executable Date: {moment(proposalInfo?.eta * 1000).format('LLLL')}
                       </span>
