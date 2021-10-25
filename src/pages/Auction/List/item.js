@@ -47,7 +47,7 @@ function AuctionItem(props) {
     // history.push(url);
     props.history.push({
       pathname: url,
-      state: { auctionType: 'batch', data: props },
+      state: { auctionType: props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch', data: props },
     });
   };
   return (
@@ -59,8 +59,8 @@ function AuctionItem(props) {
             props.type === 'BATCH'
               ? `batch-detail/${props.id}`
               : props.type === 'FIXED'
-              ? `fixed-detail/${props.id}`
-              : `dutch-detail/${props.id}`,
+                ? `fixed-detail/${props.id}`
+                : `dutch-detail/${props.id}`,
           state: {
             auctionType:
               props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch',
@@ -194,8 +194,8 @@ function AuctionItem(props) {
                 props.type === 'BATCH'
                   ? '/auction/batch-detail'
                   : props.type === 'FIXED'
-                  ? '/auction/fixed-detail'
-                  : '/auction/dutch-detail',
+                    ? '/auction/fixed-detail'
+                    : '/auction/dutch-detail',
               )
             }
           >
@@ -208,8 +208,8 @@ function AuctionItem(props) {
                 props.type === 'BATCH'
                   ? '/auction/batch-detail'
                   : props.type === 'FIXED'
-                  ? '/auction/fixed-detail'
-                  : '/auction/dutch-detail',
+                    ? '/auction/fixed-detail'
+                    : '/auction/dutch-detail',
               )
             }
           >

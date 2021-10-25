@@ -1,0 +1,127 @@
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import Web3 from 'web3';
+import * as constants from '../../../utilities/constants';
+const instance = new Web3(window.ethereum);
+import AuctionItem from './item';
+import dutchAuctionContext from '../../../contexts/dutchAuction';
+import { methods } from '../../../utilities/ContractService';
+import { gql } from '@apollo/client';
+import { useSubgraph } from 'thegraph-react';
+import Loading from '../../../components/UI/Loading';
+import moment from 'moment';
+
+
+function DutchAuction(props) {
+    const currentTimeStamp = Math.floor(Date.now() / 1000);
+    let auctionTime
+    if (props.auctionStatus === 'live') {
+        auctionTime = 'auctionEndDate_gt'
+    }
+    else if (props.auctionStatus === 'past') {
+        auctionTime = 'auctionEndDate_lt'
+    }
+    else {
+        auctionTime = 'auctionStartDate_gt'
+    }
+    let dutchQuery = gql`
+    {
+      auctions(where: { ${auctionTime}: "${currentTimeStamp}"}) {
+        id
+        type
+        auctioner_address
+        auctioningToken
+        biddingToken
+        auctionStartDate
+        auctionEndDate
+        auctionedSellAmount
+        amountMax1
+        amountMin1
+        about {
+          id
+        }
+        orders {
+          id
+          auctioner_address
+          auctionId {
+            id
+          }
+
+          buyAmount
+          sellAmount
+          txHash
+          blockNumber
+          timestamp
+        }
+        timestamp
+      }
+    }
+  `;
+
+    const [dutchAuction, setDutchAuction] = useState([]);
+    const [dutchLoading, setDutchLoading] = useState(true);
+
+    const { dutchAuctionInstance } = useContext(dutchAuctionContext);
+    const { useQuery: useQueryDutch } = useSubgraph(dutchAuctionInstance);
+    const { error: dutchError, data: dutchData } = useQueryDutch(dutchQuery);
+    console.log('dutchData', dutchData);
+
+    useEffect(async () => {
+        if (dutchData && dutchData.auctions && dutchAuction.length === 0) {
+            let arr = dutchData.auctions.map(async (element) => {
+                let formatedAuctionDate = moment
+                    .unix(element['auctionEndDate'])
+                    .format('MM/DD/YYYY HH:mm:ss');
+                const biddingToken = new instance.eth.Contract(
+                    JSON.parse(constants.CONTRACT_ABEP_ABI),
+                    element.biddingToken,
+                );
+                let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+                let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
+                let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
+                let graphData = [
+                    {
+                        value: startingPrice,
+                    },
+                    {
+                        value: reservedPrice,
+                    },
+                ];
+                return {
+                    ...element,
+                    data: graphData,
+                    formatedAuctionDate,
+                    title: element.type + ' Auction',
+                    biddingDecimal: biddingDecimal,
+                };
+            });
+            const resolvedArray = await Promise.all(arr);
+            setDutchAuction(resolvedArray);
+            setDutchLoading(false)
+        }
+    }, [dutchData]);
+
+    console.log('dutchAuction', dutchAuction)
+
+    return (
+        <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
+            <h2 className="text-white ml-5 text-4xl font-normal">{props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming'} Auctions</h2>
+            {dutchLoading ? (
+                <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
+                    <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
+                </div>
+            ) : dutchError ? (
+                <div>{dutchError}</div>
+            ) : dutchAuction.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
+                    {dutchAuction.map((item, index) => {
+                        return <AuctionItem key={index} {...item} />;
+                    })}
+                </div>
+            ) : (
+                <div className="text-center mb-5 mt-5">No data found</div>
+            )}
+        </div>
+    );
+}
+
+export default DutchAuction;

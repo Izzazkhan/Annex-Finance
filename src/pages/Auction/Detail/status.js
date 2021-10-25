@@ -191,10 +191,10 @@ const AuctionStatus = ({
             {auctionStatus === 'upcoming'
               ? 'Countdown'
               : auctionStatus === 'inprogress'
-              ? 'Auction Progress'
-              : auctionStatus === 'completed'
-              ? 'Auction Completed'
-              : ''}
+                ? 'Auction Progress'
+                : auctionStatus === 'completed'
+                  ? 'Auction Completed'
+                  : ''}
           </div>
           <div className="text-base font-normal opacity-0 "> text</div>
         </div>
@@ -413,9 +413,9 @@ const AuctionProgress = (props) => {
       let desiredBid =
         props.orders && props.orders.length
           ? props.detail.totalAuctionedValue -
-            props.orders.reduce(function (acc, obj) {
-              return acc + Number(obj.auctionDivBuyAmount);
-            }, 0)
+          props.orders.reduce(function (acc, obj) {
+            return acc + Number(obj.auctionDivBuyAmount);
+          }, 0)
           : props.detail.totalAuctionedValue;
       if (Number(state.minBuyAmount) > Number(desiredBid)) {
         errorMessage = `Desired bid price must be smaller than max available`;
@@ -575,12 +575,12 @@ const AuctionProgress = (props) => {
                   <div className="text-lg font-bold">
                     {props.detail.type === 'DUTCH' && props.orders && props.orders.length
                       ? props.detail.totalAuctionedValue -
-                        props.orders.reduce(function (acc, obj) {
-                          return acc + Number(obj.auctionDivBuyAmount);
-                        }, 0)
+                      props.orders.reduce(function (acc, obj) {
+                        return acc + Number(obj.auctionDivBuyAmount);
+                      }, 0)
                       : props.detail.type === 'DUTCH'
-                      ? props.detail.totalAuctionedValue
-                      : props.detail.biddingBalance}
+                        ? props.detail.totalAuctionedValue
+                        : props.detail.biddingBalance}
                   </div>
                 </div>
               </div>
@@ -590,12 +590,12 @@ const AuctionProgress = (props) => {
                   max={
                     props.detail.type === 'DUTCH' && props.orders && props.orders.length
                       ? props.detail.totalAuctionedValue -
-                        props.orders.reduce(function (acc, obj) {
-                          return acc + Number(obj.auctionDivBuyAmount);
-                        }, 0)
+                      props.orders.reduce(function (acc, obj) {
+                        return acc + Number(obj.auctionDivBuyAmount);
+                      }, 0)
                       : props.detail.type === 'DUTCH'
-                      ? props.detail.totalAuctionedValue
-                      : Number(props.detail.biddingBalance)
+                        ? props.detail.totalAuctionedValue
+                        : Number(props.detail.biddingBalance)
                   }
                   value={Number(value)}
                   onChange={onChangeSlider}

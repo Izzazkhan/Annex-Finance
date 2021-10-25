@@ -4,7 +4,7 @@ import * as constants from '../../../utilities/constants';
 const instance = new Web3(window.ethereum);
 import Countdown from 'react-countdown';
 import Table from './Table';
-import DutchTable from './dutchTable';
+import DutchTable from './dutch-fixed-table';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
@@ -68,6 +68,7 @@ const ArrowContainer = styled.div`
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
+  console.log('detailss', props)
   const [state, setState] = useState({
     auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
@@ -217,18 +218,7 @@ function Detail(props) {
   const auctionContract = getAuctionContract(state.type);
   const dutchContract = dutchAuctionContract();
   const fixedContract = fixedAuctionContract();
-  const auctioningToken =
-    props.location.state.auctionType !== 'batch' &&
-    new instance.eth.Contract(
-      JSON.parse(constants.CONTRACT_ABEP_ABI),
-      props.location.state.data.auctioningToken,
-    );
-  const biddingToken =
-    props.location.state.auctionType !== 'batch' &&
-    new instance.eth.Contract(
-      JSON.parse(constants.CONTRACT_ABEP_ABI),
-      props.location.state.data.biddingToken,
-    );
+
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
@@ -332,11 +322,11 @@ function Detail(props) {
         let orderLength = data.orders.length;
         let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
         let lpTokenPromises = [];
-        if (auctionStatus == 'completed') {
-          data.orders.forEach((order) => {
-            lpTokenPromises.push(calculateLPTokens(order));
-          });
-        }
+        // if (auctionStatus == 'completed') {
+        //   data.orders.forEach((order) => {
+        //     lpTokenPromises.push(calculateLPTokens(order));
+        //   });
+        // }
         let lpTokenData = [];
         if (isAlreadySettle && auctionStatus == 'completed') {
           lpTokenData = await Promise.all(lpTokenPromises);
@@ -452,6 +442,19 @@ function Detail(props) {
         setLoading(false);
       } else {
         let elem = data;
+        const auctioningToken =
+          props.location.state.auctionType !== 'batch' &&
+          await new instance.eth.Contract(
+            JSON.parse(constants.CONTRACT_ABEP_ABI),
+            elem.auctioningToken,
+          );
+        const biddingToken =
+          props.location.state.auctionType !== 'batch' &&
+          await new instance.eth.Contract(
+            JSON.parse(constants.CONTRACT_ABEP_ABI),
+            elem.biddingToken,
+          );
+        console.log('element', auctioningToken, biddingToken)
         let type = elem['type'];
         let auctionStatus = '';
         let auctionTokenId = elem['auctioningToken'];
@@ -472,7 +475,7 @@ function Detail(props) {
           type === 'DUTCH'
             ? currentBalance / Math.pow(10, biddingDecimal)
             : ((elem['amountMin1'] / elem['amountMax1']) * Math.pow(10, auctionDecimal)) /
-              Math.pow(10, biddingDecimal);
+            Math.pow(10, biddingDecimal);
         currentPrice = Number(convertExponentToNum(currentPrice));
         let amountMax1 = elem['amountMax1'];
         let amountMin1 = elem['amountMin1'];
@@ -714,11 +717,13 @@ function Detail(props) {
           encodedOrder,
         ])
         .then((res) => {
+          console.log('response', res)
           let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
           lpToken = convertExponentToNum(lpToken);
           resolve(lpToken);
         })
         .catch((err) => {
+          console.log('error', err)
           console.log(err);
           reject(err);
         });
@@ -793,9 +798,8 @@ function Detail(props) {
             )}{' '}
             {state.detail.biddingSymbol}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                state.detail && state.detail.biddingTokenId
-              }`}
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.biddingTokenId
+                }`}
               target="_blank"
               rel="noreferrer"
             >
@@ -842,9 +846,8 @@ function Detail(props) {
               `${state.detail.totalAuctionedValue}`
             )}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                state.detail && state.detail.auctionTokenId
-              }`}
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.auctionTokenId
+                }`}
               target="_blank"
               rel="noreferrer"
             >
@@ -975,14 +978,13 @@ function Detail(props) {
                       ? (totalSellAmount / Number(state.detail.minFundingThreshold)) * 100
                       : 0
                   }
-                  text={`${
-                    totalSellAmount > 0
-                      ? (
-                          (totalSellAmount / Number(state.detail.minFundingThreshold)) *
-                          100
-                        ).toFixed(0)
-                      : 0
-                  }%`}
+                  text={`${totalSellAmount > 0
+                    ? (
+                      (totalSellAmount / Number(state.detail.minFundingThreshold)) *
+                      100
+                    ).toFixed(0)
+                    : 0
+                    }%`}
                   styles={{
                     root: {},
                     path: {
@@ -1287,8 +1289,8 @@ function Detail(props) {
               state.detail.type === 'DUTCH'
                 ? dutchContract
                 : state.detail.type === 'FIXED'
-                ? fixedContract
-                : auctionContract
+                  ? fixedContract
+                  : auctionContract
             }
             auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
             getData={getData}

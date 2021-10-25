@@ -80,168 +80,168 @@ export const CONTRACT_XAI_CONTROLLER_ABI =
 export const CONTRACT_TOKEN_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? {
-        usdc: {
-          id: 'usdc',
-          symbol: 'USDC',
-          address: process.env.REACT_APP_TEST_USDC_TOKEN,
-          asset: usdc,
-          aAsset: ausdc,
-        },
-        usdt: {
-          id: 'usdt',
-          symbol: 'USDT',
-          address: process.env.REACT_APP_TEST_USDT_TOKEN,
-          asset: usdt,
-          aAsset: ausdt,
-        },
-        busd: {
-          id: 'busd',
-          symbol: 'BUSD',
-          address: process.env.REACT_APP_TEST_BUSD_TOKEN,
-          asset: busd,
-          aAsset: abusd,
-        },
-        bnb: {
-          id: 'bnb',
-          symbol: 'BNB',
-          asset: bnb,
-          aAsset: abnb,
-        },
-        trx: {
-          id: 'trx',
-          symbol: 'TRX',
-          address: process.env.REACT_APP_TEST_TRX_TOKEN,
-          asset: trx,
-          aAsset: atrx,
-        },
-        tusd: {
-          id: 'tusd',
-          symbol: 'TUSD',
-          address: process.env.REACT_APP_TEST_TUSD_TOKEN,
-          asset: tusd,
-          aAsset: atusd,
-        },
-        dot: {
-          id: 'dot',
-          symbol: 'DOT',
-          address: process.env.REACT_APP_TEST_DOT_TOKEN,
-          asset: dot,
-          aAsset: adot,
-        },
-        ada: {
-          id: 'ada',
-          symbol: 'ADA',
-          address: process.env.REACT_APP_TEST_ADA_TOKEN,
-          asset: ada,
-          aAsset: aada,
-        },
-        ann: {
-          id: 'ann',
-          symbol: 'ANN',
-          address: process.env.REACT_APP_TEST_ANN_TOKEN,
-          asset: ann,
-          aAsset: ann,
-        },
-        // wbtc: {
-        //   id: 'wbtc',
-        //   symbol: 'wbtc',
-        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-        //   asset: btc,
-        //   aAsset: btc
-        // }
-      }
+      usdc: {
+        id: 'usdc',
+        symbol: 'USDC',
+        address: process.env.REACT_APP_TEST_USDC_TOKEN,
+        asset: usdc,
+        aAsset: ausdc,
+      },
+      usdt: {
+        id: 'usdt',
+        symbol: 'USDT',
+        address: process.env.REACT_APP_TEST_USDT_TOKEN,
+        asset: usdt,
+        aAsset: ausdt,
+      },
+      busd: {
+        id: 'busd',
+        symbol: 'BUSD',
+        address: process.env.REACT_APP_TEST_BUSD_TOKEN,
+        asset: busd,
+        aAsset: abusd,
+      },
+      bnb: {
+        id: 'bnb',
+        symbol: 'BNB',
+        asset: bnb,
+        aAsset: abnb,
+      },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: process.env.REACT_APP_TEST_TRX_TOKEN,
+        asset: trx,
+        aAsset: atrx,
+      },
+      tusd: {
+        id: 'tusd',
+        symbol: 'TUSD',
+        address: process.env.REACT_APP_TEST_TUSD_TOKEN,
+        asset: tusd,
+        aAsset: atusd,
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_TEST_DOT_TOKEN,
+        asset: dot,
+        aAsset: adot,
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_TEST_ADA_TOKEN,
+        asset: ada,
+        aAsset: aada,
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_TEST_ANN_TOKEN,
+        asset: ann,
+        aAsset: ann,
+      },
+      // wbtc: {
+      //   id: 'wbtc',
+      //   symbol: 'wbtc',
+      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+      //   asset: btc,
+      //   aAsset: btc
+      // }
+    }
     : {
-        usdc: {
-          id: 'usdc',
-          symbol: 'USDC',
-          address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-          asset: usdc,
-          aAsset: ausdc,
-        },
-        usdt: {
-          id: 'usdt',
-          symbol: 'USDT',
-          address: '0x55d398326f99059fF775485246999027B3197955',
-          asset: usdt,
-          aAsset: ausdt,
-        },
-        busd: {
-          id: 'busd',
-          symbol: 'BUSD',
-          address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-          asset: busd,
-          aAsset: abusd,
-        },
-        bnb: {
-          id: 'bnb',
-          symbol: 'BNB',
-          asset: bnb,
-          aAsset: abnb,
-        },
-        btcb: {
-          id: 'btcb',
-          symbol: 'BTCB',
-          address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
-          asset: btc,
-          aAsset: abtc,
-        },
-        eth: {
-          id: 'eth',
-          symbol: 'ETH',
-          address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
-          asset: eth,
-          aAsset: aeth,
-        },
-        trx: {
-          id: 'trx',
-          symbol: 'TRX',
-          address: '0x85EAC5Ac2F758618dFa09bDbe0cf174e7d574D5B',
-          asset: trx,
-          aAsset: atrx,
-        },
-        tusd: {
-          id: 'tusd',
-          symbol: 'TUSD',
-          address: '0x14016E85a25aeb13065688cAFB43044C2ef86784',
-          asset: tusd,
-          aAsset: atusd,
-        },
-        dot: {
-          id: 'dot',
-          symbol: 'DOT',
-          address: '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402',
-          asset: dot,
-          aAsset: adot,
-        },
-        ada: {
-          id: 'ada',
-          symbol: 'ADA',
-          address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47',
-          asset: ada,
-          aAsset: aada,
-        },
-        ann: {
-          id: 'ann',
-          symbol: 'ANN',
-          address: process.env.REACT_APP_MAIN_ANN_TOKEN,
-          asset: ann,
-          aAsset: ann,
-        },
-        // wbnb: {
-        //   id: 'wbnb',
-        //   symbol: 'WBNB',
-        //   address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-        //   asset: bnb,
-        //   aAsset: bnb
-        // },
-        //  wbtc: {
-        //   id: 'wbtc',
-        //   symbol: 'wbtc',
-        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-        //   asset: btc,
-        //   aAsset: btc
-        // },
-      };
+      usdc: {
+        id: 'usdc',
+        symbol: 'USDC',
+        address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        asset: usdc,
+        aAsset: ausdc,
+      },
+      usdt: {
+        id: 'usdt',
+        symbol: 'USDT',
+        address: '0x55d398326f99059fF775485246999027B3197955',
+        asset: usdt,
+        aAsset: ausdt,
+      },
+      busd: {
+        id: 'busd',
+        symbol: 'BUSD',
+        address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+        asset: busd,
+        aAsset: abusd,
+      },
+      bnb: {
+        id: 'bnb',
+        symbol: 'BNB',
+        asset: bnb,
+        aAsset: abnb,
+      },
+      btcb: {
+        id: 'btcb',
+        symbol: 'BTCB',
+        address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
+        asset: btc,
+        aAsset: abtc,
+      },
+      eth: {
+        id: 'eth',
+        symbol: 'ETH',
+        address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
+        asset: eth,
+        aAsset: aeth,
+      },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: '0x85EAC5Ac2F758618dFa09bDbe0cf174e7d574D5B',
+        asset: trx,
+        aAsset: atrx,
+      },
+      tusd: {
+        id: 'tusd',
+        symbol: 'TUSD',
+        address: '0x14016E85a25aeb13065688cAFB43044C2ef86784',
+        asset: tusd,
+        aAsset: atusd,
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402',
+        asset: dot,
+        aAsset: adot,
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47',
+        asset: ada,
+        aAsset: aada,
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_MAIN_ANN_TOKEN,
+        asset: ann,
+        aAsset: ann,
+      },
+      // wbnb: {
+      //   id: 'wbnb',
+      //   symbol: 'WBNB',
+      //   address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+      //   asset: bnb,
+      //   aAsset: bnb
+      // },
+      //  wbtc: {
+      //   id: 'wbtc',
+      //   symbol: 'wbtc',
+      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+      //   asset: btc,
+      //   aAsset: btc
+      // },
+    };
 
 // eslint-disable-next-line max-len
 export const CONTRACT_USDC_TOKEN_ABI =
@@ -299,119 +299,119 @@ export const CONTRACT_TUSD_TOKEN_ABI =
 export const CONTRACT_ABEP_ADDRESS =
   process.env.REACT_APP_ENV === 'dev'
     ? {
-        usdc: {
-          id: 'usdc',
-          symbol: 'aUSDC',
-          address: process.env.REACT_APP_TEST_USDC_ABEP,
-        },
-        usdt: {
-          id: 'usdt',
-          symbol: 'aUSDT',
-          address: process.env.REACT_APP_TEST_USDT_ABEP,
-        },
-        busd: {
-          id: 'busd',
-          symbol: 'aBUSD',
-          address: process.env.REACT_APP_TEST_BUSD_ABEP,
-        },
-        bnb: {
-          id: 'bnb',
-          symbol: 'aBNB',
-          address: process.env.REACT_APP_TEST_BNB_ABEP,
-        },
-        trx: {
-          id: 'trx',
-          symbol: 'TRX',
-          address: process.env.REACT_APP_TEST_TRX_ABEP,
-        },
-        tusd: {
-          id: 'tusd',
-          symbol: 'TUSD',
-          address: process.env.REACT_APP_TEST_TUSD_ABEP,
-        },
-        dot: {
-          id: 'dot',
-          symbol: 'DOT',
-          address: process.env.REACT_APP_TEST_DOT_ABEP,
-        },
-        ada: {
-          id: 'ada',
-          symbol: 'ADA',
-          address: process.env.REACT_APP_TEST_ADA_ABEP,
-        },
-        ann: {
-          id: 'ann',
-          symbol: 'ANN',
-          address: process.env.REACT_APP_TEST_ANN_ABEP,
-        },
-        // wbtc: {
-        //   id: 'wbtc',
-        //   symbol: 'WBTC',
-        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
-        // },
-      }
+      usdc: {
+        id: 'usdc',
+        symbol: 'aUSDC',
+        address: process.env.REACT_APP_TEST_USDC_ABEP,
+      },
+      usdt: {
+        id: 'usdt',
+        symbol: 'aUSDT',
+        address: process.env.REACT_APP_TEST_USDT_ABEP,
+      },
+      busd: {
+        id: 'busd',
+        symbol: 'aBUSD',
+        address: process.env.REACT_APP_TEST_BUSD_ABEP,
+      },
+      bnb: {
+        id: 'bnb',
+        symbol: 'aBNB',
+        address: process.env.REACT_APP_TEST_BNB_ABEP,
+      },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: process.env.REACT_APP_TEST_TRX_ABEP,
+      },
+      tusd: {
+        id: 'tusd',
+        symbol: 'TUSD',
+        address: process.env.REACT_APP_TEST_TUSD_ABEP,
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_TEST_DOT_ABEP,
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_TEST_ADA_ABEP,
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_TEST_ANN_ABEP,
+      },
+      // wbtc: {
+      //   id: 'wbtc',
+      //   symbol: 'WBTC',
+      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
+      // },
+    }
     : {
-        usdc: {
-          id: 'usdc',
-          symbol: 'aUSDC',
-          address: process.env.REACT_APP_MAIN_USDC_ABEP,
-        },
-        usdt: {
-          id: 'usdt',
-          symbol: 'aUSDT',
-          address: process.env.REACT_APP_MAIN_USDT_ABEP,
-        },
-        busd: {
-          id: 'busd',
-          symbol: 'aBUSD',
-          address: process.env.REACT_APP_MAIN_BUSD_ABEP,
-        },
-        bnb: {
-          id: 'bnb',
-          symbol: 'aBNB',
-          address: process.env.REACT_APP_MAIN_BNB_ABEP,
-        },
-        btcb: {
-          id: 'btcb',
-          symbol: 'aBTC',
-          address: process.env.REACT_APP_MAIN_BTC_ABEP,
-        },
-        eth: {
-          id: 'eth',
-          symbol: 'aETH',
-          address: process.env.REACT_APP_MAIN_ETH_ABEP,
-        },
-        trx: {
-          id: 'trx',
-          symbol: 'TRX',
-          address: process.env.REACT_APP_MAIN_TRX_ABEP,
-        },
-        tusd: {
-          id: 'tusd',
-          symbol: 'TUSD',
-          address: process.env.REACT_APP_MAIN_TUSD_ABEP,
-        },
-        dot: {
-          id: 'dot',
-          symbol: 'DOT',
-          address: process.env.REACT_APP_MAIN_DOT_ABEP,
-        },
-        ada: {
-          id: 'ada',
-          symbol: 'ADA',
-          address: process.env.REACT_APP_MAIN_ADA_ABEP,
-        },
-        ann: {
-          id: 'ann',
-          symbol: 'ANN',
-          address: process.env.REACT_APP_MAIN_ANN_ABEP,
-        },
-        //  wbtc: {
-        //   id: 'wbtc',
-        //   symbol: 'WBTC',
-        //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
-        // },
-      };
+      usdc: {
+        id: 'usdc',
+        symbol: 'aUSDC',
+        address: process.env.REACT_APP_MAIN_USDC_ABEP,
+      },
+      usdt: {
+        id: 'usdt',
+        symbol: 'aUSDT',
+        address: process.env.REACT_APP_MAIN_USDT_ABEP,
+      },
+      busd: {
+        id: 'busd',
+        symbol: 'aBUSD',
+        address: process.env.REACT_APP_MAIN_BUSD_ABEP,
+      },
+      bnb: {
+        id: 'bnb',
+        symbol: 'aBNB',
+        address: process.env.REACT_APP_MAIN_BNB_ABEP,
+      },
+      btcb: {
+        id: 'btcb',
+        symbol: 'aBTC',
+        address: process.env.REACT_APP_MAIN_BTC_ABEP,
+      },
+      eth: {
+        id: 'eth',
+        symbol: 'aETH',
+        address: process.env.REACT_APP_MAIN_ETH_ABEP,
+      },
+      trx: {
+        id: 'trx',
+        symbol: 'TRX',
+        address: process.env.REACT_APP_MAIN_TRX_ABEP,
+      },
+      tusd: {
+        id: 'tusd',
+        symbol: 'TUSD',
+        address: process.env.REACT_APP_MAIN_TUSD_ABEP,
+      },
+      dot: {
+        id: 'dot',
+        symbol: 'DOT',
+        address: process.env.REACT_APP_MAIN_DOT_ABEP,
+      },
+      ada: {
+        id: 'ada',
+        symbol: 'ADA',
+        address: process.env.REACT_APP_MAIN_ADA_ABEP,
+      },
+      ann: {
+        id: 'ann',
+        symbol: 'ANN',
+        address: process.env.REACT_APP_MAIN_ANN_ABEP,
+      },
+      //  wbtc: {
+      //   id: 'wbtc',
+      //   symbol: 'WBTC',
+      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3'
+      // },
+    };
 
 // eslint-disable-next-line max-len
 export const CONTRACT_ABEP_ABI =
@@ -452,146 +452,146 @@ export const CONTRACT_INTEREST_MODEL_ABI =
 export const BIDDING_AUCTION_TOKEN =
   process.env.REACT_APP_ENV === 'dev'
     ? {
-        usdc: {
-          id: 'usdc',
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
-          address: process.env.REACT_APP_TEST_USDC_TOKEN,
-          contract: 'FaucetToken',
-        },
-        usdt: {
-          id: 'usdt',
-          name: 'Tether',
-          symbol: 'USDT',
-          decimals: 6,
-          address: process.env.REACT_APP_TEST_USDT_TOKEN,
-          contract: 'FaucetToken',
-        },
-        busd: {
-          id: 'busd',
-          name: 'Binance USD',
-          symbol: 'BUSD',
-          decimals: 18,
-          address: process.env.REACT_APP_TEST_BUSD_TOKEN,
-          contract: 'FaucetToken',
-        },
-        // wbtc: {
-        //   id: 'wbtc',
-        //   "name": "Wrapped Bitcoin",
-        //   "symbol": "WBTC",
-        //   "decimals": 18,
-        //   "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-        //   "contract": "FaucetToken",
-        // }
-      }
+      usdc: {
+        id: 'usdc',
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: process.env.REACT_APP_TEST_USDC_TOKEN,
+        contract: 'FaucetToken',
+      },
+      usdt: {
+        id: 'usdt',
+        name: 'Tether',
+        symbol: 'USDT',
+        decimals: 6,
+        address: process.env.REACT_APP_TEST_USDT_TOKEN,
+        contract: 'FaucetToken',
+      },
+      busd: {
+        id: 'busd',
+        name: 'Binance USD',
+        symbol: 'BUSD',
+        decimals: 18,
+        address: process.env.REACT_APP_TEST_BUSD_TOKEN,
+        contract: 'FaucetToken',
+      },
+      // wbtc: {
+      //   id: 'wbtc',
+      //   "name": "Wrapped Bitcoin",
+      //   "symbol": "WBTC",
+      //   "decimals": 18,
+      //   "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+      //   "contract": "FaucetToken",
+      // }
+    }
     : {
-        // usdc: {
-        //   id: 'usdc',
-        //   "name": "USD Coin",
-        //   "symbol": "USDC",
-        //   "decimals": 6,
-        //   "address": process.env.REACT_APP_MAIN_USDC_TOKEN,
-        //   "contract": "FaucetToken",
-        // },
-        // usdt: {
-        //   id: 'usdt',
-        //   "name": "Tether",
-        //   "symbol": "USDT",
-        //   "decimals": 6,
-        //   "address": '0x55d398326f99059fF775485246999027B3197955',
-        //   "contract": "FaucetToken",
-        // },
-        wbnb: {
-          id: 'wbnb',
-          name: 'Wrapped BNB',
-          symbol: 'WBNB',
-          decimals: 18,
-          address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-          asset: bnb,
-          // "contract": "FaucetToken",
-        },
-        busd: {
-          id: 'busd',
-          name: 'Binance USD',
-          symbol: 'BUSD',
-          decimals: 18,
-          address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-          asset: busd,
-          // "contract": "FaucetToken",
-        },
-        btcb: {
-          id: 'btcb',
-          name: 'Binance Bitcoin',
-          symbol: 'BTCB',
-          decimals: 18,
-          address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
-          asset: btc,
-          // "contract": "FaucetToken",
-        },
-        //  wbtc: {
-        //   id: 'wbtc',
-        //   "name": "Wrapped Bitcoin",
-        //   "symbol": "WBTC",
-        //   "decimals": 18,
-        //   "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-        //   "contract": "FaucetToken",
-        // }
-      };
+      // usdc: {
+      //   id: 'usdc',
+      //   "name": "USD Coin",
+      //   "symbol": "USDC",
+      //   "decimals": 6,
+      //   "address": process.env.REACT_APP_MAIN_USDC_TOKEN,
+      //   "contract": "FaucetToken",
+      // },
+      // usdt: {
+      //   id: 'usdt',
+      //   "name": "Tether",
+      //   "symbol": "USDT",
+      //   "decimals": 6,
+      //   "address": '0x55d398326f99059fF775485246999027B3197955',
+      //   "contract": "FaucetToken",
+      // },
+      wbnb: {
+        id: 'wbnb',
+        name: 'Wrapped BNB',
+        symbol: 'WBNB',
+        decimals: 18,
+        address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+        asset: bnb,
+        // "contract": "FaucetToken",
+      },
+      busd: {
+        id: 'busd',
+        name: 'Binance USD',
+        symbol: 'BUSD',
+        decimals: 18,
+        address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+        asset: busd,
+        // "contract": "FaucetToken",
+      },
+      btcb: {
+        id: 'btcb',
+        name: 'Binance Bitcoin',
+        symbol: 'BTCB',
+        decimals: 18,
+        address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
+        asset: btc,
+        // "contract": "FaucetToken",
+      },
+      //  wbtc: {
+      //   id: 'wbtc',
+      //   "name": "Wrapped Bitcoin",
+      //   "symbol": "WBTC",
+      //   "decimals": 18,
+      //   "address": '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
+      //   "contract": "FaucetToken",
+      // }
+    };
 export const CONTRACT_ANNEX_AUCTION =
   process.env.REACT_APP_ENV === 'dev'
     ? {
-        batch: {
-          id: 'batch',
-          name: 'Annex Batch Auction',
-          symbol: 'batch',
-          address: process.env.REACT_APP_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
-        },
-        ann: {
-          id: 'ann',
-          name: 'ANN',
-          symbol: 'ann',
-          address: process.env.REACT_APP_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
-        },
-        dutch: {
-          id: 'dutch',
-          name: 'Annex Dutch Auction',
-          symbol: 'dutch',
-          address: process.env.REACT_APP_TEST_ANNEX_DUTCH_AUCTION_ADDRESS,
-        },
-        fixed: {
-          id: 'fixed',
-          name: 'Annex Fixed Auction',
-          symbol: 'fixed',
-          address: process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS,
-        },
-      }
+      batch: {
+        id: 'batch',
+        name: 'Annex Batch Auction',
+        symbol: 'batch',
+        address: process.env.REACT_APP_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
+      },
+      ann: {
+        id: 'ann',
+        name: 'ANN',
+        symbol: 'ann',
+        address: process.env.REACT_APP_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
+      },
+      dutch: {
+        id: 'dutch',
+        name: 'Annex Dutch Auction',
+        symbol: 'dutch',
+        address: process.env.REACT_APP_TEST_ANNEX_DUTCH_AUCTION_ADDRESS,
+      },
+      fixed: {
+        id: 'fixed',
+        name: 'Annex Fixed Auction',
+        symbol: 'fixed',
+        address: process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS,
+      },
+    }
     : {
-        batch: {
-          id: 'batch',
-          name: 'Annex Batch Auction',
-          symbol: 'batch',
-          address: process.env.REACT_APP_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
-        },
-        ann: {
-          id: 'ann',
-          name: 'ANN',
-          symbol: 'ann',
-          address: process.env.REACT_APP_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
-        },
-        dutch: {
-          id: 'dutch',
-          name: 'Annex Dutch Auction',
-          symbol: 'dutch',
-          address: process.env.REACT_APP_MAIN_ANNEX_DUTCH_AUCTION_ADDRESS,
-        },
-        fixed: {
-          id: 'fixed',
-          name: 'Annex Fixed Auction',
-          symbol: 'fixed',
-          address: process.env.REACT_APP_MAIN_ANNEX_FIXED_AUCTION_ADDRESS,
-        },
-      };
+      batch: {
+        id: 'batch',
+        name: 'Annex Batch Auction',
+        symbol: 'batch',
+        address: process.env.REACT_APP_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
+      },
+      ann: {
+        id: 'ann',
+        name: 'ANN',
+        symbol: 'ann',
+        address: process.env.REACT_APP_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
+      },
+      dutch: {
+        id: 'dutch',
+        name: 'Annex Dutch Auction',
+        symbol: 'dutch',
+        address: process.env.REACT_APP_MAIN_ANNEX_DUTCH_AUCTION_ADDRESS,
+      },
+      fixed: {
+        id: 'fixed',
+        name: 'Annex Fixed Auction',
+        symbol: 'fixed',
+        address: process.env.REACT_APP_MAIN_ANNEX_FIXED_AUCTION_ADDRESS,
+      },
+    };
 // eslint-disable-next-line max-len
 export const CONTRACT_ANNEX_BATCH_AUCTION_ABI =
   '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":false,"internalType":"uint96","name":"soldAuctioningTokens","type":"uint96"},{"indexed":false,"internalType":"uint96","name":"soldBiddingTokens","type":"uint96"},{"indexed":false,"internalType":"bytes32","name":"clearingPriceOrder","type":"bytes32"}],"name":"AuctionCleared","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":false,"internalType":"string[6]","name":"social","type":"string[6]"}],"name":"AuctionDetails","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":false,"internalType":"uint96","name":"buyAmount","type":"uint96"},{"indexed":false,"internalType":"uint96","name":"sellAmount","type":"uint96"},{"indexed":false,"internalType":"uint64","name":"userId","type":"uint64"},{"indexed":false,"internalType":"string","name":"status","type":"string"}],"name":"Bidder","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":true,"internalType":"uint64","name":"userId","type":"uint64"},{"indexed":false,"internalType":"uint96","name":"buyAmount","type":"uint96"},{"indexed":false,"internalType":"uint96","name":"sellAmount","type":"uint96"}],"name":"CancellationSellOrder","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":true,"internalType":"uint64","name":"userId","type":"uint64"},{"indexed":false,"internalType":"uint96","name":"buyAmount","type":"uint96"},{"indexed":false,"internalType":"uint96","name":"sellAmount","type":"uint96"}],"name":"ClaimedFromOrder","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":true,"internalType":"contract IERC20","name":"_auctioningToken","type":"address"},{"indexed":true,"internalType":"contract IERC20","name":"_biddingToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"orderCancellationEndDate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"auctionStartDate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"auctionEndDate","type":"uint256"},{"indexed":false,"internalType":"uint64","name":"userId","type":"uint64"},{"indexed":false,"internalType":"uint96","name":"_auctionedSellAmount","type":"uint96"},{"indexed":false,"internalType":"uint96","name":"_minBuyAmount","type":"uint96"},{"indexed":false,"internalType":"uint256","name":"minimumBiddingAmountPerOrder","type":"uint256"}],"name":"NewAuction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":true,"internalType":"uint64","name":"userId","type":"uint64"},{"indexed":false,"internalType":"uint96","name":"buyAmount","type":"uint96"},{"indexed":false,"internalType":"uint96","name":"sellAmount","type":"uint96"}],"name":"NewSellOrder","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint64","name":"userId","type":"uint64"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"NewUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint64","name":"userId","type":"uint64"}],"name":"UserRegistration","type":"event"},{"inputs":[],"name":"FEE_DENOMINATOR","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"annexToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"auctionAccessData","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"auctionAccessManager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"auctionCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"auctionData","outputs":[{"internalType":"contract IERC20","name":"auctioningToken","type":"address"},{"internalType":"contract IERC20","name":"biddingToken","type":"address"},{"internalType":"uint256","name":"orderCancellationEndDate","type":"uint256"},{"internalType":"uint256","name":"auctionEndDate","type":"uint256"},{"internalType":"uint256","name":"minimumBiddingAmountPerOrder","type":"uint256"},{"internalType":"uint256","name":"interimSumBidAmount","type":"uint256"},{"internalType":"uint256","name":"feeNumerator","type":"uint256"},{"internalType":"uint256","name":"minFundingThreshold","type":"uint256"},{"internalType":"bytes32","name":"initialAuctionOrder","type":"bytes32"},{"internalType":"bytes32","name":"interimOrder","type":"bytes32"},{"internalType":"uint96","name":"volumeClearingPriceOrder","type":"uint96"},{"internalType":"bool","name":"minFundingThresholdNotReached","type":"bool"},{"internalType":"bool","name":"isAtomicClosureAllowed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"bytes32[]","name":"_sellOrders","type":"bytes32[]"}],"name":"cancelSellOrders","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"bytes32[]","name":"orders","type":"bytes32[]"}],"name":"claimFromParticipantOrder","outputs":[{"internalType":"uint256","name":"sumAuctioningTokenAmount","type":"uint256"},{"internalType":"uint256","name":"sumBiddingTokenAmount","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"clearingPriceOrders","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"bytes32","name":"order","type":"bytes32"}],"name":"containsOrder","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"documents","outputs":[{"internalType":"contract IDocuments","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"feeNumerator","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"feeReceiverUserId","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllDocuments","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"}],"name":"getDocument","outputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDocumentCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getDocumentName","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"}],"name":"getSecondsRemainingInBatch","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"userId","type":"uint256"}],"name":"getUserAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getUserId","outputs":[{"internalType":"uint64","name":"userId","type":"uint64"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"contract IERC20","name":"_auctioningToken","type":"address"},{"internalType":"contract IERC20","name":"_biddingToken","type":"address"},{"internalType":"address","name":"accessManagerContract","type":"address"},{"internalType":"uint256","name":"orderCancellationEndDate","type":"uint256"},{"internalType":"uint256","name":"auctionStartDate","type":"uint256"},{"internalType":"uint256","name":"auctionEndDate","type":"uint256"},{"internalType":"uint256","name":"minimumBiddingAmountPerOrder","type":"uint256"},{"internalType":"uint256","name":"minFundingThreshold","type":"uint256"},{"internalType":"uint96","name":"_auctionedSellAmount","type":"uint96"},{"internalType":"uint96","name":"_minBuyAmount","type":"uint96"},{"internalType":"bool","name":"isAtomicClosureAllowed","type":"bool"},{"internalType":"bytes","name":"accessManagerContractData","type":"bytes"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"discord","type":"string"},{"internalType":"string","name":"medium","type":"string"},{"internalType":"string","name":"twitter","type":"string"}],"internalType":"struct AnnexBatchAuction.AuctionAbout","name":"about","type":"tuple"}],"internalType":"struct AnnexBatchAuction.AuctionReq","name":"auction","type":"tuple"}],"name":"initiateAuction","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"numUsers","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"uint96[]","name":"_minBuyAmounts","type":"uint96[]"},{"internalType":"uint96[]","name":"_sellAmounts","type":"uint96[]"},{"internalType":"bytes32[]","name":"_prevSellOrders","type":"bytes32[]"},{"internalType":"bytes","name":"allowListCallData","type":"bytes"}],"name":"placeSellOrders","outputs":[{"internalType":"uint64","name":"userId","type":"uint64"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"uint96[]","name":"_minBuyAmounts","type":"uint96[]"},{"internalType":"uint96[]","name":"_sellAmounts","type":"uint96[]"},{"internalType":"bytes32[]","name":"_prevSellOrders","type":"bytes32[]"},{"internalType":"bytes","name":"allowListCallData","type":"bytes"},{"internalType":"address","name":"orderSubmitter","type":"address"}],"name":"placeSellOrdersOnBehalf","outputs":[{"internalType":"uint64","name":"userId","type":"uint64"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"uint256","name":"iterationSteps","type":"uint256"}],"name":"precalculateSellAmountSum","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"registerUser","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"}],"name":"removeDocument","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_annexToken","type":"address"}],"name":"setAnnexAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_data","type":"string"}],"name":"setDocument","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_document","type":"address"}],"name":"setDocumentAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"newFeeNumerator","type":"uint256"},{"internalType":"address","name":"newfeeReceiverAddress","type":"address"}],"name":"setFeeParameters","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_threshold","type":"uint256"}],"name":"setThreshold","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_treasury","type":"address"}],"name":"setTreasury","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"}],"name":"settleAuction","outputs":[{"internalType":"bytes32","name":"clearingOrder","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"auctionId","type":"uint256"},{"internalType":"uint96[]","name":"_minBuyAmount","type":"uint96[]"},{"internalType":"uint96[]","name":"_sellAmount","type":"uint96[]"},{"internalType":"bytes32[]","name":"_prevSellOrder","type":"bytes32[]"},{"internalType":"bytes","name":"allowListCallData","type":"bytes"}],"name":"settleAuctionAtomically","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"startingDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"threshold","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"totalBiddingTokens","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"treasury","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]';
