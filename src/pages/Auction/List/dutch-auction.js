@@ -86,7 +86,10 @@ function DutchAuction(props) {
 
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
-                .then(result => setData(JSON.parse(result)))
+                .then(result => {
+                    setData(JSON.parse(result))
+                    setLoading(false)
+                })
                 .catch(error => {
                     console.log(error);
                     setLoading(false)
@@ -131,7 +134,6 @@ function DutchAuction(props) {
                 };
             });
             const resolvedArray = await Promise.all(arr);
-            console.log('resolvedArray', resolvedArray)
             setDutchAuction(resolvedArray);
             setLoading(false)
         }
@@ -139,7 +141,8 @@ function DutchAuction(props) {
 
     return (
         <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
-            <h2 className="text-white ml-5 text-4xl font-normal">{props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming'} Auctions</h2>
+            <h2 className="text-white ml-5 text-4xl font-normal">{props.auctionStatus === 'live' ? 'Live' :
+                props.auctionStatus === 'past' ? 'Past' : 'Upcoming'} Auctions</h2>
             {loading ? (
                 <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
                     <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
