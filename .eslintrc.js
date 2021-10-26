@@ -64,6 +64,6 @@ module.exports = {
     'no-unused-vars': 'off',
     'react/prop-types': 0,
     'react/display-name': 'off',
-    'no-debugger': 'off',
+    "no-debugger": "off"
   },
 };
