@@ -88,7 +88,6 @@ function DutchAuction(props) {
                 .then(response => response.text())
                 .then(result => {
                     setData(JSON.parse(result))
-                    setLoading(false)
                 })
                 .catch(error => {
                     console.log(error);
@@ -137,6 +136,9 @@ function DutchAuction(props) {
             setDutchAuction(resolvedArray);
             setLoading(false)
         }
+        else if (data && data.data.auctions.length === 0) {
+            setLoading(false)
+        }
     }, [data]);
 
     return (
@@ -148,7 +150,7 @@ function DutchAuction(props) {
                     <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
                 </div>
             ) : error ? (
-                <div>{error}</div>
+                <div className="text-center mb-5 mt-5">{error}</div>
             ) : dutchAuction.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
                     {dutchAuction.map((item, index) => {

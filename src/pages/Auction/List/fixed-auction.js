@@ -93,7 +93,6 @@ function FixedAuction(props) {
                 .then(response => response.text())
                 .then(result => {
                     setData(JSON.parse(result))
-                    setLoading(false)
                 })
                 .catch(error => {
                     console.log(error);
@@ -153,6 +152,9 @@ function FixedAuction(props) {
             setFixedAuction(resolvedArray);
             setLoading(false)
         }
+        else if (data && data.data.auctions.length === 0) {
+            setLoading(false)
+        }
     }, [data]);
 
     const convertExponentToNum = (x) => {
@@ -182,7 +184,7 @@ function FixedAuction(props) {
                     <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
                 </div>
             ) : error ? (
-                <div>{error}</div>
+                <div className="text-center mb-5 mt-5">{error}</div>
             ) : fixedAuction.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
                     {fixedAuction.map((item, index) => {

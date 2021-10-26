@@ -113,12 +113,11 @@ function BatchAuction(props) {
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
                 .then(result => {
-                    console.log('response', JSON.parse(result))
                     setData(JSON.parse(result))
-                    setLoading(false)
                 })
                 .catch(error => {
                     console.log(error);
+                    setLoading(false)
                     setError('Error while Loading. Please try again later.')
                 });
         } catch (error) {
@@ -127,30 +126,6 @@ function BatchAuction(props) {
             setError('Error while Loading. Please try again later.')
         }
     }, [])
-
-    // useEffect(async () => {
-    //     try {
-    //         const myHeaders = new Headers();
-    //         myHeaders.append("Content-Type", "application/json");
-
-    //         const raw = JSON.stringify({
-    //             "query": query
-    //         });
-    //         const requestOptions = {
-    //             method: 'POST',
-    //             headers: myHeaders,
-    //             body: raw,
-    //             redirect: 'follow'
-    //         };
-    //         const response = await fetch('https://api.studio.thegraph.com/query/6267/annex-testnet-auction/0.2.3', requestOptions);
-    //         // if (response.data.success) {
-    //         console.log('reponse::', response)
-    //         // }
-
-    //     } catch (error) {
-    //         console.log("error after updating area", error);
-    //     }
-    // }, [])
 
     useEffect(() => {
         if (data && data.data.auctions.length > 0) {
@@ -198,6 +173,9 @@ function BatchAuction(props) {
             setAuction(arr);
             setLoading(false)
         }
+        else if (data && data.data.auctions.length === 0) {
+            setLoading(false)
+        }
     }, [data]);
 
     const convertExponentToNum = (x) => {
@@ -217,6 +195,7 @@ function BatchAuction(props) {
         }
         return x;
     };
+
 
     return (
         <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
