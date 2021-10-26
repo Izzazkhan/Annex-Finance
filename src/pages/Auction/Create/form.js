@@ -233,7 +233,7 @@ export default function Form(props) {
     type: 'batch',
   });
   const annTokenContract = getANNTokenContract();
-  const auctionContract = getAuctionContract(state.type);
+  const auctionContract = getAuctionContract('batch');
 
   useEffect(async () => {
     if (showModal) {
@@ -418,7 +418,7 @@ export default function Form(props) {
   const handleApproveANNToken = async () => {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
-      let auctionAddr = CONTRACT_ANNEX_AUCTION[state.type]['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION['batch']['address'];
       let annAllowance = await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
@@ -434,7 +434,7 @@ export default function Form(props) {
     try {
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
       let { auctionToken } = await getFormState();
-      let auctionAddr = CONTRACT_ANNEX_AUCTION[state.type]['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION['batch']['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
       let auctionTokenAllowance = await getTokenAllowance(
         auctionTokenContract.methods,

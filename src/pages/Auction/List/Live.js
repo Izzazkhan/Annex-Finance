@@ -6,7 +6,6 @@ import FixedLive from './fixed-auction';
 
 
 function Live(props) {
-  console.log('live props', props)
 
   const [activeTab, setActiveTab] = useState('batch');
   const [batchActive, setBatchActive] = useState(true);

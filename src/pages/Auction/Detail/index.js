@@ -342,6 +342,8 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount_eth'])
             .dividedBy(biddingDecimal)
             .toString();
+          let claimableLP = order['claimableLP'].split(' ')
+          claimableLP = Number(claimableLP[0]).toFixed(18);
           let price = order['price'] ? order['price'] : 0;
           let priceSeparate = price.split(' ');
           price = Number(priceSeparate[0]).toFixed(8);
@@ -365,6 +367,7 @@ function Detail(props) {
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
               priceUnit: priceUnit,
+              claimableLP: claimableLP
             });
           } else {
             otherUserOrders.push({
@@ -376,6 +379,7 @@ function Detail(props) {
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
               priceUnit: priceUnit,
+              claimableLP: claimableLP
             });
           }
         });
@@ -644,7 +648,7 @@ function Detail(props) {
           })
           .then((response) => {
             let { data } = response;
-            // console.log('response', data);
+            console.log('response', data);
             if (props.location.pathname.includes('batch')) {
               setData(data);
             } else {

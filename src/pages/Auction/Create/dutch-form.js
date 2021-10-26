@@ -232,7 +232,7 @@ export default function DutchForm(props) {
     type: 'batch',
   });
   const annTokenContract = getANNTokenContract();
-  const auctionContract = getAuctionContract(state.type);
+  const auctionContract = getAuctionContract('dutch');
   const dutchAuction = dutchAuctionContract();
 
   useEffect(async () => {
@@ -500,7 +500,7 @@ export default function DutchForm(props) {
   const handleApproveANNToken = async () => {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
-      let auctionAddr = CONTRACT_ANNEX_AUCTION[state.type]['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION['dutch']['address'];
       let annAllowance = await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
@@ -516,7 +516,7 @@ export default function DutchForm(props) {
     try {
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
       let { auctionToken } = await getFormState();
-      let auctionAddr = CONTRACT_ANNEX_AUCTION[state.type]['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION['dutch']['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
       let auctionTokenAllowance = await getTokenAllowance(
         auctionTokenContract.methods,

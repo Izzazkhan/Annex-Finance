@@ -223,7 +223,7 @@ function Table(props) {
               <input
                 type="checkbox"
                 checked={isShowMyOrder}
-                onChange={() => {}}
+                onChange={() => { }}
                 onChange={() => updateMyOrder(!isShowMyOrder)}
               />
               <span className="checkmark"></span>
@@ -251,9 +251,8 @@ function Table(props) {
         </div>
         <Styles>
           <table
-            className={`text-left ${!isTableHorizontal && 'border-thick'} ${
-              propsData.length === 0 && 'no-data'
-            }`}
+            className={`text-left ${!isTableHorizontal && 'border-thick'} ${propsData.length === 0 && 'no-data'
+              }`}
           >
             {isTableHorizontal ? (
               <>
@@ -350,7 +349,7 @@ function Table(props) {
                             <div>{item.sellAmount}</div>
                           </td>
                           <td>
-                            <div>{item.claimableLP}</div>
+                            <div>{item.claimableLP} {item.auctionSymbol}</div>
                           </td>
                           <td>
                             <div className="text-primary">
@@ -373,14 +372,13 @@ function Table(props) {
                           </td>
                           <td>
                             {account === userId &&
-                            props.auctionStatus === 'completed' &&
-                            props.isAlreadySettle &&
-                            item.status !== 'CANCELLED' ? (
+                              props.auctionStatus === 'completed' &&
+                              props.isAlreadySettle &&
+                              item.status !== 'CANCELLED' ? (
                               <div className="flex items-center custom-check">
                                 <label
-                                  className={`container text-base ml-2 font-normal ${
-                                    loading || !props.isAlreadySettle ? 'disabled' : ''
-                                  }`}
+                                  className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
+                                    }`}
                                 >
                                   <input
                                     type="checkbox"
@@ -393,13 +391,12 @@ function Table(props) {
                                       item.status === 'PROCESSED' ||
                                       selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
                                     }
-                                    onChange={() => {}}
+                                    onChange={() => { }}
                                     onClick={() => handleClaimCheckbox(item)}
                                   />
                                   <span
-                                    className={`checkmark ${
-                                      item.status === 'PROCESSED' ? 'green' : ''
-                                    }`}
+                                    className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''
+                                      }`}
                                   >
                                     <span style={{ display: 'none' }} className="text">
                                       {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
@@ -413,9 +410,8 @@ function Table(props) {
                               item.status !== 'CANCELLED' ? (
                               <div className="flex items-center custom-check">
                                 <label
-                                  className={`container text-base ml-2 font-normal ${
-                                    loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                  }`}
+                                  className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                                    }`}
                                 >
                                   <input
                                     type="checkbox"
@@ -424,7 +420,7 @@ function Table(props) {
                                       item.status === 'CANCELLED' ||
                                       selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
                                     }
-                                    onChange={() => {}}
+                                    onChange={() => { }}
                                     onClick={() => handleCancelCheckbox(item)}
                                   />
                                   <span className="checkmark">
@@ -441,7 +437,7 @@ function Table(props) {
                                     type="checkbox"
                                     disabled={true}
                                     checked={true}
-                                    onChange={() => {}}
+                                    onChange={() => { }}
                                   />
                                   <span className="checkmark red">
                                     <span style={{ display: 'none' }} className="text">
@@ -674,7 +670,7 @@ function Table(props) {
                       <tr>
                         <th>Tokens Claimable</th>
                         <td>
-                          <div>{item.claimableLP}</div>
+                          <div>{item.claimableLP} {item.auctionSymbol}</div>
                         </td>
                       </tr>
                       <tr>
@@ -730,14 +726,13 @@ function Table(props) {
                         <th className="text-center">Status</th>
                         <td>
                           {account === userId &&
-                          props.auctionStatus === 'completed' &&
-                          props.isAlreadySettle &&
-                          item.status !== 'CANCELLED' ? (
+                            props.auctionStatus === 'completed' &&
+                            props.isAlreadySettle &&
+                            item.status !== 'CANCELLED' ? (
                             <div className="flex items-center custom-check">
                               <label
-                                className={`container text-base ml-2 font-normal ${
-                                  loading || !props.isAlreadySettle ? 'disabled' : ''
-                                }`}
+                                className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
+                                  }`}
                               >
                                 <input
                                   type="checkbox"
@@ -748,13 +743,12 @@ function Table(props) {
                                     item.status === 'PROCESSED' ||
                                     selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
                                   }
-                                  onChange={() => {}}
+                                  onChange={() => { }}
                                   onClick={() => handleClaimCheckbox(item)}
                                 />
                                 <span
-                                  className={`checkmark ${
-                                    item.status === 'PROCESSED' ? 'green' : ''
-                                  }`}
+                                  className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''
+                                    }`}
                                 >
                                   <span style={{ display: 'none' }} className="text">
                                     {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
@@ -768,9 +762,8 @@ function Table(props) {
                             item.status !== 'CANCELLED' ? (
                             <div className="flex items-center custom-check">
                               <label
-                                className={`container text-base ml-2 font-normal ${
-                                  loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                }`}
+                                className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                                  }`}
                               >
                                 <input
                                   type="checkbox"
@@ -779,7 +772,7 @@ function Table(props) {
                                     item.status === 'CANCELLED' ||
                                     selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
                                   }
-                                  onChange={() => {}}
+                                  onChange={() => { }}
                                   onClick={() => handleCancelCheckbox(item)}
                                 />
                                 <span className="checkmark">
@@ -796,7 +789,7 @@ function Table(props) {
                                   type="checkbox"
                                   disabled={true}
                                   checked={true}
-                                  onChange={() => {}}
+                                  onChange={() => { }}
                                 />
                                 <span className="checkmark red">
                                   <span style={{ display: 'none' }} className="text">
@@ -842,7 +835,7 @@ const Checkbox = (disabled, checked, item) => {
         type="checkbox"
         disabled={disabled}
         checked={checked}
-        onChange={() => {}}
+        onChange={() => { }}
         onClick={() => handleCancelCheckbox(item)}
       />
       <span className="checkmark"></span>
