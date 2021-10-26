@@ -1205,17 +1205,25 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a
-                    href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ wordBreak: 'break-all' }}
-                  >
+                  <div className='flex items-center'>
+                    <a
+                      href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ wordBreak: 'break-all', marginRight: '5px' }}
+                    >
+                      <img
+                        className=""
+                        src={require('../../../assets/images/link.svg').default}
+                        alt=""
+                      />
+                    </a>
                     {state.detail.contract}
-                  </a>
+                  </div>
                 )}
               </div>
             </div>
+
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Token</div>
               <div className="text-xl font-medium">
@@ -1224,14 +1232,21 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a
-                    href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ wordBreak: 'break-all' }}
-                  >
+                  <div className='flex items-center'>
+                    <a
+                      href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ wordBreak: 'break-all', marginRight: '5px' }}
+                    >
+                      <img
+                        className=""
+                        src={require('../../../assets/images/link.svg').default}
+                        alt=""
+                      />
+                    </a>
                     {state.detail.token}
-                  </a>
+                  </div>
                 )}
               </div>
             </div>

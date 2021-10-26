@@ -328,15 +328,22 @@ function Table(props) {
                         <tr key={index}>
                           <td>
                             <div className="flex justify-start items-center space-x-2">
-                              <div className="text-primary">
+                              <div className="text-primary flex items-center">
                                 <a
                                   href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
                                   target="_blank"
+                                  rel="noreferrer"
+                                  style={{ wordBreak: 'break-all', marginRight: '5px' }}
                                 >
-                                  {item.userId
-                                    ? item.userId.address.substring(0, 5) + '...'
-                                    : 'xxx'}
+                                  <img
+                                    style={{ height: '29px' }}
+                                    src={require('../../../assets/images/link.svg').default}
+                                    alt=""
+                                  />
                                 </a>
+                                {item.userId
+                                  ? item.userId.address.substring(0, 5) + '...'
+                                  : 'xxx'}
                               </div>
                             </div>
                           </td>
@@ -349,16 +356,23 @@ function Table(props) {
                             <div>{item.sellAmount}</div>
                           </td>
                           <td>
-                            <div>{item.claimableLP} {item.auctionSymbol}</div>
+                            <div>{`${props.isAlreadySettle ? `${item.claimableLP} ${item.auctionSymbol}` : '0'}`}</div>
                           </td>
                           <td>
-                            <div className="text-primary">
+                            <div className="text-primary flex items-center">
                               <a
                                 href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
                                 target="_blank"
+                                rel="noreferrer"
+                                style={{ wordBreak: 'break-all', marginRight: '5px' }}
                               >
-                                {trimAddress(item.txHash)}
+                                <img
+                                  style={{ height: '39px' }}
+                                  src={require('../../../assets/images/link.svg').default}
+                                  alt=""
+                                />
                               </a>
+                              {trimAddress(item.txHash)}
                             </div>
                           </td>
                           <td>
@@ -670,7 +684,7 @@ function Table(props) {
                       <tr>
                         <th>Tokens Claimable</th>
                         <td>
-                          <div>{item.claimableLP} {item.auctionSymbol}</div>
+                          <div>{`${props.isAlreadySettle ? `${item.claimableLP} ${item.auctionSymbol}` : '0'}`}</div>
                         </td>
                       </tr>
                       <tr>

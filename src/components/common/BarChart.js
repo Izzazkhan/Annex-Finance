@@ -55,8 +55,8 @@ export default function Chart(props) {
                     : entry.isSuccessfull &&
                       Math.floor(Date.now() / 1000) > entry.auctionEndDate &&
                       entry.minFundingThresholdNotReached === false
-                    ? '#C4C4C4'
-                    : '#565656';
+                      ? '#C4C4C4'
+                      : '#565656';
 
                 return <Cell fill={color} key={index} />;
               })}

@@ -142,7 +142,7 @@ export default function DutchForm(props) {
         type: 'checkbox',
         id: 'isClaim',
         placeholder: '',
-        description: 'Claim Auction',
+        description: 'Claim auction at specific date and time',
         value: false,
         colspan: 6,
       },
@@ -338,7 +338,7 @@ export default function DutchForm(props) {
           input['isValid'] = false;
         }
       } else if (index === 4) {
-        if (e.target.value >= 1) {
+        if (e.target.value > 0) {
           input['isValid'] = true;
           input['description'] = 'The Maximum amount purchased per wallet/account.';
         } else {
