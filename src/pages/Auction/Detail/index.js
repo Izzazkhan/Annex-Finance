@@ -68,7 +68,6 @@ const ArrowContainer = styled.div`
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
-  console.log('detailss', props)
   const [state, setState] = useState({
     auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
@@ -229,7 +228,8 @@ function Detail(props) {
       if (
         data &&
         typeof data.auctions !== 'undefined' &&
-        props.location.state.auctionType === 'batch'
+        // props.location.state.auctionType === 'batch'
+        props.location.pathname.includes('batch')
       ) {
         let elem = data.auctions[0];
         let type = elem['type'];
@@ -443,18 +443,15 @@ function Detail(props) {
       } else {
         let elem = data;
         const auctioningToken =
-          props.location.state.auctionType !== 'batch' &&
-          await new instance.eth.Contract(
+          new instance.eth.Contract(
             JSON.parse(constants.CONTRACT_ABEP_ABI),
             elem.auctioningToken,
           );
         const biddingToken =
-          props.location.state.auctionType !== 'batch' &&
-          await new instance.eth.Contract(
+          new instance.eth.Contract(
             JSON.parse(constants.CONTRACT_ABEP_ABI),
             elem.biddingToken,
           );
-        console.log('element', auctioningToken, biddingToken)
         let type = elem['type'];
         let auctionStatus = '';
         let auctionTokenId = elem['auctioningToken'];
@@ -469,7 +466,7 @@ function Detail(props) {
         let minimumPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
         let currentBalance =
           type === 'DUTCH' &&
-          (await methods.call(dutchContract.methods.currentPrice, [props.location.state.data.id]));
+          (await methods.call(dutchContract.methods.currentPrice, [props.match.params.id]));
 
         let currentPrice =
           type === 'DUTCH'
@@ -629,9 +626,9 @@ function Detail(props) {
   };
   const getData = () => {
     let apollo;
-    if (props.location.state.auctionType === 'dutch') {
+    if (props.location.pathname.includes('dutch')) {
       apollo = dutchApollo;
-    } else if (props.location.state.auctionType === 'fixed') {
+    } else if (props.location.pathname.includes('fixed')) {
       apollo = fixedApollo;
     } else {
       apollo = apolloClient;
@@ -642,13 +639,13 @@ function Detail(props) {
       setTimeout(() => {
         apollo
           .query({
-            query: props.location.state.auctionType === 'batch' ? query : dutchQuery,
+            query: props.location.pathname.includes('batch') ? query : dutchQuery,
             variables: {},
           })
           .then((response) => {
             let { data } = response;
-            console.log('response', data);
-            if (props.location.state.auctionType === 'batch') {
+            // console.log('response', data);
+            if (props.location.pathname.includes('batch')) {
               setData(data);
             } else {
               setData(data.auction);
@@ -717,13 +714,11 @@ function Detail(props) {
           encodedOrder,
         ])
         .then((res) => {
-          console.log('response', res)
           let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
           lpToken = convertExponentToNum(lpToken);
           resolve(lpToken);
         })
         .catch((err) => {
-          console.log('error', err)
           console.log(err);
           reject(err);
         });
@@ -930,7 +925,7 @@ function Detail(props) {
         </div>
       </div>
 
-      {showDetails && props.location.state.auctionType === 'batch' ? (
+      {showDetails && props.location.pathname.includes('batch') ? (
         <div
           className="grid grid-cols-3
         text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
@@ -1299,7 +1294,7 @@ function Detail(props) {
           />
         </div>
       </div>
-      {props.location.state.auctionType === 'batch' ? (
+      {props.location.pathname.includes('batch') ? (
         <Table
           data={state.orders}
           loading={loading}

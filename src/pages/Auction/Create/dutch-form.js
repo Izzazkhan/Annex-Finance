@@ -446,7 +446,6 @@ export default function DutchForm(props) {
             accountId,
           )
           let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
-          console.log('auctionId', auctionId)
           setLoading(false);
           updateShowModal(true);
           updateModalType('success');

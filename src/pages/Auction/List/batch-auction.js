@@ -11,7 +11,6 @@ import BigNumber from 'bignumber.js';
 
 function BatchAuction(props) {
     const currentTimeStamp = Math.floor(Date.now() / 1000);
-    console.log('props', props)
     let auctionTime
     if (props.auctionStatus === 'live') {
         auctionTime = 'auctionEndDate_gt'
@@ -23,7 +22,7 @@ function BatchAuction(props) {
         auctionTime = 'auctionStartDate_gt'
     }
 
-    let query = gql`
+    let query = `
   {
     auctions(where: { ${auctionTime}: "${currentTimeStamp}"}) {
       id
@@ -84,18 +83,76 @@ function BatchAuction(props) {
   }
 `;
 
-    const { subGraphInstance } = useContext(subGraphContext);
-    const { useQuery: useQueryBatch } = useSubgraph(subGraphInstance);
-    const { error, data } = useQueryBatch(query);
-    console.log('batchData', data);
-
     const [auction, setAuction] = useState([]);
+    const [data, setData] = useState(undefined);
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        if (data && data.auctions && auction.length === 0) {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+                "query": query
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            let subGraph
+            if (process.env.REACT_APP_ENV === 'dev') {
+                subGraph = process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+            } else {
+                subGraph = process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
+            }
+
+            fetch(subGraph, requestOptions)
+                .then(response => response.text())
+                .then(result => setData(JSON.parse(result)))
+                .catch(error => {
+                    console.log(error);
+                    setLoading(false)
+                    setError('Error while Loading. Please try again later.')
+                });
+        } catch (error) {
+            console.log(error);
+            setLoading(false)
+            setError('Error while Loading. Please try again later.')
+        }
+    }, [])
+
+    // useEffect(async () => {
+    //     try {
+    //         const myHeaders = new Headers();
+    //         myHeaders.append("Content-Type", "application/json");
+
+    //         const raw = JSON.stringify({
+    //             "query": query
+    //         });
+    //         const requestOptions = {
+    //             method: 'POST',
+    //             headers: myHeaders,
+    //             body: raw,
+    //             redirect: 'follow'
+    //         };
+    //         const response = await fetch('https://api.studio.thegraph.com/query/6267/annex-testnet-auction/0.2.3', requestOptions);
+    //         // if (response.data.success) {
+    //         console.log('reponse::', response)
+    //         // }
+
+    //     } catch (error) {
+    //         console.log("error after updating area", error);
+    //     }
+    // }, [])
+
+    useEffect(() => {
+        if (data && data.data.auctions.length > 0) {
             let arr = [];
-            data.auctions.forEach((element) => {
+            data.data.auctions.forEach((element) => {
                 let auctionDecimal = element['auctioningToken']['decimals'];
                 let biddingDecimal = element['biddingToken']['decimals'];
                 let auctionEndDate = element['auctionEndDate'];
@@ -127,8 +184,8 @@ function BatchAuction(props) {
                     ...element,
                     chartType: 'block',
                     data: graphData,
-                    status: 'Live',
-                    statusClass: 'live',
+                    status: props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming',
+                    statusClass: props.auctionStatus === 'live' ? 'live' : props.auctionStatus === 'past' ? 'past' : 'upcoming',
                     dateLabel: 'Completion Date',
                     formatedAuctionDate,
                     minFundingThreshold,
@@ -165,9 +222,7 @@ function BatchAuction(props) {
                 <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
                     <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
                 </div>
-            ) : error ? (
-                <div>{error}</div>
-            ) : auction.length > 0 ? (
+            ) : error ? <div className="text-center mb-5 mt-5">{error}</div> : auction.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
                     {auction.map((item, index) => {
                         return <AuctionItem key={index} {...item} />;

@@ -449,17 +449,16 @@ export default function DutchForm(props) {
             [data, whiteListerArr],
             accountId,
           );
-          // let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
+          let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
           setLoading(false);
           updateShowModal(true);
           updateModalType('success');
           setModalError({
             message: '',
             type: '',
-            //   payload: {
-            //     auctionId,
-            //   },
-            payload: '',
+            payload: {
+              auctionId,
+            },
           });
           // history.push('/auction/live');
         } else {

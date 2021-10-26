@@ -421,9 +421,10 @@ const Styles = styled.div`
 function Auction(props) {
   const { path } = useRouteMatch();
   let pathname;
-  if (props.location.state !== undefined && props.location.state.auctionType === 'dutch') {
+  if (props.location.pathname.includes('dutch')) {
     pathname = 'dutch-detail';
-  } else if (props.location.state !== undefined && props.location.state.auctionType === 'fixed') {
+  } else if (props.location.pathname.includes('fixed')
+  ) {
     pathname = 'fixed-detail';
   } else {
     pathname = 'batch-detail';

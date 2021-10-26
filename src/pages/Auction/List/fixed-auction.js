@@ -24,7 +24,7 @@ function FixedAuction(props) {
         auctionTime = 'auctionStartDate_gt'
     }
 
-    let dutchQuery = gql`
+    let query = `
     {
       auctions(where: { ${auctionTime}: "${currentTimeStamp}"}) {
         id
@@ -59,16 +59,54 @@ function FixedAuction(props) {
   `;
 
     const [fixedAuction, setFixedAuction] = useState([]);
-    const [fixedLoading, setFixedLoading] = useState(true);
+    const [data, setData] = useState(undefined);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('')
 
-    const { fixedAuctionInstance } = useContext(fixedAuctionContext);
-    const { useQuery: useQueryFixed } = useSubgraph(fixedAuctionInstance);
-    const { error: fixedError, data: fixedData } = useQueryFixed(dutchQuery);
-    console.log('fixedData', fixedData);
+    // const { fixedAuctionInstance } = useContext(fixedAuctionContext);
+    // const { useQuery: useQueryFixed } = useSubgraph(fixedAuctionInstance);
+    // const { error: fixedError, data: fixedData } = useQueryFixed(dutchQuery);
+
+    useEffect(() => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+                "query": query
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            let subGraph
+            if (process.env.REACT_APP_ENV === 'dev') {
+                subGraph = process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
+            } else {
+                subGraph = process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
+            }
+
+            fetch(subGraph, requestOptions)
+                .then(response => response.text())
+                .then(result => setData(JSON.parse(result)))
+                .catch(error => {
+                    console.log(error);
+                    setLoading(false)
+                    setError('Error while Loading. Please try again later.')
+                });
+        } catch (error) {
+            console.log(error);
+            setLoading(false)
+            setError('Error while Loading. Please try again later.')
+        }
+    }, [])
 
     useEffect(async () => {
-        if (fixedData && fixedData.auctions && fixedAuction.length === 0) {
-            let arr = fixedData.auctions.map(async (element) => {
+        if (data && data.data.auctions.length > 0) {
+            let arr = data.data.auctions.map(async (element) => {
                 let formatedAuctionDate = moment
                     .unix(element['auctionEndDate'])
                     .format('MM/DD/YYYY HH:mm:ss');
@@ -100,6 +138,8 @@ function FixedAuction(props) {
                     ...element,
                     data: [],
                     formatedAuctionDate,
+                    status: props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming',
+                    statusClass: props.auctionStatus === 'live' ? 'live' : props.auctionStatus === 'past' ? 'past' : 'upcoming',
                     title: element.type + ' Auction',
                     biddingDecimal: biddingDecimal,
                     yMaximum: yMaximum,
@@ -108,9 +148,9 @@ function FixedAuction(props) {
             });
             const resolvedArray = await Promise.all(arr);
             setFixedAuction(resolvedArray);
-            setFixedLoading(false)
+            setLoading(false)
         }
-    }, [fixedData]);
+    }, [data]);
 
     const convertExponentToNum = (x) => {
         if (Math.abs(x) < 1.0) {
@@ -133,12 +173,12 @@ function FixedAuction(props) {
     return (
         <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
             <h2 className="text-white ml-5 text-4xl font-normal">{props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming'} Auctions</h2>
-            {fixedLoading ? (
+            {loading ? (
                 <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
                     <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />
                 </div>
-            ) : fixedError ? (
-                <div>{fixedError}</div>
+            ) : error ? (
+                <div>{error}</div>
             ) : fixedAuction.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-8">
                     {fixedAuction.map((item, index) => {
