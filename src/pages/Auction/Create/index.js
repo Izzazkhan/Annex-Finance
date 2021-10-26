@@ -86,9 +86,8 @@ export default function CreateAuction(props) {
             }}
             value="batch"
             className={`
-           py-2 rounded px-32 h-15 mr-2  ${
-             batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
-           }`}
+           py-2 rounded px-32 h-15 mr-2  ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+              }`}
           >
             Batch
           </button>
@@ -97,9 +96,8 @@ export default function CreateAuction(props) {
               dutchTab(e);
             }}
             value="dutch"
-            className={`py-2 rounded px-32 transition-all h-15 mr-2 ${
-              dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
-            } `}
+            className={`py-2 rounded px-32 transition-all h-15 mr-2 ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+              } `}
           >
             Dutch
           </button>
@@ -108,9 +106,8 @@ export default function CreateAuction(props) {
               fixedTab(e);
             }}
             value="fixed"
-            className={`py-2 rounded px-32 transition-all h-15  ${
-              fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
-            } `}
+            className={`py-2 rounded px-32 transition-all h-15  ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+              } `}
           >
             Fixed
           </button>
@@ -118,7 +115,7 @@ export default function CreateAuction(props) {
       </Styles>
       {activeTab === 'batch' ? (
         <>
-          <h2 className="text-white text-4xl font-normal">Create An Auction</h2>
+          <h2 className="text-white text-4xl font-normal">Create Batch Auction</h2>
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
           {/* <form> */}
           <Form
@@ -143,7 +140,7 @@ export default function CreateAuction(props) {
         </>
       ) : activeTab === 'fixed' ? (
         <>
-          <h2 className="text-white text-4xl font-normal">Fixed</h2>
+          <h2 className="text-white text-4xl font-normal">Create Fixed Auction</h2>
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
           {/* <form> */}
           <FixedForm

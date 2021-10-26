@@ -74,7 +74,7 @@ function Detail(props) {
     detail: {},
     orders: [],
     auctionStatus: '',
-    type: 'batch',
+    type: props.location.pathname.includes('batch') ? 'batch' : props.location.pathname.includes('dutch') ? 'dutch' : 'fixed',
   });
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -227,8 +227,8 @@ function Detail(props) {
     try {
       if (
         data &&
-        typeof data.auctions !== 'undefined' &&
-        // props.location.state.auctionType === 'batch'
+        data.auctions &&
+        data.auctions.length > 0 &&
         props.location.pathname.includes('batch')
       ) {
         let elem = data.auctions[0];

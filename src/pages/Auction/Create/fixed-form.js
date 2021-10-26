@@ -451,7 +451,6 @@ export default function DutchForm(props) {
               [data, whiteListerArr],
               accountId,
             );
-            console.log('auctionTxDetail', auctionTxDetail)
             let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
             setLoading(false);
             updateShowModal(true);
@@ -508,6 +507,7 @@ export default function DutchForm(props) {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
       let auctionAddr = CONTRACT_ANNEX_AUCTION['fixed']['address'];
+      console.log('auctionAddr', auctionAddr)
       let annAllowance = await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
