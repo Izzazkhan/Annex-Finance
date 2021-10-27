@@ -209,9 +209,12 @@ const sidebarItems = [
   },
   // eslint-disable-next-line react/display-name
   { key: 7, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+
+  { key: 8, icon: (fill) => <PoolsIcon fill={fill} />, title: 'Pools', href: RouteMap.pools },
+
   // eslint-disable-next-line react/display-name
   {
-    key: 8,
+    key: 9,
     icon: (fill) => <PoolsIcon fill={fill} />,
     title: 'Games',
     href: `${RouteMap.games}`,
@@ -223,7 +226,7 @@ const sidebarItems = [
     ]
   },
   {
-    key: 9,
+    key: 10,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <Auction fill={fill} />,
     title: 'Auction',
@@ -313,24 +316,24 @@ const NavItems = ({
                       </div>
                     </a>
                   ) : (
-                  <div
-                    className="flex items-center space-x-4 ml-16 mb-2 mt-4 cursor-pointer"
-                    key={cat.key}
-                    onClick={() => {
-                      history.push(cat.href);
-                    }}
-                  >
-                    <img src={cat.icon} alt={cat.title} />
                     <div
-                      className={
-                        `${pathname}${search}`?.includes(cat?.href)
-                          ? 'text-primary text-23'
-                          : 'text-23'
-                      }
+                      className="flex items-center space-x-4 ml-16 mb-2 mt-4 cursor-pointer"
+                      key={cat.key}
+                      onClick={() => {
+                        history.push(cat.href);
+                      }}
                     >
-                      {cat.title}
+                      <img src={cat.icon} alt={cat.title} />
+                      <div
+                        className={
+                          `${pathname}${search}`?.includes(cat?.href)
+                            ? 'text-primary text-23'
+                            : 'text-23'
+                        }
+                      >
+                        {cat.title}
+                      </div>
                     </div>
-                  </div>
                   )
                 ))}
               </div>
