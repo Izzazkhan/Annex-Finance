@@ -169,7 +169,14 @@ function Detail(props) {
   }
 `;
 
-  let dutchQuery = gql`
+  let startingPrice
+  if (props.location.pathname.includes('dutch')) {
+    startingPrice = 'startingPrice'
+  }
+  else {
+    startingPrice = ''
+  }
+  let dutchFixedQuery = gql`
   {
     auction(id: ${props.match.params.id}){
       type
@@ -204,51 +211,11 @@ function Detail(props) {
   blockNumber
   timestamp
   }
-  startingPrice
+  ${startingPrice}
     }
   }
 `;
 
-  let fixedQuery = gql`
-  {
-    auction(id: ${props.match.params.id}){
-      type
-  auctioner_address
-  auctioningToken
-  biddingToken
-  auctionStartDate
-  auctionEndDate
-  auctionedSellAmount
-  amountMax1
-  amountMin1
-  about {
-    id
-    website
-  description
-  telegram
-  discord
-  medium
-  twitter
-  }
-  timestamp
-  orders {
-    id
-  auctioner_address
-  auctionId {
-    id
-  }
-  
-  buyAmount
-  sellAmount
-  txHash
-  blockNumber
-  timestamp
-  }
-    }
-  }
-`;
-  // startingPrice
-  // currentPriceOnOrder
   const { account } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
@@ -683,7 +650,7 @@ function Detail(props) {
       setTimeout(() => {
         apollo
           .query({
-            query: props.location.pathname.includes('batch') ? query : props.location.pathname.includes('dutch') ? dutchQuery : fixedQuery,
+            query: props.location.pathname.includes('batch') ? query : dutchFixedQuery,
             variables: {},
           })
           .then((response) => {
