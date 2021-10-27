@@ -338,7 +338,7 @@ function Pools() {
       <Styles>
         <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
  pl-6 lg:pr-5 ">
-          <div className="col-span-2 flex items-center">
+          {/* <div className="col-span-6 flex items-center">
             <div className="list-icon">
               <a onClick={ListViews}>{showList ? <img src={ListIconActive} alt="" className="" width="28px" height="25px" />
                 : <img src={ListIcon} alt="" className="" width="28px" height="25px" />}</a>
@@ -347,8 +347,19 @@ function Pools() {
               <a onClick={GridViews}>{showGrid ? <img src={GridIconActive} alt="" className="" width="25px" height="25px" />
                 : <img src={GridIcon} alt="" className="" width="25px" height="25px" />}</a>
             </div>
+          </div> */}
+          {/* <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 "> */}
+          <div className="bg-black rounded-3xl col-span-6">
+            <div className='bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between'
+            >
+              <div className="flex flex-col">
+                <div className="text-white font-bold text-xl">Auto CAKE Bounty</div>
+                <div className="text-white">Claim</div>
+              </div>
+            </div>
           </div>
-          <div className="col-span-5 flex items-center">
+          {/* </div> */}
+          <div className="col-span-6 flex items-center">
             <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
              ${live ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
             >Live</a>
@@ -359,7 +370,7 @@ function Pools() {
               <div className="ml-2 mb-2">Staked only</div>
             </div>
           </div>
-          <div className="col-span-5 flex items-center">
+          {/* <div className="col-span-5 flex items-center">
             <div className="mr-5">
               <Select className="border-primary" type="custom-primary" options={sortOptions} />
             </div>
@@ -372,7 +383,7 @@ function Pools() {
               />
             </div>
 
-          </div>
+          </div> */}
 
         </div>
         <GridView />
