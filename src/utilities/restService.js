@@ -4,16 +4,16 @@ import { set, isEmpty } from 'lodash';
 
 export async function restService({
   api,
-  third_party,
   method,
   params,
   contentType = 'json',
-  token = null
+  token = null,
+  third_party = false,
 }) {
   const headers = {};
   let path;
 
-  if (process.env.REACT_APP_ENV !== 'prod') {
+  if (process.env.REACT_APP_ENV === 'dev') {
     path = `${process.env.REACT_APP_DEVELOPMENT_API}${api}`;
   } else {
     path = `${process.env.REACT_APP_PRODUCTION_API}${api}`;

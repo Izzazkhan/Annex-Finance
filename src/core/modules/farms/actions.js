@@ -36,8 +36,7 @@ export const fetchFarmsPublicDataAsync = ({ account, data }) => {
     return async (dispatch) => {
         dispatch(setLoading(true))
         const response = await restService({
-            api: `https://api.annex.finance/api/v1/farming`,
-            third_party: true,
+            api: `/v1/farming`,
             method: 'GET',
             params: {}
         });

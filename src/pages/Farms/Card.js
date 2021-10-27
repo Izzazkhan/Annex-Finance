@@ -94,9 +94,11 @@ function Card({ item, dipositWithdraw }) {
             <div className="flex flex-col">
               <span className="font-bold">
                 {format(
-                  new BigNumber(item.rewardPerDayPerThousand)
-                    .dp(2)
-                    .toString(10)
+                  new BigNumber(item.rewardPerDayPerThousand).gt(10000000)
+                    ? 10000000
+                    : new BigNumber(item.rewardPerDayPerThousand)
+                      .dp(2)
+                      .toString(10)
                 )} ANN / Day
               </span>
               <span className="mt-2 text-primary">{item.allocPoint} allocPoint</span>
@@ -123,9 +125,11 @@ function Card({ item, dipositWithdraw }) {
             <span className="font-bold mt-3.5 flex items-center">
               <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
               {format(
-                new BigNumber(item.apy)
-                  .dp(2)
-                  .toString(10)
+                new BigNumber(item.apy).gt(10000000)
+                  ? 10000000
+                  : new BigNumber(item.apy)
+                    .dp(2)
+                    .toString(10)
               )}%
             </span>
           </div>
