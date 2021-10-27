@@ -117,39 +117,34 @@ export default function CreateAuction(props) {
         <>
           <h2 className="text-white text-4xl font-normal">Create Batch Auction</h2>
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
-          {/* <form> */}
           <Form
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}
+            activeTab={activeTab}
           />
-          {/* </form> */}
         </>
       ) : activeTab === 'dutch' ? (
         <>
           <h2 className="text-white text-4xl font-normal">Create Dutch Auction</h2>
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
-          {/* <form> */}
           <DutchForm
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}
             activeTab={activeTab}
           />
-          {/* </form> */}
         </>
       ) : activeTab === 'fixed' ? (
         <>
           <h2 className="text-white text-4xl font-normal">Create Fixed Auction</h2>
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
-          {/* <form> */}
           <FixedForm
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}
             activeTab={activeTab}
           />
-          {/* </form> */}
         </>
       ) : (
         ''

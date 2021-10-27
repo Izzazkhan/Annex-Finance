@@ -329,7 +329,7 @@ function Table(props) {
                           <td>
                             <div className="flex justify-start items-center space-x-2">
                               <div className="text-primary flex items-center">
-                                <a
+                                {/* <a
                                   href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
                                   target="_blank"
                                   rel="noreferrer"
@@ -340,10 +340,15 @@ function Table(props) {
                                     src={require('../../../assets/images/link.svg').default}
                                     alt=""
                                   />
+                                </a> */}
+                                <a
+                                  href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                                  target="_blank"
+                                >
+                                  {item.userId.address
+                                    ? item.userId.address.substring(0, 5) + '...'
+                                    : 'xxx'}
                                 </a>
-                                {item.userId
-                                  ? item.userId.address.substring(0, 5) + '...'
-                                  : 'xxx'}
                               </div>
                             </div>
                           </td>
@@ -360,7 +365,7 @@ function Table(props) {
                           </td>
                           <td>
                             <div className="text-primary flex items-center">
-                              <a
+                              {/* <a
                                 href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
                                 target="_blank"
                                 rel="noreferrer"
@@ -371,8 +376,13 @@ function Table(props) {
                                   src={require('../../../assets/images/link.svg').default}
                                   alt=""
                                 />
+                              </a> */}
+                              <a
+                                href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                                target="_blank"
+                              >
+                                {trimAddress(item.txHash)}
                               </a>
-                              {trimAddress(item.txHash)}
                             </div>
                           </td>
                           <td>

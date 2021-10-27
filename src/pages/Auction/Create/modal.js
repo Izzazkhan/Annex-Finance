@@ -33,7 +33,6 @@ function AuctionModal({
   isCreatingAuction,
   auctionType
 }) {
-  console.log('model type', auctionType)
   const history = useHistory();
   const redirectAndCloseModal = () => {
     history.push({
