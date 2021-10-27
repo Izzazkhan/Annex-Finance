@@ -26,6 +26,7 @@ const AuctionStatus = ({
   orders,
   auctionType,
 }) => {
+  console.log('auctionStatus', auctionStatus)
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
@@ -368,8 +369,6 @@ const AuctionProgress = (props) => {
     let inputs = [
       { id: 'minBuyAmount', placeholder: 'Min Buy Amount' },
       { id: 'sellAmount', placeholder: 'Sell Amount' },
-      // { id: 'allowListCallData', placeholder: 'Allow List Call Data' },
-      // { id: 'prevOrder', placeholder: 'Previous Order' },
     ];
     let isValid = true;
     let errorMessage = '';
@@ -440,8 +439,6 @@ const AuctionProgress = (props) => {
       state.minBuyAmount,
       state.sellAmount,
       fixedAmount,
-      // state.allowListCallData,
-      // state.prevOrder,
     );
     // }
   };
@@ -462,7 +459,7 @@ const AuctionProgress = (props) => {
 
   return (
     <>
-      {props.detail && props.detail.chartType === 'block' ? (
+      {props.detail && props.detail.type === 'BATCH' ? (
         <Fragment>
           <div className="chart flex items-end relative mt-5 pl-10 mr-2">
             <div className="graph-left-label flex flex-col items-center text-white text-sm justify-center font-normal">
@@ -509,7 +506,7 @@ const AuctionProgress = (props) => {
             <span className=" border last "></span>
           </div>
         </Fragment>
-      ) : props.detail.type === 'Fixed' ? (
+      ) : props.detail && props.detail.type === 'DUTCH' ? (
         <div className="text-white flex flex-col items-stretch justify-between items-center p-6 border-b border-lightGray">
           <LineChart
             width="100%"

@@ -4,11 +4,14 @@ import * as constants from '../../../utilities/constants';
 const instance = new Web3(window.ethereum);
 import AuctionItem from './item';
 import dutchAuctionContext from '../../../contexts/dutchAuction';
-import { methods } from '../../../utilities/ContractService';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
+import {
+    dutchAuctionContract,
+    methods,
+} from '../../../utilities/ContractService';
 
 
 function DutchAuction(props) {
@@ -56,9 +59,12 @@ function DutchAuction(props) {
           timestamp
         }
         timestamp
+        startingPrice
       }
     }
   `;
+
+    const dutchContract = dutchAuctionContract();
 
     const [dutchAuction, setDutchAuction] = useState([]);
     const [data, setData] = useState(undefined);
@@ -115,14 +121,21 @@ function DutchAuction(props) {
                     element.biddingToken,
                 );
                 let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
-                let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
-                let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
+                let biddingSymbol = await methods.call(biddingToken.methods.symbol, []);
+                // let startingPrice = element['amountMin1'] / Math.pow(10, biddingDecimal);
+                let startingPrice = element['startingPrice'] / Math.pow(10, biddingDecimal);
+                let currentBalance =
+                    (await methods.call(dutchContract.methods.currentPrice, [element['id']]));
+
+                let currentPrice = currentBalance / Math.pow(10, biddingDecimal)
+                currentPrice = Number(convertExponentToNum(currentPrice));
+                // let reservedPrice = element['amountMax1'] / Math.pow(10, biddingDecimal);
                 let graphData = [
                     {
                         value: startingPrice,
                     },
                     {
-                        value: reservedPrice,
+                        value: currentPrice,
                     },
                 ];
                 return {
@@ -133,6 +146,7 @@ function DutchAuction(props) {
                     formatedAuctionDate,
                     title: element.type + ' Auction',
                     biddingDecimal: biddingDecimal,
+                    biddingSymbol: biddingSymbol
                 };
             });
             const resolvedArray = await Promise.all(arr);
@@ -143,6 +157,24 @@ function DutchAuction(props) {
             setLoading(false)
         }
     }, [data]);
+
+    const convertExponentToNum = (x) => {
+        if (Math.abs(x) < 1.0) {
+            let e = parseInt(x.toString().split('e-')[1]);
+            if (e) {
+                x *= Math.pow(10, e - 1);
+                x = '0.' + new Array(e).join('0') + x.toString().substring(2);
+            }
+        } else {
+            let e = parseInt(x.toString().split('+')[1]);
+            if (e > 20) {
+                e -= 20;
+                x /= Math.pow(10, e);
+                x += new Array(e + 1).join('0');
+            }
+        }
+        return x;
+    };
 
     return (
         <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">

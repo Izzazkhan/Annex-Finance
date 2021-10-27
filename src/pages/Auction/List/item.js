@@ -132,7 +132,8 @@ function AuctionItem(props) {
           ) : props.type === 'DUTCH' ? (
             <Fragment>
               <div className="flex items-end relative ">
-                <LineChart width="310px" height="211px" data={props.data} />
+
+                <LineChart width="310px" height="211px" data={props.data} biddingSymbol={props.biddingSymbol} />
               </div>
               <div className="text-white flex flex-row items-center justify-between items-center mt-8 h-10">
                 <div className="items-center ">

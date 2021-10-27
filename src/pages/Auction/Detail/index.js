@@ -204,6 +204,7 @@ function Detail(props) {
   blockNumber
   timestamp
   }
+  startingPrice
     }
   }
 `;
@@ -494,7 +495,7 @@ function Detail(props) {
         } else {
           auctionStatus = 'inprogress';
         }
-        let startingPrice = elem['startingPrice'] / Math.pow(10, auctionDecimal);
+        let startingPrice = elem['startingPrice'] / Math.pow(10, biddingDecimal);
         Number(convertExponentToNum(startingPrice));
         let graphData = type === 'DUTCH' && [
           {
