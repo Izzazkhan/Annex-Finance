@@ -19,7 +19,8 @@ const TOKEN_ABI = {
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
-  fixed: constants.FIXED_AUCTION_ABI,
+  dutch: constants.CONTRACT_ANNEX_DUTCH_AUCTION_ABI,
+  fixed: constants.CONTRACT_ANNEX_FIXED_AUCTION_ABI,
 };
 
 const call = (method, params) => {
@@ -140,14 +141,14 @@ export const getEpochContract = () => {
 
 export const dutchAuctionContract = () => {
   return new instance.eth.Contract(
-    JSON.parse(constants.DUTCH_AUCTION_ABI),
+    JSON.parse(constants.CONTRACT_ANNEX_DUTCH_AUCTION_ABI),
     constants.CONTRACT_DUTCH_AUCTION_ADDRESS,
   );
 };
 
 export const fixedAuctionContract = () => {
   return new instance.eth.Contract(
-    JSON.parse(constants.FIXED_AUCTION_ABI),
+    JSON.parse(constants.CONTRACT_ANNEX_FIXED_AUCTION_ABI),
     constants.CONTRACT_FIXED_AUCTION_ADDRESS,
   );
 };

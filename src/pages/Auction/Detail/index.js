@@ -842,7 +842,8 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.totalAuctionedValue}`
+              `${props.location.pathname.includes('batch') ? `${state.detail.totalAuctionedValue}` :
+                `${state.detail.totalAuctionedValue} ${state.detail.auctionSymbol}`} `
             )}
             <a
               href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.auctionTokenId

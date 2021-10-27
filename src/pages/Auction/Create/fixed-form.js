@@ -280,8 +280,10 @@ export default function DutchForm(props) {
         element.value === ''
       ) {
         // obj[element.id] = emptyAddr;
-      } else if (element.id === 'cancellationDate' || element.id === 'endDate') {
-        // obj[element.id] = moment(element.value).valueOf();
+      } else if (element.id === 'endDate' && element.value.valueOf() <= state.inputs.find((item) => item.id === 'startDate').value.valueOf()) {
+        isValid = false;
+        errorMessage = 'End date must be greater than the start Date'
+
       } else if (element.type === 'url' && element.value !== '') {
         if (!validURL(element.value)) {
           isValid = false;
@@ -293,8 +295,46 @@ export default function DutchForm(props) {
         errorMessage = `${element.placeholder} required`;
         // document.getElementById(element.id).focus();
         break;
+      } else if (
+        element.id === 'startDate' && new Date().valueOf() > element.value.valueOf()
+      ) {
+        isValid = false;
+        errorMessage = 'Start time must be greater than the current time'
+        break;
+
       }
+
     }
+    const whiteLister = state.advanceInputs
+      .find((item) => item.id === 'accessContractAddr')
+      .value.split(/\r?\n/);
+    const whiteListerMapped = whiteLister.map((item) => Web3.utils.isAddress(item)).every(Boolean);
+    const allData = state.inputs.filter((item) => item.id !== 'isClaim').map((item) => item.isValid).every(Boolean);
+
+    if (!allData) {
+      isValid = false;
+      errorMessage = 'Please Enter the valid data'
+    }
+    else
+      if (
+        (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
+          !whiteListerMapped) ||
+        (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
+          state.advanceInputs.find((item) => item.id === 'accessContractAddr').value === '')
+      ) {
+        isValid = false;
+        errorMessage = 'Please add the correct addresses'
+      }
+      else if (
+        state.inputs.find((item) => item.id == 'isClaim').value && (state.inputs.find((item) => item.id === 'claimDate').value.valueOf() <
+          state.inputs.find((item) => item.id === 'startDate').value.valueOf() ||
+          state.inputs.find((item) => item.id === 'claimDate').value.valueOf() <
+          state.inputs.find((item) => item.id === 'endDate').value.valueOf())
+      ) {
+        isValid = false;
+        errorMessage = 'Claim time must be greater than the start and end time'
+      }
+
     if (!isValid) {
       Swal.fire({
         title: 'Error',
@@ -334,7 +374,7 @@ export default function DutchForm(props) {
           input['isValid'] = true;
           input['description'] = 'The minimium amount to bid on the auction.';
         } else {
-          input['description'] = 'The amount to bid should be greater than or equal to 1';
+          input['description'] = 'The amount to bid should be greater than 0';
           input['isValid'] = false;
         }
       } else if (index === 4) {
@@ -343,7 +383,7 @@ export default function DutchForm(props) {
           input['description'] = 'The Maximum amount purchased per wallet/account.';
         } else {
           input['description'] =
-            'The maximum amount purchased should be greater than or equal to 1';
+            'The maximum amount purchased should be greater than 0';
           input['isValid'] = false;
         }
       }
@@ -366,112 +406,76 @@ export default function DutchForm(props) {
   };
 
   const handleSubmit = async (e) => {
+    console.log('state', state)
     const whiteLister = state.advanceInputs
       .find((item) => item.id === 'accessContractAddr')
       .value.split(/\r?\n/);
-    const whiteListerMapped = whiteLister.map((item) => Web3.utils.isAddress(item));
-    const checker = whiteListerMapped.every(Boolean);
-    const isDataValid = state.inputs.filter((item) => item.isValid === true && item);
-    const isValid = isDataValid.every(Boolean);
-    const advanceCheckBox = state.advanceInputs.find((item) => item.type === 'checkbox');
 
     try {
-      if (!isValid) {
-        Swal.fire({
-          title: 'Error',
-          text: 'Please Enter the valid data',
-          icon: 'error',
-          showCancelButton: false,
+      e.preventDefault();
+      setLoading(true);
+      let formatedStateData = await getFormState();
+      const accountId = props.account;
+      const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
+      const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
+      const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
+      if (balanceOf > auctionThreshold) {
+        // formatedStateData.sellAmount = enocodeParamToUint(
+        //   formatedStateData.sellAmount,
+        //   auctionTokenDecimal,
+        // );
+        let claimDate = state.inputs.find((item) => item.type === 'checkbox').value ? formatedStateData.claimDate : 0
+        let data = [
+          formatedStateData.auctionToken,
+          formatedStateData.biddingToken,
+          formatedStateData.sellAmount,
+          formatedStateData.minBidAmount,
+          formatedStateData.startDate,
+          formatedStateData.endDate,
+          claimDate,
+          formatedStateData.maxPurchased,
+          false,
+          state.advanceInputs.find((item) => item.type === 'checkbox').value,
+          [
+            formatedStateData.websiteLink,
+            formatedStateData.description,
+            formatedStateData.telegramLink,
+            formatedStateData.discordLink,
+            formatedStateData.mediumLink,
+            formatedStateData.twitterLink,
+          ],
+        ];
+        console.log(
+          '************ auction data ************: ',
+          data,
+          formatedStateData.endDate.valueOf(),
+        );
+        let whiteListerArr = whiteLister.includes('') ? [] : whiteLister;
+        let auctionTxDetail = await methods.send(
+          fixedAuction.methods.initiateAuction,
+          [data, whiteListerArr],
+          accountId,
+        );
+        let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
+        setLoading(false);
+        updateShowModal(true);
+        updateModalType('success');
+        setModalError({
+          message: '',
+          type: '',
+          payload: {
+            auctionId,
+          },
         });
+        // history.push('/auction/live');
+      } else {
+        setModalError({
+          type: 'error',
+          message: 'Please buy ANN Token',
+          payload: {},
+        });
+        setLoading(false);
       }
-      else
-        if (
-          (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
-            !checker) ||
-          (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
-            state.advanceInputs.find((item) => item.id === 'accessContractAddr').value === '')
-        ) {
-          Swal.fire({
-            title: 'Error',
-            text: 'Please add the correct addresses',
-            icon: 'error',
-            showCancelButton: false,
-          });
-        } else if (
-          new Date().valueOf() > state.inputs.find((item) => item.id === 'startDate').value.valueOf()
-        ) {
-          Swal.fire({
-            title: 'Error',
-            text: 'Start time must be greater than the current time',
-            icon: 'error',
-            showCancelButton: false,
-          });
-        } else {
-          e.preventDefault();
-          setLoading(true);
-          let formatedStateData = await getFormState();
-          const accountId = props.account;
-          const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
-          const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
-          const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
-          if (balanceOf > auctionThreshold) {
-            // formatedStateData.sellAmount = enocodeParamToUint(
-            //   formatedStateData.sellAmount,
-            //   auctionTokenDecimal,
-            // );
-            let claimDate = state.inputs.find((item) => item.type === 'checkbox').value ? formatedStateData.claimDate : 0
-            let data = [
-              formatedStateData.auctionToken,
-              formatedStateData.biddingToken,
-              formatedStateData.sellAmount,
-              formatedStateData.minBidAmount,
-              formatedStateData.startDate,
-              formatedStateData.endDate,
-              claimDate,
-              formatedStateData.maxPurchased,
-              false,
-              advanceCheckBox.value,
-              [
-                formatedStateData.websiteLink,
-                formatedStateData.description,
-                formatedStateData.telegramLink,
-                formatedStateData.discordLink,
-                formatedStateData.mediumLink,
-                formatedStateData.twitterLink,
-              ],
-            ];
-            console.log(
-              '************ auction data ************: ',
-              data,
-              formatedStateData.endDate.valueOf(),
-            );
-            let whiteListerArr = whiteLister.includes('') ? [] : whiteLister;
-            let auctionTxDetail = await methods.send(
-              fixedAuction.methods.initiateAuction,
-              [data, whiteListerArr],
-              accountId,
-            );
-            let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
-            setLoading(false);
-            updateShowModal(true);
-            updateModalType('success');
-            setModalError({
-              message: '',
-              type: '',
-              payload: {
-                auctionId,
-              },
-            });
-            // history.push('/auction/live');
-          } else {
-            setModalError({
-              type: 'error',
-              message: 'Please buy ANN Token',
-              payload: {},
-            });
-            setLoading(false);
-          }
-        }
     } catch (error) {
       console.log(error);
       setModalError({

@@ -13,19 +13,22 @@ import moment from 'moment';
 
 function DutchAuction(props) {
     const currentTimeStamp = Math.floor(Date.now() / 1000);
-    let auctionTime
+    let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
-        auctionTime = 'auctionEndDate_gt'
+        auctionTime1 = 'auctionEndDate_gt'
+        auctionTime2 = 'auctionStartDate_lt'
     }
     else if (props.auctionStatus === 'past') {
-        auctionTime = 'auctionEndDate_lt'
+        auctionTime1 = 'auctionEndDate_lt'
+        auctionTime2 = 'auctionStartDate_lt'
     }
     else {
-        auctionTime = 'auctionStartDate_gt'
+        auctionTime1 = 'auctionEndDate_gt'
+        auctionTime2 = 'auctionStartDate_gt'
     }
     let dutchQuery = `
     {
-      auctions(where: { ${auctionTime}: "${currentTimeStamp}"}) {
+      auctions(where: { ${auctionTime1}: "${currentTimeStamp}", ${auctionTime2}: "${currentTimeStamp}" }) {
         id
         type
         auctioner_address
