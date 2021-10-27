@@ -208,6 +208,45 @@ function Detail(props) {
     }
   }
 `;
+
+  let fixedQuery = gql`
+  {
+    auction(id: ${props.match.params.id}){
+      type
+  auctioner_address
+  auctioningToken
+  biddingToken
+  auctionStartDate
+  auctionEndDate
+  auctionedSellAmount
+  amountMax1
+  amountMin1
+  about {
+    id
+    website
+  description
+  telegram
+  discord
+  medium
+  twitter
+  }
+  timestamp
+  orders {
+    id
+  auctioner_address
+  auctionId {
+    id
+  }
+  
+  buyAmount
+  sellAmount
+  txHash
+  blockNumber
+  timestamp
+  }
+    }
+  }
+`;
   // startingPrice
   // currentPriceOnOrder
   const { account } = useActiveWeb3React();
@@ -644,7 +683,7 @@ function Detail(props) {
       setTimeout(() => {
         apollo
           .query({
-            query: props.location.pathname.includes('batch') ? query : dutchQuery,
+            query: props.location.pathname.includes('batch') ? query : props.location.pathname.includes('dutch') ? dutchQuery : fixedQuery,
             variables: {},
           })
           .then((response) => {
