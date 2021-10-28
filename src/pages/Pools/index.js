@@ -349,16 +349,33 @@ function Pools() {
             </div>
           </div> */}
           {/* <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 "> */}
-          <div className="bg-black rounded-3xl col-span-6">
-            <div className='bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between'
+          <div className="bg-black rounded-4xl col-span-6 claim-card">
+            <div className='bgPrimaryGradient py-3 md:py-2 px-5 rounded-4xl flex items-center w-full justify-between'
             >
-              <div className="flex flex-col">
-                <div className="text-white font-bold text-xl">Auto CAKE Bounty</div>
-                <div className="text-white">Claim</div>
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-white">Auto CAKE Bounty</div>
+                </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col">
+                    <div className="text-white text-sm">0.000</div>
+                    <div className="text-white text-sm font-bold">0.000 USDC</div>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-white"></div>
+                </div>
+
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-white font-bold flex items-center">
+                    <button className="flex items-center focus:outline-none bg-gray py-2 px-4 
+                        rounded-lg text-black text-center font-bold text-sm">Claim</button></div>
+                </div>
               </div>
             </div>
           </div>
-          {/* </div> */}
           <div className="col-span-6 flex items-center">
             <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
              ${live ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}

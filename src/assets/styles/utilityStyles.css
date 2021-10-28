@@ -1312,3 +1312,6 @@ button:disabled {
   justify-content: space-between;
   align-items: center;
 }
+.claim-card {
+  width: 400px;
+}
