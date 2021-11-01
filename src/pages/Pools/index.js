@@ -404,7 +404,7 @@ function Pools() {
 
         </div>
         <GridView />
-        {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />}
+        {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
       </Styles>
     </Layout>
   );
