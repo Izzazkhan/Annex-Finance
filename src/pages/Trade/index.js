@@ -206,7 +206,7 @@ function Trade() {
                       </div>
                       <div className="flex flex-col">
                         <div className=" font-bold">LP Reward APR</div>
-                        <div className="flex text-white font-bold my-2">{item?.apr || 0}</div>
+                        <div className="flex text-white font-bold my-2">{item?.apr || 0}%</div>
                       </div>
                     </div>
                   </div>
@@ -339,7 +339,7 @@ function Trade() {
                       </div>
                       <div className="flex flex-col">
                         <div className=" font-bold">LP Reward APR</div>
-                        <div className="flex text-white font-bold my-2">{item?.apr || 0}</div>
+                        <div className="flex text-white font-bold my-2">{item?.apr || 0}%</div>
                       </div>
                     </div>
                   </div>
