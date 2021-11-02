@@ -92,7 +92,7 @@ function CommitModal({
         open={open}
         onSetOpen={onSetOpen}
         onCloseModal={onCloseModal}
-        afterCloseModal={() => {}}
+        afterCloseModal={() => { }}
         width="max-w-xl"
       />
     </div>
@@ -116,11 +116,10 @@ const ItemCheck = ({ title, description, status, isLoading, handleCheck }) => {
         <div className="text-lg font-bold mb-2">{title}</div>
         <div className="text-base font-normal mb-5">{description}</div>
         <button
-          className={`focus:outline-none  py-4 rounded-4xl text-base w-full max-w-350px  ${
-            isLoading
+          className={`focus:outline-none  py-4 rounded-4xl text-base w-full max-w-350px  ${isLoading
               ? 'text-black bg-lightGray'
               : 'border border-primary bg-transparent text-primary '
-          }`}
+            }`}
           onClick={handleCheck}
         >
           {isLoading ? 'Loading...' : status ? 'Done' : 'Start'}
