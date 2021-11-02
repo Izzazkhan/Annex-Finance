@@ -1,11 +1,11 @@
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useRefresh from "../../../hooks/useRefresh";
-import {useActiveWeb3React} from "../../../hooks";
-import {useEffect} from "react";
+import { useActiveWeb3React } from "../../../hooks";
+import { useEffect } from "react";
 import BigNumber from "bignumber.js";
-import {BIG_ZERO} from "../../../utils/bigNumber";
-import {getBalanceAmount} from "../../../utils/formatBalance";
-import {fetchFarmsPublicDataAsync, fetchFarmsUserDataAsync} from "./actions";
+import { BIG_ZERO } from "../../../utils/bigNumber";
+import { getBalanceAmount } from "../../../utils/formatBalance";
+import { fetchFarmsPublicDataAsync, fetchFarmsUserDataAsync } from "./actions";
 
 export const useFarms = () => {
     const farms = useSelector((state) => state.farms)
@@ -19,11 +19,7 @@ export const usePollFarmsData = () => {
     const { data } = useFarms()
 
     useEffect(() => {
-        dispatch(fetchFarmsPublicDataAsync())
-
-        if (account) {
-            dispatch(fetchFarmsUserDataAsync({ account, data }))
-        }
+        dispatch(fetchFarmsPublicDataAsync({ account, data }))
     }, [dispatch, fastRefresh, account])
 }
 

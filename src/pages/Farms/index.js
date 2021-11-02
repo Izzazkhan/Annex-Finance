@@ -15,6 +15,7 @@ import GridIconActive from '../../assets/images/card-grid-btn-active.png'
 import annCoin from '../../assets/images/coins/ann.png'
 import { connectAccount, useFarms, usePollFarmsData } from 'core'
 import BigNumber from 'bignumber.js';
+import Loader from 'components/UI/Loader';
 
 const Styles = styled.div`
   width: 100%;
@@ -32,7 +33,7 @@ function Farms({ settings }) {
   const [filteredPairs, setFilteredPairs] = useState([])
   const [selectedFarm, setSelectedFarm] = useState(null)
 
-  let { data: pairs } = useFarms()
+  let { data: pairs, loading } = useFarms()
   usePollFarmsData()
 
   const attatchImgWithData = (data) => {
@@ -63,21 +64,21 @@ function Farms({ settings }) {
             .toString(10)
           pair.userData.token0Amount = token0Amount
           pair.userData.token1Amount = token1Amount
+          pair.userData.token0AmountUSD = new BigNumber(pair.reserve0USD).times(userPercent).toString(10)
+          pair.userData.token1AmountUSD = new BigNumber(pair.reserve1USD).times(userPercent).toString(10)
           pair.userData.stakedAmountUSD = pair.token1Symbol
-            ? new BigNumber(pair.reserve0USD)
-              .plus(pair.reserve1USD)
-              .times(userPercent)
+            ? new BigNumber(pair.userData.token0AmountUSD)
+              .plus(pair.userData.token1AmountUSD)
               .dp(2, 1)
               .toString(10)
-            : new BigNumber(token0Amount)
-              .times(pair.token0Price)
+            : new BigNumber(pair.userData.token0AmountUSD)
               .dp(2, 1)
               .toString(10)
         }
 
         return {
           ...pair,
-          userPercent,
+          userPercent: userPercent.toString(10),
           token0Img: token0
             ? token0.img
             : annCoin,
@@ -236,11 +237,15 @@ function Farms({ settings }) {
               <Styles>
                 <div className="p-4 flex flex-row flex-wrap">
                   {
-                    data.map((item, key) => {
-                      return (
-                        <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
-                      )
-                    })
+                    loading ? (
+                      <Loader size="160px" className="m-40" stroke="#ff9800" />
+                    ) : (
+                      data.map((item, key) => {
+                        return (
+                          <Card key={key} item={item} dipositWithdraw={openDepositWithdrawModal} />
+                        )
+                      })
+                    )
                   }
                 </div>
               </Styles>

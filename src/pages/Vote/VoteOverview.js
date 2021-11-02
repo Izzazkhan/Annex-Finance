@@ -1,5 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
+import styled from 'styled-components';
 import { accountActionCreators, connectAccount } from '../../core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getTokenContract, getVoteContract, methods } from '../../utilities/ContractService';
@@ -15,6 +16,37 @@ import VoteCard from '../../components/vote/VoteOverview/VoteCard';
 import ProposalDetails from '../../components/vote/VoteOverview/ProposalDetails';
 import ProposalHistory from '../../components/vote/VoteOverview/ProposalHistory';
 import { useActiveWeb3React } from '../../hooks';
+
+const Styles = styled.div`
+  .tooltip {
+    margin-bottom: 5px;
+    .label {
+      display: none;
+      position: absolute;
+      bottom: 115%;
+      left: 0;
+      color: #e2e2e2;
+      font-size: 14px;
+      font-weight: 400;
+      max-width: 270px;
+      width: 14rem;
+      text-align: center;
+      background: #101016;
+      padding: 5px 10px;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      top: auto;
+      border-radius: 10px;
+      line-height: normal;
+      border: 2px solid #B068009C;
+      height: auto;
+    }
+    .tooltip-label:hover + .label {
+      display: flex;
+    }
+  }
+ `
 
 const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
   const { account } = useActiveWeb3React();
@@ -203,14 +235,21 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
                     </button>
                   )}
                   {proposalInfo.state === 'Queued' && (
-                    <button
-                      className="focus:outline-none bg-primary text-black py-2 px-8 rounded text-xl"
-                      disabled={isLoading || status === 'success' || !isPossibleExecuted}
-                      onClick={() => handleUpdateProposal('Execute')}
-                    >
-                      {isLoading && <Loading size={'18px'} margin={'8px'} />}
-                      {status === 'pending' || status === 'failure' ? 'Execute' : 'Executed'}
-                    </button>
+                    <Styles>
+                      <div className="tooltip relative">
+                        <div className="text-white text-xl flex items-center">
+                          <button
+                            className="tooltip-label :outline-none bg-primary text-black py-2 px-8 rounded text-xl"
+                            disabled={isLoading || status === 'success' || !isPossibleExecuted}
+                            onClick={() => handleUpdateProposal('Execute')}
+                          >
+                            {isLoading && <Loading size={'18px'} margin={'8px'} />}
+                            {status === 'pending' || status === 'failure' ? 'Execute' : 'Executed'}
+                          </button>
+                          {!isPossibleExecuted && <span className="label">Executable Date: {moment(proposalInfo?.eta * 1000).format('LLLL')}</span>}
+                        </div>
+                      </div>
+                    </Styles>
                   )}
 
                   <button

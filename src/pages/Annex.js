@@ -74,7 +74,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                 .dp(2, 1)
                 .toString(10)
         );
-        setTotalDistributed(sum.toString(10));
+        setTotalDistributed(settings.totalAnnexDistributed);
         setRemainAmount(
             new BigNumber(remainedAmount)
                 .div(new BigNumber(10).pow(18))
@@ -256,6 +256,10 @@ const Annex = ({ settings, getMarketHistory }) => {
                                 <div className="text-white">
                                     <div className="text-base">Daily Distribution</div>
                                     <div className="text-2xl 2xl:mt-4">{format(dailyDistribution)}</div>
+                                </div>
+                                <div className="text-white">
+                                    <div className="text-base">Total Distribution</div>
+                                    <div className="text-2xl 2xl:mt-4">{format(totalDistributed)}</div>
                                 </div>
                                 <div className="text-white">
                                     <div className="text-base">Remaining</div>

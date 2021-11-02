@@ -24,17 +24,28 @@ import {
   VaultIcon,
   VoteIcon,
   Auction,
+  LiquidateIcon
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
+import { CONTRACT_TOKEN_ADDRESS } from 'utilities/constants';
 
 const Wrapper = styled.aside`
-  @media (min-width: 1024px) {
-    min-width: 244px;
+  // @media (min-width: 1024px) {
+  //   min-width: 244px;
+  // }
+  .sidebar-item {
+    padding: 0.7rem 1rem 0.7em 1rem;
+    font-size: 1rem;
+  }
+  .sidebar-footer {
+    padding: 0 1rem;
+    font-size: 0.875rem;
   }
 
   .certik-container {
     // position: fixed;
     display: flex;
+    width: fit-content;
     height: 45px;
     margin-bottom: 10px;
     margin-top: 10px;
@@ -145,8 +156,8 @@ const Wrapper = styled.aside`
 `;
 
 const Logo = styled.img`
-  width: 160px;
-  height: 40px;
+  width: auto;
+  height: 2rem;
 `;
 
 const PlatformLogo = styled.img`
@@ -181,6 +192,12 @@ const sidebarItems = [
   },
   {
     key: 5,
+    icon: (fill) => <LiquidateIcon fill={fill} />,
+    title: 'Liquidate',
+    link: "https://liquidation.annex.finance/liquidator",
+  },
+  {
+    key: 6,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <TradeIcon fill={fill} />,
     title: 'Trade',
@@ -191,22 +208,22 @@ const sidebarItems = [
     ],
   },
   // eslint-disable-next-line react/display-name
-  { key: 6, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+  { key: 7, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
   // eslint-disable-next-line react/display-name
   {
-    key: 7,
+    key: 8,
     icon: (fill) => <PoolsIcon fill={fill} />,
     title: 'Games',
     href: `${RouteMap.games}`,
     subCats: [
       { key: 1, icon: underscore, title: 'Barbell', href: `${RouteMap.games}/barbell` },
-      { key: 2, icon: underscore, title: 'Roultte', href: `${RouteMap.games}/roultte` },
+      { key: 2, icon: underscore, title: 'Roulette', href: `${RouteMap.games}/roultte` },
       { key: 3, icon: underscore, title: 'Coin Flip', href: `${RouteMap.games}/coin-flip` },
       { key: 4, icon: underscore, title: 'Dice', href: `${RouteMap.games}/dice` },
     ]
   },
   {
-    key: 8,
+    key: 9,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <Auction fill={fill} />,
     title: 'Auction',
@@ -232,21 +249,20 @@ const NavItems = ({
 }) => {
   return (
     <div className={wrapperClassName}>
-      <div className="flex flex-col space-y-4 text-white">
+      <div className="flex flex-col text-white">
         {items?.map((i) => (
           <div key={i.key}>
-            {i.type === 'link' ? <a
+            {i.link ? <a
               target={'_blank'}
               rel={'noreferrer noopener'}
-              href={'https://farm.annex.finance/'}
+              href={i.link}
             >
               <div
                 className={`sidebar-item gap-x-4 items-center cursor-pointer
-                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20 ${pathname?.includes(i?.href) ? 'bg-black' : ''
-                  }`}
+                       py-2 pl-8 pr-6 rounded-3xl 2xl:pl-12 2xl:pr-20`}
               >
-                <div className="flex items-center" onClick={() => toggleDropdown(i.title)}>
-                  <div className="w-10">{i.icon(i.href === pathname ? primaryColor : '')}</div>
+                <div className="flex items-center">
+                  <div className="w-10">{i.icon('')}</div>
                   <div className="text-23">{i.title}</div>
                 </div>
               </div>
@@ -274,7 +290,7 @@ const NavItems = ({
             </div>}
             {activeMenu === i.title && (
               <div
-                className={`bg-blue-500 overflow-hidden pl-6 2xl:pl-10 transform transition-all duration-300 ease-in-out`}
+                className={`bg-blue-500 overflow-hidden pl-0 transform transition-all duration-300 ease-in-out`}
               >
                 {i.subCats?.map((cat) => (
                   cat.type === 'link' ? (
@@ -298,7 +314,7 @@ const NavItems = ({
                     </a>
                   ) : (
                   <div
-                    className="flex items-center space-x-4 ml-12 mb-2 mt-4 cursor-pointer"
+                    className="flex items-center space-x-4 ml-16 mb-2 mt-4 cursor-pointer"
                     key={cat.key}
                     onClick={() => {
                       history.push(cat.href);
@@ -378,7 +394,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         </div>
         <NavItems
           items={sidebarItems}
-          wrapperClassName="pt-10"
+          wrapperClassName="pt-6"
           search={search}
           history={history}
           pathname={pathname}
@@ -392,10 +408,10 @@ function Sidebar({ isOpen, onClose, settings }) {
           totalLiquidity={settings.totalLiquidity}
         // totalXaiMinted={totalXaiMinted}
         />
-        <div className="mt-auto mb-10 pl-8 pr-8">
+        <div className="mt-auto mb-10 pl-8 pr-8 sidebar-footer">
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
-              href="https://pancakeswap.finance/swap"
+              href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS.busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS.ann.address}`}
               target="_blank"
               rel="noreferrer"
             >

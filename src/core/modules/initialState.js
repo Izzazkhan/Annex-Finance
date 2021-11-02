@@ -104,7 +104,7 @@ const burn = {
   typedValue: "0",
 }
 
-const farms = { data: [], userDataLoaded: false }
+const farms = { data: [], userDataLoaded: false, loading: false }
 
 const pools = {
   data: [...poolsConfig],
