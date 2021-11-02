@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import _ from 'lodash';
 import { Switch, Route, useRouteMatch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import subGraphContext from '../../contexts/subgraph';
 import { calculateClearingPrice } from '../../utilities/graphClearingPrice';
@@ -102,12 +103,15 @@ function Trade() {
       setLoading(false)
       return
     }
-    const response = apiRequest.data
-    let liquidityPairs = response.pairs.sort((a, b) => a.liquidity - b.liquidity)
-    setSwapData(liquidityPairs);
+    let liquidityPairs = _.cloneDeep(apiRequest.data.pairs)
+    let hrChangePairs = _.cloneDeep(apiRequest.data.pairs)
 
-    let hrChangePairs = response.pairs.sort((a, b) => a.change24h - b.change24h)
+    liquidityPairs.sort((a, b) => b.liquidity - a.liquidity)
+    setSwapData(liquidityPairs);
+    
+    hrChangePairs.sort((a, b) => b.change24h - a.change24h)
     setLiquidityData(hrChangePairs);
+    
     setLoading(false)
   }
 
