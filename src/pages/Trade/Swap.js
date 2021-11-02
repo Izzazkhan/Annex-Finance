@@ -267,14 +267,14 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   );
 
   return (
-    <div className="py-10 w-full max-w-2xl mt-6">
+    <div className="py-10 w-full mt-6">
       {localStorage.getItem('tokenWarning') === 'false' ? undefined : <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />}
       <div
-        className={`w-full max-w-2xl py-8 px-6 sm:px-10 rounded-2xl mb-4 ${trade ? 'bg-primary' : 'bg-black'
+        className={`w-full py-8 px-6 sm:px-10 rounded-2xl mb-4 ${trade ? 'bg-primary' : 'bg-black'
           }`}
       >
         <div className="flex justify-between">
