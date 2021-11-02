@@ -27,6 +27,9 @@ import DownArrow from '../../assets/images/down-arrow.png';
 import coins from '../../assets/icons/coins.svg';
 import styled from 'styled-components';
 import { ANNEX_SWAP_EXCHANGE } from './EndPoints';
+import Loader from 'components/UI/Loader';
+import { currencyFormatter } from 'utilities/common';
+import { restService } from 'utilities';
 import BigNumber from 'bignumber.js';
 
 const Styles = styled.div`
@@ -58,11 +61,15 @@ const Styles = styled.div`
       }
     }
   }
-  @media (max-width: 1024px) {
-    .no-show {
-      display: none;
-    }
-  }
+`;
+const EmptyDataStyles = styled.div`
+  width: 100%;
+  overflow: auto;
+  border: double 2px transparent;
+  border-radius: 30px;
+  background-image: transparent;
+  display: flex;
+  justify-content: center;
 `;
 
 function Trade() {
@@ -80,104 +87,29 @@ function Trade() {
   const history = useHistory();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
+
 
   const getSwap = async () => {
-    try {
-      const response = await request(
-        ANNEX_SWAP_EXCHANGE,
-        gql`
-        {
-          pairs(first: 5) {
-            id
-            name
-            token0{
-              symbol
-              decimals
-            }
-            token1{
-              symbol
-              decimals
-            }
-            reserveUSD
-            token0Price
-            token1Price
-          }
-          pairDayDatas{
-            id
-          }
-          pairHourDatas{
-            id
-            reserveUSD
-          }
-        }
-        `,
-      );
-      setSwapData(response.pairs);
-
-      let pairDayMapped = [];
-      response.pairDayDatas.forEach((item) => {
-        response.pairs.forEach((pairItem) => {
-          if (item.id.includes(pairItem.id)) {
-            pairDayMapped.push(pairItem);
-          }
-        });
-      });
-
-      let pairHourMapped = [];
-      response.pairHourDatas.forEach((item) => {
-        pairDayMapped.forEach((pairItem) => {
-          if (item.id.includes(pairItem.id)) {
-            pairHourMapped.push({
-              ...pairItem,
-              calcultedUSD: parseInt(item.reserveUSD) - parseInt(pairItem.reserveUSD)
-            });
-          }
-        });
-      });
-
-      setLiquidityData(pairHourMapped);
-    } catch (error) {
-      console.error(error);
-      return [];
+    setLoading(true)
+    const apiRequest = await restService({
+      third_party: true,
+      api: ANNEX_SWAP_EXCHANGE,
+      method: 'GET',
+      params: {}
+    });
+    if (apiRequest.status !== 200) {
+      setLoading(false)
+      return
     }
-  };
+    const response = apiRequest.data
+    let liquidityPairs = response.pairs.sort((a, b) => a.liquidity - b.liquidity)
+    setSwapData(liquidityPairs);
 
-  // useEffect(() => {
-  //   if (data && data.auctions) {
-  //     let arr = [];
-  //     data.auctions.forEach((element) => {
-  //       let auctionDecimal = element['auctioningToken']['decimals'];
-  //       let biddingDecimal = element['biddingToken']['decimals'];
-  //       let { orders, clearingPriceOrder } = calculateClearingPrice(
-  //         element.orders,
-  //         auctionDecimal,
-  //         biddingDecimal,
-  //       );
-  //       let formatedAuctionDate = moment
-  //         .unix(element['auctionEndDate'])
-  //         .format('MM/DD/YYYY HH:mm:ss');
-  //       let graphData = [];
-  //       orders &&
-  //         orders.forEach((item) => {
-  //           graphData.push({
-  //             ...item,
-  //             isSuccessfull: item.price >= clearingPriceOrder.price,
-  //           });
-  //         });
-  //       arr.push({
-  //         ...element,
-  //         chartType: 'block',
-  //         data: graphData,
-  //         status: 'Live',
-  //         statusClass: 'live',
-  //         dateLabel: 'Completion Date',
-  //         formatedAuctionDate,
-  //         title: element.type + ' Auction',
-  //       });
-  //     });
-  //     setTrade(arr);
-  //   }
-  // }, [data]);
+    let hrChangePairs = response.pairs.sort((a, b) => a.change24h - b.change24h)
+    setLiquidityData(hrChangePairs);
+    setLoading(false)
+  }
 
   const buttons = [
     { key: 1, title: 'Swap', tab: 'swap', route: `${path}/swap` },
@@ -194,198 +126,222 @@ function Trade() {
         <SettingsModal open={settingsOpen} onCloseModal={() => setSettingsOpen(false)} />
         <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
         <div
-          className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl"
+          className="bg-fadeBlack w-full flex justify-between items-center rounded-3xl"
         >
-          <div
-            className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl 
-            grid grid-cols-1 lg:grid-cols-12 mt-8 p-5"
-          >
-            <div className="col-span-3 py-8 px-5 bg-black rounded-3xl sidebar">
-              <div className="text-white text-xl font-bold p-5 pt-6">Liquidity By </div>
-              <div className=" scroll pr-2">
-                {swapData.map((item, index) => {
-                  const token0Price =
-                    new BigNumber(item.token0Price).isLessThan(1) ?
-                      new BigNumber(item.token0Price).dp(4).toString(10) : new BigNumber(item.token0Price).dp(2, 1).toString(10);
-                  const token1Price =
-                    new BigNumber(item.token1Price).isLessThan(1) ?
-                      new BigNumber(item.token1Price).dp(4).toString(10) : new BigNumber(item.token1Price).dp(2, 1).toString(10)
-                  const reserveUSD = new BigNumber(item.reserveUSD).dp(2, 1).toString(10)
-                  const calcultedUSD = item.calcultedUSD ? new BigNumber(item.calcultedUSD).dp(2, 1).toString(10) : 0
-                  return (
-                    <div className="rounded-3xl border border-white mb-4" key={index} onClick={() => onBoxHandler(item)}>
-                      <div className="flex items-center justify-center py-3 px-3">
-                        <img width="14px" src={BTC} alt="" />
-                        <div className="text-white font-bold text-sm mx-5">{item.name}</div>
-                        <img width="14px" src={ANN} alt="" />
-                      </div>
-                      <div
-                        className={`flex items-center justify-between py-3 px-2 border-t ${index % 2 == 0 ?
-                          `border-b border-white` : 'bgPrimaryGradient'
-                          }
+          {/* <div
+          className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl 
+            grid grid-cols-1 gap-y-6 lg:grid-cols-8 lg:gap-x-6 mt-8 p-5"
+        > */}
+          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar">
+            <div className="text-white text-xl font-bold p-5 pt-6">Liquidity By </div>
+            <div className=" scroll pr-2">
+              {
+                loading && (
+                  <div className='flex w-full justify-center'>
+                    <Loader size="160px" className="m-20 self-center" stroke="#ff9800" />
+                  </div>
+                )
+              }
+              {
+                !loading && swapData.length === 0 && (
+                  <EmptyDataStyles>
+                    <div className="text-base p-20 flex justify-center text-white">
+                      <span className="text-center text-2xl md:text-3xl 
+                          text-border title-text">There are no pairs</span>
+                    </div>
+                  </EmptyDataStyles>
+                )
+              }
+              {!loading && swapData.map((item, index) => {
+                return (
+                  <div className="rounded-3xl border border-white mb-4" key={index} onClick={() => onBoxHandler(item)}>
+                    <div className="flex items-center justify-center py-3 px-3">
+                      <img width="14px" src={BTC} alt="" />
+                      <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>
+                      <img width="14px" src={ANN} alt="" />
+                    </div>
+                    <div
+                      className={`flex items-center justify-between py-3 px-2 border-t ${index % 2 == 0 ?
+                        `border-b border-white` : 'bgPrimaryGradient'
+                        }
                             text-white text-xs`}
-                        style={{ borderColor: '#2E2E2E' }}
-                      >
-                        <div className="flex items-center">
-                          <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0.symbol}{' '}
-                          =
-                          {` ${token0Price} `}{item.token1.symbol}
-                        </div>
-                        <div className="flex items-center ml-1.5">
-                          <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
-                          {item.token1.symbol} =
-                          {` ${token1Price} `}{item.token0.symbol}
-                        </div>
+                      style={{ borderColor: '#2E2E2E' }}
+                    >
+                      <div className="flex items-center">
+                        <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0Symbol}{' '}
+                        =
+                        {`${item.token0Price}`}{' '}
+                        {item.token1Symbol}
                       </div>
-                      <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
-                        <div className="flex flex-col  font-bold">
-                          <div className="flex ">
-                            <div className="mr-2" style={{ width: '14px' }}></div>Liquity
-                          </div>
-                          <div className="flex items-center my-2">
-                            <div className="mr-2" style={{ width: '14px' }}>
-                              <img className="" src={coins} alt="" />
-                            </div>
-                            {reserveUSD}
-                          </div>
-                          <div className="flex items-center">
-                            <div className="mr-2" style={{ width: '14px' }}>
-                              <img className="" src={Math.sign(item.calcultedUSD) === -1 ? DownArrow : UpArrow} alt="" />
-                            </div>
-                            {calcultedUSD} %
-                          </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <div className=" font-bold">LP Reward APR</div>
-                          <div className="flex text-white font-bold my-2">{calcultedUSD} %</div>
-                        </div>
+                      <div className="flex items-center">
+                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
+                        {item.token1Symbol} =
+                        {`${item.token1Price}`}{' '}
+                        {item.token0Symbol}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
+                      <div className="flex flex-col  font-bold">
+                        <div className="flex ">
+                          <div className="mr-2" style={{ width: '14px' }}></div>Liquity
+                        </div>
+                        <div className="flex items-center my-2">
+                          <div className="mr-2" style={{ width: '14px' }}>
+                            <img className="" src={coins} alt="" />
+                          </div>
+                          {currencyFormatter(item.liquidity)}
+                        </div>
+                        <div className="flex items-center">
+                          <div className="mr-2" style={{ width: '14px' }}>
+                            <img className="" src={Math.sign(item?.change24h) === -1 ? DownArrow : UpArrow} alt="" />
+                          </div>
+                          {new BigNumber(item?.change24h || 0)
+                            .dp(6, 1)
+                            .toString(10)}%
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <div className=" font-bold">LP Reward APR</div>
+                        <div className="flex text-white font-bold my-2">{item?.apr || 0}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <div className="col-span-1"></div>
-            <div className="col-span-4">
-              <div className="flex space-x-3 mt-14 justify-center">
-                {buttons?.map((b) => (
-                  <button
-                    key={b.key}
-                    className={`focus:outline-none py-2 px-12 rounded-3xl text-xl ${pathname.includes(b.route)
-                      ? 'text-black font-bold bgPrimaryGradient'
-                      : 'text-white bg-black border border-solid border-gray'
-                      }`}
-                    onClick={() => {
-                      history.push(b.route);
-                    }}
-                  >
-                    {b.title}
-                  </button>
-                ))}
-              </div>
+          </div>
+          <div className="col-span-4">
+            <div className="flex space-x-3 mt-14 justify-center">
+              {buttons?.map((b) => (
+                <button
+                  key={b.key}
+                  className={`focus:outline-none py-2 px-12 rounded-3xl text-xl ${pathname.includes(b.route)
+                    ? 'text-black font-bold bgPrimaryGradient'
+                    : 'text-white bg-black border border-solid border-gray'
+                    }`}
+                  onClick={() => {
+                    history.push(b.route);
+                  }}
+                >
+                  {b.title}
+                </button>
+              ))}
+            </div>
+            <Switch>
               <Switch>
-                <Switch>
-                  <Route exact strict path={`${path}/swap`}>
-                    <Swap
-                      onSettingsOpen={() => setSettingsOpen(true)}
-                      onHistoryOpen={() => setHistoryOpen(true)}
-                    />
-                  </Route>
-                  <Route exact strict path={`${path}/liquidity`}>
-                    <Liquidity
-                      onSettingsOpen={() => setSettingsOpen(true)}
-                      onHistoryOpen={() => setHistoryOpen(true)}
-                    />
-                  </Route>
-                  <Route exact strict path={`${path}/liquidity/remove/:currencyIdA/:currencyIdB`} component={RemoveLiquidity} />
-                  <Route
-                    exact
-                    strict
-                    path={`${path}/liquidity/remove/:tokens`}
-                    component={RedirectOldRemoveLiquidityPathStructure}
+                <Route exact strict path={`${path}/swap`}>
+                  <Swap
+                    onSettingsOpen={() => setSettingsOpen(true)}
+                    onHistoryOpen={() => setHistoryOpen(true)}
                   />
-                  <Route exact path={`${path}/liquidity/add`} component={AddLiquidity} />
-                  <Route exact path={`${path}/liquidity/find`} component={PoolFinder} />
-                  <Route
-                    exact
-                    path={`${path}/liquidity/add/:currencyIdA`}
-                    component={RedirectOldAddLiquidityPathStructure}
+                </Route>
+                <Route exact strict path={`${path}/liquidity`}>
+                  <Liquidity
+                    onSettingsOpen={() => setSettingsOpen(true)}
+                    onHistoryOpen={() => setHistoryOpen(true)}
                   />
-                  <Route
-                    exact
-                    path={`${path}/liquidity/add/:currencyIdA/:currencyIdB`}
-                    component={RedirectDuplicateTokenIds}
-                  />
-                  <Redirect to={`${path}/swap`} />
-                </Switch>
+                </Route>
+                <Route exact strict path={`${path}/liquidity/remove/:currencyIdA/:currencyIdB`} component={RemoveLiquidity} />
+                <Route
+                  exact
+                  strict
+                  path={`${path}/liquidity/remove/:tokens`}
+                  component={RedirectOldRemoveLiquidityPathStructure}
+                />
+                <Route exact path={`${path}/liquidity/add`} component={AddLiquidity} />
+                <Route exact path={`${path}/liquidity/find`} component={PoolFinder} />
+                <Route
+                  exact
+                  path={`${path}/liquidity/add/:currencyIdA`}
+                  component={RedirectOldAddLiquidityPathStructure}
+                />
+                <Route
+                  exact
+                  path={`${path}/liquidity/add/:currencyIdA/:currencyIdB`}
+                  component={RedirectDuplicateTokenIds}
+                />
+                <Redirect to={`${path}/swap`} />
               </Switch>
-            </div>
-            <div className="col-span-1 no-show"></div>
-            <div className="col-span-3 py-8 px-5 bg-black rounded-3xl sidebar right ">
-              <div className="text-white text-xl font-bold p-5 pt-6">24hrs Change</div>
-              <div className=" scroll pl-2">
-                {liquidity.map((item, index) => {
-                  const token0Price =
-                    new BigNumber(item.token0Price).isLessThan(1) ?
-                      new BigNumber(item.token0Price).dp(4).toString(10) : new BigNumber(item.token0Price).dp(2, 1).toString(10);
-                  const token1Price =
-                    new BigNumber(item.token1Price).isLessThan(1) ?
-                      new BigNumber(item.token1Price).dp(4).toString(10) : new BigNumber(item.token1Price).dp(2, 1).toString(10)
-                  const reserveUSD = new BigNumber(item.reserveUSD).dp(2, 1).toString(10)
-                  const calcultedUSD = item.calcultedUSD ? new BigNumber(item.calcultedUSD).dp(2, 1).toString(10) : 0
-                  return (
-                    <div className="rounded-3xl border border-white mb-4" key={index} >
-                      <div className="flex items-center justify-center py-3 px-3">
-                        <img width="14px" src={BTC} alt="" />
-                        <div className="text-white font-bold text-sm mx-5">{item.name}</div>
-                        <img width="14px" src={ANN} alt="" />
-                      </div>
-                      <div
-                        className={`flex items-center justify-between py-3 px-2 border-t ${index % 2 == 0 ?
-                          `border-b border-white` : 'bgPrimaryGradient'
-                          }
+            </Switch>
+          </div>
+
+          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right ">
+            <div className="text-white text-xl font-bold p-5 pt-6">24hrs Change</div>
+            <div className=" scroll pl-2">
+              {
+                loading && (
+                  <div className='flex w-full justify-center'>
+                    <Loader size="160px" className="m-20 self-center" stroke="#ff9800" />
+                  </div>
+                )
+              }
+              {
+                !loading && liquidity.length === 0 && (
+                  <EmptyDataStyles>
+                    <div className="text-base p-20 flex justify-center items-center text-white">
+                      <span className="text-center text-2xl md:text-3xl 
+                          text-border title-text">There are no pairs</span>
+                    </div>
+                  </EmptyDataStyles>
+                )
+              }
+              {!loading && liquidity.map((item, index) => {
+                return (
+                  <div className="rounded-3xl border border-white mb-4" key={index} >
+                    <div className="flex items-center justify-center py-3 px-3">
+                      <img width="14px" src={BTC} alt="" />
+                      <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>
+                      <img width="14px" src={ANN} alt="" />
+                    </div>
+                    <div
+                      className={`flex items-center justify-between py-3 px-2 border-t ${index % 2 == 0 ?
+                        `border-b border-white` : 'bgPrimaryGradient'
+                        }
                             text-white text-xs`}
-                        style={{ borderColor: '#2E2E2E' }}
-                      >
-                        <div className="flex items-center">
-                          <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0.symbol}{' '}
-                          =
-                          {` ${token0Price} `}{item.token1.symbol}
-                        </div>
-                        <div className="flex items-center">
-                          <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
-                          {item.token1.symbol} =
-                            {` ${token1Price} `}{item.token0.symbol}
-                        </div>
+                      style={{ borderColor: '#2E2E2E' }}
+                    >
+                      <div className="flex items-center">
+                        <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0Symbol}{' '}
+                        =
+                        {`${item.token0Price}`}{' '}
+                        {item.token1Symbol}
                       </div>
-                      <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
-                        <div className="flex flex-col  font-bold">
-                          <div className="flex ">
-                            <div className="mr-2" style={{ width: '14px' }}></div>Liquity
-                          </div>
-                          <div className="flex items-center my-2">
-                            <div className="mr-2" style={{ width: '14px' }}>
-                              <img className="" src={coins} alt="" />
-                            </div>
-                            {reserveUSD}
-                          </div>
-                          <div className="flex items-center">
-                            <div className="mr-2" style={{ width: '14px' }}>
-                              <img className="" src={Math.sign(item.calcultedUSD) === -1 ? DownArrow : UpArrow} alt="" />
-                            </div>
-                            {calcultedUSD} %
-                          </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <div className=" font-bold">LP Reward APR</div>
-                          <div className="flex text-white font-bold my-2">{calcultedUSD} %</div>
-                        </div>
+                      <div className="flex items-center">
+                        <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
+                        {item.token1Symbol} =
+                        {`${item.token1Price}`}{' '}
+                        {item.token0Symbol}
                       </div>
                     </div>
-                  );
-                })}
+                    <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
+                      <div className="flex flex-col  font-bold">
+                        <div className="flex ">
+                          <div className="mr-2" style={{ width: '14px' }}></div>Liquity
+                        </div>
+                        <div className="flex items-center my-2">
+                          <div className="mr-2" style={{ width: '14px' }}>
+                            <img className="" src={coins} alt="" />
+                          </div>
+                          {currencyFormatter(item.liquidity)}
+                        </div>
+                        <div className="flex items-center">
+                          <div className="mr-2" style={{ width: '14px' }}>
+                            <img className="" src={Math.sign(item?.change24h) === -1 ? DownArrow : UpArrow} alt="" />
+                          </div>
+                          {new BigNumber(item?.change24h || 0)
+                            .dp(4, 1)
+                            .toString(10)}%
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <div className=" font-bold">LP Reward APR</div>
+                        <div className="flex text-white font-bold my-2">{item?.apr || 0}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
 
-              </div>
             </div>
           </div>
         </div>

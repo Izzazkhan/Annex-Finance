@@ -1,1 +1,1 @@
-export const ANNEX_SWAP_EXCHANGE = 'https://api.studio.thegraph.com/query/6267/mainnet-swap-subgraph/v1.0.3'
+export const ANNEX_SWAP_EXCHANGE = 'https://api.annex.finance/api/v1/pools'
