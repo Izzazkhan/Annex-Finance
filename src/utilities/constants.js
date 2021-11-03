@@ -308,28 +308,28 @@ export const CONTRACT_ABEP_ADDRESS =
       },
       trx: {
         id: 'trx',
-        symbol: 'TRX',
-        address: process.env.REACT_APP_TEST_TRX_ABEP,
+        symbol: 'aTRX',
+        address: process.env.REACT_APP_TEST_TRX_ABEP
       },
       tusd: {
         id: 'tusd',
-        symbol: 'TUSD',
-        address: process.env.REACT_APP_TEST_TUSD_ABEP,
+        symbol: 'aTUSD',
+        address: process.env.REACT_APP_TEST_TUSD_ABEP
       },
       dot: {
         id: 'dot',
-        symbol: 'DOT',
-        address: process.env.REACT_APP_TEST_DOT_ABEP,
+        symbol: 'aDOT',
+        address: process.env.REACT_APP_TEST_DOT_ABEP
       },
       ada: {
         id: 'ada',
-        symbol: 'ADA',
-        address: process.env.REACT_APP_TEST_ADA_ABEP,
+        symbol: 'aADA',
+        address: process.env.REACT_APP_TEST_ADA_ABEP
       },
       ann: {
         id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_TEST_ANN_ABEP,
+        symbol: 'aANN',
+        address: process.env.REACT_APP_TEST_ANN_ABEP
       },
       // wbtc: {
       //   id: 'wbtc',
@@ -370,28 +370,28 @@ export const CONTRACT_ABEP_ADDRESS =
       },
       trx: {
         id: 'trx',
-        symbol: 'TRX',
-        address: process.env.REACT_APP_MAIN_TRX_ABEP,
+        symbol: 'aTRX',
+        address: process.env.REACT_APP_MAIN_TRX_ABEP
       },
       tusd: {
         id: 'tusd',
-        symbol: 'TUSD',
-        address: process.env.REACT_APP_MAIN_TUSD_ABEP,
+        symbol: 'aTUSD',
+        address: process.env.REACT_APP_MAIN_TUSD_ABEP
       },
       dot: {
         id: 'dot',
-        symbol: 'DOT',
-        address: process.env.REACT_APP_MAIN_DOT_ABEP,
+        symbol: 'aDOT',
+        address: process.env.REACT_APP_MAIN_DOT_ABEP
       },
       ada: {
         id: 'ada',
-        symbol: 'ADA',
-        address: process.env.REACT_APP_MAIN_ADA_ABEP,
+        symbol: 'aADA',
+        address: process.env.REACT_APP_MAIN_ADA_ABEP
       },
       ann: {
         id: 'ann',
-        symbol: 'ANN',
-        address: process.env.REACT_APP_MAIN_ANN_ABEP,
+        symbol: 'aANN',
+        address: process.env.REACT_APP_MAIN_ANN_ABEP
       },
       //  wbtc: {
       //   id: 'wbtc',
