@@ -349,34 +349,27 @@ function Pools() {
             </div>
           </div> */}
           {/* <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 "> */}
-          <div className="bg-black rounded-4xl col-span-6 claim-card">
-            <div className='bgPrimaryGradient py-3 md:py-2 px-5 rounded-4xl flex items-center w-full justify-between'
-            >
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-white">Auto CAKE Bounty</div>
-                </div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex flex-col">
-                    <div className="text-white text-sm">0.000</div>
-                    <div className="text-white text-sm font-bold">0.000 USDC</div>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-white"></div>
-                </div>
 
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-white font-bold flex items-center">
-                    <button className="flex items-center focus:outline-none bg-gray py-2 px-4 
-                        rounded-lg text-black text-center font-bold text-sm">Claim</button></div>
-                </div>
+          <div className="col-span-3 claim-card">
+            <div className='bgPrimaryGradient p-5 rounded-2xl flex items-between w-full justify-between flex-col'
+            >
+
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-white font-bold">Auto CAKE Bounty</div>
               </div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col">
+                  <div className="text-white text-sm font-bold text-lg">0.000</div>
+                  <div className="text-white text-sm ">0.000 USDC</div>
+                </div>
+                <div className="text-white font-bold flex items-center">
+                  <button className="flex items-center focus:outline-none bg-white py-2 px-4 
+                        rounded-lg text-primary text-center font-bold text-sm">Claim</button></div>
+              </div>
+
             </div>
           </div>
-          <div className="col-span-6 flex items-center">
+          <div className="col-span-9 flex items-center justify-end">
             <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
              ${live ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
             >Live</a>
@@ -387,6 +380,7 @@ function Pools() {
               <div className="ml-2 mb-2">Staked only</div>
             </div>
           </div>
+
           {/* <div className="col-span-5 flex items-center">
             <div className="mr-5">
               <Select className="border-primary" type="custom-primary" options={sortOptions} />

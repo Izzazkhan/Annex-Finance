@@ -1,12 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import styled from 'styled-components';
-import AnnexLogo from '../../assets/images/coins/ann.png';
-import ROI from '../../assets/images/roi.png';
-import Refresh from '../../assets/images/refresh.png';
-import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
-import MetaMask from '../../assets/icons/metaMask.svg';
-import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
-import SVG from "react-inlinesvg";
 import {
     CONTRACT_TOKEN_ADDRESS, CONTRACT_ABEP_ABI, CONTRACT_ANN_Vault,
     CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS
@@ -15,8 +8,10 @@ import { useActiveWeb3React } from '../../hooks';
 import { getTokenContract, methods } from '../../utilities/ContractService';
 import Web3 from 'web3';
 const instance = new Web3(window.ethereum);
-import Modal from './Model'
-
+import Modal from './StakeModel'
+import AutoCard from './AutoCard';
+import ManualCard from './ManualCard';
+import CollectModal from './CollectModal';
 
 const database = [{
     id: 1,
@@ -67,19 +62,27 @@ const database = [{
     // }
 ]
 
+const Styles = styled.div`
+    .tooltip-label {
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 5px;
+    }
+  }
+ `
 
 function Grid() {
-    const ArrowContainer = styled.div`
-    transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
-    transition: 0.3s ease all;
-    will-change: transform;
-  `
     const [data, setData] = useState(database)
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [showModal, updateShowModal] = useState(false);
-    const [selectedItem, setSelectedItem] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [stakeModal, setStakeModal] = useState(false);
+    const [collectModal, setCollectModal] = useState(false);
+    const [selectedCard, setSelectedCard] = useState('');
     const [buttonName, setButtonName] = useState('');
-
+    const [modalError, setModalError] = useState({
+        message: '',
+        type: '',
+    });
+    const [cardLoading, setcardLoading] = useState(true)
 
     const { account } = useActiveWeb3React();
 
@@ -94,34 +97,37 @@ function Grid() {
             let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
-            let withdrawFee = 0, withdrawFeePeriod = 0, isUserInfo = false, userInfo
+            let withdrawFee = 0, withdrawFeePeriod = 0, isUserInfo = false, userInfo, stacked, pendingAnnex
             const contract = new instance.eth.Contract(
                 JSON.parse(item.contract_Abi),
                 item.contract_Address,
             );
+            console.log('methods', contract.methods)
+
             if (item.auto_staking === true) {
                 withdrawFee = await methods.call(contract.methods.withdrawFee, []);
                 withdrawFee = (withdrawFee / 10000) * 100
                 withdrawFeePeriod = await methods.call(contract.methods.withdrawFeePeriod, []);
                 withdrawFeePeriod = withdrawFeePeriod / 3600
+
+
                 if (Number(allowance) > 0) {
                     isUserInfo = await methods.call(contract.methods.userInfo, [account]);
-                    console.log('auto', isUserInfo)
                     if (isUserInfo.shares > 0) {
                         userInfo = true
-                        balanceOf = isUserInfo.shares
-                        console.log('balance', balanceOf)
+                        stacked = isUserInfo.shares / Math.pow(10, decimal)
                     }
                 }
             }
             else {
+                pendingAnnex = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
+                // pendingAnnex = pendingAnnex / Math.pow(10, decimal)
                 if (Number(allowance) > 0) {
                     isUserInfo = await methods.call(contract.methods.userInfo, [item._pid, account]);
-                    console.log('manual', isUserInfo)
+
                     if (isUserInfo.amount > 0) {
                         userInfo = true
-                        balanceOf = isUserInfo.amount
-                        console.log('balance', balanceOf)
+                        stacked = isUserInfo.amount / Math.pow(10, decimal)
                     }
                 }
             }
@@ -131,27 +137,27 @@ function Grid() {
                 allowance: Number(allowance),
                 decimal: Number(decimal),
                 tokenBalance: balanceOf,
+                stacked,
                 withdrawFee,
                 withdrawFeePeriod,
-                userInfo
+                userInfo,
+                pendingAnnex
             }
         })
         const resolvedArray = await Promise.all(allowanceMapped);
-        console.log('resolvedArray', resolvedArray)
         setData(resolvedArray)
-    }, [isEnabled]);
+        setcardLoading(false)
+    }, [loading]);
 
 
     console.log('database', data)
 
     const handleEnable = (item) => {
-        console.log('enabled', item)
         const tokenContract = new instance.eth.Contract(
             JSON.parse(CONTRACT_ABEP_ABI),
             item.token_address,
         );
-        setIsEnabled(true);
-        console.log('tokenContract', tokenContract)
+        setLoading(true);
         methods
             .send(
                 tokenContract.methods.approve,
@@ -159,17 +165,17 @@ function Grid() {
                 account,
             )
             .then((data) => {
-                setIsEnabled(false);
+                setLoading(false);
                 console.log('data', data);
             })
             .catch((error) => {
+                setLoading(false);
                 console.log('error', error);
             });
     }
 
 
     const openDetails = async (elem, open) => {
-
         let totalStacked, performanceFee
         if (elem.id !== 2) {
             const contract = new instance.eth.Contract(
@@ -237,30 +243,38 @@ function Grid() {
     }
 
     const openModal = (item, buttonValue) => {
-        console.log('selected', item)
-        updateShowModal(true);
-        setSelectedItem(item)
+        if (buttonValue === 'collect') {
+            setCollectModal(true)
+        }
+        else {
+            setStakeModal(true);
+        }
+        setSelectedCard(item)
         setButtonName(buttonValue)
     }
 
     const closeModal = () => {
-        updateShowModal(false);
+        setStakeModal(false);
+        setCollectModal(false)
     };
 
     const handleConfirm = (amount, buttonValue) => {
-        console.log('amount', buttonValue)
         const contract = new instance.eth.Contract(
-            JSON.parse(selectedItem.contract_Abi),
-            selectedItem.contract_Address,
+            JSON.parse(selectedCard.contract_Abi),
+            selectedCard.contract_Address,
         );
-        const methodName = buttonValue === 'minus' ? contract.methods.withdraw : contract.methods.deposit
-        setIsEnabled(true);
+        const methodName = buttonValue === 'minus' || buttonValue === 'harvest' ? contract.methods.withdraw : contract.methods.deposit
+        setLoading(true);
         let contractArray
-        if (selectedItem.id === 2) {
-            contractArray = [selectedItem._pid, amount * Math.pow(10, selectedItem.decimal)]
+        if (selectedCard.id === 2) {
+            if (buttonValue === 'harvest' || buttonValue === 'compund') {
+                contractArray = [selectedCard._pid, amount]
+
+            }
+            contractArray = [selectedCard._pid, amount * Math.pow(10, selectedCard.decimal)]
         }
         else {
-            contractArray = [amount * Math.pow(10, selectedItem.decimal)]
+            contractArray = [amount * Math.pow(10, selectedCard.decimal)]
         }
         methods
             .send(
@@ -269,12 +283,21 @@ function Grid() {
                 account,
             )
             .then((data) => {
-                setIsEnabled(false);
-                updateShowModal(false)
+                setLoading(false);
+                setStakeModal(false)
                 console.log('data', data);
+                setModalError({
+                    message: '',
+                    type: '',
+                });
             })
             .catch((error) => {
                 console.log('error', error);
+                setModalError({
+                    ...modalError,
+                    message: error.message,
+                });
+                setLoading(false);
             });
     }
 
@@ -283,115 +306,27 @@ function Grid() {
     }
 
     return (
-        <Fragment>
-            <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
-                {data.length && data.map(item => {
-                    return (
-                        <div className="bg-black rounded-3xl col-span-4" key={item.id}>
-                            <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl 
-                        flex items-center w-full justify-between">
-                                <div className="flex flex-col">
-                                    <div className="text-white font-bold text-xl">{item.label}</div>
-                                    <div className="text-white">{item.sublabel}</div>
-                                </div>
-                                <div className="bg-blue rounded-full relative w-9 h-9 ">
-                                    <img src={item.logo} alt="" className="" />
-                                </div>
-                            </div>
-                            <div className="p-5">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="text-white">{item.symbol}:</div>
-                                    <div className="text-white font-bold flex items-center">0
-                                        {/* <img src={ROI} className="ml-3" alt="" /> */}
-                                    </div>
-                                </div>
-                                <div className="text-white">Recent {item.symbol} Profit:</div>
-                                <div className="text-white text-sm mt-2 mb-4">{`${item.auto_staking ? `${item.withdrawFee}% unstaking 
-                                fee if withdrawn within ${item.withdrawFee}h` : ''}`}</div>
-                                <div className="text-white text-sm">STAKE {item.symbol}</div>
-                                <div className="text-center mt-2">
-                                    {/* {isEnabled && <Loader size="20px" className="mr-1.5" stroke="#717579" />} */}
-                                    {item.userInfo ? <div className="flex items-center justify-between mb-4">
-                                        <div className="text-white">fdfdfdfdd:</div>
-                                        <div className="text-white font-bold flex items-center">
-                                            <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
-                                text-black w-14 text-center text-sm" onClick={() => openModal(item, 'minus')}>
-                                                -
-                                            </button>
-                                            <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
-                                text-black w-14 text-center text-sm" onClick={() => openModal(item, 'plus')}>
-                                                +
-                                            </button>
-                                        </div>
-                                    </div> :
-                                        <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
-                                text-black w-40 text-center text-sm" onClick={item.allowance === 0 ? () => handleEnable(item) :
-                                                () => openModal(item, 'stake')}>{item.allowance === 0 ?
-                                                    'Enable' : item.allowance > 0 ? 'Stake' : ''}
-                                        </button>}
-                                </div>
-                            </div>
-                            <div className="border-t border-solid border-custom p-5">
-                                <div className="flex items-center justify-between">
-                                    <div className="">
-                                        <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" />
-                                            {item.auto_staking ? 'Auto' : 'Manual'}</button>
-                                    </div>
-                                    <div onClick={() => openDetails(item, !item.isOpen)} className="text-primary text-sm flex 
-                                items-center cursor-pointer" >Details
-                                        <div className="ml-2 order-4 hidden sm:flex">
-                                            <ArrowContainer active={item.isOpen}>
-                                                <img src={ArrowIconOrange} alt="" />
-                                            </ArrowContainer>
-                                        </div>
-                                    </div>
-                                </div>
-                                {item.isOpen === true ? (
-                                    <div className="mt-5">
-                                        <div className="flex item-center justify-between">
-                                            <div className="text-white font-bold text-sm">Total Staked:</div>
-                                            <div className="text-white text-sm">{item.auto_staking ? `${item.totalStacked} ${item.symbol}` : 0}</div>
-                                        </div>
-                                        {item.auto_staking ?
-                                            <div className="mt-3 flex item-center justify-between">
-                                                <div className="text-white text-sm">Performance Fee</div>
-                                                <div className="text-white text-sm">{`${item.performanceFee}%`}</div>
-                                            </div> : ''}
-                                        <div className="flex flex-col item-center mt-3">
-                                            <div className="text-white text-xs text-right
-                             flex justify-end">View Project Site <a
-                                                    href={`https://www.annex.finance/`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    <img src={OrangeexpandBox} alt="" className="ml-2" />
-                                                </a> </div>
-                                            <div className="my-2 text-white text-xs text-right
-                             flex justify-end">View Contract
-                                                <a
-                                                    href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.contract_Address
-                                                        }`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    <img src={OrangeexpandBox} alt="" className="ml-2" />
-                                                </a>
-                                            </div>
-                                            <div className="text-white text-xs text-right
-                             flex justify-end" onClick={() => addToken(item)}>Add to Metamask
-                                                <img src={MetaMask} alt="" className="ml-2" width="16" /></div>
-                                        </div>
-                                    </div>
-                                ) : undefined}
-                            </div>
-                        </div>
-                    )
-                })}
+        <Styles>
+            <Fragment>
+                <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
+                    {data.length && data.map(item => {
+                        if (item.auto_staking) {
+                            return (
+                                <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
+                                    openDetails={openDetails} addToken={addToken} cardLoading={cardLoading} />
+                            )
+                        }
+                        else {
+                            return (
+                                <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
+                                    openDetails={openDetails} addToken={addToken} cardLoading={cardLoading} />
+                            )
+                        }
+                    })}
 
 
 
-                {/* <div className="bg-black rounded-3xl col-span-4">
+                    {/* <div className="bg-black rounded-3xl col-span-4">
                 <div className={`${live ? 'bgPrimaryGradient' : finished ? 'bg-gray relative overflow-hidden' : ''}
                  py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between`}>
                     <div className="flex flex-col">
@@ -467,7 +402,7 @@ function Grid() {
                 </div>
             </div> */}
 
-                {/* <div className="bg-black rounded-3xl col-span-4">
+                    {/* <div className="bg-black rounded-3xl col-span-4">
                 <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between">
                     <div className="flex flex-col">
                         <div className="text-white font-bold text-xl">Auto ANN</div>
@@ -699,24 +634,41 @@ function Grid() {
                     )}
                 </div>
             </div> */}
-                {/* <div className="text-white">grid</div> */}
-            </div>
+                    {/* <div className="text-white">grid</div> */}
+                </div>
 
-            {
-                <Modal
-                    // close={() => { setShowDepositeWithdrawModal(false) }}
-                    // afterCloseModal={() => { }}
-                    openModal={showModal}
-                    data={selectedItem}
-                    onSetOpen={() => updateShowModal(true)}
-                    onCloseModal={() => closeModal()}
-                    handleSubmit={handleConfirm}
-                    getToken={handleToken}
-                    buttonText={buttonName}
+                {
+                    <Modal
+                        // close={() => { setShowDepositeWithdrawModal(false) }}
+                        // afterCloseModal={() => { }}
+                        openModal={stakeModal}
+                        data={selectedCard}
+                        onSetOpen={() => setStakeModal(true)}
+                        onCloseModal={() => closeModal()}
+                        handleSubmit={handleConfirm}
+                        getToken={handleToken}
+                        modalError={modalError}
+                        buttonText={buttonName}
+                        loading={loading}
+                    />
+                }
 
-                />
-            }
-        </Fragment>
+                {
+                    <CollectModal
+                        // close={() => { setShowDepositeWithdrawModal(false) }}
+                        // afterCloseModal={() => { }}
+                        openModal={collectModal}
+                        data={selectedCard}
+                        onSetOpen={() => setCollectModal(true)}
+                        onCloseModal={() => closeModal()}
+                        handleSubmit={handleConfirm}
+                        getToken={handleToken}
+                        buttonText={buttonName}
+                        loading={loading}
+                    />
+                }
+            </Fragment>
+        </Styles>
     );
 }
 
