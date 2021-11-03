@@ -306,27 +306,27 @@ export const CONTRACT_ABEP_ADDRESS =
       },
       trx: {
         id: 'trx',
-        symbol: 'TRX',
+        symbol: 'aTRX',
         address: process.env.REACT_APP_TEST_TRX_ABEP
       },
       tusd: {
         id: 'tusd',
-        symbol: 'TUSD',
+        symbol: 'aTUSD',
         address: process.env.REACT_APP_TEST_TUSD_ABEP
       },
       dot: {
         id: 'dot',
-        symbol: 'DOT',
+        symbol: 'aDOT',
         address: process.env.REACT_APP_TEST_DOT_ABEP
       },
       ada: {
         id: 'ada',
-        symbol: 'ADA',
+        symbol: 'aADA',
         address: process.env.REACT_APP_TEST_ADA_ABEP
       },
       ann: {
         id: 'ann',
-        symbol: 'ANN',
+        symbol: 'aANN',
         address: process.env.REACT_APP_TEST_ANN_ABEP
       },
       // wbtc: {
@@ -368,27 +368,27 @@ export const CONTRACT_ABEP_ADDRESS =
       },
       trx: {
         id: 'trx',
-        symbol: 'TRX',
+        symbol: 'aTRX',
         address: process.env.REACT_APP_MAIN_TRX_ABEP
       },
       tusd: {
         id: 'tusd',
-        symbol: 'TUSD',
+        symbol: 'aTUSD',
         address: process.env.REACT_APP_MAIN_TUSD_ABEP
       },
       dot: {
         id: 'dot',
-        symbol: 'DOT',
+        symbol: 'aDOT',
         address: process.env.REACT_APP_MAIN_DOT_ABEP
       },
       ada: {
         id: 'ada',
-        symbol: 'ADA',
+        symbol: 'aADA',
         address: process.env.REACT_APP_MAIN_ADA_ABEP
       },
       ann: {
         id: 'ann',
-        symbol: 'ANN',
+        symbol: 'aANN',
         address: process.env.REACT_APP_MAIN_ANN_ABEP
       },
       //  wbtc: {
