@@ -43,12 +43,14 @@ const ErrorMessage = styled.div`
   border: 1px solid transparent;
   border-radius: 0.25rem;
 `;
-function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, handleSubmit, getToken, buttonText, loading }) {
+function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, handleSubmit, getToken, buttonText, loading, annPrice }) {
 
     const [value, setValue] = useState(0);
     const [inputAmount, setInputAmount] = useState(0)
 
-    const handleFocus = (event) => event.target.select();
+    // const handleFocus = (event) => {
+    //     event.target.select();
+    // }
 
     function closeModal() {
         onCloseModal();
@@ -76,7 +78,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
 
     const title = (
         <div className="flex items-center justify-between mt-4 mx-12 py-4 border-b border-solid border-gray-600">
-            <div className="text-left text-xl font-normal  ">Stake in Pool </div>
+            <div className="text-left text-xl font-normal  ">{buttonText === 'minus' ? 'Unstake' : 'Stake'} in Pool </div>
             <CloseIcon onClick={closeModal} fill={'#fff'} />
         </div>
     );
@@ -98,7 +100,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                     </div>
                     <div className=" flex flex-col flex-1">
                         <div className="label flex justify-between font-bold text-primary text-xl">
-                            <div className="">Stake:</div>
+                            <div className="">{buttonText === 'minus' ? 'Unstake' : 'Stake:'}</div>
                             <div className='flex items-center'>
                                 <div className="bg-blue rounded-full relative w-9 h-9 mr-2">
                                     <img src={data.logo} alt="" className="" />
@@ -111,21 +113,16 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                                     py-2.5 px-3.5 input-container">
                                 <div className="flex flex-col items-end">
                                     <input
-                                        onFocus={handleFocus}
+                                        // onFocus={handleFocus}
                                         className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white text-right font-bold 
                                             m-0 flex input flex-1 text-lg"
                                         type="number"
                                         value={inputAmount}
                                         onChange={onChangeInput}
                                     />
-                                    <input
-                                        className="bg-transparent focus:outline-none font-normal px-0 py-1 text-white text-right
-                                            m-0 flex input flex-1 text-xs"
-                                        type="number"
-                                        value={0}
-                                        disabled
-                                    />
-                                    {/* <span className="cursor-pointer select-none">MAX</span> */}
+                                    <div className={`text-white text-xs text-left`}>
+                                        {`~${(annPrice * inputAmount)} USD`}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -154,28 +151,28 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                         <div className='flex gap-4 justify-between'>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
-                            font-bold mt-20 py-4 px-8 bg-primary text-black`}
+                            font-bold mt-10 py-4 px-8 bg-primary text-black`}
                                 onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance) * (25 / 100))}
                             >
                                 25%
                             </button>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
-                            font-bold mt-20 py-4 px-8 bg-primary text-black`}
+                            font-bold mt-10 py-4 px-8 bg-primary text-black`}
                                 onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance) * (50 / 100))}
                             >
                                 50%
                             </button>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
-                            font-bold mt-20 py-4 px-8 bg-primary text-black`}
+                            font-bold mt-10 py-4 px-8 bg-primary text-black`}
                                 onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance) * (75 / 100))}
                             >
                                 75%
                             </button>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
-                            font-bold mt-20 py-4 px-8 bg-primary text-black`}
+                            font-bold mt-10 py-4 px-8 bg-primary text-black`}
                                 onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance))}
                             >
                                 Max
@@ -190,7 +187,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                             </div>
                         </div> */}
 
-                        <div className="mt-2">
+                        <div className="mt-4">
                             <div className=" rounded-xl flex justify-center items-center 
                                     py-2.5 px-3.5 input-container">
                                 <button

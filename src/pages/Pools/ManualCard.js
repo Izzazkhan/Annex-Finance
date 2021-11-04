@@ -9,7 +9,7 @@ import MetaMask from '../../assets/icons/metaMask.svg';
 import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
 import SVG from "react-inlinesvg";
 
-function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annPrice }) {
+function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annPrice, selectedId, loading }) {
 
     const ArrowContainer = styled.div`
     transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
@@ -29,13 +29,14 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                 </div>
             </div>
             <div className="p-5">
-                <div className="flex items-center font-bold text-primary justify-between mb-4">
+                <div className="flex items-center font-bold text-primary justify-between mb-4
+                open mb-2  text-lg">
                     <div className="tooltip relative">
                         <div className="tooltip-label">
                             APR:<span className=""></span>
                         </div>
                         <span className="label">
-                            For Information Purposes
+                            {`This pool’s rewards aren’t compounded automatically, so we show APR`}
                         </span>
                     </div>
                     <div className="text-white font-bold flex items-center">0%
@@ -47,14 +48,19 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                 <div className="text-center mt-2">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex flex-col">
-                            <div className="text-white text-left text-lg font-bold">{Number(item.pendingAnnex).toFixed(5)}</div>
-                            <div className="text-white text-xs text-left">
-                                {`~${Number(item.pendingAnnex * annPrice).toFixed(5)} USD`}
+                            <div className={`${item.isUserInfo.amount > 0 ? 'text-white' : 'text-gray pointer-events-none'} 
+                            text-left text-lg font-bold`}>
+                                {item.isUserInfo.amount > 0 ? Number(item.pendingAnnex).toFixed(5) : '0'}</div>
+                            <div className={`${item.isUserInfo.amount > 0 ? 'text-white' : 'text-gray pointer-events-none'} 
+                            text-white text-xs text-left`}>
+                                {`${item.isUserInfo.amount > 0 ? `~${Number(item.pendingAnnex * annPrice).toFixed(5)} USD` : '0 USD'}`}
                             </div>
                         </div>
                         <div className="text-white font-bold flex items-center">
-                            <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
-                                text-black w-28 text-center text-sm font-bold" onClick={() => openModal(item, 'collect')}>
+                            <button className={`focus:outline-none bg-primary py-3 px-4 rounded-2xl 
+                                text-black w-28 text-center text-sm font-bold 
+                                ${item.isUserInfo.amount > 0 ? `bg-primary` : `bg-lightGray text-gray pointer-events-none`}`}
+                                onClick={() => openModal(item, 'collect')}>
                                 Collect
                             </button>
                         </div>
@@ -67,7 +73,7 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                         <div className="text-center mt-2">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
-                                    <div className="text-white text-left text-lg font-bold">{item.stacked}</div>
+                                    <div className="text-white text-left text-lg font-bold">{Number(item.stacked).toFixed(5)}</div>
                                     <div className="text-white text-xs text-left">
                                         {`~${Number(item.stacked * annPrice).toFixed(5)} USD`}
                                     </div>
@@ -88,10 +94,21 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                     </div> : <div>
                         <div className="text-white text-sm font-bold">Stake {item.symbol}</div>
                         <div className="text-center mt-2">
-                            <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
-                                text-black w-40 text-center text-sm font-bold" onClick={item.allowance === 0 ? () => handleEnable(item) :
+                            {/* <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
+                                text-black w-40 text-center text-sm font-bold" 
+                                onClick={item.allowance === 0 ? () => handleEnable(item) :
                                     () => openModal(item, 'stake')}>{item.allowance === 0 ?
                                         'Enable' : item.allowance > 0 ? 'Stake' : ''}
+                            </button> */}
+                            <button className={`focus:outline-none ${loading && selectedId === item.id ?
+                                " bg-lightGray text-gray pointer-events-none " :
+                                " bgPrimaryGradient text-black "} py-2 px-4 rounded-3xl
+                                text-black w-40 text-center text-sm font-bold`}
+                                onClick={item.allowance === 0 ? () => handleEnable(item) :
+                                    () => openModal(item, 'stake')}>
+                                {loading && selectedId === item.id && <Loader size="20px" className="mr-4" stroke="#717579" />}
+                                {item.allowance === 0 ?
+                                    'Enable' : item.allowance > 0 ? 'Stake' : ''}
                             </button>
                         </div>
                     </div>}

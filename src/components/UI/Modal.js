@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useRef, useEffect, useState } from 'react';
 
 export default function Modal({ open, title, content, onCloseModal, afterCloseModal, width }) {
-  // const cancelButtonRef = useRef();
+  const cancelButtonRef = useRef();
 
   function closeModal() {
     onCloseModal();
@@ -17,7 +17,7 @@ export default function Modal({ open, title, content, onCloseModal, afterCloseMo
         <Dialog
           as="div"
           className="fixed inset-0 z-30 overflow-y-auto"
-          // initialFocus={cancelButtonRef}
+          initialFocus={cancelButtonRef}
           static
           open={open}
           onClose={closeModal}

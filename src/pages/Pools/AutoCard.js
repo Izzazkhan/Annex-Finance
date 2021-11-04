@@ -8,7 +8,7 @@ import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
 
-function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice }) {
+function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice, selectedId, loading }) {
 
     const ArrowContainer = styled.div`
     transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
@@ -28,39 +28,45 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                 </div>
             </div>
             <div className="p-5">
-                <div className="flex items-center font-bold text-primary justify-between mb-4">
+                <div className="flex items-center text-primary justify-between
+                open mb-2 font-bold text-primary text-lg ">
                     <div className="tooltip relative">
                         <div className="tooltip-label">
                             APY:<span className=""></span>
                         </div>
                         <span className="label">
-                            For Information Purposes
+                            {`APY includes compounding, APR doesn’t. This pool’s ${item.symbol} is compounded automatically, so we show APY.`}
                         </span>
                     </div>
                     <div className="text-white font-bold flex items-center">0%
                     </div>
                 </div>
                 <div className="text-white font-bold">Recent {item.symbol} Profit:</div>
-                <div className="text-white text-sm mt-2 mb-4">{`${`${item.withdrawFee}% unstaking 
+                {/* <div className="tooltip relative"> */}
+                <div className="text-white text-sm mt-2 mb-4">{`${`${item.withdrawFee}% unstaking
                                 fee if withdrawn within ${item.withdrawFeePeriod}h`}`}</div>
+                {/* <span className="label">
+                    {`APY includes compounding, APR doesn’t. This pool’s ${item.symbol} is compounded automatically, so we show APY.`}
+                </span> */}
+                {/* </div> */}
                 {item.userInfo ?
                     <div>
                         <div className="text-white text-sm font-bold">{item.symbol} Staked (Compounding)</div>
                         <div className="text-center mt-2">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
-                                    <div className="text-white text-left text-lg font-bold">{item.stacked}</div>
+                                    <div className="text-white text-left text-lg font-bold">{Number(item.stacked).toFixed(5)}</div>
                                     <div className="text-white text-xs text-left">
                                         {`~${Number(item.stacked * annPrice).toFixed(5)} USD`}
                                     </div>
                                 </div>
                                 <div className="text-white font-bold flex items-center  gap-2">
                                     <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
-                                text-black w-12 text-center text-sm" onClick={() => openModal(item, 'minus')}>
+                                text-black w-12 text-center text-sm font-bold" onClick={() => openModal(item, 'minus')}>
                                         -
                                     </button>
                                     <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
-                                text-black w-12 text-center text-sm" onClick={() => openModal(item, 'plus')}>
+                                text-black w-12 text-center text-sm font-bold" onClick={() => openModal(item, 'plus')}>
                                         +
                                     </button>
                                 </div>
@@ -69,10 +75,15 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                     </div> : <div>
                         <div className="text-white text-sm font-bold">Stake {item.symbol}</div>
                         <div className="text-center mt-2">
-                            <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
-                                text-black w-40 text-center text-sm font-bold" onClick={item.allowance === 0 ? () => handleEnable(item) :
-                                    () => openModal(item, 'stake')}>{item.allowance === 0 ?
-                                        'Enable' : item.allowance > 0 ? 'Stake' : ''}
+                            <button className={`focus:outline-none ${loading && selectedId === item.id ?
+                                " bg-lightGray text-gray pointer-events-none " :
+                                " bgPrimaryGradient text-black "} py-2 px-4 rounded-3xl
+                                text-black w-40 text-center text-sm font-bold`}
+                                onClick={item.allowance === 0 ? () => handleEnable(item) :
+                                    () => openModal(item, 'stake')}>
+                                {loading && selectedId === item.id && <Loader size="20px" className="mr-4" stroke="#717579" />}
+                                {item.allowance === 0 ?
+                                    'Enable' : item.allowance > 0 ? 'Stake' : ''}
                             </button>
                         </div>
                     </div>}
@@ -85,7 +96,7 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                             {'Auto'}</button>
                     </div>
                     <div onClick={() => openDetails(item, !item.isOpen)} className="text-primary text-sm flex 
-                                items-center cursor-pointer" >Details
+                                items-center cursor-pointer font-bold" >Details
                         <div className="ml-2 order-4 hidden sm:flex">
                             <ArrowContainer active={item.isOpen}>
                                 <img src={ArrowIconOrange} alt="" />

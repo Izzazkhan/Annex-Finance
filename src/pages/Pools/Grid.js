@@ -8,14 +8,13 @@ import { useActiveWeb3React } from '../../hooks';
 import { getTokenContract, methods } from '../../utilities/ContractService';
 import Web3 from 'web3';
 const instance = new Web3(window.ethereum);
-import Modal from './StakeModel'
+import StakeModal from './StakeModel'
 import AutoCard from './AutoCard';
 import ManualCard from './ManualCard';
 import CollectModal from './CollectModal';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
 import Loader from 'components/UI/Loader';
-
 
 const database = [{
     id: 1,
@@ -143,6 +142,7 @@ function Grid({ settings }) {
                 withdrawFee,
                 withdrawFeePeriod,
                 userInfo,
+                isUserInfo,
                 pendingAnnex,
                 pendingAnnexWithoutDecimal
             }
@@ -152,10 +152,10 @@ function Grid({ settings }) {
         setcardsLoading(false)
     }, [loading]);
 
-
     console.log('database', data)
 
     const handleEnable = (item) => {
+        setSelectedCard(item)
         const tokenContract = new instance.eth.Contract(
             JSON.parse(CONTRACT_ABEP_ABI),
             item.token_address,
@@ -172,7 +172,7 @@ function Grid({ settings }) {
             })
             .catch((error) => {
                 setLoading(false);
-                console.log('error', error);
+                console.log(error);
             });
     }
 
@@ -213,7 +213,6 @@ function Grid({ settings }) {
         })
         setData(element)
     }
-
 
     const addToken = async (item) => {
         const tokenAddress = item.token_address;
@@ -334,14 +333,19 @@ function Grid({ settings }) {
                                     return (
                                         <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
                                             openDetails={openDetails} addToken={addToken}
-                                            annPrice={settings.annPrice} />
+                                            annPrice={settings.annPrice}
+                                            selectedId={selectedCard.id}
+                                            loading={loading}
+                                        />
                                     )
                                 }
                                 else {
                                     return (
                                         <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
                                             openDetails={openDetails} addToken={addToken}
-                                            annPrice={settings.annPrice} />
+                                            annPrice={settings.annPrice}
+                                            selectedId={selectedCard.id}
+                                            loading={loading} />
                                     )
                                 }
                             })
@@ -664,15 +668,14 @@ function Grid({ settings }) {
                 </div>
 
                 {
-                    <Modal
-                        // close={() => { setShowDepositeWithdrawModal(false) }}
-                        // afterCloseModal={() => { }}
+                    <StakeModal
                         openModal={stakeModal}
                         data={selectedCard}
                         onSetOpen={() => setStakeModal(true)}
                         onCloseModal={() => closeModal()}
                         handleSubmit={handleConfirm}
                         getToken={handleToken}
+                        annPrice={settings.annPrice}
                         modalError={modalError}
                         buttonText={buttonName}
                         loading={loading}
@@ -681,8 +684,6 @@ function Grid({ settings }) {
 
                 {
                     <CollectModal
-                        // close={() => { setShowDepositeWithdrawModal(false) }}
-                        // afterCloseModal={() => { }}
                         openModal={collectModal}
                         data={selectedCard}
                         onSetOpen={() => setCollectModal(true)}

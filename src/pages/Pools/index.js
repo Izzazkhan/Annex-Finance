@@ -23,6 +23,8 @@ import {
 import { useActiveWeb3React } from '../../hooks';
 import Web3 from 'web3';
 const instance = new Web3(window.ethereum);
+import Loader from 'components/UI/Loader';
+
 
 const Styles = styled.div`
  .border-custom{
@@ -40,12 +42,15 @@ function Pools() {
   const [showList, setShowList] = React.useState(true)
   const [live, setlive] = React.useState(true)
   const [finished, setfinished] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+
 
   const { account } = useActiveWeb3React();
 
 
 
   const onClaim = () => {
+    setLoading(true)
     const contract = new instance.eth.Contract(
       JSON.parse(CONTRACT_ANN_Vault),
       REACT_APP_ANN_Vault_ADDRESS,
@@ -54,9 +59,11 @@ function Pools() {
       .send({ from: account })
       .then((res) => {
         console.log('claim data', res);
+        setLoading(false)
       })
       .catch((err) => {
-        console.log('error', err);
+        console.log(err);
+        setLoading(false)
       });
   }
 
@@ -389,8 +396,12 @@ function Pools() {
                   <div className="text-white text-sm ">0.000 USDC</div>
                 </div>
                 <div className="text-white font-bold flex items-center">
-                  <button className="flex items-center focus:outline-none bg-white py-2 px-4 
-                        rounded-lg text-primary text-center font-bold text-sm" onClick={onClaim}>Claim</button></div>
+                  <button className={`flex items-center focus:outline-none bg-white ${loading ?
+                    " bg-lightGray text-gray pointer-events-none " :
+                    "  text-primary "} py-2 px-4
+                        rounded-lg text-center font-bold text-sm`} onClick={onClaim}>
+                    {loading && <Loader size="20px" className="mr-4" stroke="#717579" />}
+                    Claim</button></div>
               </div>
 
             </div>

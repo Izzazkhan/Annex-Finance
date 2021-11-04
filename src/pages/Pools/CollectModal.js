@@ -4,10 +4,6 @@ import { CloseIcon } from '../../components/swap/SearchModal/ListSelect';
 import styled from 'styled-components';
 import Loader from 'components/UI/Loader';
 
-const types = {
-    SUCCESS: 'success',
-    INPROGRESS: 'inprogress',
-};
 
 const ErrorMessage = styled.div`
   color: #721c24;
@@ -30,7 +26,6 @@ function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, 
     );
 
     const content =
-        // type === types['INPROGRESS'] ? (
         <div className="p-14">
             <div className="flex bg-black rounded-4xl border border-primary">
                 <button
@@ -90,29 +85,6 @@ function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, 
                 </div>
             </div>
         </div>
-    // ) : type === types['SUCCESS'] ? (
-    //     <div className="p-14">
-    //         <div className="flex flex-col items-center">
-    //             <img
-    //                 className="w-150px "
-    //                 src={require('../../../assets/images/check.svg').default}
-    //                 alt="transaction broadcast"
-    //             />
-    //             <div className="text-xl font-normal mt-8">{`Auction Commit Successfully`}</div>
-    //         </div>
-    //         <div className="flex justify-center mt-16">
-    //             <button
-    //                 className="focus:outline-none bg-primary py-4 rounded text-2xl
-    //          w-full max-w-350px text-black"
-    //                 onClick={onCloseModal}
-    //             >
-    //                 Close
-    //             </button>
-    //         </div>
-    //     </div>
-    // ) : (
-    //     ''
-    // );
     return (
         <div>
             <Modal
