@@ -768,7 +768,8 @@ function Detail(props) {
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
               {state.detail.currentPrice ? Number(state.detail.currentPrice.toFixed(8)) : 0}{' '}
-              {state.detail.auctionSymbol}-{state.detail.biddingSymbol}
+              {props.location.pathname.includes('fixed') ? `${state.detail.auctionSymbol}`
+                : `${state.detail.auctionSymbol}-${state.detail.biddingSymbol}`}
             </h2>
           )}
           <div className="flex items-center text-white text-lg md:text-md ">
@@ -817,7 +818,7 @@ function Detail(props) {
             </a>
           </h2>
           <div className="flex items-center text-white text-lg md:text-md ">
-            Bidding With{' '}
+            {props.location.pathname.includes('fixed') ? 'Purchase With' : 'Bidding With'}
             <div className="tooltip relative">
               <img
                 className="ml-3"
@@ -866,7 +867,7 @@ function Detail(props) {
             </a>
           </h2>
           <div className="flex items-center text-white text-lg md:text-md ">
-            Total Auctioned{' '}
+            {props.location.pathname.includes('fixed') ? 'Total Sale' : 'Total Auctioned'}
             <div className="tooltip relative">
               <img
                 className="ml-3"
@@ -898,7 +899,7 @@ function Detail(props) {
                 src={require('../../../assets/images/info.svg').default}
                 alt=""
               />
-              <span className="label">Minimum Bid Price</span>
+              <span className="label">{props.location.pathname.includes('fixed') ? 'Minimum Buy' : 'Minimum Bid Price'}</span>
             </div>
           </div>
         </div>

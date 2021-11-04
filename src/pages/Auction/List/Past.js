@@ -67,7 +67,7 @@ function Past(props) {
            py-2 rounded px-32 h-15 mr-2  ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               }`}
           >
-            Batch
+            Batch Auction
           </button>
           <button
             onClick={(e) => {
@@ -77,7 +77,7 @@ function Past(props) {
             className={`py-2 rounded px-32 transition-all h-15 mr-2 ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Dutch
+            Dutch Auction
           </button>
           <button
             onClick={(e) => {

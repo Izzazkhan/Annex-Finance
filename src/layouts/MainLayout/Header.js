@@ -39,7 +39,7 @@ function Header({ onOpen, title, settings }) {
       dashboard: 'Lending',
       vote: 'vote',
       annex: 'annex',
-      auction: 'auction',
+      auction: 'ido',
       market: 'market',
       vault: 'vault',
       swap: 'swap',
@@ -71,7 +71,7 @@ function Header({ onOpen, title, settings }) {
           to="/auction/create"
           className="focus:outline-none bg-transparent border border-primary py-2 px-4 rounded-3xl text-white ml-10 w-80 text-center"
         >
-          Create an Auction{' '}
+          Create an IDO{' '}
         </Link>
       ) : (
         ''
@@ -79,7 +79,7 @@ function Header({ onOpen, title, settings }) {
       <Navigation
         wrapperClassName="hidden lg:block"
         totalLiquidity={settings.totalLiquidity}
-        // totalXaiMinted={totalXaiMinted}
+      // totalXaiMinted={totalXaiMinted}
       />
     </header>
   );

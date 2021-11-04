@@ -229,7 +229,7 @@ const sidebarItems = [
     key: 10,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <Auction fill={fill} />,
-    title: 'Auction',
+    title: 'IDO',
     href: `${RouteMap.auction}`,
     subCats: [
       { key: 1, icon: underscore, title: 'Live', href: `${RouteMap.auction}/live` },
