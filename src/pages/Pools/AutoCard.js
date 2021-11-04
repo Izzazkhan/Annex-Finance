@@ -5,15 +5,18 @@ import Refresh from '../../assets/images/refresh.png';
 import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
 import MetaMask from '../../assets/icons/metaMask.svg';
 import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
-export default function AutoCard({ item, openModal, handleEnable, openDetails, addToken, cardLoading }) {
-    console.log('itemmm', item)
+import { accountActionCreators, connectAccount } from '../../core';
+import { bindActionCreators } from 'redux';
+
+function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice }) {
+
     const ArrowContainer = styled.div`
     transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: 0.3s ease all;
     will-change: transform;
   `
     return (
-        <div className="bg-black rounded-3xl col-span-4" key={item.id} style={{ height: 'fit-content' }}>
+        <div className="bg-black rounded-3xl col-span-4 box-hover-color" key={item.id} style={{ height: 'fit-content' }}>
             <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl 
                         flex items-center w-full justify-between">
                 <div className="flex flex-col">
@@ -37,15 +40,20 @@ export default function AutoCard({ item, openModal, handleEnable, openDetails, a
                     <div className="text-white font-bold flex items-center">0%
                     </div>
                 </div>
-                <div className="text-white">Recent {item.symbol} Profit:</div>
+                <div className="text-white font-bold">Recent {item.symbol} Profit:</div>
                 <div className="text-white text-sm mt-2 mb-4">{`${`${item.withdrawFee}% unstaking 
                                 fee if withdrawn within ${item.withdrawFeePeriod}h`}`}</div>
-                {cardLoading ? <Loader size="20px" className="mr-4" stroke="#717579" /> : item.userInfo ?
+                {item.userInfo ?
                     <div>
-                        <div className="text-white text-sm">{item.symbol} Staked (Compounding)</div>
+                        <div className="text-white text-sm font-bold">{item.symbol} Staked (Compounding)</div>
                         <div className="text-center mt-2">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="text-white">0.0000</div>
+                                <div className="flex flex-col">
+                                    <div className="text-white text-left text-lg font-bold">{item.stacked}</div>
+                                    <div className="text-white text-xs text-left">
+                                        {`~${Number(item.stacked * annPrice).toFixed(5)} USD`}
+                                    </div>
+                                </div>
                                 <div className="text-white font-bold flex items-center  gap-2">
                                     <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
                                 text-black w-12 text-center text-sm" onClick={() => openModal(item, 'minus')}>
@@ -59,10 +67,10 @@ export default function AutoCard({ item, openModal, handleEnable, openDetails, a
                             </div>
                         </div>
                     </div> : <div>
-                        <div className="text-white text-sm">Stake {item.symbol}</div>
+                        <div className="text-white text-sm font-bold">Stake {item.symbol}</div>
                         <div className="text-center mt-2">
                             <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
-                                text-black w-40 text-center text-sm" onClick={item.allowance === 0 ? () => handleEnable(item) :
+                                text-black w-40 text-center text-sm font-bold" onClick={item.allowance === 0 ? () => handleEnable(item) :
                                     () => openModal(item, 'stake')}>{item.allowance === 0 ?
                                         'Enable' : item.allowance > 0 ? 'Stake' : ''}
                             </button>
@@ -73,7 +81,7 @@ export default function AutoCard({ item, openModal, handleEnable, openDetails, a
                 <div className="flex items-center justify-between">
                     <div className="">
                         <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" />
+                        rounded-3xl text-black text-center text-sm font-bold"><img src={Refresh} className="mr-1" alt="" />
                             {'Auto'}</button>
                     </div>
                     <div onClick={() => openDetails(item, !item.isOpen)} className="text-primary text-sm flex 
@@ -125,3 +133,6 @@ export default function AutoCard({ item, openModal, handleEnable, openDetails, a
         </div>
     )
 }
+
+
+export default AutoCard

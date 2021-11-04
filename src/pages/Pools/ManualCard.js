@@ -8,11 +8,9 @@ import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
 import MetaMask from '../../assets/icons/metaMask.svg';
 import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
 import SVG from "react-inlinesvg";
-import { accountActionCreators, connectAccount } from '../../core';
-import { bindActionCreators } from 'redux';
 
-function ManualCard({ item, openModal, handleEnable, openDetails, addToken, cardLoading, settings }) {
-    console.log('settings', settings)
+function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annPrice }) {
+
     const ArrowContainer = styled.div`
     transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: 0.3s ease all;
@@ -49,8 +47,10 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, card
                 <div className="text-center mt-2">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex flex-col">
-                            <div className="text-white">{Number(item.pendingAnnex).toFixed(5)}</div>
-                            <div className="text-white text-xs text-left">{Number(item.pendingAnnex * settings.annPrice).toFixed(5)}</div>
+                            <div className="text-white text-left text-lg font-bold">{Number(item.pendingAnnex).toFixed(5)}</div>
+                            <div className="text-white text-xs text-left">
+                                {`~${Number(item.pendingAnnex * annPrice).toFixed(5)} USD`}
+                            </div>
                         </div>
                         <div className="text-white font-bold flex items-center">
                             <button className="focus:outline-none bg-primary py-3 px-4 rounded-2xl 
@@ -61,14 +61,16 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, card
                     </div>
                 </div>
 
-                {cardLoading ? <Loader size="20px" className="mr-4" stroke="#717579" /> : item.userInfo ?
+                {item.userInfo ?
                     <div>
                         <div className="text-white text-sm font-bold">{item.symbol} Staked</div>
                         <div className="text-center mt-2">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
-                                    <div className="text-white">{'00000'}</div>
-                                    <div className="text-white text-xs text-left">{'455'}</div>
+                                    <div className="text-white text-left text-lg font-bold">{item.stacked}</div>
+                                    <div className="text-white text-xs text-left">
+                                        {`~${Number(item.stacked * annPrice).toFixed(5)} USD`}
+                                    </div>
                                 </div>
 
                                 <div className="text-white font-bold flex items-center gap-2">
@@ -84,10 +86,10 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, card
                             </div>
                         </div>
                     </div> : <div>
-                        <div className="text-white text-sm">Stake {item.symbol}</div>
+                        <div className="text-white text-sm font-bold">Stake {item.symbol}</div>
                         <div className="text-center mt-2">
                             <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
-                                text-black w-40 text-center text-sm" onClick={item.allowance === 0 ? () => handleEnable(item) :
+                                text-black w-40 text-center text-sm font-bold" onClick={item.allowance === 0 ? () => handleEnable(item) :
                                     () => openModal(item, 'stake')}>{item.allowance === 0 ?
                                         'Enable' : item.allowance > 0 ? 'Stake' : ''}
                             </button>
@@ -98,11 +100,11 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, card
                 <div className="flex items-center justify-between">
                     <div className="">
                         <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" />
+                        rounded-3xl text-black text-center text-sm font-bold"><img src={Refresh} className="mr-1" alt="" />
                             {'Manual'}</button>
                     </div>
                     <div onClick={() => openDetails(item, !item.isOpen)} className="text-primary text-sm flex 
-                                items-center cursor-pointer" >Details
+                                items-center cursor-pointer font-bold" >Details
                         <div className="ml-2 order-4 hidden sm:flex">
                             <ArrowContainer active={item.isOpen}>
                                 <img src={ArrowIconOrange} alt="" />
@@ -147,19 +149,4 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, card
     )
 }
 
-const mapStateToProps = ({ account }) => ({
-    settings: account.setting,
-});
-
-const mapDispatchToProps = (dispatch) => {
-    const { setSetting } = accountActionCreators;
-
-    return bindActionCreators(
-        {
-            setSetting,
-        },
-        dispatch,
-    );
-};
-
-export default connectAccount(mapStateToProps, mapDispatchToProps)(ManualCard);
+export default ManualCard

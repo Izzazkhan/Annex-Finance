@@ -19,7 +19,7 @@ const ErrorMessage = styled.div`
   border: 1px solid transparent;
   border-radius: 0.25rem;
 `;
-function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, getToken, buttonText, loading }) {
+function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, getToken, buttonText, loading, annPrice }) {
     const [currentTab, setCurrentTab] = useState('compound');
 
     const title = (
@@ -51,10 +51,10 @@ function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, 
                 </button>
             </div>
             <div className="flex items-center justify-between mb-4 mt-6">
-                <div className="text-white">{currentTab === 'harvest' ? 'Harvesting' : 'Compound'}</div>
+                <div className="text-white">{currentTab === 'harvest' ? 'Harvesting:' : 'Compounding:'}</div>
                 <div className="text-white font-bold flex flex-col items-end">
-                    <span>{Number(data.pendingAnnex).toFixed(5)}</span>
-                    <span className="font-normal text-xs text-right">{Number(data.pendingAnnex).toFixed(5)}</span>
+                    <span>{`${Number(data.pendingAnnex).toFixed(5)} ${data.symbol}`}</span>
+                    <span className="font-normal text-xs text-right">{`~${Number(data.pendingAnnex) * annPrice} USD`}</span>
                 </div>
             </div>
 
@@ -64,10 +64,10 @@ function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, 
                 <div className=" rounded-xl flex justify-center items-center 
                                     py-2.5 px-3.5 input-container">
                     <button
-                        className={`rounded-xl flex justify-center items-center 
+                        className={`w-full rounded-xl flex justify-center items-center
                             font-bold py-4 px-28 ${loading ? " bg-lightGray text-gray pointer-events-none " :
                                 " bgPrimaryGradient text-black "} text-black`}
-                        onClick={() => handleSubmit(data.pendingAnnex * Math.pow(10, data.decimal), currentTab)}
+                        onClick={() => handleSubmit(data.pendingAnnexWithoutDecimal, currentTab)}
                     >
                         {loading && <Loader size="20px" className="mr-4" stroke="#717579" />}
                         Submit
@@ -80,7 +80,7 @@ function CollectModal({ openModal, data, onCloseModal, onSetOpen, handleSubmit, 
                 <div className=" rounded-xl flex justify-center items-center 
                                     py-2.5 px-3.5 input-container">
                     <button
-                        className={`border border-primary rounded-xl flex justify-center items-center 
+                        className={`w-full border border-primary rounded-xl flex justify-center items-center
                             font-bold py-4 px-21 text-primary`}
                         onClick={onCloseModal}
                     >

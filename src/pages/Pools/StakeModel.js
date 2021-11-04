@@ -50,12 +50,14 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
 
     const handleFocus = (event) => event.target.select();
 
-    // function closeModal() {
-    //     onCloseModal();
-    //     if (afterCloseModal) {
-    //         afterCloseModal();
-    //     }
-    // }
+    function closeModal() {
+        onCloseModal();
+        setInputAmount(0)
+        setValue(0)
+        // if (afterCloseModal) {
+        //     afterCloseModal();
+        // }
+    }
 
     const onChangeSlider = (newValue) => {
         setValue(newValue);
@@ -75,7 +77,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
     const title = (
         <div className="flex items-center justify-between mt-4 mx-12 py-4 border-b border-solid border-gray-600">
             <div className="text-left text-xl font-normal  ">Stake in Pool </div>
-            <CloseIcon onClick={onCloseModal} fill={'#fff'} />
+            <CloseIcon onClick={closeModal} fill={'#fff'} />
         </div>
     );
 
@@ -180,13 +182,13 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                             </button>
                         </div>
 
-                        <div className="mt-2">
+                        {/* <div className="mt-2">
                             <div className="rounded-xl flex justify-between items-center 
                                     py-2.5 px-3.5 mt-10 input-container">
                                 Annual ROI at current Rates:
                                 <span className="cursor-pointer select-none">$000</span>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="mt-2">
                             <div className=" rounded-xl flex justify-center items-center 
@@ -232,7 +234,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                 content={content}
                 open={openModal}
                 onSetOpen={onSetOpen}
-                onCloseModal={onCloseModal}
+                onCloseModal={closeModal}
                 afterCloseModal={() => { }}
                 width="max-w-xl"
             />

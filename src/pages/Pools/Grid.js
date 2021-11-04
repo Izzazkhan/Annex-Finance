@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from 'react';
 import styled from 'styled-components';
 import {
     CONTRACT_TOKEN_ADDRESS, CONTRACT_ABEP_ABI, CONTRACT_ANN_Vault,
-    CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS
+    CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS, REACT_APP_ANNEX_FARM_ADDRESS
 } from '../../utilities/constants';
 import { useActiveWeb3React } from '../../hooks';
 import { getTokenContract, methods } from '../../utilities/ContractService';
@@ -12,6 +12,10 @@ import Modal from './StakeModel'
 import AutoCard from './AutoCard';
 import ManualCard from './ManualCard';
 import CollectModal from './CollectModal';
+import { accountActionCreators, connectAccount } from '../../core';
+import { bindActionCreators } from 'redux';
+import Loader from 'components/UI/Loader';
+
 
 const database = [{
     id: 1,
@@ -38,8 +42,7 @@ const database = [{
     label: 'Manual ANN',
     sublabel: 'Earn ANN, stake ANN',
     auto_staking: false,
-    contract_Address: process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_TEST_Annex_Farm_ADDRESS
-        : process.env.REACT_APP_MAIN_Annex_Farm_ADDRESS,
+    contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
     contract_Abi: CONTRACT_Annex_Farm,
     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
     isFinished: false,
@@ -47,15 +50,15 @@ const database = [{
 },
     // {
     //     id: 3,
-    //     // eslint-disable-next-line max-len
+    //     _pid: 0,
     //     token_address: CONTRACT_TOKEN_ADDRESS.busd.address,
     //     symbol: CONTRACT_TOKEN_ADDRESS.busd.symbol,
-    // decimal: 18,
+    //     decimal: 18,
     //     label: 'Manual USDC',
     //     sublabel: 'Earn USDC, stake USDC',
     //     auto_staking: false,
-    //     contract_Address: process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_TEST_Annex_Farm_ADDRESS
-    //         : process.env.REACT_APP_MAIN_Annex_Farm_ADDRESS,
+    //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
+    //     contract_Abi: CONTRACT_Annex_Farm,
     //     logo: CONTRACT_TOKEN_ADDRESS.busd.asset,
     //     isFinished: false,
     //     isOpen: false
@@ -71,7 +74,7 @@ const Styles = styled.div`
   }
  `
 
-function Grid() {
+function Grid({ settings }) {
     const [data, setData] = useState(database)
     const [loading, setLoading] = useState(false);
     const [stakeModal, setStakeModal] = useState(false);
@@ -82,8 +85,7 @@ function Grid() {
         message: '',
         type: '',
     });
-    const [cardLoading, setcardLoading] = useState(true)
-
+    const [cardsLoading, setcardsLoading] = useState(true)
     const { account } = useActiveWeb3React();
 
     useEffect(async () => {
@@ -97,7 +99,7 @@ function Grid() {
             let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
-            let withdrawFee = 0, withdrawFeePeriod = 0, isUserInfo = false, userInfo, stacked, pendingAnnex
+            let withdrawFee = 0, withdrawFeePeriod = 0, isUserInfo = 0, userInfo, stacked, pendingAnnex, pendingAnnexWithoutDecimal
             const contract = new instance.eth.Contract(
                 JSON.parse(item.contract_Abi),
                 item.contract_Address,
@@ -109,8 +111,6 @@ function Grid() {
                 withdrawFee = (withdrawFee / 10000) * 100
                 withdrawFeePeriod = await methods.call(contract.methods.withdrawFeePeriod, []);
                 withdrawFeePeriod = withdrawFeePeriod / 3600
-
-
                 if (Number(allowance) > 0) {
                     isUserInfo = await methods.call(contract.methods.userInfo, [account]);
                     if (isUserInfo.shares > 0) {
@@ -121,7 +121,9 @@ function Grid() {
             }
             else {
                 pendingAnnex = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
-                // pendingAnnex = pendingAnnex / Math.pow(10, decimal)
+                pendingAnnex = pendingAnnex / Math.pow(10, decimal)
+                console.log('pendingAnnexWithoutDecimal', pendingAnnex)
+                pendingAnnexWithoutDecimal = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
                 if (Number(allowance) > 0) {
                     isUserInfo = await methods.call(contract.methods.userInfo, [item._pid, account]);
 
@@ -141,12 +143,13 @@ function Grid() {
                 withdrawFee,
                 withdrawFeePeriod,
                 userInfo,
-                pendingAnnex
+                pendingAnnex,
+                pendingAnnexWithoutDecimal
             }
         })
         const resolvedArray = await Promise.all(allowanceMapped);
         setData(resolvedArray)
-        setcardLoading(false)
+        setcardsLoading(false)
     }, [loading]);
 
 
@@ -166,7 +169,6 @@ function Grid() {
             )
             .then((data) => {
                 setLoading(false);
-                console.log('data', data);
             })
             .catch((error) => {
                 setLoading(false);
@@ -256,49 +258,63 @@ function Grid() {
     const closeModal = () => {
         setStakeModal(false);
         setCollectModal(false)
+        setModalError({
+            message: '',
+            type: '',
+        });
     };
 
     const handleConfirm = (amount, buttonValue) => {
-        const contract = new instance.eth.Contract(
-            JSON.parse(selectedCard.contract_Abi),
-            selectedCard.contract_Address,
-        );
-        const methodName = buttonValue === 'minus' || buttonValue === 'harvest' ? contract.methods.withdraw : contract.methods.deposit
-        setLoading(true);
-        let contractArray
-        if (selectedCard.id === 2) {
-            if (buttonValue === 'harvest' || buttonValue === 'compund') {
-                contractArray = [selectedCard._pid, amount]
-
+        if (amount > 0) {
+            const contract = new instance.eth.Contract(
+                JSON.parse(selectedCard.contract_Abi),
+                selectedCard.contract_Address,
+            );
+            const methodName = buttonValue === 'minus' || buttonValue === 'harvest' ? contract.methods.withdraw : contract.methods.deposit
+            setLoading(true);
+            let contractArray
+            if (selectedCard.id === 2) {
+                if (buttonValue === 'harvest' || buttonValue === 'compound') {
+                    contractArray = [selectedCard._pid, amount]
+                }
+                else {
+                    contractArray = [selectedCard._pid, amount * Math.pow(10, selectedCard.decimal)]
+                }
             }
-            contractArray = [selectedCard._pid, amount * Math.pow(10, selectedCard.decimal)]
+            else {
+                contractArray = [amount * Math.pow(10, selectedCard.decimal)]
+            }
+            methods
+                .send(
+                    methodName,
+                    contractArray,
+                    account,
+                )
+                .then((data) => {
+                    setLoading(false);
+                    setStakeModal(false)
+                    setCollectModal(false)
+                    console.log('data', data);
+                    setModalError({
+                        message: '',
+                        type: '',
+                    });
+                })
+                .catch((error) => {
+                    console.log('error', error);
+                    setModalError({
+                        ...modalError,
+                        message: error.message,
+                    });
+                    setLoading(false);
+                });
         }
         else {
-            contractArray = [amount * Math.pow(10, selectedCard.decimal)]
-        }
-        methods
-            .send(
-                methodName,
-                contractArray,
-                account,
-            )
-            .then((data) => {
-                setLoading(false);
-                setStakeModal(false)
-                console.log('data', data);
-                setModalError({
-                    message: '',
-                    type: '',
-                });
-            })
-            .catch((error) => {
-                console.log('error', error);
-                setModalError({
-                    ...modalError,
-                    message: error.message,
-                });
-                setLoading(false);
+            setModalError({
+                ...modalError,
+                message: 'Amount should be greater than 0',
             });
+        }
     }
 
     const handleToken = () => {
@@ -309,20 +325,30 @@ function Grid() {
         <Styles>
             <Fragment>
                 <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
-                    {data.length && data.map(item => {
-                        if (item.auto_staking) {
-                            return (
-                                <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
-                                    openDetails={openDetails} addToken={addToken} cardLoading={cardLoading} />
-                            )
-                        }
-                        else {
-                            return (
-                                <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
-                                    openDetails={openDetails} addToken={addToken} cardLoading={cardLoading} />
-                            )
-                        }
-                    })}
+                    {
+                        cardsLoading ? (
+                            <Loader size="160px" className="m-40" stroke="#ff9800" />
+                        ) : (
+                            data.length && data.map(item => {
+                                if (item.auto_staking) {
+                                    return (
+                                        <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
+                                            openDetails={openDetails} addToken={addToken}
+                                            annPrice={settings.annPrice} />
+                                    )
+                                }
+                                else {
+                                    return (
+                                        <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
+                                            openDetails={openDetails} addToken={addToken}
+                                            annPrice={settings.annPrice} />
+                                    )
+                                }
+                            })
+                        )
+                    }
+
+
 
 
 
@@ -665,6 +691,7 @@ function Grid() {
                         getToken={handleToken}
                         buttonText={buttonName}
                         loading={loading}
+                        annPrice={settings.annPrice}
                     />
                 }
             </Fragment>
@@ -672,4 +699,19 @@ function Grid() {
     );
 }
 
-export default Grid;
+const mapStateToProps = ({ account }) => ({
+    settings: account.setting,
+});
+
+const mapDispatchToProps = (dispatch) => {
+    const { setSetting } = accountActionCreators;
+
+    return bindActionCreators(
+        {
+            setSetting,
+        },
+        dispatch,
+    );
+};
+
+export default connectAccount(mapStateToProps, mapDispatchToProps)(Grid);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../../layouts/MainLayout/MainLayout';
 import Table from './Table';
 import GridView from './Grid';
@@ -17,6 +17,12 @@ import { Grid } from 'react-virtualized';
 import styled from 'styled-components';
 import ComingSoon from '../../assets/images/coming-soon.png';
 import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
+import {
+  CONTRACT_ANN_Vault, REACT_APP_ANN_Vault_ADDRESS
+} from '../../utilities/constants';
+import { useActiveWeb3React } from '../../hooks';
+import Web3 from 'web3';
+const instance = new Web3(window.ethereum);
 
 const Styles = styled.div`
  .border-custom{
@@ -34,6 +40,26 @@ function Pools() {
   const [showList, setShowList] = React.useState(true)
   const [live, setlive] = React.useState(true)
   const [finished, setfinished] = React.useState(false)
+
+  const { account } = useActiveWeb3React();
+
+
+
+  const onClaim = () => {
+    const contract = new instance.eth.Contract(
+      JSON.parse(CONTRACT_ANN_Vault),
+      REACT_APP_ANN_Vault_ADDRESS,
+    );
+    contract.methods.harvest()
+      .send({ from: account })
+      .then((res) => {
+        console.log('claim data', res);
+      })
+      .catch((err) => {
+        console.log('error', err);
+      });
+  }
+
   const GridViews = () => {
     setShowGrid(true)
     setShowList(false)
@@ -364,7 +390,7 @@ function Pools() {
                 </div>
                 <div className="text-white font-bold flex items-center">
                   <button className="flex items-center focus:outline-none bg-white py-2 px-4 
-                        rounded-lg text-primary text-center font-bold text-sm">Claim</button></div>
+                        rounded-lg text-primary text-center font-bold text-sm" onClick={onClaim}>Claim</button></div>
               </div>
 
             </div>
