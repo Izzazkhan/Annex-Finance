@@ -1,12 +1,10 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Loader from 'components/UI/Loader';
 import Refresh from '../../assets/images/refresh.png';
 import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
 import MetaMask from '../../assets/icons/metaMask.svg';
 import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
-import { accountActionCreators, connectAccount } from '../../core';
-import { bindActionCreators } from 'redux';
 
 function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice, selectedId, loading }) {
 
@@ -49,7 +47,7 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                     {`APY includes compounding, APR doesn’t. This pool’s ${item.symbol} is compounded automatically, so we show APY.`}
                 </span> */}
                 {/* </div> */}
-                {item.userInfo ?
+                {item.isUserInfo ?
                     <div>
                         <div className="text-white text-sm font-bold">{item.symbol} Staked (Compounding)</div>
                         <div className="text-center mt-2">

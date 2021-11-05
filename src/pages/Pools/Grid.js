@@ -88,7 +88,7 @@ function Grid({ settings, onlyStaked, poolState }) {
             let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
-            let withdrawFee = 0, withdrawFeePeriod = 0, isUserInfo = 0, userInfo, stacked, pendingAnnex, pendingAnnexWithoutDecimal
+            let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked, pendingAnnex, pendingAnnexWithoutDecimal
             const contract = new instance.eth.Contract(
                 JSON.parse(pool.contract_Abi),
                 pool.contract_Address,
@@ -100,10 +100,10 @@ function Grid({ settings, onlyStaked, poolState }) {
                 withdrawFeePeriod = await methods.call(contract.methods.withdrawFeePeriod, []);
                 withdrawFeePeriod = withdrawFeePeriod / 3600
                 if (Number(allowance) > 0) {
-                    isUserInfo = await methods.call(contract.methods.userInfo, [account]);
-                    if (isUserInfo.shares > 0) {
-                        userInfo = true
-                        stacked = isUserInfo.shares / Math.pow(10, decimal)
+                    userInfo = await methods.call(contract.methods.userInfo, [account]);
+                    if (userInfo.shares > 0) {
+                        isUserInfo = true
+                        stacked = userInfo.shares / Math.pow(10, decimal)
                     }
                 }
             }
@@ -112,10 +112,10 @@ function Grid({ settings, onlyStaked, poolState }) {
                 pendingAnnex = pendingAnnex / Math.pow(10, decimal)
                 pendingAnnexWithoutDecimal = await methods.call(contract.methods.pendingAnnex, [pool._pid, account]);
                 if (Number(allowance) > 0) {
-                    isUserInfo = await methods.call(contract.methods.userInfo, [pool._pid, account]);
-                    if (isUserInfo.amount > 0) {
-                        userInfo = true
-                        stacked = isUserInfo.amount / Math.pow(10, decimal)
+                    userInfo = await methods.call(contract.methods.userInfo, [pool._pid, account]);
+                    if (userInfo.amount > 0) {
+                        isUserInfo = true
+                        stacked = userInfo.amount / Math.pow(10, decimal)
                     }
                 }
             }
@@ -127,8 +127,8 @@ function Grid({ settings, onlyStaked, poolState }) {
                 stacked,
                 withdrawFee,
                 withdrawFeePeriod,
-                userInfo,
                 isUserInfo,
+                userInfo,
                 pendingAnnex,
                 pendingAnnexWithoutDecimal
             }
@@ -140,8 +140,8 @@ function Grid({ settings, onlyStaked, poolState }) {
 
     useEffect(() => {
         if (onlyStaked) {
-            const filteredPool = poolData.filter(pool => (pool.isUserInfo.shares && pool.isUserInfo.shares > 0)
-                || (pool.isUserInfo.amount && pool.isUserInfo.amount > 0))
+            const filteredPool = poolData.filter(pool => (pool.userInfo.shares && pool.userInfo.shares > 0)
+                || (pool.userInfo.amount && pool.userInfo.amount > 0))
             fetchPoolData(filteredPool)
         }
         else {

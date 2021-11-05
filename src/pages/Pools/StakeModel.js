@@ -56,9 +56,6 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
         onCloseModal();
         setInputAmount(0)
         setValue(0)
-        // if (afterCloseModal) {
-        //     afterCloseModal();
-        // }
     }
 
     const onChangeSlider = (newValue) => {
@@ -84,19 +81,10 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
     );
 
     const content =
-        // type === types['INPROGRESS'] ? (
         <CustomModal>
             <div className="p-8">
                 <div className="flex flex-row items-start w-full mb-10">
                     <div className="icon mr-5">
-                        {/* <img
-                    style={{ width: '55px' }}
-                    src={
-                        require(`../../assets/${status ? 'images/check.svg' : 'icons/circleCross.svg'}`)
-                            .default
-                    }
-                    alt="transaction broadcast"
-                /> */}
                     </div>
                     <div className=" flex flex-col flex-1">
                         <div className="label flex justify-between font-bold text-primary text-xl">
@@ -133,7 +121,6 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
 
                         <div className="custom-range">
                             <Slider
-                                // labels={checkCurrentEligibleEpoch ? holdingAPR.toString() : '0'}
                                 // handleLabel={'0'}
                                 min={0}
                                 max={buttonText !== 'plus' ? data.stacked : data.tokenBalance}
@@ -211,7 +198,6 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                             font-bold py-4 px-28 bg-primary text-black`}
                                     onClick={getToken}
                                 >
-                                    {/* {pendingTx && <Loader size="20px" className="mr-4" stroke="#717579" />} */}
                                     Get {data.symbol}
                                 </button>
 

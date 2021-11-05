@@ -44,22 +44,21 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                     {/* <img src={ROI} className="ml-3" alt="" /> */}
                 </div>
                 <div className="text-white text-sm font-bold">{item.symbol} EARNED</div>
-                {/* <div className="text-white text-sm mt-2 mb-4">{`${'ddd'}`}</div> */}
                 <div className="text-center mt-2">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex flex-col">
-                            <div className={`${item.isUserInfo.amount > 0 ? 'text-white' : 'text-gray pointer-events-none'} 
+                            <div className={`${item.userInfo.amount > 0 ? 'text-white' : 'text-gray pointer-events-none'} 
                             text-left text-lg font-bold`}>
-                                {item.isUserInfo.amount > 0 ? Number(item.pendingAnnex).toFixed(5) : '0'}</div>
-                            <div className={`${item.isUserInfo.amount > 0 ? 'text-white' : 'text-gray pointer-events-none'} 
+                                {item.userInfo.amount > 0 ? Number(item.pendingAnnex).toFixed(5) : '0'}</div>
+                            <div className={`${item.userInfo.amount > 0 ? 'text-white' : 'text-gray pointer-events-none'} 
                             text-white text-xs text-left`}>
-                                {`${item.isUserInfo.amount > 0 ? `~${Number(item.pendingAnnex * annPrice).toFixed(5)} USD` : '0 USD'}`}
+                                {`${item.userInfo.amount > 0 ? `~${Number(item.pendingAnnex * annPrice).toFixed(5)} USD` : '0 USD'}`}
                             </div>
                         </div>
                         <div className="text-white font-bold flex items-center">
                             <button className={`focus:outline-none bg-primary py-3 px-4 rounded-2xl 
                                 text-black w-28 text-center text-sm font-bold 
-                                ${item.isUserInfo.amount > 0 ? `bg-primary` : `bg-lightGray text-gray pointer-events-none`}`}
+                                ${item.userInfo.amount > 0 ? `bg-primary` : `bg-lightGray text-gray pointer-events-none`}`}
                                 onClick={() => openModal(item, 'collect')}>
                                 Collect
                             </button>
@@ -67,7 +66,7 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                     </div>
                 </div>
 
-                {item.userInfo ?
+                {item.isUserInfo ?
                     <div>
                         <div className="text-white text-sm font-bold">{item.symbol} Staked</div>
                         <div className="text-center mt-2">
@@ -94,12 +93,6 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                     </div> : <div>
                         <div className="text-white text-sm font-bold">Stake {item.symbol}</div>
                         <div className="text-center mt-2">
-                            {/* <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl 
-                                text-black w-40 text-center text-sm font-bold" 
-                                onClick={item.allowance === 0 ? () => handleEnable(item) :
-                                    () => openModal(item, 'stake')}>{item.allowance === 0 ?
-                                        'Enable' : item.allowance > 0 ? 'Stake' : ''}
-                            </button> */}
                             <button className={`focus:outline-none ${loading && selectedId === item.id ?
                                 " bg-lightGray text-gray pointer-events-none " :
                                 " bgPrimaryGradient text-black "} py-2 px-4 rounded-3xl
