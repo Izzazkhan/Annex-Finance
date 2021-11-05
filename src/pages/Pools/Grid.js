@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import styled from 'styled-components';
 import {
     CONTRACT_TOKEN_ADDRESS, CONTRACT_ABEP_ABI, CONTRACT_ANN_Vault,
@@ -32,22 +32,22 @@ const database = [{
     isFinished: false,
     isOpen: false,
 },
-    // {
-    //     id: 2,
-    //     _pid: 0,
-    //     name: 'ann',
-    //     token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
-    //     symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
-    //     decimal: 18,
-    //     label: 'Manual ANN',
-    //     sublabel: 'Earn ANN, stake ANN',
-    //     auto_staking: false,
-    //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
-    //     contract_Abi: CONTRACT_Annex_Farm,
-    //     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
-    //     isFinished: false,
-    //     isOpen: false
-    // },
+{
+    id: 2,
+    _pid: 0,
+    name: 'ann',
+    token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
+    symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
+    decimal: 18,
+    label: 'Manual ANN',
+    sublabel: 'Earn ANN, stake ANN',
+    auto_staking: false,
+    contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
+    contract_Abi: CONTRACT_Annex_Farm,
+    logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
+    isFinished: false,
+    isOpen: false
+},
 ]
 
 const Styles = styled.div`
@@ -59,26 +59,30 @@ const Styles = styled.div`
   }
  `
 
-function Grid({ settings }) {
-    const [data, setData] = useState(database)
+function Grid({ settings, onlyStaked, poolState }) {
+    const [poolData, setPoolData] = useState([])
     const [loading, setLoading] = useState(false);
     const [stakeModal, setStakeModal] = useState(false);
     const [collectModal, setCollectModal] = useState(false);
-    const [selectedCard, setSelectedCard] = useState('');
+    const [selectedPool, setSelectedPool] = useState('');
     const [buttonName, setButtonName] = useState('');
     const [modalError, setModalError] = useState({
         message: '',
         type: '',
     });
-    const [cardsLoading, setcardsLoading] = useState(true)
+    const [poolLoading, setPoolLoading] = useState(true)
     const { account } = useActiveWeb3React();
 
     useEffect(async () => {
-        const allowanceMapped = data.map(async (item) => {
-            const tokenContract = getTokenContract(item.name);
+        fetchPoolData(database.filter(pool => !pool.isFinished))
+    }, [loading]);
+
+    const fetchPoolData = useCallback(async (poolData) => {
+        const poolMapped = poolData.map(async (pool) => {
+            const tokenContract = getTokenContract(pool.name);
             let allowance = await methods.call(tokenContract.methods.allowance, [
                 account,
-                item.contract_Address,
+                pool.contract_Address,
             ])
 
             let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
@@ -86,11 +90,11 @@ function Grid({ settings }) {
             balanceOf = balanceOf / Math.pow(10, decimal)
             let withdrawFee = 0, withdrawFeePeriod = 0, isUserInfo = 0, userInfo, stacked, pendingAnnex, pendingAnnexWithoutDecimal
             const contract = new instance.eth.Contract(
-                JSON.parse(item.contract_Abi),
-                item.contract_Address,
+                JSON.parse(pool.contract_Abi),
+                pool.contract_Address,
             );
 
-            if (item.auto_staking === true) {
+            if (pool.auto_staking === true) {
                 withdrawFee = await methods.call(contract.methods.withdrawFee, []);
                 withdrawFee = (withdrawFee / 10000) * 100
                 withdrawFeePeriod = await methods.call(contract.methods.withdrawFeePeriod, []);
@@ -104,21 +108,19 @@ function Grid({ settings }) {
                 }
             }
             else {
-                pendingAnnex = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
+                pendingAnnex = await methods.call(contract.methods.pendingAnnex, [pool._pid, account]);
                 pendingAnnex = pendingAnnex / Math.pow(10, decimal)
-                pendingAnnexWithoutDecimal = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
+                pendingAnnexWithoutDecimal = await methods.call(contract.methods.pendingAnnex, [pool._pid, account]);
                 if (Number(allowance) > 0) {
-                    isUserInfo = await methods.call(contract.methods.userInfo, [item._pid, account]);
-
+                    isUserInfo = await methods.call(contract.methods.userInfo, [pool._pid, account]);
                     if (isUserInfo.amount > 0) {
                         userInfo = true
                         stacked = isUserInfo.amount / Math.pow(10, decimal)
                     }
                 }
             }
-
             return {
-                ...item,
+                ...pool,
                 allowance: Number(allowance),
                 decimal: Number(decimal),
                 tokenBalance: balanceOf,
@@ -131,15 +133,42 @@ function Grid({ settings }) {
                 pendingAnnexWithoutDecimal
             }
         })
-        const resolvedArray = await Promise.all(allowanceMapped);
-        setData(resolvedArray)
-        setcardsLoading(false)
-    }, [loading]);
+        const resolvedArray = await Promise.all(poolMapped);
+        setPoolData(resolvedArray)
+        setPoolLoading(false)
+    }, [poolData])
 
-    console.log('database', data)
+    useEffect(() => {
+        if (onlyStaked) {
+            const filteredPool = poolData.filter(pool => (pool.isUserInfo.shares && pool.isUserInfo.shares > 0)
+                || (pool.isUserInfo.amount && pool.isUserInfo.amount > 0))
+            fetchPoolData(filteredPool)
+        }
+        else {
+            if (poolState === 'live') {
+                fetchPoolData(database.filter(pool => !pool.isFinished))
+            }
+            else {
+                fetchPoolData(database.filter(pool => pool.isFinished))
+            }
+        }
+    }, [onlyStaked])
+
+    useEffect(() => {
+        if (poolState === 'live') {
+            const filteredPool = database.filter(pool => !pool.isFinished)
+            fetchPoolData(filteredPool)
+        }
+        else {
+            const filteredPool = database.filter(pool => pool.isFinished)
+            fetchPoolData(filteredPool)
+        }
+    }, [poolState])
+
+    console.log('database', poolData)
 
     const handleEnable = (item) => {
-        setSelectedCard(item)
+        setSelectedPool(item)
         const tokenContract = new instance.eth.Contract(
             JSON.parse(CONTRACT_ABEP_ABI),
             item.token_address,
@@ -151,7 +180,7 @@ function Grid({ settings }) {
                 [item.contract_Address, '115792089237316195423570985008687907853269984665640564039457584007913129639935'],
                 account,
             )
-            .then((data) => {
+            .then((response) => {
                 setLoading(false);
             })
             .catch((error) => {
@@ -159,7 +188,6 @@ function Grid({ settings }) {
                 console.log(error);
             });
     }
-
 
     const openDetails = async (elem, open) => {
         let totalStacked, performanceFee
@@ -174,35 +202,35 @@ function Grid({ settings }) {
             performanceFee = (performanceFee / 10000) * 100
         }
 
-        const element = data.map(item => {
-            if (item.id === elem.id && item.id !== 2) {
+        const poolElement = poolData.map(pool => {
+            if (pool.id === elem.id && pool.id !== 2) {
                 return {
-                    ...item,
+                    ...pool,
                     isOpen: open,
                     totalStacked,
                     performanceFee: performanceFee
                 }
             }
-            else if (item.id === elem.id) {
+            else if (pool.id === elem.id) {
                 return {
-                    ...item,
+                    ...pool,
                     isOpen: open,
                 }
             }
             else {
                 return {
-                    ...item,
+                    ...pool,
                 }
             }
         })
-        setData(element)
+        setPoolData(poolElement)
     }
 
-    const addToken = async (item) => {
-        const tokenAddress = item.token_address;
-        const tokenSymbol = item.symbol;
-        const tokenDecimals = item.decimal;
-        const tokenImage = item.logo;
+    const addToken = async (token) => {
+        const tokenAddress = token.token_address;
+        const tokenSymbol = token.symbol;
+        const tokenDecimals = token.decimal;
+        const tokenImage = token.logo;
         try {
             const wasAdded = await window.ethereum.request({
                 method: 'wallet_watchAsset',
@@ -216,7 +244,6 @@ function Grid({ settings }) {
                     },
                 },
             });
-
             if (wasAdded) {
                 console.log('Token added');
             } else {
@@ -234,7 +261,7 @@ function Grid({ settings }) {
         else {
             setStakeModal(true);
         }
-        setSelectedCard(item)
+        setSelectedPool(item)
         setButtonName(buttonValue)
     }
 
@@ -250,22 +277,22 @@ function Grid({ settings }) {
     const handleConfirm = (amount, buttonValue) => {
         if (amount > 0) {
             const contract = new instance.eth.Contract(
-                JSON.parse(selectedCard.contract_Abi),
-                selectedCard.contract_Address,
+                JSON.parse(selectedPool.contract_Abi),
+                selectedPool.contract_Address,
             );
             const methodName = buttonValue === 'minus' || buttonValue === 'harvest' ? contract.methods.withdraw : contract.methods.deposit
             setLoading(true);
             let contractArray
-            if (selectedCard.id === 2) {
+            if (selectedPool.id === 2) {
                 if (buttonValue === 'harvest' || buttonValue === 'compound') {
-                    contractArray = [selectedCard._pid, amount]
+                    contractArray = [selectedPool._pid, amount]
                 }
                 else {
-                    contractArray = [selectedCard._pid, amount * Math.pow(10, selectedCard.decimal)]
+                    contractArray = [selectedPool._pid, amount * Math.pow(10, selectedPool.decimal)]
                 }
             }
             else {
-                contractArray = [amount * Math.pow(10, selectedCard.decimal)]
+                contractArray = [amount * Math.pow(10, selectedPool.decimal)]
             }
             methods
                 .send(
@@ -273,7 +300,7 @@ function Grid({ settings }) {
                     contractArray,
                     account,
                 )
-                .then((data) => {
+                .then((response) => {
                     setLoading(false);
                     setStakeModal(false)
                     setCollectModal(false)
@@ -300,7 +327,7 @@ function Grid({ settings }) {
     }
 
     const handleToken = () => {
-        console.log('token')
+        console.log('Get token called')
     }
 
     return (
@@ -308,352 +335,122 @@ function Grid({ settings }) {
             <Fragment>
                 <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
                     {
-                        cardsLoading ? (
+                        poolLoading ? (
                             <Loader size="160px" className="m-40" stroke="#ff9800" />
-                        ) : (
-                            data.length && data.map(item => {
-                                if (item.auto_staking) {
-                                    return (
-                                        <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
-                                            openDetails={openDetails} addToken={addToken}
-                                            annPrice={settings.annPrice}
-                                            selectedId={selectedCard.id}
-                                            loading={loading}
-                                        />
-                                    )
-                                }
-                                else {
-                                    return (
-                                        <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
-                                            openDetails={openDetails} addToken={addToken}
-                                            annPrice={settings.annPrice}
-                                            selectedId={selectedCard.id}
-                                            loading={loading} />
-                                    )
-                                }
-                            })
-                        )
+                        ) : poolData.length === 0 ?
+                            <div className="text-white text-base p-20 flex justify-center col-span-12">
+                                <span className="text-center text-grey text-2xl md:text-3xl 
+              text-border title-text">No pools</span>
+                            </div> : (
+                                poolData.length && poolData.map(item => {
+                                    if (item.auto_staking) {
+                                        return (
+                                            <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
+                                                openDetails={openDetails} addToken={addToken}
+                                                annPrice={settings.annPrice}
+                                                selectedId={selectedPool.id}
+                                                loading={loading}
+                                            />
+                                        )
+                                    }
+                                    else {
+                                        return (
+                                            <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
+                                                openDetails={openDetails} addToken={addToken}
+                                                annPrice={settings.annPrice}
+                                                selectedId={selectedPool.id}
+                                                loading={loading} />
+                                        )
+                                    }
+                                })
+                            )
                     }
 
-
-
-
-
                     {/* <div className="bg-black rounded-3xl col-span-4">
-                <div className={`${live ? 'bgPrimaryGradient' : finished ? 'bg-gray relative overflow-hidden' : ''}
+                        <div className={`${live ? 'bgPrimaryGradient' : finished ? 'bg-gray relative overflow-hidden' : ''}
                  py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between`}>
-                    <div className="flex flex-col">
-                        <div className="text-white font-bold text-xl">Auto ANN</div>
-                        <div className="text-white">Automatic restaking</div>
-                    </div>
-                    <div className="bg-blue rounded-full relative w-9 h-9 ">
-                        <img src={AnnexLogo} alt="" className="" />
-                    </div>
-                    {finished ? <div className="finished-label bgPrimaryGradient text-xl font-bold px-10 py-2 text-center">Finished</div> : ''}
+                            <div className="flex flex-col">
+                                <div className="text-white font-bold text-xl">Auto ANN</div>
+                                <div className="text-white">Automatic restaking</div>
+                            </div>
+                            <div className="bg-blue rounded-full relative w-9 h-9 ">
+                                <img src={AnnexLogo} alt="" className="" />
+                            </div>
+                            {finished ? <div className="finished-label bgPrimaryGradient text-xl font-bold 
+                            px-10 py-2 text-center">Finished</div> : ''}
 
-                </div>
-                <div className="p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="text-white">ANN:</div>
-                        <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
-                    </div>
-
-                    {finished ? <div className="flex items-center justify-between mb-4">
-                        <div className="flex flex-col">
-                            <div className="text-white text-sm">ANN Earned:</div>
-                            <div className="text-white text-sm font-bold">0</div>
-                            <div className="text-white text-sm">~0 USD</div>
                         </div>
-                        <div className="text-white font-bold flex items-center">
-                            <button className="flex items-center focus:outline-none bg-gray py-2 px-4 
+                        <div className="p-5">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="text-white">ANN:</div>
+                                <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
+                            </div>
+
+                            {finished ? <div className="flex items-center justify-between mb-4">
+                                <div className="flex flex-col">
+                                    <div className="text-white text-sm">ANN Earned:</div>
+                                    <div className="text-white text-sm font-bold">0</div>
+                                    <div className="text-white text-sm">~0 USD</div>
+                                </div>
+                                <div className="text-white font-bold flex items-center">
+                                    <button className="flex items-center focus:outline-none bg-gray py-2 px-4 
                         rounded-lg text-black text-center font-bold text-sm"> Harvest</button></div>
-                    </div> : live ? <><div className="text-white">Recent ANN Profit:</div>
-                        <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div></> : ''}
+                            </div> : live ? <><div className="text-white">Recent ANN Profit:</div>
+                                <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div></> : ''}
 
 
-                    <div className="text-white text-sm">STACK ANN</div>
-                    <div className="text-center mt-2">
-                        <button className={` ${live ? 'bg-primary' : finished ? 'bg-gray' : ''}
+                            <div className="text-white text-sm">STACK ANN</div>
+                            <div className="text-center mt-2">
+                                <button className={` ${live ? 'bg-primary' : finished ? 'bg-gray' : ''}
                          focus:outline-none  py-2 px-4 rounded-3xl text-black w-40 text-center text-sm`}>Enable</button>
-                    </div>
-                </div>
-                <div className="border-t border-solid border-custom p-5">
-                    <div className="flex items-center justify-between">
-                        <div className="">
-                            <button className={`${live ? 'bg-primary' : finished ? 'bg-gray' : ''}
+                            </div>
+                        </div>
+                        <div className="border-t border-solid border-custom p-5">
+                            <div className="flex items-center justify-between">
+                                <div className="">
+                                    <button className={`${live ? 'bg-primary' : finished ? 'bg-gray' : ''}
                              flex items-center focus:outline-none py-2 px-4 rounded-3xl text-black text-center text-sm`}>
-                                <img src={Refresh} className="mr-1" alt="" /> {live ? 'Auto' : finished ? 'Manual' : ''}</button>
-                        </div>
-                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
-                            <div className="ml-2 order-4 hidden sm:flex">
-                                <ArrowContainer active={showDetails}>
-                                    <img src={ArrowIconOrange} alt="" />
-                                </ArrowContainer>
+                                        <img src={Refresh} className="mr-1" alt="" /> {live ? 'Auto' : finished ? 'Manual' : ''}</button>
+                                </div>
+                                <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm 
+                                flex items-center cursor-pointer" >Details
+                                    <div className="ml-2 order-4 hidden sm:flex">
+                                        <ArrowContainer active={showDetails}>
+                                            <img src={ArrowIconOrange} alt="" />
+                                        </ArrowContainer>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    {showDetails && (
-                        <div className="mt-5">
-                            <div className="flex item-center justify-between">
-                                <div className="text-white font-bold text-sm">Total Staked:</div>
-                                <div className="text-white text-sm">18,916,290.331 ANN</div>
-                            </div>
-                            <div className="mt-3 flex item-center justify-between">
-                                <div className="text-white text-sm">Performance Fee</div>
-                                <div className="text-white text-sm">2%</div>
-                            </div>
-                            <div className="flex flex-col item-center mt-3">
-                                <div className="text-white text-xs text-right
+                            {showDetails && (
+                                <div className="mt-5">
+                                    <div className="flex item-center justify-between">
+                                        <div className="text-white font-bold text-sm">Total Staked:</div>
+                                        <div className="text-white text-sm">18,916,290.331 ANN</div>
+                                    </div>
+                                    <div className="mt-3 flex item-center justify-between">
+                                        <div className="text-white text-sm">Performance Fee</div>
+                                        <div className="text-white text-sm">2%</div>
+                                    </div>
+                                    <div className="flex flex-col item-center mt-3">
+                                        <div className="text-white text-xs text-right
                              flex justify-end">View Project Site <img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="my-2 text-white text-xs text-right
+                                        <div className="my-2 text-white text-xs text-right
                              flex justify-end">View Contract<img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="text-white text-xs text-right
+                                        <div className="text-white text-xs text-right
                              flex justify-end">Add to Metamask <img src={MetaMask} alt="" className="ml-2" width="16" /></div>
-                            </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
-            </div> */}
+                    </div> */}
 
-                    {/* <div className="bg-black rounded-3xl col-span-4">
-                <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between">
-                    <div className="flex flex-col">
-                        <div className="text-white font-bold text-xl">Auto ANN</div>
-                        <div className="text-white">Automatic restaking</div>
-                    </div>
-                    <div className="bg-blue rounded-full relative w-9 h-9 ">
-                        <img src={AnnexLogo} alt="" className="" />
-                    </div>
-                </div>
-                <div className="p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="text-white">ANN:</div>
-                        <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
-                    </div>
-                    <div className="text-white">Recent ANN Profit:</div>
-                    <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div>
-                    <div className="text-white text-sm">STACK ANN</div>
-                    <div className="text-center mt-2">
-                        <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl text-black w-40 text-center text-sm">Enable</button>
-                    </div>
-                </div>
-                <div className="border-t border-solid border-custom p-5">
-                    <div className="flex items-center justify-between">
-                        <div className="">
-                            <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
-                        </div>
-                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
-                            <div className="ml-2 order-4 hidden sm:flex">
-                                <ArrowContainer active={showDetails}>
-                                    <img src={ArrowIconOrange} alt="" />
-                                </ArrowContainer>
-                            </div>
-                        </div>
-                    </div>
-                    {showDetails && (
-                        <div className="mt-5">
-                            <div className="flex item-center justify-between">
-                                <div className="text-white font-bold text-sm">Total Staked:</div>
-                                <div className="text-white text-sm">18,916,290.331 ANN</div>
-                            </div>
-                            <div className="mt-3 flex item-center justify-between">
-                                <div className="text-white text-sm">Performance Fee</div>
-                                <div className="text-white text-sm">2%</div>
-                            </div>
-                            <div className="flex flex-col item-center mt-3">
-                                <div className="text-white text-xs text-right
-                             flex justify-end">View Project Site <img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="my-2 text-white text-xs text-right
-                             flex justify-end">View Contract<img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="text-white text-xs text-right
-                             flex justify-end">Add to Metamask <img src={MetaMask} alt="" className="ml-2" width="16" /></div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className="bg-black rounded-3xl col-span-4">
-                <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between">
-                    <div className="flex flex-col">
-                        <div className="text-white font-bold text-xl">Auto ANN</div>
-                        <div className="text-white">Automatic restaking</div>
-                    </div>
-                    <div className="bg-blue rounded-full relative w-9 h-9 ">
-                        <img src={AnnexLogo} alt="" className="" />
-                    </div>
-                </div>
-                <div className="p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="text-white">ANN:</div>
-                        <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
-                    </div>
-                    <div className="text-white">Recent ANN Profit:</div>
-                    <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div>
-                    <div className="text-white text-sm">STACK ANN</div>
-                    <div className="text-center mt-2">
-                        <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl text-black w-40 text-center text-sm">Enable</button>
-                    </div>
-                </div>
-                <div className="border-t border-solid border-custom p-5">
-                    <div className="flex items-center justify-between">
-                        <div className="">
-                            <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
-                        </div>
-                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
-                            <div className="ml-2 order-4 hidden sm:flex">
-                                <ArrowContainer active={showDetails}>
-                                    <img src={ArrowIconOrange} alt="" />
-                                </ArrowContainer>
-                            </div>
-                        </div>
-                    </div>
-                    {showDetails && (
-                        <div className="mt-5">
-                            <div className="flex item-center justify-between">
-                                <div className="text-white font-bold text-sm">Total Staked:</div>
-                                <div className="text-white text-sm">18,916,290.331 ANN</div>
-                            </div>
-                            <div className="mt-3 flex item-center justify-between">
-                                <div className="text-white text-sm">Performance Fee</div>
-                                <div className="text-white text-sm">2%</div>
-                            </div>
-                            <div className="flex flex-col item-center mt-3">
-                                <div className="text-white text-xs text-right
-                             flex justify-end">View Project Site <img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="my-2 text-white text-xs text-right
-                             flex justify-end">View Contract<img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="text-white text-xs text-right
-                             flex justify-end">Add to Metamask <img src={MetaMask} alt="" className="ml-2" width="16" /></div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className="bg-black rounded-3xl col-span-4">
-                <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between">
-                    <div className="flex flex-col">
-                        <div className="text-white font-bold text-xl">Auto ANN</div>
-                        <div className="text-white">Automatic restaking</div>
-                    </div>
-                    <div className="bg-blue rounded-full relative w-9 h-9 ">
-                        <img src={AnnexLogo} alt="" className="" />
-                    </div>
-                </div>
-                <div className="p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="text-white">ANN:</div>
-                        <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
-                    </div>
-                    <div className="text-white">Recent ANN Profit:</div>
-                    <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div>
-                    <div className="text-white text-sm">STACK ANN</div>
-                    <div className="text-center mt-2">
-                        <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl text-black w-40 text-center text-sm">Enable</button>
-                    </div>
-                </div>
-                <div className="border-t border-solid border-custom p-5">
-                    <div className="flex items-center justify-between">
-                        <div className="">
-                            <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
-                        </div>
-                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
-                            <div className="ml-2 order-4 hidden sm:flex">
-                                <ArrowContainer active={showDetails}>
-                                    <img src={ArrowIconOrange} alt="" />
-                                </ArrowContainer>
-                            </div>
-                        </div>
-                    </div>
-                    {showDetails && (
-                        <div className="mt-5">
-                            <div className="flex item-center justify-between">
-                                <div className="text-white font-bold text-sm">Total Staked:</div>
-                                <div className="text-white text-sm">18,916,290.331 ANN</div>
-                            </div>
-                            <div className="mt-3 flex item-center justify-between">
-                                <div className="text-white text-sm">Performance Fee</div>
-                                <div className="text-white text-sm">2%</div>
-                            </div>
-                            <div className="flex flex-col item-center mt-3">
-                                <div className="text-white text-xs text-right
-                             flex justify-end">View Project Site <img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="my-2 text-white text-xs text-right
-                             flex justify-end">View Contract<img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="text-white text-xs text-right
-                             flex justify-end">Add to Metamask <img src={MetaMask} alt="" className="ml-2" width="16" /></div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className="bg-black rounded-3xl col-span-4">
-                <div className="bgPrimaryGradient py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between">
-                    <div className="flex flex-col">
-                        <div className="text-white font-bold text-xl">Auto ANN</div>
-                        <div className="text-white">Automatic restaking</div>
-                    </div>
-                    <div className="bg-blue rounded-full relative w-9 h-9 ">
-                        <img src={AnnexLogo} alt="" className="" />
-                    </div>
-                </div>
-                <div className="p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="text-white">ANN:</div>
-                        <div className="text-white font-bold flex items-center">143.94% <img src={ROI} className="ml-3" alt="" /></div>
-                    </div>
-                    <div className="text-white">Recent ANN Profit:</div>
-                    <div className="text-white text-sm mt-2 mb-4">0.1% unstaking fee if withdrawn within 72h</div>
-                    <div className="text-white text-sm">STACK ANN</div>
-                    <div className="text-center mt-2">
-                        <button className="focus:outline-none bg-primary py-2 px-4 rounded-3xl text-black w-40 text-center text-sm">Enable</button>
-                    </div>
-                </div>
-                <div className="border-t border-solid border-custom p-5">
-                    <div className="flex items-center justify-between">
-                        <div className="">
-                            <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm"><img src={Refresh} className="mr-1" alt="" /> Auto</button>
-                        </div>
-                        <div onClick={() => setShowDetails(s => !s)} className="text-primary text-sm flex items-center cursor-pointer" >Details
-                            <div className="ml-2 order-4 hidden sm:flex">
-                                <ArrowContainer active={showDetails}>
-                                    <img src={ArrowIconOrange} alt="" />
-                                </ArrowContainer>
-                            </div>
-                        </div>
-                    </div>
-                    {showDetails && (
-                        <div className="mt-5">
-                            <div className="flex item-center justify-between">
-                                <div className="text-white font-bold text-sm">Total Staked:</div>
-                                <div className="text-white text-sm">18,916,290.331 ANN</div>
-                            </div>
-                            <div className="mt-3 flex item-center justify-between">
-                                <div className="text-white text-sm">Performance Fee</div>
-                                <div className="text-white text-sm">2%</div>
-                            </div>
-                            <div className="flex flex-col item-center mt-3">
-                                <div className="text-white text-xs text-right
-                             flex justify-end">View Project Site <img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="my-2 text-white text-xs text-right
-                             flex justify-end">View Contract<img src={OrangeexpandBox} alt="" className="ml-2" /></div>
-                                <div className="text-white text-xs text-right
-                             flex justify-end">Add to Metamask <img src={MetaMask} alt="" className="ml-2" width="16" /></div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div> */}
                     {/* <div className="text-white">grid</div> */}
                 </div>
 
                 {
                     <StakeModal
                         openModal={stakeModal}
-                        data={selectedCard}
+                        data={selectedPool}
                         onSetOpen={() => setStakeModal(true)}
                         onCloseModal={() => closeModal()}
                         handleSubmit={handleConfirm}
@@ -668,7 +465,7 @@ function Grid({ settings }) {
                 {
                     <CollectModal
                         openModal={collectModal}
-                        data={selectedCard}
+                        data={selectedPool}
                         onSetOpen={() => setCollectModal(true)}
                         onCloseModal={() => closeModal()}
                         handleSubmit={handleConfirm}

@@ -78,7 +78,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
 
     const title = (
         <div className="flex items-center justify-between mt-4 mx-12 py-4 border-b border-solid border-gray-600">
-            <div className="text-left text-xl font-normal  ">{buttonText === 'minus' ? 'Unstake' : 'Stake'} in Pool </div>
+            <div className="text-left text-xl font-normal  ">{buttonText === 'minus' ? 'Unstake' : 'Stake in Pool'} </div>
             <CloseIcon onClick={closeModal} fill={'#fff'} />
         </div>
     );

@@ -44,7 +44,7 @@ function Pools() {
   const [finished, setfinished] = useState(false)
   const [loading, setLoading] = useState(false)
   const [onlyStaked, setOnlyStaked] = useState(false)
-  const [currentState, setCurrentState] = useState('live')
+  const [poolState, setPoolState] = useState('live')
 
   const { account } = useActiveWeb3React();
 
@@ -70,8 +70,8 @@ function Pools() {
     setOnlyStaked((oldVal) => !oldVal)
   }
 
-  const stateToggle = (currentState) => {
-    setCurrentState(currentState)
+  const stateToggle = (poolState) => {
+    setPoolState(poolState)
   }
 
   const GridViews = () => {
@@ -415,10 +415,10 @@ function Pools() {
           </div>
           <div className="col-span-9 flex items-center justify-end">
             <button className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
-             ${currentState === 'live' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
+             ${poolState === 'live' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
               onClick={() => stateToggle('live')}>Live</button>
             <button className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
-             ${currentState === 'finished' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
+             ${poolState === 'finished' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
               onClick={() => stateToggle('finished')}>Finished</button>
             <div className="flex items-center text-white ml-5 pt-2">
               <Switch value={onlyStaked} onChange={stakedToggle} />
@@ -443,7 +443,7 @@ function Pools() {
 
         </div>
 
-        <GridView />
+        <GridView onlyStaked={onlyStaked} poolState={poolState} />
         {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
       </Styles>
     </Layout>
