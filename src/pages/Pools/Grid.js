@@ -32,22 +32,22 @@ const database = [{
     isFinished: false,
     isOpen: false,
 },
-{
-    id: 2,
-    _pid: 0,
-    name: 'ann',
-    token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
-    symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
-    decimal: 18,
-    label: 'Manual ANN',
-    sublabel: 'Earn ANN, stake ANN',
-    auto_staking: false,
-    contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
-    contract_Abi: CONTRACT_Annex_Farm,
-    logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
-    isFinished: false,
-    isOpen: false
-},
+    // {
+    //     id: 2,
+    //     _pid: 0,
+    //     name: 'ann',
+    //     token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
+    //     symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
+    //     decimal: 18,
+    //     label: 'Manual ANN',
+    //     sublabel: 'Earn ANN, stake ANN',
+    //     auto_staking: false,
+    //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
+    //     contract_Abi: CONTRACT_Annex_Farm,
+    //     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
+    //     isFinished: false,
+    //     isOpen: false
+    // },
 ]
 
 const Styles = styled.div`
