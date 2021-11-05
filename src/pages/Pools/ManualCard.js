@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from 'react';
 import styled from 'styled-components';
 import AnnexLogo from '../../assets/images/coins/ann.png';
 import ROI from '../../assets/images/roi.png';
-import Refresh from '../../assets/images/refresh.png';
+import Reload from '../../assets/images/reload.png';
 import Loader from 'components/UI/Loader';
 import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
 import MetaMask from '../../assets/icons/metaMask.svg';
@@ -117,7 +117,7 @@ function ManualCard({ item, openModal, handleEnable, openDetails, addToken, annP
                 <div className="flex items-center justify-between">
                     <div className="">
                         <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
-                        rounded-3xl text-black text-center text-sm font-bold"><img src={Refresh} className="mr-1" alt="" />
+                        rounded-3xl text-black text-center text-sm font-bold"><img src={Reload} className="mr-1" alt="" />
                             {'Manual'}</button>
                     </div>
                     <div onClick={() => openDetails(item, !item.isOpen)} className="text-primary text-sm flex 

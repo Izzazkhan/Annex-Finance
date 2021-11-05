@@ -31,37 +31,23 @@ const database = [{
     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
     isFinished: false,
     isOpen: false,
-}, {
-    id: 2,
-    _pid: 0,
-    name: 'ann',
-    token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
-    symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
-    decimal: 18,
-    label: 'Manual ANN',
-    sublabel: 'Earn ANN, stake ANN',
-    auto_staking: false,
-    contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
-    contract_Abi: CONTRACT_Annex_Farm,
-    logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
-    isFinished: false,
-    isOpen: false
 },
     // {
-    //     id: 3,
+    //     id: 2,
     //     _pid: 0,
-    //     token_address: CONTRACT_TOKEN_ADDRESS.busd.address,
-    //     symbol: CONTRACT_TOKEN_ADDRESS.busd.symbol,
+    //     name: 'ann',
+    //     token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
+    //     symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
     //     decimal: 18,
-    //     label: 'Manual USDC',
-    //     sublabel: 'Earn USDC, stake USDC',
+    //     label: 'Manual ANN',
+    //     sublabel: 'Earn ANN, stake ANN',
     //     auto_staking: false,
     //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
     //     contract_Abi: CONTRACT_Annex_Farm,
-    //     logo: CONTRACT_TOKEN_ADDRESS.busd.asset,
+    //     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
     //     isFinished: false,
     //     isOpen: false
-    // }
+    // },
 ]
 
 const Styles = styled.div`
@@ -103,7 +89,6 @@ function Grid({ settings }) {
                 JSON.parse(item.contract_Abi),
                 item.contract_Address,
             );
-            console.log('methods', contract.methods)
 
             if (item.auto_staking === true) {
                 withdrawFee = await methods.call(contract.methods.withdrawFee, []);
@@ -121,7 +106,6 @@ function Grid({ settings }) {
             else {
                 pendingAnnex = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
                 pendingAnnex = pendingAnnex / Math.pow(10, decimal)
-                console.log('pendingAnnexWithoutDecimal', pendingAnnex)
                 pendingAnnexWithoutDecimal = await methods.call(contract.methods.pendingAnnex, [item._pid, account]);
                 if (Number(allowance) > 0) {
                     isUserInfo = await methods.call(contract.methods.userInfo, [item._pid, account]);
@@ -293,7 +277,6 @@ function Grid({ settings }) {
                     setLoading(false);
                     setStakeModal(false)
                     setCollectModal(false)
-                    console.log('data', data);
                     setModalError({
                         message: '',
                         type: '',

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from '../../layouts/MainLayout/MainLayout';
 import Table from './Table';
 import GridView from './Grid';
@@ -38,16 +38,15 @@ const Styles = styled.div`
 }
 `;
 function Pools() {
-  const [showGrid, setShowGrid] = React.useState(false)
-  const [showList, setShowList] = React.useState(true)
-  const [live, setlive] = React.useState(true)
-  const [finished, setfinished] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
-
+  const [showGrid, setShowGrid] = useState(false)
+  const [showList, setShowList] = useState(true)
+  const [live, setlive] = useState(true)
+  const [finished, setfinished] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [onlyStaked, setOnlyStaked] = useState(false)
+  const [currentState, setCurrentState] = useState('live')
 
   const { account } = useActiveWeb3React();
-
-
 
   const onClaim = () => {
     setLoading(true)
@@ -65,6 +64,14 @@ function Pools() {
         console.log(err);
         setLoading(false)
       });
+  }
+
+  const stakedToggle = (value) => {
+    setOnlyStaked((oldVal) => !oldVal)
+  }
+
+  const stateToggle = (currentState) => {
+    setCurrentState(currentState)
   }
 
   const GridViews = () => {
@@ -407,13 +414,14 @@ function Pools() {
             </div>
           </div>
           <div className="col-span-9 flex items-center justify-end">
-            <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
-             ${live ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
-            >Live</a>
-            <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
-             ${finished ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}>Finished</a>
+            <button className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
+             ${currentState === 'live' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
+              onClick={() => stateToggle('live')}>Live</button>
+            <button className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
+             ${currentState === 'finished' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
+              onClick={() => stateToggle('finished')}>Finished</button>
             <div className="flex items-center text-white ml-5 pt-2">
-              <Switch />
+              <Switch value={onlyStaked} onChange={stakedToggle} />
               <div className="ml-2 mb-2">Staked only</div>
             </div>
           </div>
@@ -434,6 +442,7 @@ function Pools() {
           </div> */}
 
         </div>
+
         <GridView />
         {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
       </Styles>
