@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {getComptrollerContract, methods} from "../../utilities/ContractService";
-import {compose} from "redux";
-import {connectAccount} from "../../core";
-import {getEtherscanLink} from "../../utils";
-import {useActiveWeb3React} from "../../hooks";
+import { getComptrollerContract, methods } from "../../utilities/ContractService";
+import { compose } from "redux";
+import { connectAccount } from "../../core";
+import { getEtherscanLink } from "../../utils";
+import { useActiveWeb3React } from "../../hooks";
 import commaNumber from "comma-number";
 import DelegationTypeModal from "./Modals/DelegationTypeModal";
 
@@ -45,7 +45,7 @@ const VotingWallet = ({
     const handleCollect = () => {
         if (+earnedBalance !== 0) {
             setIsLoading(true);
-            const appContract = getComptrollerContract();
+            const appContract = getComptrollerContract(chainId);
             methods
                 .send(
                     appContract.methods.claimAnnex,

@@ -73,6 +73,8 @@ const Styles = styled.span`
   }
 `;
 
+const AVAILABLE_NETWORKS = [56, 97, 338];
+
 const AccountOverview = ({
   available,
   borrowPercent,
@@ -107,16 +109,13 @@ const AccountOverview = ({
   }, [settings.totalBorrowBalance]);
 
   const wrongNetwork = React.useMemo(() => {
-    return (
-      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
-      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-    );
+    return !AVAILABLE_NETWORKS.includes(chainId)
   }, [chainId]);
 
   const handleCollect = () => {
     if (+earnedBalance !== 0) {
       setIsLoading(true);
-      const appContract = getComptrollerContract();
+      const appContract = getComptrollerContract(chainId);
       methods
         .send(appContract.methods.claimAnnex, [account], account)
         .then(() => {

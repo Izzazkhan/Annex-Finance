@@ -50,7 +50,7 @@ const format = commaNumber.bindWith(',', '.');
 
 function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, setSetting }) {
   // Supply
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const [currentTab, setCurrentTab] = useState('supply');
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -109,7 +109,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
   const onApprove = async () => {
     if (record.id && account && record.id !== 'bnb') {
       setIsLoading(true);
-      const tokenContract = getTokenContract(record.id);
+      const tokenContract = getTokenContract(record.id, chainId);
       methods
         .send(
           tokenContract.methods.approve,
@@ -130,7 +130,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
    * Supply
    */
   const handleSupply = () => {
-    const appContract = getAbepContract(record.id);
+    const appContract = getAbepContract(record.id, chainId);
     if (record.id && account) {
       setIsLoading(true);
       setSetting({
@@ -176,6 +176,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
         sendSupply(
           account,
           amount.times(new BigNumber(10).pow(settings.decimals[record.id].token)).toString(10),
+          chainId,
           () => {
             setAmount(new BigNumber(0));
             setIsLoading(false);
@@ -211,7 +212,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
   const [withdrawFeePercent, setWithdrawFeePercent] = useState(new BigNumber(0));
 
   const getFeePercent = async () => {
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(chainId);
     const treasuryPercent = await methods.call(appContract.methods.treasuryPercent, []);
     setWithdrawFeePercent(new BigNumber(treasuryPercent).times(100).div(1e18));
   };
@@ -284,7 +285,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
    */
   const handleWithdraw = async () => {
     const { id: assetId } = record;
-    const appContract = getAbepContract(assetId);
+    const appContract = getAbepContract(assetId, chainId);
     if (assetId && account) {
       setIsWithdrawLoading(true);
       setSetting({

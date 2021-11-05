@@ -10,18 +10,19 @@ export default function application(state = initialState.application, action = {
 	switch (type) {
 		case UPDATE_BLOCK_NUMBER: {
 			const { chainId, blockNumber } = payload;
-			let newBlockNumber;
-			if (typeof state.blockNumber[chainId] !== "number") {
-				newBlockNumber = blockNumber;
-			} else {
-				newBlockNumber = Math.max(blockNumber, state.blockNumber[chainId]);
-			}
+			// let newBlockNumber;
+			// if (typeof state.blockNumber[chainId] !== "number") {
+			// 	newBlockNumber = blockNumber;
+			// } else {
+			// 	newBlockNumber = Math.max(blockNumber, state.blockNumber[chainId]);
+			// }
 
 			return {
 				...state,
+				currentChainId: chainId,
 				blockNumber: {
 					...state.blockNumber,
-					[chainId]: newBlockNumber
+					[chainId]: blockNumber
 				}
 			}
 		}

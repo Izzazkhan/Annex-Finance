@@ -13,6 +13,7 @@ import { methods } from '../../utilities/ContractService';
 import { addToken, getBigNumber, checkIsValidNetwork } from '../../utilities/common';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
+import { useActiveWeb3React } from "../../hooks";
 
 import {
   AnnexIcon,
@@ -343,6 +344,7 @@ const NavItems = ({
 };
 
 function Sidebar({ isOpen, onClose, settings }) {
+  const { chainId } = useActiveWeb3React();
   const { pathname, search } = useLocation();
   // const [totalXaiMinted, setTotalXaiMinted] = useState('0');
   const [activeMenu, updateActiveMenu] = useState('');
@@ -411,7 +413,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         <div className="mt-auto mb-10 pl-8 pr-8 sidebar-footer">
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
-              href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS.busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS.ann.address}`}
+              href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].ann.address}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -440,7 +442,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
-              onClick={() => addToken('ann', settings.decimals['ann']?.token, 'token')}
+              onClick={() => addToken('ann', settings.decimals['ann']?.token, 'token', chainId)}
             >
               <span>ANN</span>
               <img
@@ -451,7 +453,7 @@ function Sidebar({ isOpen, onClose, settings }) {
             </div>
             <div
               className="flex items-center font-medium cursor-pointer"
-              onClick={() => addToken('ann', settings.decimals['ann']?.atoken, 'atoken')}
+              onClick={() => addToken('ann', settings.decimals['ann']?.atoken, 'atoken', chainId)}
             >
               To Metamask
             </div>

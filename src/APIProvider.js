@@ -17,20 +17,20 @@ import { useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 
 const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
 
   const setDecimals = async () => {
     const decimals = {};
 
-    const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS).filter(item => {
+    const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).filter(item => {
       return item.id && item.id != 'ann'
     });
 
     const contractDecimals = await Promise.all(
       contractAddresses.map(item => {
         if (item.id !== 'bnb') {
-          const tokenContract = getTokenContract(item.id);
-          const aBepContract = getAbepContract(item.id);
+          const tokenContract = getTokenContract(item.id, chainId);
+          const aBepContract = getAbepContract(item.id, chainId);
           return Promise.all([
             Promise.resolve(item.id),
             methods.call(tokenContract.methods.decimals, []),
@@ -118,10 +118,10 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
     for (
       let index = 0;
-      index < Object.values(constants.CONTRACT_TOKEN_ADDRESS).length;
+      index < Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).length;
       index += 1
     ) {
-      const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS)[index];
+      const item = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId])[index];
       let market = markets.find((ele) => ele.underlyingSymbol === item.symbol);
       if (!market) market = {};
       totalLiquidity = totalLiquidity.plus(new BigNumber(market.totalSupplyUsd || 0));
@@ -138,7 +138,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       return;
     }
 
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(chainId);
     // const xaiContract = getXaiTokenContract();
 
     // Total Vai Staked
@@ -186,7 +186,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     let totalBorrowLimit = new BigNumber(0);
     const assetList = [];
 
-    const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS).filter(item => {
+    const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).filter(item => {
       return settings.decimals[item.id]
     });
 
@@ -200,12 +200,12 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
     const contractData = await Promise.all(
       contractAddresses.map(item => {
-        let market = settings.markets.find((ele) => ele.underlyingSymbol === item.symbol);
+        let market = settings.markets.find((ele) => ele.underlyingSymbol.toLowerCase() === item.symbol.toLowerCase());
         if (!market) market = {};
 
-        const aBepContract = getAbepContract(item.id);
+        const aBepContract = getAbepContract(item.id, chainId);
         if (item.id !== 'bnb') {
-          const tokenContract = getTokenContract(item.id);
+          const tokenContract = getTokenContract(item.id, chainId);
 
           return Promise.all([
             Promise.resolve(item),
@@ -213,7 +213,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
             methods.call(tokenContract.methods.balanceOf, [accountAddress]),
             methods.call(tokenContract.methods.allowance, [
               accountAddress,
-              constants.CONTRACT_ABEP_ADDRESS[item.id].address,
+              constants.CONTRACT_ABEP_ADDRESS[chainId][item.id].address,
             ]),
             methods.call(aBepContract.methods.balanceOfUnderlying, [
               accountAddress,
@@ -245,7 +245,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       contractData.map(data => {
         return methods.call(
           appContract.methods.getHypotheticalAccountLiquidity,
-          [accountAddress, constants.CONTRACT_ABEP_ADDRESS[data[0].id].address, data[6], 0],
+          [accountAddress, constants.CONTRACT_ABEP_ADDRESS[chainId][data[0].id].address, data[6], 0],
         )
       })
     );
@@ -279,7 +279,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
         symbol: data[1].underlyingSymbol || data[0].symbol,
         tokenAddress: data[0].address,
         asymbol: data[1].symbol,
-        atokenAddress: constants.CONTRACT_ABEP_ADDRESS[data[0].id].address,
+        atokenAddress: constants.CONTRACT_ABEP_ADDRESS[chainId][data[0].id].address,
         supplyApy: new BigNumber(data[1].supplyApy || 0),
         borrowApy: new BigNumber(data[1].borrowApy || 0),
         annSupplyApy: new BigNumber(data[1].supplyAnnexApy || 0),
@@ -293,7 +293,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
         supplyBalance: new BigNumber(data[4]).div(new BigNumber(10).pow(tokenDecimal)),
         borrowBalance,
         isEnabled,
-        collateral: assetsIn.includes(constants.CONTRACT_ABEP_ADDRESS[data[0].id].address),
+        collateral: assetsIn.includes(constants.CONTRACT_ABEP_ADDRESS[chainId][data[0].id].address),
         percentOfLimit,
       }
 

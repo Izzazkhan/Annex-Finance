@@ -160,9 +160,9 @@ function Detail(props) {
       }
   }
 `;
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
-  const auctionContract = getAuctionContract(state.type);
+  const auctionContract = getAuctionContract(state.type, chainId);
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
@@ -352,7 +352,7 @@ function Detail(props) {
           status: auctionStatus,
           statusClass: auctionStatus,
           title: type + ' Auction',
-          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
           token: elem['auctioningToken']['id'],
           website: elem['about']['website'],
           description: elem['about']['description'],
@@ -1030,7 +1030,7 @@ function Detail(props) {
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
             auctionContract={auctionContract}
-            auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
+            auctionAddr={CONTRACT_ANNEX_AUCTION[chainId][state.type]['address']}
             getData={getData}
             orders={state.orders}
           />

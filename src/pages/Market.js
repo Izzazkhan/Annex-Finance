@@ -11,6 +11,7 @@ import MarketSummaryCard from '../components/Market/MarketSummaryCard';
 import APYSparkline from '../components/Annex/APYSparkline';
 import { currencyFormatter } from '../utilities/common';
 import MarketTable from '../components/Market/MarketTable';
+import { useActiveWeb3React } from '../hooks';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -21,6 +22,7 @@ const Market = ({ history, settings }) => {
   const [totalBorrower, setTotalBorrower] = useState('0');
   const [availableLiquidity, setAvailableLiquidity] = useState('0');
   const [totalReserves, setTotalReserves] = useState(0);
+  const { chainId } = useActiveWeb3React();
 
   const markets = settings.markets.map(market => {
     const decimals = market.underlyingSymbol ? settings.decimals[market.underlyingSymbol.toLowerCase()]?.token : 18;
@@ -116,7 +118,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-start items-center space-x-2 ml-6 sm:ml-0">
                   <img
                     className={'w-10 h-10'}
-                    src={constants.CONTRACT_TOKEN_ADDRESS[value.toLowerCase()].asset}
+                    src={constants.CONTRACT_TOKEN_ADDRESS[chainId][value.toLowerCase()].asset}
                     alt={value}
                   />
                   <div className="font-semibold text-white">{value}</div>

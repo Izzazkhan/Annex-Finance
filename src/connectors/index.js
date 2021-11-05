@@ -6,24 +6,20 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 
 const POLLING_INTERVAL = 15000;
 // @ts-ignore
-const NETWORK_URL = process.env.REACT_APP_WEB3_PROVIDER;
-// @ts-ignore
-const CHAIN_ID = Number(process.env.REACT_APP_ENV === 'dev' ? 97 : 56);
+const DEFAULT_CHAIN_ID = process.env.REACT_APP_DEFAULT_CHAIN_ID;
 
-const chains = [1, 56, 97];
+const chains = [56, 97, 338];
 
 const networks = {
-  56: NETWORK_URL,
+  1: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  56: 'https://bsc-dataseed.binance.org/',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  338: 'https://cronos-testnet-3.crypto.org:8545/'
 };
-
-if (typeof NETWORK_URL === 'undefined') {
-  throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`);
-}
 
 export const network = new NetworkConnector({
   urls: networks,
-  defaultChainId: CHAIN_ID,
+  defaultChainId: DEFAULT_CHAIN_ID,
 });
 
 export const injected = new InjectedConnector({
@@ -32,7 +28,7 @@ export const injected = new InjectedConnector({
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: NETWORK_URL },
+  rpc: { 1: networks[1] },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
   pollingInterval: POLLING_INTERVAL,
@@ -40,12 +36,12 @@ export const walletconnect = new WalletConnectConnector({
 
 export const ledger = new LedgerConnector({
   chainId: 1,
-  url: NETWORK_URL,
+  url: networks[1],
   pollingInterval: POLLING_INTERVAL,
 });
 
 export const walletlink = new WalletLinkConnector({
-  url: NETWORK_URL,
+  url: networks[DEFAULT_CHAIN_ID],
   appName: 'Annex.finance',
 });
 

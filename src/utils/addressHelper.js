@@ -1,20 +1,22 @@
-import {ChainId} from "@annex/sdk";
+import { ChainId } from "@annex/sdk";
 import tokens from "../constants/tokens";
 import addresses from "../constants/contracts";
 
-export const getAddress = (address) => {
-    const chainId = process.env.REACT_APP_ENV === 'dev' ? 97 : 56
+import store from '../core/store/store';
+
+export const getAddress = (address, chainId = 56) => {
+    // const chainId = process.env.REACT_APP_ENV === 'dev' ? 97 : 56
     return address[chainId] ? address[chainId] : address[ChainId.MAINNET]
 }
 
 export const getCakeAddress = () => {
     return getAddress(tokens.cake.address)
 }
-export const getMasterChefAddress = () => {
-    return getAddress(addresses.masterChef)
+export const getMasterChefAddress = (chainId) => {
+    return getAddress(addresses.masterChef, chainId)
 }
-export const getMulticallAddress = () => {
-    return getAddress(addresses.multiCall)
+export const getMulticallAddress = (chainId) => {
+    return getAddress(addresses.multiCall, chainId)
 }
 export const getWbnbAddress = () => {
     return getAddress(tokens.wbnb.address)

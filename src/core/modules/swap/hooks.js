@@ -85,7 +85,6 @@ export function tryParseAmount(value, currency) {
 }
 
 const BAD_RECIPIENT_ADDRESSES = [
-  CONTRACT_FACTORY_ADDRESS, // v2 factory
   '0x299385325392F537Fc6B4281d2dbe31280833Dcb', // v2 router 01
   CONTRACT_ROUTER_ADDRESS, // v2 router 02
 ];
@@ -254,8 +253,9 @@ function validatedRecipient(recipient) {
 }
 
 export function queryParametersToSwapState(parsedQs) {
-  let inputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS.busd.address);
-  let outputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS.ann.address);
+  const { chainId } = useActiveWeb3React();
+  let inputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].busd.address);
+  let outputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].ann.address);
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs?.outputCurrency === 'string') {
       inputCurrency = '';

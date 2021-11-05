@@ -1,14 +1,14 @@
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from "styled-components";
 import Select from "../UI/Select";
 import plusButtonIcon from "../../assets/icons/plusButonIcon.svg";
-import {addToken, getBigNumber} from "../../utilities/common";
+import { addToken, getBigNumber } from "../../utilities/common";
 import CandleChart from "../common/CandleChart";
 import BigNumber from "bignumber.js";
-import {useActiveWeb3React} from "../../hooks";
+import { useActiveWeb3React } from "../../hooks";
 import commaNumber from "comma-number";
 import Annex from '../../assets/icons/logoMini.svg';
-import {nFormatter} from "../../utils/data";
+import { nFormatter } from "../../utils/data";
 import MarketHistoryChart from "./MarketHistoryChart";
 
 const format = commaNumber.bindWith(',', '.');
@@ -52,6 +52,8 @@ const TYPES = {
     Borrow: "BORROW"
 }
 
+const AVAILABLE_NETWORKS = [56, 97, 338]
+
 const MarketHistory = ({
     handleChangeAsset,
     currentAsset,
@@ -80,8 +82,7 @@ const MarketHistory = ({
     }, [selectedAsset, withANN])
 
     const wrongNetwork = useMemo(() => {
-        return (process.env.REACT_APP_ENV === 'prod' && chainId !== 56)
-            || (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
+        return !AVAILABLE_NETWORKS.includes(chainId)
     }, [chainId])
 
     const changeCurrentSymbol = (value) => {
@@ -107,7 +108,8 @@ const MarketHistory = ({
                                      addToken(
                                          currentAsset,
                                          settings.decimals[currentAsset || 'usdc']?.token,
-                                         'token'
+                                         'token',
+                                         chainId
                                      )
                                  }>
                                 <span>
@@ -125,7 +127,8 @@ const MarketHistory = ({
                                  addToken(
                                      currentAsset,
                                      settings.decimals[currentAsset || 'usdc']?.atoken,
-                                     'atoken'
+                                     'atoken',
+                                     chainId
                                  )
                              }>
                             <span>

@@ -91,7 +91,7 @@ function RemoveLiquidity({
 
     // allowance handling
     const [signatureData, setSignatureData] = useState(null)
-    const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS)
+    const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS[chainId])
     async function onAttemptToApprove() {
         if (!pairContract || !pair || !library) throw new Error('missing dependencies')
         const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
@@ -122,7 +122,7 @@ function RemoveLiquidity({
         ]
         const message = {
             owner: account,
-            spender: ROUTER_ADDRESS,
+            spender: ROUTER_ADDRESS[chainId],
             value: liquidityAmount.raw.toString(),
             nonce: nonce.toHexString(),
             deadline: deadlineForSignature,

@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import { getTokenContract, methods } from '../../../utilities/ContractService';
 import Modal from './modal';
 import Swal from 'sweetalert2';
+import { useActiveWeb3React } from '../../../hooks';
 
 const AuctionStatus = ({
   auctionEndDate,
@@ -25,6 +26,7 @@ const AuctionStatus = ({
   getData,
   orders,
 }) => {
+  const { chainId } = useActiveWeb3React();
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
@@ -47,7 +49,7 @@ const AuctionStatus = ({
   }, [showModal]);
   const showCommitModal = async (minBuyAmount, sellAmount) => {
     updateShowModal(true);
-    let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
+    let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase(), chainId);
     let biddingTokenBalance = await methods.call(biddingTokenContract.methods.balanceOf, [account]);
     if (Number(biddingTokenBalance) < Number(sellAmount)) {
       setModalError({
@@ -67,7 +69,7 @@ const AuctionStatus = ({
   const handleApproveBiddingToken = async () => {
     try {
       setApproveBiddingToken({ status: false, isLoading: true, label: 'Loading...' });
-      let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase());
+      let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase(), chainId);
       await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
       setApproveBiddingToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {

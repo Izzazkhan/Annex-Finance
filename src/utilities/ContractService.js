@@ -70,39 +70,40 @@ const send = (method, params, from) => {
 //   );
 // };
 
-export const getTokenContract = (name) => {
+export const getTokenContract = (name, chainId) => {
   return new instance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
-    constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc']
-      ? constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc'].address
-      : constants.CONTRACT_TOKEN_ADDRESS.usdc.address,
+    constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc']
+      ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc'].address
+      : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdc.address,
   );
 };
 
-export const getAbepContract = (name) => {
+export const getAbepContract = (name, chainId) => {
   return new instance.eth.Contract(
     JSON.parse(name !== 'bnb' ? constants.CONTRACT_ABEP_ABI : constants.CONTRACT_ABNB_ABI),
-    constants.CONTRACT_ABEP_ADDRESS[name || 'usdc']
-      ? constants.CONTRACT_ABEP_ADDRESS[name || 'usdc'].address
-      : constants.CONTRACT_ABEP_ADDRESS.usdc.address,
+    constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc']
+      ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc'].address
+      : constants.CONTRACT_ABEP_ADDRESS[chainId].usdc.address,
   );
 };
 
-export const getComptrollerContract = () => {
+export const getComptrollerContract = (chainId) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
-    constants.CONTRACT_COMPTROLLER_ADDRESS,
+    constants.CONTRACT_COMPTROLLER_ADDRESS[chainId],
   );
 };
 
-export const getPriceOracleContract = (address = constants.CONTRACT_PRICE_ORACLE_ADDRESS) => {
+export const getPriceOracleContract = (address, chainId) => {
+  address = address ? address :  constants.CONTRACT_PRICE_ORACLE_ADDRESS[chainId]
   return new instance.eth.Contract(JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI), address);
 };
 
-export const getVoteContract = () => {
+export const getVoteContract = (chainId) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_VOTE_ABI),
-    constants.CONTRACT_VOTE_ADDRESS,
+    constants.CONTRACT_VOTE_ADDRESS[chainId],
   );
 };
 
@@ -110,19 +111,19 @@ export const getInterestModelContract = (address) => {
   return new instance.eth.Contract(JSON.parse(constants.CONTRACT_INTEREST_MODEL_ABI), address);
 };
 
-export const getAuctionContract = (name) => {
+export const getAuctionContract = (name, chainId) => {
   return new instance.eth.Contract(
     JSON.parse(AUCTION_ABI[name]),
-    constants.CONTRACT_ANNEX_AUCTION[name || 'batch']
-      ? constants.CONTRACT_ANNEX_AUCTION[name || 'batch'].address
-      : constants.CONTRACT_ANNEX_AUCTION.batch.address,
+    constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch']
+      ? constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch'].address
+      : constants.CONTRACT_ANNEX_AUCTION[chainId].batch.address,
   );
 };
 
-export const getANNTokenContract = () => {
+export const getANNTokenContract = (chainId) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI),
-    constants.CONTRACT_ANN_TOKEN_ADDRESS,
+    constants.CONTRACT_ANN_TOKEN_ADDRESS[chainId],
   );
 };
 
@@ -130,10 +131,10 @@ export const getTokenContractWithDynamicAbi = (addr) => {
   return new instance.eth.Contract(JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI), addr);
 };
 
-export const getEpochContract = () => {
+export const getEpochContract = (chainId) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_EPOCH_ABI),
-    constants.CONTRACT_TOKEN_ADDRESS.ann.address,
+    constants.CONTRACT_TOKEN_ADDRESS[chainId].ann.address,
   );
 };
 
