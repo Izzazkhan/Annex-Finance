@@ -18,7 +18,7 @@ export async function restService({
     path = `${process.env.REACT_APP_BSC_TESTNET_API}${api}`;
   } else if (chainId === 56) {
     path = `${process.env.REACT_APP_BSC_MAINNET_API}${api}`;
-  } else if (chainId === 338) {
+  } else if (chainId === 339) {
     path = `${process.env.REACT_APP_CRO_TESTNET_API}${api}`;
   } else {
     path = `${process.env.REACT_APP_CRO_MAINNET_API}${api}`;

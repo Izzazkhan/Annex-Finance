@@ -8,13 +8,13 @@ const POLLING_INTERVAL = 15000;
 // @ts-ignore
 const DEFAULT_CHAIN_ID = process.env.REACT_APP_DEFAULT_CHAIN_ID;
 
-const chains = [56, 97, 338];
+const chains = [56, 97, 339];
 
 const networks = {
-  1: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  // 1: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   56: 'https://bsc-dataseed.binance.org/',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-  338: 'https://cronos-testnet-3.crypto.org:8545/'
+  339: 'https://cronos-testnet-3.crypto.org:8545/'
 };
 
 export const network = new NetworkConnector({

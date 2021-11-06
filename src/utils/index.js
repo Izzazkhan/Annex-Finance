@@ -20,7 +20,7 @@ export function isAddress(value) {
 const EXPLORERS = {
 	56: "https://bscscan.com",
 	97: "https://testnet.bscscan.com",
-	338: ''
+	339: 'https://cronos.crypto.org/cassini/explorer/'
 };
 
 export function getEtherscanLink(chainId, data, type) {
