@@ -143,13 +143,6 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: ann,
         aAsset: ann
       },
-      // wbtc: {
-      //   id: 'wbtc',
-      //   symbol: 'wbtc',
-      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-      //   asset: btc,
-      //   aAsset: btc
-      // }
     }
     : {
       usdc: {
@@ -242,20 +235,6 @@ export const CONTRACT_TOKEN_ADDRESS =
         asset: ann,
         aAsset: ann
       },
-      // wbnb: {
-      //   id: 'wbnb',
-      //   symbol: 'WBNB',
-      //   address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-      //   asset: bnb,
-      //   aAsset: bnb
-      // },
-      //  wbtc: {
-      //   id: 'wbtc',
-      //   symbol: 'wbtc',
-      //   address: '0x116E934F6342991A90B86957D45Ef192F8EAD0a3',
-      //   asset: btc,
-      //   aAsset: btc
-      // },
     };
 
 // eslint-disable-next-line max-len
