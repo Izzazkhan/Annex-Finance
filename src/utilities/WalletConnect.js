@@ -9,6 +9,7 @@ const TOKEN_ABI = {
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   ann: constants.CONTRACT_ANN_TOKEN_ABI,
   btcb: constants.CONTRACT_BTCB_TOKEN_ABI,
+  btc: constants.CONTRACT_BTCB_TOKEN_ABI,
   eth: constants.CONTRACT_ETH_TOKEN_ABI,
   // ltc: constants.CONTRACT_LTC_TOKEN_ABI,
   // xrp: constants.CONTRACT_XRP_TOKEN_ABI,

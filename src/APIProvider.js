@@ -132,13 +132,13 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     });
   };
 
+  const appContract = getComptrollerContract(chainId);
   const updateMarketInfo = async () => {
     const accountAddress = account;
     if (!accountAddress || !settings.decimals || !settings.markets) {
       return;
     }
 
-    const appContract = getComptrollerContract(chainId);
     // const xaiContract = getXaiTokenContract();
 
     // Total Vai Staked

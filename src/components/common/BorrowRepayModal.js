@@ -493,7 +493,6 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
               isAllowed={({ value }) => {
                 const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
                 const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
-                console.log(totalBorrowBalance.toString(10), totalBorrowLimit.toString(10))
                 return new BigNumber(value || 0)
                   .times(asset.tokenPrice)
                   .plus(totalBorrowBalance)

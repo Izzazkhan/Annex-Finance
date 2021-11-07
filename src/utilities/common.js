@@ -30,7 +30,7 @@ export const getArgs = (func) => {
 };
 
 export const checkIsValidNetwork = (walletType = 'metamask') => {
-  const AVAILABLE_NETWORKS = [56, 97, 338]
+  const AVAILABLE_NETWORKS = [56, 97, 339]
   if (window.ethereum) {
     let netId;
     if (walletType === 'binance' && window.BinanceChain) {
@@ -41,13 +41,10 @@ export const checkIsValidNetwork = (walletType = 'metamask') => {
         : +window.ethereum.chainId;
     }
     if (netId) {
-      if (netId === 97 || netId === 56) {
-        if (!AVAILABLE_NETWORKS.includes(netId)) {
-          return false;
-        }
-        return true;
+      if (!AVAILABLE_NETWORKS.includes(netId)) {
+        return false;
       }
-      return false;
+      return true;
     }
   }
   return false;

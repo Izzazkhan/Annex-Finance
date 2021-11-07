@@ -28,7 +28,7 @@ import {
   LiquidateIcon
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
-import { CONTRACT_TOKEN_ADDRESS } from 'utilities/constants';
+import { CONTRACT_TOKEN_ADDRESS, STABLE_USD_TOKENS } from 'utilities/constants';
 
 const Wrapper = styled.aside`
   // @media (min-width: 1024px) {
@@ -413,7 +413,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         <div className="mt-auto mb-10 pl-8 pr-8 sidebar-footer">
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
-              href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].ann.address}`}
+              href={`https://pancakeswap.finance/swap?inputCurrency=${STABLE_USD_TOKENS[chainId].address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].ann.address}`}
               target="_blank"
               rel="noreferrer"
             >

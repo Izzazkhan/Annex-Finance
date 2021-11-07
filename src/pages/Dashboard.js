@@ -49,7 +49,7 @@ const Styles = styled.div`
   }
 `;
 
-const AVAILABLE_NETWORKS = [56, 97, 338]
+const AVAILABLE_NETWORKS = [56, 97, 339]
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
   // debugger;
@@ -834,7 +834,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [account, currentAsset]);
 
   useEffect(() => {
-    setCurrentAsset('usdc');
+    setCurrentAsset('usdt');
   }, []);
 
   useEffect(() => {

@@ -52,7 +52,7 @@ const TYPES = {
     Borrow: "BORROW"
 }
 
-const AVAILABLE_NETWORKS = [56, 97, 338]
+const AVAILABLE_NETWORKS = [56, 97, 339]
 
 const MarketHistory = ({
     handleChangeAsset,

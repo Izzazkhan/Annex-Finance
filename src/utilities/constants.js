@@ -193,8 +193,59 @@ export const CONTRACT_TOKEN_ADDRESS = {
     },
   },
   339: {
-
+    usdt: {
+      id: 'usdt',
+      symbol: 'USDT',
+      address: '0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE',
+      asset: usdt,
+      aAsset: ausdt
+    },
+    btc: {
+      id: 'btc',
+      symbol: 'BTC',
+      address: '0x01b1E02abD769499cA858A2Ac5892d8F957211C4',
+      asset: btc,
+      aAsset: abtc
+    },
+    eth: {
+      id: 'eth',
+      symbol: 'ETH',
+      address: '0x1D8A354655398EFE91a3Bc5BfAFB9602344Eeaf8',
+      asset: eth,
+      aAsset: aeth
+    },
+    ann: {
+      id: 'ann',
+      symbol: 'ANN',
+      address: process.env.REACT_APP_CRONOS_TEST_ANN_TOKEN,
+      asset: ann,
+      aAsset: ann
+    },
   },
+}
+
+export const STABLE_USD_TOKENS = {
+  56: {
+    id: 'busd',
+    symbol: 'BUSD',
+    address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+    asset: busd,
+    aAsset: abusd
+  },
+  97: {
+    id: 'busd',
+    symbol: 'BUSD',
+    address: '0x8301F2213c0eeD49a7E28Ae4c3e91722919B8B47',
+    asset: busd,
+    aAsset: abusd
+  },
+  339: {
+    id: 'usdt',
+    symbol: 'USDT',
+    address: '0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE',
+    asset: usdt,
+    aAsset: ausdt
+  }
 }
 
 // eslint-disable-next-line max-len
@@ -209,7 +260,7 @@ export const CONTRACT_BUSD_TOKEN_ABI = '[{"inputs":[],"payable":false,"stateMuta
 export const CONTRACT_ANN_TOKEN_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_ANN_TOKEN,
   97: process.env.REACT_APP_BSC_TEST_ANN_TOKEN,
-  339: '',
+  339: process.env.REACT_APP_CRONOS_TEST_ANN_TOKEN,
 }
 
 // eslint-disable-next-line max-len
@@ -325,7 +376,26 @@ export const CONTRACT_ABEP_ADDRESS = {
     },
   },
   339: {
-
+    usdt: {
+      id: 'usdt',
+      symbol: 'aUSDT',
+      address: '0x1F7f34310310B1DD4fC4867De086b8Ec4596E8Cd'
+    },
+    btc: {
+      id: 'btc',
+      symbol: 'aBTC',
+      address: '0x7A103d5e3B04b27597Be53B5E7Fe053A1FBbCfb8'
+    },
+    eth: {
+      id: 'eth',
+      symbol: 'aETH',
+      address: '0x8Bb037BDdB64B4164Ab9a8f9AE7A9dA6c011EDde'
+    },
+    ann: {
+      id: 'ann',
+      symbol: 'aANN',
+      address: process.env.REACT_APP_CRONOS_TEST_ANN_ABEP
+    },
   }
 };
 
@@ -338,7 +408,7 @@ export const CONTRACT_ABNB_ABI = `[{"inputs":[{"internalType":"contract Comptrol
 export const CONTRACT_COMPTROLLER_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_COMPTROLLER_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_COMPTROLLER_ADDRESS,
-  339: '',
+  339: process.env.REACT_APP_CRONOS_TEST_COMPTROLLER_ADDRESS,
 }
 
 // eslint-disable-next-line max-len
@@ -347,7 +417,7 @@ export const CONTRACT_COMPTROLLER_ABI = `[{"inputs":[],"payable":false,"stateMut
 export const CONTRACT_PRICE_ORACLE_ADDRESS = {
   56: '0xdcb47670FCa9dD027a3599ac15C14e73CB3DbF42',
   97: '0x570FcC5e7E92066225e0dCAF64932A964Ecf3600',
-  339: '',
+  339: '0xc7b1E3F09429447c6b3E63C5295E2A1F616d4e81',
 }
 
 // eslint-disable-next-line max-len
@@ -356,7 +426,7 @@ export const CONTRACT_PRICE_ORACLE_ABI = '[{"anonymous":false,"inputs":[{"indexe
 export const CONTRACT_VOTE_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_VOTE_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_VOTE_ADDRESS,
-  339: '',
+  339: process.env.REACT_APP_CRONOS_TEST_VOTE_ADDRESS,
 }
 // eslint-disable-next-line max-len
 export const CONTRACT_VOTE_ABI = '[{"inputs":[{"internalType":"address","name":"timelock_","type":"address"},{"internalType":"address","name":"ann_","type":"address"},{"internalType":"address","name":"guardian_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"ProposalCanceled","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"address","name":"proposer","type":"address"},{"indexed":false,"internalType":"address[]","name":"targets","type":"address[]"},{"indexed":false,"internalType":"uint256[]","name":"values","type":"uint256[]"},{"indexed":false,"internalType":"string[]","name":"signatures","type":"string[]"},{"indexed":false,"internalType":"bytes[]","name":"calldatas","type":"bytes[]"},{"indexed":false,"internalType":"uint256","name":"startBlock","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"endBlock","type":"uint256"},{"indexed":false,"internalType":"string","name":"description","type":"string"}],"name":"ProposalCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"ProposalExecuted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"eta","type":"uint256"}],"name":"ProposalQueued","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"voter","type":"address"},{"indexed":false,"internalType":"uint256","name":"proposalId","type":"uint256"},{"indexed":false,"internalType":"bool","name":"support","type":"bool"},{"indexed":false,"internalType":"uint256","name":"votes","type":"uint256"}],"name":"VoteCast","type":"event"},{"constant":true,"inputs":[],"name":"BALLOT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DOMAIN_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"__abdicate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"__acceptAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newPendingAdmin","type":"address"},{"internalType":"uint256","name":"eta","type":"uint256"}],"name":"__executeSetTimelockPendingAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newPendingAdmin","type":"address"},{"internalType":"uint256","name":"eta","type":"uint256"}],"name":"__queueSetTimelockPendingAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"ann","outputs":[{"internalType":"contract ANNInterface","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"cancel","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"},{"internalType":"bool","name":"support","type":"bool"}],"name":"castVote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"},{"internalType":"bool","name":"support","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"castVoteBySig","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"execute","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"getActions","outputs":[{"internalType":"address[]","name":"targets","type":"address[]"},{"internalType":"uint256[]","name":"values","type":"uint256[]"},{"internalType":"string[]","name":"signatures","type":"string[]"},{"internalType":"bytes[]","name":"calldatas","type":"bytes[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"},{"internalType":"address","name":"voter","type":"address"}],"name":"getReceipt","outputs":[{"components":[{"internalType":"bool","name":"hasVoted","type":"bool"},{"internalType":"bool","name":"support","type":"bool"},{"internalType":"uint96","name":"votes","type":"uint96"}],"internalType":"struct GovernorAlpha.Receipt","name":"","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"guardian","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"latestProposalIds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"proposalCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"proposalMaxOperations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"proposalThreshold","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"proposer","type":"address"},{"internalType":"uint256","name":"eta","type":"uint256"},{"internalType":"uint256","name":"startBlock","type":"uint256"},{"internalType":"uint256","name":"endBlock","type":"uint256"},{"internalType":"uint256","name":"forVotes","type":"uint256"},{"internalType":"uint256","name":"againstVotes","type":"uint256"},{"internalType":"bool","name":"canceled","type":"bool"},{"internalType":"bool","name":"executed","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address[]","name":"targets","type":"address[]"},{"internalType":"uint256[]","name":"values","type":"uint256[]"},{"internalType":"string[]","name":"signatures","type":"string[]"},{"internalType":"bytes[]","name":"calldatas","type":"bytes[]"},{"internalType":"string","name":"description","type":"string"}],"name":"propose","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"queue","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"quorumVotes","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"state","outputs":[{"internalType":"enum GovernorAlpha.ProposalState","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"timelock","outputs":[{"internalType":"contract TimelockInterface","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"votingDelay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"votingPeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}]';
@@ -413,7 +483,7 @@ export const BIDDING_AUCTION_TOKEN = {
     btcb: {
       id: 'btcb',
       "name": "Binance Bitcoin",
-      "symbol": "BTCB",
+      "symbol": "BTC",
       "decimals": 18,
       "address": '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
       asset: btc,
