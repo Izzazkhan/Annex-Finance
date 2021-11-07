@@ -56,6 +56,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
     decimals.mantissa = +process.env.REACT_APP_MANTISSA_DECIMALS;
     decimals.comptroller = +process.env.REACT_APP_COMPTROLLER_DECIMALS;
+    console.log('decimals : ', decimals)
     await setSetting({ decimals });
   };
 
@@ -96,7 +97,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
         if (checkIsValidNetwork('metamask')) {
           getMarkets();
         }
-      }, 10000);
+      }, 7000);
     }
     return function cleanup() {
       if (updateTimer) {
@@ -111,7 +112,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
         initSettings();
       }
     }
-  }, [account]);
+  }, [account, chainId]);
 
   const getTotalLiquidity = async (markets, farmTVL) => {
     let totalLiquidity = new BigNumber(0);
@@ -186,9 +187,12 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     let totalBorrowLimit = new BigNumber(0);
     const assetList = [];
 
+    console.log('======= ', chainId)
+    console.log('======= ', constants.CONTRACT_TOKEN_ADDRESS[chainId])
     const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).filter(item => {
       return settings.decimals[item.id]
     });
+    console.log('contractAddresses: ', contractAddresses)
 
     let web3 = null;
     if (window.ethereum) {
