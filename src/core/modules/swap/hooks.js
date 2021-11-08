@@ -252,8 +252,7 @@ function validatedRecipient(recipient) {
   return null;
 }
 
-export function queryParametersToSwapState(parsedQs) {
-  const { chainId } = useActiveWeb3React();
+export function queryParametersToSwapState(parsedQs, chainId) {
   let inputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].busd.address);
   let outputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].ann.address);
   if (inputCurrency === outputCurrency) {
@@ -288,7 +287,7 @@ export function useDefaultsFromURLSearch() {
 
   useEffect(() => {
     if (!chainId) return;
-    const parsed = queryParametersToSwapState(parsedQs);
+    const parsed = queryParametersToSwapState(parsedQs, chainId);
 
     dispatch(
       replaceSwapState({
