@@ -50,18 +50,27 @@ export const BASES_TO_CHECK_TRADES_AGAINST = {
  */
 export const CUSTOM_BASES = {
 	[ChainId.MAINNET]: {},
+	[ChainId.CASSINI]: {},
 };
 
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES = {
 	...WETH_ONLY,
 	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, BUSD, USDT],
+	[ChainId.CASSINI]: [
+		...WETH_ONLY[ChainId.CASSINI], 
+		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD")
+	],
 };
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR = {
 	...WETH_ONLY,
 	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, BUSD, USDT],
+	[ChainId.CASSINI]: [
+		...WETH_ONLY[ChainId.CASSINI],
+		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD")
+	],
 };
 
 export const PINNED_PAIRS = {
@@ -79,6 +88,28 @@ export const PINNED_PAIRS = {
 		[BUSD, USDT],
 		[DAI, USDT],
 	],
+	[ChainId.CASSINI]: [
+		[
+			new Token(
+				ChainId.CASSINI,
+				"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+				18,
+				"ANN",
+				"Annex Token"
+			),
+			new Token(ChainId.CASSINI, "0x7b99bD319036FAF92C02478f973bAadEdea7a1Aa", 18, "WCRO", "Wrapped WCRO"),
+		],
+		[
+			new Token(
+				ChainId.CASSINI,
+				"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+				18,
+				"ANN",
+				"Annex Token"
+			),
+			new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD"),
+		]
+	]
 };
 
 export const NetworkContextName = "NETWORK";

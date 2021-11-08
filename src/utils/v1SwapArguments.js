@@ -1,5 +1,5 @@
 import { MaxUint256 } from "@ethersproject/constants";
-import { ETHER, Token, TradeType } from "@annex/sdk";
+import { ETHERS, Token, TradeType } from "@annex/sdk";
 import { getTradeVersion } from "../data/V1";
 import { Version } from "../hooks/useToggledVersion";
 
@@ -16,7 +16,7 @@ function deadlineFromNow(ttl) {
  * @param trade trade to get v1 arguments for swapping
  * @param options options for swapping
  */
-export default function v1SwapArguments(trade, options) {
+export default function v1SwapArguments(trade, options, chainId) {
 	if (getTradeVersion(trade) !== Version.v1) {
 		throw new Error("invalid trade version");
 	}
@@ -24,8 +24,8 @@ export default function v1SwapArguments(trade, options) {
 		throw new Error("too many pairs");
 	}
 	const isExactIn = trade.tradeType === TradeType.EXACT_INPUT;
-	const inputETH = trade.inputAmount.currency === ETHER;
-	const outputETH = trade.outputAmount.currency === ETHER;
+	const inputETH = trade.inputAmount.currency === ETHERS[chainId];
+	const outputETH = trade.outputAmount.currency === ETHERS[chainId];
 	if (inputETH && outputETH) throw new Error("ETHER to ETHER");
 	const minimumAmountOut = toHex(trade.minimumAmountOut(options.allowedSlippage));
 	const maximumAmountIn = toHex(trade.maximumAmountIn(options.allowedSlippage));

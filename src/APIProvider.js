@@ -56,7 +56,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
     decimals.mantissa = +process.env.REACT_APP_MANTISSA_DECIMALS;
     decimals.comptroller = +process.env.REACT_APP_COMPTROLLER_DECIMALS;
-    console.log('decimals : ', decimals)
     await setSetting({ decimals });
   };
 

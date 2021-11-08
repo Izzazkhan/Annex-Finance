@@ -20,6 +20,7 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 		() => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
 		[trackedTokenPairs]
 	);
+	console.log('tokenPairsWithLiquidityTokens: ', tokenPairsWithLiquidityTokens)
 	const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken), [
 		tokenPairsWithLiquidityTokens,
 	]);

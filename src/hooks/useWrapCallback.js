@@ -1,4 +1,4 @@
-import { currencyEquals, ETHER, WETH } from "@annex/sdk";
+import { currencyEquals, ETHERS, WETH } from "@annex/sdk";
 import { useMemo } from "react";
 import { tryParseAmount } from "../core/modules/swap/hooks";
 import { useTransactionAdder } from "../core/modules/transactions/hooks";
@@ -28,7 +28,7 @@ export default function useWrapCallback(
 	const wethContract = useWETHContract();
 	const balance = useCurrencyBalance(account || undefined, inputCurrency);
 	// we can always parse the amount typed as the input currency, since wrapping is 1:1
-	const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue]);
+	const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency, chainId), [inputCurrency, typedValue]);
 	const addTransaction = useTransactionAdder();
 
 	return useMemo(() => {
@@ -36,7 +36,7 @@ export default function useWrapCallback(
 
 		const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount);
 
-		if (inputCurrency === ETHER && currencyEquals(WETH[chainId], outputCurrency)) {
+		if (inputCurrency === ETHERS[chainId] && currencyEquals(WETH[chainId], outputCurrency)) {
 			return {
 				wrapType: WrapType.WRAP,
 				execute:
@@ -58,7 +58,7 @@ export default function useWrapCallback(
 				inputError: sufficientBalance ? undefined : "Insufficient ETH balance",
 			};
 		}
-		if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER) {
+		if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHERS[chainId]) {
 			return {
 				wrapType: WrapType.UNWRAP,
 				execute:

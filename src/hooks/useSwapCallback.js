@@ -58,7 +58,7 @@ function useSwapCallArguments(
 						allowedSlippage: new Percent(JSBI.BigInt(Math.floor(allowedSlippage)), BIPS_BASE),
 						recipient,
 						ttl: deadline,
-					})
+					}, chainId)
 				);
 
 				if (trade.tradeType === TradeType.EXACT_INPUT) {
@@ -69,7 +69,7 @@ function useSwapCallArguments(
 							allowedSlippage: new Percent(JSBI.BigInt(Math.floor(allowedSlippage)), BIPS_BASE),
 							recipient,
 							ttl: deadline,
-						})
+						}, chainId)
 					);
 				}
 				break;
@@ -80,7 +80,7 @@ function useSwapCallArguments(
 						allowedSlippage: new Percent(JSBI.BigInt(Math.floor(allowedSlippage)), BIPS_BASE),
 						recipient,
 						ttl: deadline,
-					})
+					}, chainId)
 				);
 				break;
 		}

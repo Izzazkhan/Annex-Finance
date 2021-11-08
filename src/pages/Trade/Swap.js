@@ -35,11 +35,12 @@ import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades';
 import { tryParseAmount } from '../../core/modules/swap/hooks';
 
 function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
+  const { account, chainId } = useActiveWeb3React();
   const loadedUrlParams = useDefaultsFromURLSearch();
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId),
+    useCurrency(loadedUrlParams?.inputCurrencyId, chainId),
+    useCurrency(loadedUrlParams?.outputCurrencyId, chainId),
   ];
 
   const [dismissTokenWarning, setDismissTokenWarning] = useState(false);
@@ -59,7 +60,6 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
     setSyrupTransactionType('');
   }, []);
 
-  const { account, chainId } = useActiveWeb3React();
   const [deadline] = useUserDeadline();
   const [allowedSlippage] = useUserSlippageTolerance();
 
@@ -92,7 +92,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
     };
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } =
-    useSwapActionHandlers();
+    useSwapActionHandlers(chainId);
   const isValid = !swapInputError;
   const dependentField = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -151,7 +151,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
     }
   }, [approval, approvalSubmitted]);
 
-  const maxAmountInput = maxAmountSpend(currencyBalances[Field.INPUT]);
+  const maxAmountInput = maxAmountSpend(currencyBalances[Field.INPUT], chainId);
   const atMaxAmountInput = Boolean(
     maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput),
   );

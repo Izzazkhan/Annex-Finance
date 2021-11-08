@@ -536,11 +536,11 @@ export const CONTRACT_EPOCH_ABI = '[{"inputs":[{"internalType":"address","name":
 export const CONTRACT_ROUTER_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_ROUTER_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_ROUTER_ADDRESS,
-  339: '',
+  339: process.env.REACT_APP_CRONOS_TEST_ROUTER_ADDRESS,
 }
 
 export const CONTRACT_FACTORY_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_FACTORY_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_FACTORY_ADDRESS,
-  339: '',
+  339: process.env.REACT_APP_CRONOS_TEST_FACTORY_ADDRESS,
 }
