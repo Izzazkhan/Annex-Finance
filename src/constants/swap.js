@@ -35,6 +35,7 @@ export const UST = new Token(
 const WETH_ONLY = {
 	[ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
 	[ChainId.BSCTESTNET]: [WETH[ChainId.BSCTESTNET]],
+	[ChainId.CASSINI]: [WETH[ChainId.CASSINI]],
 };
 
 // used to construct intermediary pairs for trading

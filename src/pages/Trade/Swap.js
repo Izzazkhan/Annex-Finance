@@ -36,7 +36,6 @@ import { tryParseAmount } from '../../core/modules/swap/hooks';
 
 function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   const loadedUrlParams = useDefaultsFromURLSearch();
-
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),

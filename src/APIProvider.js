@@ -187,12 +187,9 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     let totalBorrowLimit = new BigNumber(0);
     const assetList = [];
 
-    console.log('======= ', chainId)
-    console.log('======= ', constants.CONTRACT_TOKEN_ADDRESS[chainId])
     const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).filter(item => {
       return settings.decimals[item.id]
     });
-    console.log('contractAddresses: ', contractAddresses)
 
     let web3 = null;
     if (window.ethereum) {

@@ -14,6 +14,7 @@ import Swap from './Swap';
 import Liquidity from './Liquidity';
 import AddLiquidity from './AddLiquidity';
 import PoolFinder from './PoolFinder';
+import { useActiveWeb3React } from '../../hooks';
 import {
   RedirectDuplicateTokenIds,
   RedirectOldAddLiquidityPathStructure,
@@ -78,6 +79,7 @@ function Trade() {
     getSwap();
   }, []);
 
+  const { chainId } = useActiveWeb3React();
   const { subGraphInstance } = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [swapData, setSwapData] = useState([]);
@@ -95,7 +97,7 @@ function Trade() {
     setLoading(true)
     const apiRequest = await restService({
       third_party: true,
-      api: ANNEX_SWAP_EXCHANGE,
+      api: ANNEX_SWAP_EXCHANGE[chainId],
       method: 'GET',
       params: {}
     });

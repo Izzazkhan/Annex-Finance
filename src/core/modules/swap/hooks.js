@@ -14,7 +14,7 @@ import { useUserSlippageTolerance } from '../user/hooks';
 import { computeSlippageAdjustedAmounts } from '../../../utils/prices';
 import { useActiveWeb3React } from '../../../hooks';
 
-import { CONTRACT_FACTORY_ADDRESS, CONTRACT_ROUTER_ADDRESS, CONTRACT_TOKEN_ADDRESS } from '../../../utilities/constants';
+import { CONTRACT_FACTORY_ADDRESS, CONTRACT_ROUTER_ADDRESS, CONTRACT_TOKEN_ADDRESS, STABLE_USD_TOKENS } from '../../../utilities/constants';
 
 const { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } =
   swapActionCreators;
@@ -252,9 +252,8 @@ function validatedRecipient(recipient) {
   return null;
 }
 
-export function queryParametersToSwapState(parsedQs) {
-  const { chainId } = useActiveWeb3React();
-  let inputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].busd.address);
+export function queryParametersToSwapState(parsedQs, chainId) {
+  let inputCurrency = parseCurrencyFromURLParameter(STABLE_USD_TOKENS[chainId].address);
   let outputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].ann.address);
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs?.outputCurrency === 'string') {
@@ -287,8 +286,7 @@ export function useDefaultsFromURLSearch() {
   const [result, setResult] = useState();
 
   useEffect(() => {
-    if (!chainId) return;
-    const parsed = queryParametersToSwapState(parsedQs);
+    const parsed = queryParametersToSwapState(parsedQs, chainId);
 
     dispatch(
       replaceSwapState({
@@ -299,6 +297,7 @@ export function useDefaultsFromURLSearch() {
         recipient: parsed.recipient,
       }),
     );
+
     setResult({
       inputCurrencyId: parsed[Field.INPUT].currencyId,
       outputCurrencyId: parsed[Field.OUTPUT].currencyId,
