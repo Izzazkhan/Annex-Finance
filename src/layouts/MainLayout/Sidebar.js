@@ -247,7 +247,16 @@ const NavItems = ({
   history,
   activeMenu,
   toggleDropdown,
+  chainId,
 }) => {
+  if ([339, 25].includes(chainId)) {
+    items = items.filter((i) => {
+      if (['Liquidate', 'Games', 'Auction'].includes(i.title)) {
+        return null
+      }
+      return i
+    })
+  }
   return (
     <div className={wrapperClassName}>
       <div className="flex flex-col text-white">
@@ -396,6 +405,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         </div>
         <NavItems
           items={sidebarItems}
+          chainId={chainId}
           wrapperClassName="pt-6"
           search={search}
           history={history}
@@ -411,7 +421,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8 sidebar-footer">
-          <div className="font-bold text-white margin-bottom-20">
+          {![339, 25].includes(chainId) && <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
               href={`https://pancakeswap.finance/swap?inputCurrency=${STABLE_USD_TOKENS[chainId].address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].ann.address}`}
               target="_blank"
@@ -424,7 +434,7 @@ function Sidebar({ isOpen, onClose, settings }) {
               />
               {`ANN Price: $${settings.annPricePCS}`}
             </PlatformLink>
-          </div>
+          </div>}
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
               href="/trade/swap"

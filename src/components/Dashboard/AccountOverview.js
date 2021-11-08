@@ -26,6 +26,9 @@ import SVG from 'react-inlinesvg';
 const format = commaNumber.bindWith(',', '.');
 
 const formatValue = (value) => {
+  if (getBigNumber(value).isGreaterThan(1000000)) {
+    return 'Infinity'
+  }
   return `$${format(getBigNumber(value).dp(2, 1).toString(10))}`;
 };
 
@@ -157,14 +160,14 @@ const AccountOverview = ({
               wrapperClassName="hidden md:block"
               type="circle"
               width={200}
-              percent={Number(netAPY || 100)}
+              percent={new BigNumber(netAPY).isGreaterThan(10000) ? 100 : Number(netAPY || 100)}
               strokeWidth={4}
             />
             <Progress
               wrapperClassName="block md:hidden"
               type="circle"
               width={140}
-              percent={Number(netAPY || 100)}
+              percent={new BigNumber(netAPY).isGreaterThan(10000) ? 100 : Number(netAPY || 100)}
               strokeWidth={4}
             />
             <div

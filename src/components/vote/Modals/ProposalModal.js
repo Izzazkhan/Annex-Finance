@@ -37,7 +37,9 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
 
   useEffect(() => {
     if (!visible) {
-      form.resetFields();
+      if (form.__INTERNAL__?.name) {
+        form.resetFields();
+      }
       setIsLoading(false);
       setErrorMsg('');
       setDescription('');
@@ -111,7 +113,9 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
   };
 
   const handleAdd = (type, index) => {
-    form.resetFields();
+    if (form.__INTERNAL__?.name) {
+      form.resetFields();
+    }
     if (type === 'next') {
       formData.splice(index + 1, 0, {
         targetAddress: '',
@@ -184,6 +188,8 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
 
   const content = (
     <Form
+      name={"form1"}
+      form={form}
       onFinishFailed={(errorInfo) => {
         setErrorMsg(errorInfo.errorFields[0].errors[0]);
       }}
@@ -235,7 +241,7 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
             <div className="mt-8 flex flex-col space-y-8">
               {formData.map((f, index) => {
                 return (
-                  <>
+                  <React.Fragment key={index}>
                     <div className="flex items-center justify-between bg-black py-4 px-5">
                       <div className="text-18">Action {index + 1}</div>
                       <div
@@ -359,7 +365,7 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
                         </div>
                       )}
                     </div>
-                  </>
+                  </React.Fragment>
                 );
               })}
             </div>
