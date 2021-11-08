@@ -180,7 +180,13 @@ const AccountOverview = ({
                   </div>
                 </div>
                 <div className={`${new BigNumber(netAPY).isNegative() ? 'text-red' : 'text-white'} font-bold text-xl md:text-2xl`}>
-                  {!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}
+                  {!account || wrongNetwork ? '-' : netAPY ? (
+                    (new BigNumber(netAPY).isGreaterThan(10000)) ? (
+                      `Infinity %`
+                    )
+                     : 
+                    `${netAPY}%`
+                  ) : '-'}
                 </div>
               </div>
               <Switch value={withANN} onChange={() => setWithANN((oldVal) => !oldVal)} />
