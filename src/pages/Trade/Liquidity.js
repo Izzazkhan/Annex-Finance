@@ -16,6 +16,7 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 
 	// fetch the user's balances of all tracked V2 LP tokens
 	const trackedTokenPairs = useTrackedTokenPairs();
+	console.log('trackedTokenPairs: ', trackedTokenPairs)
 	const tokenPairsWithLiquidityTokens = useMemo(
 		() => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
 		[trackedTokenPairs]
