@@ -400,7 +400,7 @@ function Pools() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex flex-col">
                   <div className="text-white text-sm font-bold text-lg">0.000</div>
-                  <div className="text-white text-sm ">0.000 USDC</div>
+                  <div className="text-white text-sm ">0.000 USD</div>
                 </div>
                 <div className="text-white font-bold flex items-center">
                   <button className={`flex items-center focus:outline-none bg-white ${loading ?
