@@ -2,9 +2,9 @@ import { ethers } from 'ethers'
 import { getMulticallContract } from './contractHelper'
 
 
-const multicall = async (abi, calls) => {
+const multicall = async (abi, calls, chainId) => {
     try {
-        const multi = getMulticallContract()
+        const multi = getMulticallContract(chainId)
         const itf = new ethers.utils.Interface(abi)
 
         const calldata = calls.map((call) => [call.address.toLowerCase(), itf.encodeFunctionData(call.name, call.params)])

@@ -26,6 +26,9 @@ import SVG from 'react-inlinesvg';
 const format = commaNumber.bindWith(',', '.');
 
 const formatValue = (value) => {
+  if (getBigNumber(value).isGreaterThan(1000000)) {
+    return 'Infinity'
+  }
   return `$${format(getBigNumber(value).dp(2, 1).toString(10))}`;
 };
 
@@ -73,6 +76,8 @@ const Styles = styled.span`
   }
 `;
 
+const AVAILABLE_NETWORKS = [56, 97, 339];
+
 const AccountOverview = ({
   available,
   borrowPercent,
@@ -107,16 +112,13 @@ const AccountOverview = ({
   }, [settings.totalBorrowBalance]);
 
   const wrongNetwork = React.useMemo(() => {
-    return (
-      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
-      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-    );
+    return !AVAILABLE_NETWORKS.includes(chainId)
   }, [chainId]);
 
   const handleCollect = () => {
     if (+earnedBalance !== 0) {
       setIsLoading(true);
-      const appContract = getComptrollerContract();
+      const appContract = getComptrollerContract(chainId);
       methods
         .send(appContract.methods.claimAnnex, [account], account)
         .then(() => {
@@ -158,14 +160,14 @@ const AccountOverview = ({
               wrapperClassName="hidden md:block"
               type="circle"
               width={200}
-              percent={Number(netAPY || 100)}
+              percent={new BigNumber(netAPY).isGreaterThan(10000) ? 100 : Number(netAPY || 100)}
               strokeWidth={4}
             />
             <Progress
               wrapperClassName="block md:hidden"
               type="circle"
               width={140}
-              percent={Number(netAPY || 100)}
+              percent={new BigNumber(netAPY).isGreaterThan(10000) ? 100 : Number(netAPY || 100)}
               strokeWidth={4}
             />
             <div
@@ -181,7 +183,13 @@ const AccountOverview = ({
                   </div>
                 </div>
                 <div className={`${new BigNumber(netAPY).isNegative() ? 'text-red' : 'text-white'} font-bold text-xl md:text-2xl`}>
-                  {!account || wrongNetwork ? '-' : netAPY ? `${netAPY}%` : '-'}
+                  {!account || wrongNetwork ? '-' : netAPY ? (
+                    (new BigNumber(netAPY).isGreaterThan(10000)) ? (
+                      `Infinity %`
+                    )
+                     : 
+                    `${netAPY}%`
+                  ) : '-'}
                 </div>
               </div>
               <Switch value={withANN} onChange={() => setWithANN((oldVal) => !oldVal)} />

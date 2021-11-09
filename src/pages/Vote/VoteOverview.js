@@ -49,7 +49,7 @@ const Styles = styled.div`
  `
 
 const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const [proposalInfo, setProposalInfo] = useState({});
   const [agreeVotes, setAgreeVotes] = useState({});
   const [againstVotes, setAgainstVotes] = useState({});
@@ -62,10 +62,10 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
   const [isPossibleExecuted, setIsPossibleExecuted] = useState(false);
   const [executeEta, setExecuteEta] = useState('');
 
+  const voteContract = getVoteContract(chainId);
   const updateBalance = useCallback(async () => {
     if (account && proposalInfo.id) {
-      const annTokenContract = getTokenContract('ann');
-      const voteContract = getVoteContract();
+      const annTokenContract = getTokenContract('ann', chainId);
       await methods.call(voteContract.methods.proposalThreshold, []).then((res) => {
         setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
       });
@@ -120,7 +120,6 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
   );
 
   const getIsPossibleExecuted = () => {
-    const voteContract = getVoteContract();
     methods.call(voteContract.methods.proposals, [proposalInfo.id]).then((res) => {
       setIsPossibleExecuted(res && res.eta <= Date.now() / 1000);
       setExecuteEta(moment(res.eta * 1000).format('LLLL'));
@@ -162,11 +161,10 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
   };
 
   const handleUpdateProposal = (statusType) => {
-    const appContract = getVoteContract();
     if (statusType === 'Queue') {
       setIsLoading(true);
       methods
-        .send(appContract.methods.queue, [proposalInfo.id], account)
+        .send(voteContract.methods.queue, [proposalInfo.id], account)
         .then(() => {
           setIsLoading(false);
           setStatus('success');
@@ -181,7 +179,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
     } else if (statusType === 'Execute') {
       setIsLoading(true);
       methods
-        .send(appContract.methods.execute, [proposalInfo.id], account)
+        .send(voteContract.methods.execute, [proposalInfo.id], account)
         .then(() => {
           setIsLoading(false);
           setStatus('success');
@@ -196,7 +194,7 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
     } else if (statusType === 'Cancel') {
       setIsCancelLoading(true);
       methods
-        .send(appContract.methods.cancel, [proposalInfo.id], account)
+        .send(voteContract.methods.cancel, [proposalInfo.id], account)
         .then(() => {
           setIsCancelLoading(false);
           setCancelStatus('success');

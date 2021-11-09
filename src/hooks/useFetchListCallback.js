@@ -1,11 +1,9 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { ChainId } from "@annex/sdk";
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { listActionCreators } from "../core/modules/lists/actions";
 import getTokenList from "../utils/getTokenList";
 import resolveENSContentHash from "../utils/resolveENSContentHash";
-import { CHAIN_ID } from "../constants/swap";
 import { useActiveWeb3React } from "./index";
 
 const { fetchTokenList } = listActionCreators;
@@ -16,14 +14,6 @@ export function useFetchListCallback() {
 
 	const ensResolver = useCallback(
 		(ensName) => {
-			if (!library || chainId !== ChainId.MAINNET) {
-				if (CHAIN_ID === ChainId.MAINNET) {
-					if (library) {
-						return resolveENSContentHash(ensName, library);
-					}
-				}
-				throw new Error("Could not construct mainnet ENS resolver");
-			}
 			return resolveENSContentHash(ensName, library);
 		},
 		[chainId, library]

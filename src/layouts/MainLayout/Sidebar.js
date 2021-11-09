@@ -13,6 +13,7 @@ import { methods } from '../../utilities/ContractService';
 import { addToken, getBigNumber, checkIsValidNetwork } from '../../utilities/common';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
+import { useActiveWeb3React } from "../../hooks";
 
 import {
   AnnexIcon,
@@ -27,7 +28,7 @@ import {
   LiquidateIcon
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
-import { CONTRACT_TOKEN_ADDRESS } from 'utilities/constants';
+import { CONTRACT_TOKEN_ADDRESS, STABLE_USD_TOKENS } from 'utilities/constants';
 
 const Wrapper = styled.aside`
   // @media (min-width: 1024px) {
@@ -246,7 +247,16 @@ const NavItems = ({
   history,
   activeMenu,
   toggleDropdown,
+  chainId,
 }) => {
+  if ([339, 25].includes(chainId)) {
+    items = items.filter((i) => {
+      if (['Liquidate', 'Games', 'Auction'].includes(i.title)) {
+        return null
+      }
+      return i
+    })
+  }
   return (
     <div className={wrapperClassName}>
       <div className="flex flex-col text-white">
@@ -343,6 +353,7 @@ const NavItems = ({
 };
 
 function Sidebar({ isOpen, onClose, settings }) {
+  const { chainId } = useActiveWeb3React();
   const { pathname, search } = useLocation();
   // const [totalXaiMinted, setTotalXaiMinted] = useState('0');
   const [activeMenu, updateActiveMenu] = useState('');
@@ -394,6 +405,7 @@ function Sidebar({ isOpen, onClose, settings }) {
         </div>
         <NavItems
           items={sidebarItems}
+          chainId={chainId}
           wrapperClassName="pt-6"
           search={search}
           history={history}
@@ -409,9 +421,9 @@ function Sidebar({ isOpen, onClose, settings }) {
         // totalXaiMinted={totalXaiMinted}
         />
         <div className="mt-auto mb-10 pl-8 pr-8 sidebar-footer">
-          <div className="font-bold text-white margin-bottom-20">
+          {![339, 25].includes(chainId) && <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
-              href={`https://pancakeswap.finance/swap?inputCurrency=${CONTRACT_TOKEN_ADDRESS.busd.address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS.ann.address}`}
+              href={`https://pancakeswap.finance/swap?inputCurrency=${STABLE_USD_TOKENS[chainId].address}&outputCurrency=${CONTRACT_TOKEN_ADDRESS[chainId].ann.address}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -422,7 +434,7 @@ function Sidebar({ isOpen, onClose, settings }) {
               />
               {`ANN Price: $${settings.annPricePCS}`}
             </PlatformLink>
-          </div>
+          </div>}
           <div className="font-bold text-white margin-bottom-20">
             <PlatformLink
               href="/trade/swap"
@@ -440,7 +452,7 @@ function Sidebar({ isOpen, onClose, settings }) {
           <div className="flex space-x-6 text-white">
             <div
               className="flex items-center cursor-pointer"
-              onClick={() => addToken('ann', settings.decimals['ann']?.token, 'token')}
+              onClick={() => addToken('ann', settings.decimals['ann']?.token, 'token', chainId)}
             >
               <span>ANN</span>
               <img
@@ -451,7 +463,7 @@ function Sidebar({ isOpen, onClose, settings }) {
             </div>
             <div
               className="flex items-center font-medium cursor-pointer"
-              onClick={() => addToken('ann', settings.decimals['ann']?.atoken, 'atoken')}
+              onClick={() => addToken('ann', settings.decimals['ann']?.atoken, 'atoken', chainId)}
             >
               To Metamask
             </div>

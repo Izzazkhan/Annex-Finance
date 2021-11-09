@@ -2,7 +2,7 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
-  ETHER,
+  ETHERS,
   JSBI,
   Pair,
   Percent,
@@ -64,11 +64,11 @@ export function useDerivedMintInfo(currencyA, currencyB) {
 
   // amounts
   // @ts-ignore
-  const independentAmount = tryParseAmount(typedValue, currencies[independentField]);
+  const independentAmount = tryParseAmount(typedValue, currencies[independentField], chainId);
   const dependentAmount = useMemo(() => {
     if (noLiquidity) {
       if (otherTypedValue && currencies[dependentField]) {
-        return tryParseAmount(otherTypedValue, currencies[dependentField]);
+        return tryParseAmount(otherTypedValue, currencies[dependentField], chainId);
       }
       return undefined;
     }
@@ -85,8 +85,8 @@ export function useDerivedMintInfo(currencyA, currencyB) {
           dependentField === Field.CURRENCY_B
             ? pair.priceOf(tokenA).quote(wrappedIndependentAmount)
             : pair.priceOf(tokenB).quote(wrappedIndependentAmount);
-        return dependentCurrency === ETHER
-          ? CurrencyAmount.ether(dependentTokenAmount.raw)
+        return dependentCurrency === ETHERS[chainId]
+          ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
           : dependentTokenAmount;
       }
       return undefined;
@@ -189,10 +189,10 @@ export function useDerivedMintInfo(currencyA, currencyB) {
 
 export function useMintActionHandlers(noLiquidity) {
   const dispatch = useDispatch();
-  console.log('Qoute Amount');
 
   const onFieldAInput = useCallback(
     (typedValue) => {
+      console.log('typedValue: ', typedValue)
       dispatch(
         typeInput({ field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true }),
       );

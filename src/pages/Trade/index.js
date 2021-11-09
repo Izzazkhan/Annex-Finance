@@ -14,6 +14,7 @@ import Swap from './Swap';
 import Liquidity from './Liquidity';
 import AddLiquidity from './AddLiquidity';
 import PoolFinder from './PoolFinder';
+import { useActiveWeb3React } from '../../hooks';
 import {
   RedirectDuplicateTokenIds,
   RedirectOldAddLiquidityPathStructure,
@@ -78,6 +79,7 @@ function Trade() {
     getSwap();
   }, []);
 
+  const { chainId } = useActiveWeb3React();
   const { subGraphInstance } = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [swapData, setSwapData] = useState([]);
@@ -95,7 +97,7 @@ function Trade() {
     setLoading(true)
     const apiRequest = await restService({
       third_party: true,
-      api: ANNEX_SWAP_EXCHANGE,
+      api: ANNEX_SWAP_EXCHANGE[chainId],
       method: 'GET',
       params: {}
     });
@@ -130,7 +132,7 @@ function Trade() {
         <SettingsModal open={settingsOpen} onCloseModal={() => setSettingsOpen(false)} />
         <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
         <div
-          className="bg-fadeBlack w-full flex justify-between items-center rounded-3xl"
+          className="bg-fadeBlack w-full flex justify-between items-center rounded-3xl lg:flex-row flex-col p-10"
         >
           {/* <div
           className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl 
@@ -269,7 +271,7 @@ function Trade() {
             </Switch>
           </div>
 
-          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right ">
+          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right">
             <div className="text-white text-xl font-bold p-5 pt-6">24hrs Change</div>
             <div className=" scroll pl-2">
               {

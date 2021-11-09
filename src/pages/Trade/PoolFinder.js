@@ -1,7 +1,7 @@
 import {useActiveWeb3React} from "../../hooks";
 import React, {useCallback, useEffect, useState} from "react";
 import styled from "styled-components";
-import {ETHER, JSBI} from "@annex/sdk";
+import {ETHERS, JSBI} from "@annex/sdk";
 import {PairState, usePair} from "../../data/Reserves";
 import {useTokenBalance} from "../../hooks/wallet";
 import {AutoColumn, ColumnCenter} from "../../components/UI/Column";
@@ -42,12 +42,12 @@ const StyledInternalLink = styled(Link).attrs(props => ({
 }))``
 
 export default function PoolFinder() {
-    const { account } = useActiveWeb3React()
+    const { account, chainId } = useActiveWeb3React()
 
     const [showSearch, setShowSearch] = useState(false)
     const [activeField, setActiveField] = useState(Fields.TOKEN1)
 
-    const [currency0, setCurrency0] = useState(ETHER)
+    const [currency0, setCurrency0] = useState(ETHERS[chainId])
     const [currency1, setCurrency1] = useState(null)
 
     const [pairState, pair] = usePair(currency0 ?? undefined, currency1 ?? undefined)
@@ -162,7 +162,9 @@ export default function PoolFinder() {
                                 <LightCard padding="45px 10px" className={'mt-8 p-4'}>
                                     <AutoColumn gap="sm" justify="center">
                                         <Text>You don’t have liquidity in this pool yet.</Text>
-                                        <StyledInternalLink to={`/trade/liquidity/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
+                                        <StyledInternalLink
+                                            to={`/trade/liquidity/add/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`}
+                                        >
                                             <Text>
                                                 Add Liquidity
                                             </Text>
@@ -174,7 +176,9 @@ export default function PoolFinder() {
                             <LightCard padding="45px 10px" className={'mt-8 p-4'}>
                                 <AutoColumn gap="sm" justify="center">
                                     <Text>No pool found.</Text>
-                                    <StyledInternalLink to={`/trade/liquidity/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
+                                    <StyledInternalLink
+                                        to={`/trade/liquidity/add/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`}
+                                    >
                                         Create pool.
                                     </StyledInternalLink>
                                 </AutoColumn>

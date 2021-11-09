@@ -22,7 +22,9 @@ import MulticallUpdater from '../core/modules/multicall/updater';
 import TransactionUpdater from '../core/modules/transactions/updater';
 import ListsUpdater from '../core/modules/lists/updater';
 import Games from 'pages/Games';
+import { useActiveWeb3React } from 'hooks';
 const Routes = () => {
+  const { chainId } = useActiveWeb3React();
   return (
     <Web3ReactManager>
       <ListsUpdater />
@@ -39,8 +41,12 @@ const Routes = () => {
           <Route exact path={routes.market.marketDetails} component={MarketDetails} />
           <Route exact path={routes.pools} component={Pools} />
           <Route path={routes.trade} component={Trade} />
-          <Route path={routes.games} component={Games} />
-          <Route path={`${routes.auction}`} component={Auction} />
+          {![339, 25].includes(chainId) && (
+            <>
+            <Route path={routes.games} component={Games} />
+            <Route path={`${routes.auction}`} component={Auction} />
+            </>
+          )}
           <Route exact path={routes.vote.index} component={Vote} />
           <Route exact path={routes.vote.allProposals} component={AllProposals} />
           <Route exact path={routes.vote.voteOverview} component={VoteOverview} />

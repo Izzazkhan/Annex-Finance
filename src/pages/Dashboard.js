@@ -29,7 +29,7 @@ import {
 import * as constants from '../utilities/constants';
 import { useActiveWeb3React } from '../hooks';
 import commaNumber from 'comma-number';
-import { addToken, getBigNumber } from '../utilities/common';
+import { getBigNumber } from '../utilities/common';
 import { promisify } from '../utilities';
 import sxp from '../assets/images/coins/sxp.png';
 import arrowUp from '../assets/icons/arrowUp.png';
@@ -49,6 +49,8 @@ const Styles = styled.div`
   }
 `;
 
+const AVAILABLE_NETWORKS = [56, 97, 339]
+
 function Dashboard({ settings, setSetting, getMarketHistory }) {
   // debugger;
   const { account, chainId } = useActiveWeb3React();
@@ -58,7 +60,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return;
     }
     try {
-      const appContract = getComptrollerContract();
+      // const appContract = getComptrollerContract();
       // const xaiControllerContract = getXaiControllerContract();
       // const xaiContract = getXaiTokenContract();
       // xai amount in wallet
@@ -146,7 +148,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   const getVoteInfo = async () => {
     const myAddress = account;
     if (!myAddress) return;
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(chainId);
     // const xaiContract = getXaiControllerContract();
     const annexInitialIndex = await methods.call(appContract.methods.annexInitialIndex, []);
     let annexEarned = new BigNumber(0);
@@ -156,7 +158,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     ///////////////////////////////////
     // console.log('===== ', constants.CONTRACT_ABEP_ADDRESS)
     const promiseAssetCall = settings.assetList.map((asset) => {
-      const aBepContract = getAbepContract(asset.id);
+      const aBepContract = getAbepContract(asset.id, chainId);
 
       return Promise.all([
         methods.call(appContract.methods.annexSupplyState, [asset.atokenAddress]),
@@ -205,8 +207,8 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     annexEarned = annexEarned.plus(annexAccrued).dividedBy(1e18).dp(4, 1).toString(10);
     /* **************************************** */
     // will be removed after ANN listed to market
-    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS).find((t) => t.id === 'ann');
-    const annContract = getTokenContract(ann.id);
+    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS[chainId]).find((t) => t.id === 'ann');
+    const annContract = getTokenContract(ann.id, chainId);
     const annWalletBalance = await methods.call(annContract.methods.balanceOf, [myAddress]);
     annexBalance = new BigNumber(annWalletBalance).div(1e18);
     /////////////////////////////////
@@ -405,7 +407,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [settings.assetList]);
 
   const handleToggleCollateral = (r) => {
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(chainId);
     if (r && account && r.borrowBalance.isZero()) {
       if (!r.collateral) {
         setIsCollateralEnable(false);
@@ -824,7 +826,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   useEffect(() => {
     if (currentAsset) {
       getGraphData(
-        constants.CONTRACT_ABEP_ADDRESS[currentAsset].address,
+        constants.CONTRACT_ABEP_ADDRESS[chainId][currentAsset].address,
         process.env.REACT_APP_GRAPH_TICKER || null,
         60,
       );
@@ -832,7 +834,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [account, currentAsset]);
 
   useEffect(() => {
-    setCurrentAsset('usdc');
+    setCurrentAsset('usdt');
   }, []);
 
   useEffect(() => {
@@ -866,18 +868,15 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   };
 
   const options = React.useMemo(() => {
-    return Object.keys(constants.CONTRACT_ABEP_ADDRESS).map((key, index) => ({
-      id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
-      name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
-      logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
+    return Object.keys(constants.CONTRACT_ABEP_ADDRESS[chainId]).map((key, index) => ({
+      id: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].id,
+      name: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].symbol,
+      logo: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].asset,
     }));
   }, []);
 
   const wrongNetwork = React.useMemo(() => {
-    return (
-      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
-      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-    );
+    return !AVAILABLE_NETWORKS.includes(chainId)
   }, [chainId]);
 
   return (

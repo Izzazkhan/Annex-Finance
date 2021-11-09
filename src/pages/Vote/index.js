@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {promisify} from "../../utilities";
-import {checkIsValidNetwork} from "../../utilities/common";
+import React, { useCallback, useEffect, useState } from 'react';
+import { promisify } from "../../utilities";
+import { checkIsValidNetwork } from "../../utilities/common";
 import {
     getAbepContract,
     getComptrollerContract,
@@ -9,10 +9,10 @@ import {
     methods
 } from "../../utilities/ContractService";
 import BigNumber from "bignumber.js";
-import {withRouter} from "react-router-dom";
-import {bindActionCreators, compose} from "redux";
-import {accountActionCreators, connectAccount} from "../../core";
-import {useActiveWeb3React} from "../../hooks";
+import { withRouter } from "react-router-dom";
+import { bindActionCreators, compose } from "redux";
+import { accountActionCreators, connectAccount } from "../../core";
+import { useActiveWeb3React } from "../../hooks";
 import Layout from "../../layouts/MainLayout/MainLayout";
 import * as constants from '../../utilities/constants';
 import VotingWallet from "../../components/vote/VotingWallet";
@@ -21,7 +21,7 @@ import Proposals from "../../components/vote/Proposals";
 let timeStamp = 0;
 
 const Vote = ({ settings, getProposals, setSetting }) => {
-    const { account } = useActiveWeb3React();
+    const { account, chainId } = useActiveWeb3React();
     const [balance, setBalance] = useState(0);
     const [votingWeight, setVotingWeight] = useState(0);
     const [proposals, setProposals] = useState({});
@@ -69,7 +69,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
 
     const updateBalance = async () => {
         if (account && checkIsValidNetwork()) {
-            const annTokenContract = getTokenContract('ann');
+            const annTokenContract = getTokenContract('ann', chainId);
             await methods
                 .call(annTokenContract.methods.getCurrentVotes, [
                     account
@@ -94,7 +94,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
     const getVoteInfo = async () => {
         const myAddress = account;
         if (!myAddress) return;
-        const appContract = getComptrollerContract();
+        const appContract = getComptrollerContract(chainId);
         // const xaiContract = getXaiControllerContract();
         const annexInitialIndex = await methods.call(
             appContract.methods.annexInitialIndex,
@@ -103,7 +103,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
         let annexEarned = new BigNumber(0);
 
         const promiseAssetCall = settings.assetList.map(asset => {
-            const aBepContract = getAbepContract(asset.id);
+            const aBepContract = getAbepContract(asset.id, chainId);
       
             return Promise.all([
                 methods.call(appContract.methods.annexSupplyState, [
@@ -201,7 +201,7 @@ const Vote = ({ settings, getProposals, setSetting }) => {
 
     const updateDelegate = async () => {
         if (account && timeStamp % 3 === 0) {
-            const tokenContract = getTokenContract('ann');
+            const tokenContract = getTokenContract('ann', chainId);
             methods
                 .call(tokenContract.methods.delegates, [account])
                 .then(res => {

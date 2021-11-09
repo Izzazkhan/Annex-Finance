@@ -8,15 +8,20 @@ export async function restService({
   params,
   contentType = 'json',
   token = null,
+  chainId,
   third_party = false,
 }) {
   const headers = {};
   let path;
 
-  if (process.env.REACT_APP_ENV === 'dev') {
-    path = `${process.env.REACT_APP_DEVELOPMENT_API}${api}`;
+  if (chainId === 97) {
+    path = `${process.env.REACT_APP_BSC_TESTNET_API}${api}`;
+  } else if (chainId === 56) {
+    path = `${process.env.REACT_APP_BSC_MAINNET_API}${api}`;
+  } else if (chainId === 339) {
+    path = `${process.env.REACT_APP_CRO_TESTNET_API}${api}`;
   } else {
-    path = `${process.env.REACT_APP_PRODUCTION_API}${api}`;
+    path = `${process.env.REACT_APP_CRO_MAINNET_API}${api}`;
   }
 
   if (third_party) {

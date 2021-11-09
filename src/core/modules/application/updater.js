@@ -19,37 +19,38 @@ function Updater({ settings }) {
     blockNumber: settings.blockNumber,
   });
 
-  //   const blockNumberCallback = useCallback(
-  //     (blockNumber) => {
-  //       setState((s) => {
-  //         if (chainId === s.chainId) {
-  //           if (typeof s.blockNumber !== 'number') return { chainId, blockNumber };
-  //           return { chainId, blockNumber: Math.max(blockNumber, s.blockNumber) };
-  //         }
-  //         return s;
-  //       });
-  //     },
-  //     [chainId, setState],
-  //   );
+    const blockNumberCallback = useCallback(
+      (blockNumber) => {
+        setState((s) => {
+          if (chainId === s.chainId) {
+            if (typeof s.blockNumber !== 'number') return { chainId, blockNumber };
+            return { chainId, blockNumber: Math.max(blockNumber, s.blockNumber) };
+          }
+          return s;
+        });
+      },
+      [chainId, setState],
+    );
 
   // attach/detach listeners
-  //   useEffect(() => {
-  //     if (!library || !chainId || !windowVisible) return undefined;
+    useEffect(() => {
+      if (!library || !chainId || !windowVisible) return undefined;
 
-  //     setState({ chainId, blockNumber: null });
+      setState({ chainId, blockNumber: null });
 
-  //     library
-  //       .getBlockNumber()
-  //       .then(blockNumberCallback)
-  //       .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error));
+      library
+        .getBlockNumber()
+        .then(blockNumberCallback)
+        .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error));
 
-  //     library.on('block', blockNumberCallback);
-  //     return () => {
-  //       library.removeListener('block', blockNumberCallback);
-  //     };
-  //   }, [dispatch, chainId, library, blockNumberCallback, windowVisible]);
+      library.on('block', blockNumberCallback);
+      return () => {
+        library.removeListener('block', blockNumberCallback);
+      };
+    }, [dispatch, chainId, library, blockNumberCallback, windowVisible]);
 
-  const debouncedState = useDebounce(state, 100);
+  // const debouncedState = useDebounce(state, 100);
+  const debouncedState = state;
 
   useEffect(() => {
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return;

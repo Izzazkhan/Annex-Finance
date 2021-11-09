@@ -13,6 +13,7 @@ export default function mint(state = initialState.mint, action = {}) {
         }
         case TYPE_INPUT_MINT: {
             const { field, typedValue, noLiquidity } = payload;
+            console.log('=======', payload)
             if (noLiquidity) {
                 // they're typing into the field they've last typed in
                 if (field === state.independentField) {

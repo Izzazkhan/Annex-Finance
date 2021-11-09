@@ -1,15 +1,15 @@
-import {withRouter} from "react-router-dom";
-import {compose} from "redux";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 import * as moment from "moment";
 
-import {getVoteContract, methods} from "../../utilities/ContractService";
+import { getVoteContract, methods } from "../../utilities/ContractService";
 import VoteActionDetails from "./VoteActionDetails";
 import BigNumber from "bignumber.js";
 import ActionModal from "./Modals/ActionModal";
 import toast from "../UI/Toast";
-import {useActiveWeb3React} from "../../hooks";
+import { useActiveWeb3React } from "../../hooks";
 import Loading from "../UI/Loading";
 
 const Proposal = ({
@@ -19,7 +19,7 @@ const Proposal = ({
     votingWeight,
     history
 }) => {
-    const { account } = useActiveWeb3React();
+    const { account, chainId } = useActiveWeb3React();
     const [isLoading, setIsLoading] = useState(false);
     const [voteType, setVoteType] = useState('like');
     const [voteStatus, setVoteStatus] = useState('');
@@ -89,8 +89,8 @@ const Proposal = ({
     };
 
 
+    const voteContract = getVoteContract(chainId);
     const getIsHasVoted = useCallback(async () => {
-        const voteContract = getVoteContract();
         await methods
             .call(voteContract.methods.getReceipt, [proposal.id, address])
             .then(res => {
@@ -107,10 +107,9 @@ const Proposal = ({
     const handleVote = support => {
         setIsLoading(true);
         setVoteType(support);
-        const appContract = getVoteContract();
         methods
             .send(
-                appContract.methods.castVote,
+                voteContract.methods.castVote,
                 [proposal.id, support === 'like'],
                 address
             )
@@ -158,12 +157,11 @@ const Proposal = ({
 
 
     const handleUpdateProposal = statusType => {
-        const appContract = getVoteContract();
         if (statusType === 'Queue') {
             setExecuteLoading(true);
             methods
                 .send(
-                    appContract.methods.queue,
+                    voteContract.methods.queue,
                     [proposal.id],
                     account
                 )
@@ -182,7 +180,7 @@ const Proposal = ({
             setExecuteLoading(true);
             methods
                 .send(
-                    appContract.methods.execute,
+                    voteContract.methods.execute,
                     [proposal.id],
                     account
                 )
