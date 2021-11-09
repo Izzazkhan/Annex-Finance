@@ -15,6 +15,7 @@ import CollectModal from './CollectModal';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
 import Loader from 'components/UI/Loader';
+import BigNumber from 'bignumber.js';
 
 const database = [{
     id: 1,
@@ -107,6 +108,11 @@ function Grid({ settings, onlyStaked, poolState }) {
     //     // }
     // }
 
+    const farmContract = new instance.eth.Contract(
+        JSON.parse(CONTRACT_Annex_Farm),
+        REACT_APP_ANNEX_FARM_ADDRESS,
+    );
+
 
     const getApy = (apr, compoundFrequency = 1, performanceFee = 0, days = 365) => {
         const daysAsDecimalOfYear = days / 365
@@ -154,9 +160,16 @@ function Grid({ settings, onlyStaked, poolState }) {
                         stacked = userInfo.shares / Math.pow(10, decimal)
                     }
                 }
+                const rewardTokenPrice = settings.annPrice
+                const stakingTokenPrice = settings.annPrice
+                const tokenPerBlock = await methods.call(farmContract.methods.annexPerBlock, [])
+                let totalStaked = await methods.call(contract.methods.balanceOf, []);
+                const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock)
+                const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked)
+                const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
                 let performanceFee = await methods.call(contract.methods.performanceFee, []);
                 performanceFee = (performanceFee / 10000) * 100
-                apyValue = getApy(pool.apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
+                apyValue = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
 
             }
             else {
