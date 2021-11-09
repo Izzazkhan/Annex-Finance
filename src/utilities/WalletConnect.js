@@ -121,9 +121,9 @@ export default class WalletConnectClass {
   getTokenContract(name, chainId) {
     return new this.web3.eth.Contract(
       JSON.parse(TOKEN_ABI[name]),
-      constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc']
-        ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc'].address
-        : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdc.address
+      constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt']
+        ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt'].address
+        : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdt.address
     );
   }
 
@@ -134,9 +134,9 @@ export default class WalletConnectClass {
           ? constants.CONTRACT_ABEP_ABI
           : constants.CONTRACT_ABNB_ABI
       ),
-      constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc']
-        ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc'].address
-        : constants.CONTRACT_ABEP_ADDRESS[chainId].usdc.address
+      constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt']
+        ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt'].address
+        : constants.CONTRACT_ABEP_ADDRESS[chainId].usdt.address
     );
   }
 
