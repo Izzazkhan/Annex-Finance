@@ -200,7 +200,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
     const contractData = await Promise.all(
       contractAddresses.map(item => {
-        let market = settings.markets.find((ele) => ele.underlyingSymbol === item.symbol);
+        let market = settings.markets.find((ele) => ele.underlyingSymbol.toLowerCase() === item.symbol.toLowerCase());
         if (!market) market = {};
 
         const aBepContract = getAbepContract(item.id);
