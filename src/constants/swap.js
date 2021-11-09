@@ -1,19 +1,8 @@
 import { ChainId, JSBI, Percent, Token, WETH } from "@annex/sdk";
-import { CONTRACT_ROUTER_ADDRESS, NETWORK_ID } from "../utilities/constants";
+import { CONTRACT_ROUTER_ADDRESS } from "../utilities/constants";
 
 export const ROUTER_ADDRESS = CONTRACT_ROUTER_ADDRESS;
-// console.log('router address: ', ROUTER_ADDRESS);
 
-export const CHAIN_ID = NETWORK_ID;
-// console.log('chain id: ', NETWORK_ID);
-
-export const DAI = new Token(
-	ChainId.MAINNET,
-	"0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
-	18,
-	"DAI",
-	"Dai Stablecoin"
-);
 export const BUSD = new Token(
 	ChainId.MAINNET,
 	"0xe9e7cea3dedca5984780bafc599bd69add087d56",
@@ -28,23 +17,17 @@ export const USDT = new Token(
 	"USDT",
 	"Tether USD"
 );
-export const UST = new Token(
-	ChainId.MAINNET,
-	"0x23396cf899ca06c4472205fc903bdb4de249d6fc",
-	18,
-	"UST",
-	"Wrapped UST Token"
-);
 
 const WETH_ONLY = {
 	[ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
 	[ChainId.BSCTESTNET]: [WETH[ChainId.BSCTESTNET]],
+	[ChainId.CASSINI]: [WETH[ChainId.CASSINI]],
 };
 
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST = {
 	...WETH_ONLY,
-	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, BUSD, USDT, UST],
+	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], BUSD, USDT],
 };
 
 /**
@@ -53,18 +36,28 @@ export const BASES_TO_CHECK_TRADES_AGAINST = {
  */
 export const CUSTOM_BASES = {
 	[ChainId.MAINNET]: {},
+	[ChainId.CASSINI]: {},
 };
 
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES = {
 	...WETH_ONLY,
-	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, BUSD, USDT],
+	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], BUSD, USDT],
+	[ChainId.CASSINI]: [
+		...WETH_ONLY[ChainId.CASSINI], 
+		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD")
+	],
 };
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR = {
 	...WETH_ONLY,
-	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, BUSD, USDT],
+	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], BUSD, USDT],
+	[ChainId.CASSINI]: [
+		...WETH_ONLY[ChainId.CASSINI],
+		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD"),
+		new Token(ChainId.CASSINI, "0x1D8A354655398EFE91a3Bc5BfAFB9602344Eeaf8", 18, "ETH", "Ethereum Token"),
+	],
 };
 
 export const PINNED_PAIRS = {
@@ -80,8 +73,17 @@ export const PINNED_PAIRS = {
 			new Token(ChainId.MAINNET, "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", 18, "WBNB", "Wrapped BNB"),
 		],
 		[BUSD, USDT],
-		[DAI, USDT],
 	],
+	[ChainId.CASSINI]: [
+		[
+			new Token(ChainId.CASSINI, "0x8Ef3aC0BfC2BEd64F5Ba19987B9369aD72dC7fA8", 18, "ANN", "Annex Token"),
+			new Token(ChainId.CASSINI, "0x7b99bD319036FAF92C02478f973bAadEdea7a1Aa", 18, "WCRO", "Wrapped WCRO"),
+		],
+		[
+			new Token(ChainId.CASSINI, "0x1D8A354655398EFE91a3Bc5BfAFB9602344Eeaf8", 18, "ETH", "Ethereum Token"),
+			new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD"),
+		]
+	]
 };
 
 export const NetworkContextName = "NETWORK";

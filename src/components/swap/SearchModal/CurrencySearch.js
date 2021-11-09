@@ -1,13 +1,13 @@
-import {useActiveWeb3React} from "../../../hooks";
-import {AutoSizer} from "react-virtualized";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import { useActiveWeb3React } from "../../../hooks";
+import { AutoSizer } from "react-virtualized";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import {useAllTokens, useToken} from "../../../hooks/Tokens";
-import {isAddress} from "../../../utils";
+import { useAllTokens, useToken } from "../../../hooks/Tokens";
+import { isAddress } from "../../../utils";
 import useTokenComparator from "./sorting";
 import filterTokens from "./filtering";
-import {ETHER} from "@annex/sdk";
-import {CloseIcon} from "./ListSelect";
+import { ETHERS } from "@annex/sdk";
+import { CloseIcon } from "./ListSelect";
 import SortButton from "./SortButton";
 import CurrencyList from "./CurrencyList";
 
@@ -37,7 +37,6 @@ export default function CurrencySearch({
 	const [invertSearchOrder, setInvertSearchOrder] = useState(false);
 	const allTokens = useAllTokens();
 
-
 	const isAddressSearch = isAddress(searchQuery);
 	const searchToken = useToken(searchQuery);
 
@@ -49,7 +48,7 @@ export default function CurrencySearch({
 	const tokenComparator = useTokenComparator(invertSearchOrder);
 
 	const filteredTokens = useMemo(() => {
-		// console.log(allTokens);
+		// console.log('==== ', allTokens);
 		if(!allTokens) return [];
 		if (isAddressSearch) return searchToken ? [searchToken] : [];
 		return filterTokens(Object.values(allTokens), searchQuery);
@@ -99,7 +98,7 @@ export default function CurrencySearch({
 			if (e.key === "Enter") {
 				const s = searchQuery.toLowerCase().trim();
 				if (s === "eth") {
-					handleCurrencySelect(ETHER);
+					handleCurrencySelect(ETHERS[chainId]);
 				} else if (filteredSortedTokens.length > 0) {
 					if (
 						filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||

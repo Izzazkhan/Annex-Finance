@@ -6,6 +6,7 @@ import { CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, LineCh
 import { getAbepContract, getInterestModelContract, methods } from "../../utilities/ContractService";
 import BigNumber from "bignumber.js";
 import { checkIsValidNetwork } from "../../utilities/common";
+import { useActiveWeb3React } from '../../hooks';
 import styled from "styled-components";
 
 let flag = false;
@@ -91,6 +92,7 @@ const Wrapper = styled.div`
   }
 `;
 const InterestRateModel = ({ settings, currentAsset }) => {
+  const { chainId } = useActiveWeb3React();
   const [graphData, setGraphData] = useState([]);
   const [tickerPos, setTickerPos] = useState(null);
   const [percent, setPercent] = useState(null);
@@ -109,29 +111,31 @@ const InterestRateModel = ({ settings, currentAsset }) => {
 
   const getGraphData = async asset => {
     flag = true;
-    const abepContract = getAbepContract(asset);
-    const interestRateModel = await methods.call(
-      abepContract.methods.interestRateModel,
-      []
-    );
+    const abepContract = getAbepContract(asset, chainId);
+    let [interestRateModel, cash] = await Promise.all([
+      methods.call(
+        abepContract.methods.interestRateModel,
+        []
+      ),
+      methods.call(abepContract.methods.getCash, []),
+    ]);
     const interestModelContract = getInterestModelContract(interestRateModel);
-    const multiplierPerBlock = await methods.call(
-      interestModelContract.methods.multiplierPerBlock,
-      []
-    );
-    const baseRatePerBlock = await methods.call(
-      interestModelContract.methods.baseRatePerBlock,
-      []
-    );
+    // const multiplierPerBlock = await methods.call(
+    //   interestModelContract.methods.multiplierPerBlock,
+    //   []
+    // );
+    // const baseRatePerBlock = await methods.call(
+    //   interestModelContract.methods.baseRatePerBlock,
+    //   []
+    // );
     const data = [];
     const marketInfo = settings.markets.find(
       item => item.underlyingSymbol.toLowerCase() === asset.toLowerCase()
     );
-    const oneMinusReserveFactor = new BigNumber(1).minus(
-      new BigNumber(marketInfo.reserveFactor).div(new BigNumber(10).pow(18))
-    );
+    // const oneMinusReserveFactor = new BigNumber(1).minus(
+    //   new BigNumber(marketInfo.reserveFactor).div(new BigNumber(10).pow(18))
+    // );
     // Get Current Utilization Rate
-    let cash = await methods.call(abepContract.methods.getCash, []);
     cash = new BigNumber(cash).div(new BigNumber(10).pow(18));
     const borrows = new BigNumber(marketInfo.totalBorrows2);
     const reserves = new BigNumber(marketInfo.totalReserves || 0).div(
@@ -181,7 +185,7 @@ const InterestRateModel = ({ settings, currentAsset }) => {
     );
     urArray.forEach((ur, index) => {
       // supply apy, borrow apy
-      const blocksPerDay = 20 * 50 * 24;
+      const blocksPerDay = 28800;
       const daysPerYear = 365;
       const mantissa = 1e18;
       const supplyBase = new BigNumber(supplyRes[index])

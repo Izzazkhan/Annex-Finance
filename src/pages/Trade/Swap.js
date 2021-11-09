@@ -35,12 +35,12 @@ import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades';
 import { tryParseAmount } from '../../core/modules/swap/hooks';
 
 function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
+  const { account, chainId } = useActiveWeb3React();
   const loadedUrlParams = useDefaultsFromURLSearch();
-
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId),
+    useCurrency(loadedUrlParams?.inputCurrencyId, chainId),
+    useCurrency(loadedUrlParams?.outputCurrencyId, chainId),
   ];
 
   const [dismissTokenWarning, setDismissTokenWarning] = useState(false);
@@ -60,7 +60,6 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
     setSyrupTransactionType('');
   }, []);
 
-  const { account } = useActiveWeb3React();
   const [deadline] = useUserDeadline();
   const [allowedSlippage] = useUserSlippageTolerance();
 
@@ -93,7 +92,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
     };
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } =
-    useSwapActionHandlers();
+    useSwapActionHandlers(chainId);
   const isValid = !swapInputError;
   const dependentField = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -140,7 +139,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   const noRoute = !route;
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage);
+  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage, chainId);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState(false);
@@ -152,7 +151,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
     }
   }, [approval, approvalSubmitted]);
 
-  const maxAmountInput = maxAmountSpend(currencyBalances[Field.INPUT]);
+  const maxAmountInput = maxAmountSpend(currencyBalances[Field.INPUT], chainId);
   const atMaxAmountInput = Boolean(
     maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput),
   );
@@ -267,14 +266,14 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   );
 
   return (
-    <div className="py-10 w-full max-w-2xl mt-6">
+    <div className="py-10 w-full mt-6">
       {localStorage.getItem('tokenWarning') === 'false' ? undefined : <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />}
       <div
-        className={`w-full max-w-2xl py-8 px-6 sm:px-10 rounded-2xl mb-4 ${trade ? 'bg-primary' : 'bg-black'
+        className={`w-full py-8 px-6 sm:px-10 rounded-2xl mb-4 ${trade ? 'bg-primary' : 'bg-black'
           }`}
       >
         <div className="flex justify-between">

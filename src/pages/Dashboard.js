@@ -29,7 +29,7 @@ import {
 import * as constants from '../utilities/constants';
 import { useActiveWeb3React } from '../hooks';
 import commaNumber from 'comma-number';
-import { addToken, getBigNumber } from '../utilities/common';
+import { getBigNumber } from '../utilities/common';
 import { promisify } from '../utilities';
 import sxp from '../assets/images/coins/sxp.png';
 import arrowUp from '../assets/icons/arrowUp.png';
@@ -38,8 +38,18 @@ import PendingTransaction from '../components/Dashboard/PendingTransaction.js';
 import toast from '../components/UI/Toast';
 import AccountOverview from '../components/Dashboard/AccountOverview.js';
 import MarketHistory from '../components/Dashboard/MarketHistory.js';
+import styled from 'styled-components';
 
 const format = commaNumber.bindWith(',', '.');
+
+const Styles = styled.div`
+    th {
+      padding: 0.5rem 1rem !important;
+    }
+  }
+`;
+
+const AVAILABLE_NETWORKS = [56, 97, 339]
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
   // debugger;
@@ -50,7 +60,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return;
     }
     try {
-      const appContract = getComptrollerContract();
+      // const appContract = getComptrollerContract();
       // const xaiControllerContract = getXaiControllerContract();
       // const xaiContract = getXaiTokenContract();
       // xai amount in wallet
@@ -138,7 +148,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   const getVoteInfo = async () => {
     const myAddress = account;
     if (!myAddress) return;
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(chainId);
     // const xaiContract = getXaiControllerContract();
     const annexInitialIndex = await methods.call(appContract.methods.annexInitialIndex, []);
     let annexEarned = new BigNumber(0);
@@ -148,7 +158,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     ///////////////////////////////////
     // console.log('===== ', constants.CONTRACT_ABEP_ADDRESS)
     const promiseAssetCall = settings.assetList.map((asset) => {
-      const aBepContract = getAbepContract(asset.id);
+      const aBepContract = getAbepContract(asset.id, chainId);
 
       return Promise.all([
         methods.call(appContract.methods.annexSupplyState, [asset.atokenAddress]),
@@ -197,8 +207,8 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     annexEarned = annexEarned.plus(annexAccrued).dividedBy(1e18).dp(4, 1).toString(10);
     /* **************************************** */
     // will be removed after ANN listed to market
-    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS).find((t) => t.id === 'ann');
-    const annContract = getTokenContract(ann.id);
+    const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS[chainId]).find((t) => t.id === 'ann');
+    const annContract = getTokenContract(ann.id, chainId);
     const annWalletBalance = await methods.call(annContract.methods.balanceOf, [myAddress]);
     annexBalance = new BigNumber(annWalletBalance).div(1e18);
     /////////////////////////////////
@@ -397,7 +407,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [settings.assetList]);
 
   const handleToggleCollateral = (r) => {
-    const appContract = getComptrollerContract();
+    const appContract = getComptrollerContract(chainId);
     if (r && account && r.borrowBalance.isZero()) {
       if (!r.collateral) {
         setIsCollateralEnable(false);
@@ -550,7 +560,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-20 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-20 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.name} />
@@ -559,12 +569,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            className="h-20 font-bold cursor-pointer text-green w-full flex items-center px-4 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
-            <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
+            <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
 
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.dp(2, 1).toString(10)}%`}
@@ -574,7 +584,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         Wallet: (
           <div
             className="h-20 font-bold cursor-pointer text-green w-full
-                  px-8 py-6 text-green flex flex-col items-end justify-center"
+                  px-4 py-6 text-green flex flex-col items-end justify-center"
             onClick={() => handleSupplyClickRow(asset)}
           >
             ${format(asset.supplyBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
@@ -584,7 +594,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
           </div>
         ),
         Collateral: +asset.collateralFactor ? (
-          <div className="h-20 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+          <div className="h-20 font-bold cursor-pointer w-full flex items-center px-4 py-3 justify-end">
             <Switch
               wrapperClassName="pt-1 pb-0"
               value={asset.collateral}
@@ -602,7 +612,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleSupplyClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.name} />
@@ -611,12 +621,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-4 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
-            <img src={arrowUp} style={{ marginLeft: 40 }} alt={'up'} className={'h-3 md:h-4'} />
+            <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
 
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.dp(2, 1).toString(10)}%`}
@@ -625,14 +635,14 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Wallet: (
           <div
-            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-8 py-3 justify-end"
+            className="h-13 font-bold cursor-pointer text-green w-full flex items-center px-4 py-3 justify-end"
             onClick={() => handleSupplyClickRow(asset)}
           >
             {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
           </div>
         ),
         Collateral: +asset.collateralFactor ? (
-          <div className="h-13 font-bold cursor-pointer w-full flex items-center px-8 py-3 justify-end">
+          <div className="h-13 font-bold cursor-pointer w-full flex items-center px-4 py-3 justify-end">
             <Switch
               wrapperClassName="pt-1 pb-0"
               value={asset.collateral}
@@ -658,7 +668,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-20 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-20 font-medium flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.symbol} />
@@ -667,13 +677,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
-              !withANN
+            className={`h-20 font-bold cursor-pointer justify-end w-full flex items-center px-4 py-3 text-${!withANN
                 ? 'red'
                 : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
-                ? 'red'
-                : 'green'
-            }`}
+                  ? 'red'
+                  : 'green'
+              }`}
             onClick={() => handleBorrowClickRow(asset)}
           >
             {!withANN ? (
@@ -683,7 +692,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             ) : (
               <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
             )}
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
@@ -692,7 +701,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Wallet: (
           <div
-            className="h-20 font-bold cursor-pointer w-full px-8 py-6 text-green flex flex-col items-end justify-center"
+            className="h-20 font-bold cursor-pointer w-full px-4 py-6 text-green flex flex-col items-end justify-center"
             onClick={() => handleBorrowClickRow(asset)}
           >
             ${format(asset.borrowBalance.times(asset.tokenPrice).dp(2, 1).toString(10))}
@@ -703,7 +712,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         percentOfLimit: (
           <div
-            className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-primary"
+            className="h-20 font-bold cursor-pointer justify-end w-full flex items-center px-4 py-3 text-primary"
             onClick={() => handleBorrowClickRow(asset)}
           >
             {asset.percentOfLimit}%
@@ -722,7 +731,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       return {
         Asset: (
           <div
-            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-8 py-3"
+            className="h-13 font-bold flex items-center space-x-2 cursor-pointer w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             <img className="w-6" src={asset.img} alt={asset.symbol} />
@@ -731,13 +740,12 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Apy: (
           <div
-            className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-8 py-3 text-${
-              !withANN
+            className={`h-13 font-bold cursor-pointer justify-end w-full flex items-center px-4 py-3 text-${!withANN
                 ? 'red'
                 : getBigNumber(asset.annBorrowApy).minus(asset.borrowApy).isNegative()
-                ? 'red'
-                : 'green'
-            }`}
+                  ? 'red'
+                  : 'green'
+              }`}
             onClick={() => handleBorrowClickRow(asset)}
           >
             {!withANN ? (
@@ -747,7 +755,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
             ) : (
               <img src={arrowUp} alt={'up'} className={'h-3 md:h-4'} />
             )}
-            <div className="w-20 ml-2 md:ml-3">
+            <div className="w-20 ml-2">
               {new BigNumber(apy.absoluteValue()).isGreaterThan(100000000)
                 ? 'Infinity'
                 : `${apy.absoluteValue().dp(2, 1).toString(10)}%`}
@@ -756,7 +764,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Wallet: (
           <div
-            className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-8 py-3"
+            className="h-13 font-bold cursor-pointer justify-end text-green w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             {format(asset.walletBalance.dp(2, 1).toString(10))} {asset.symbol}
@@ -764,7 +772,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         ),
         Liquidity: (
           <div
-            className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-8 py-3"
+            className="h-13 font-bold cursor-pointer justify-end text-primaryLight w-full flex items-center px-4 py-3"
             onClick={() => handleBorrowClickRow(asset)}
           >
             ${format(asset.liquidity.dp(2, 1).toString(10))}
@@ -818,7 +826,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   useEffect(() => {
     if (currentAsset) {
       getGraphData(
-        constants.CONTRACT_ABEP_ADDRESS[currentAsset].address,
+        constants.CONTRACT_ABEP_ADDRESS[chainId][currentAsset].address,
         process.env.REACT_APP_GRAPH_TICKER || null,
         60,
       );
@@ -826,7 +834,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [account, currentAsset]);
 
   useEffect(() => {
-    setCurrentAsset('usdc');
+    setCurrentAsset('usdt');
   }, []);
 
   useEffect(() => {
@@ -860,18 +868,15 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   };
 
   const options = React.useMemo(() => {
-    return Object.keys(constants.CONTRACT_ABEP_ADDRESS).map((key, index) => ({
-      id: constants.CONTRACT_TOKEN_ADDRESS[key].id,
-      name: constants.CONTRACT_TOKEN_ADDRESS[key].symbol,
-      logo: constants.CONTRACT_TOKEN_ADDRESS[key].asset,
+    return Object.keys(constants.CONTRACT_ABEP_ADDRESS[chainId]).map((key, index) => ({
+      id: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].id,
+      name: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].symbol,
+      logo: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].asset,
     }));
   }, []);
 
   const wrongNetwork = React.useMemo(() => {
-    return (
-      (process.env.REACT_APP_ENV === 'prod' && chainId !== 56) ||
-      (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
-    );
+    return !AVAILABLE_NETWORKS.includes(chainId)
   }, [chainId]);
 
   return (
@@ -932,52 +937,55 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
         netAPY={netAPY}
         settings={settings}
       />
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 items-stretch mt-5">
-        <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
-          {suppliedAssets.length === 0 && nonSuppliedAssets.length === 0 && (
-            <DataTable
-              title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6" />}
-              columns={supplyColumns}
-              data={loadingData}
-            />
-          )}
-          {suppliedAssets.length > 0 && (
-            <DataTable title="Supply" columns={supplyColumns} data={supplyData} />
-          )}
+      <Styles>
 
-          {settings.pendingInfo &&
-            settings.pendingInfo.status &&
-            ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && <PendingTransaction />}
-          {nonSuppliedAssets.length > 0 && (
-            <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
-          )}
-        </div>
-        <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
-          {borrowedAssets.length === 0 && nonBorrowedAssets.length === 0 && (
-            <DataTable
-              title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6" />}
-              columns={supplyColumns}
-              data={loadingData}
-            />
-          )}
-
-          {borrowedAssets.length > 0 && (
-            <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
-          )}
-          {settings.pendingInfo &&
-            settings.pendingInfo.status &&
-            ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
-              <PendingTransaction />
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 items-stretch mt-5">
+          <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
+            {suppliedAssets.length === 0 && nonSuppliedAssets.length === 0 && (
+              <DataTable
+                title={<div className="animate-pulse bg-lightGray rounded-lg w-16 h-6" />}
+                columns={supplyColumns}
+                data={loadingData}
+              />
             )}
-          {nonBorrowedAssets.length > 0 && (
-            <DataTable
-              title="All Borrow Markets"
-              columns={borrowColumns}
-              data={allBorrowMarketData}
-            />
-          )}
+            {suppliedAssets.length > 0 && (
+              <DataTable title="Supply" columns={supplyColumns} data={supplyData} />
+            )}
+
+            {settings.pendingInfo &&
+              settings.pendingInfo.status &&
+              ['Supply', 'Withdraw'].includes(settings.pendingInfo.type) && <PendingTransaction />}
+            {nonSuppliedAssets.length > 0 && (
+              <DataTable title="All Supply Markets" columns={supplyColumns} data={allMarketData} />
+            )}
+          </div>
+          <div className="bg-fadeBlack w-full rounded-lg overflow-hidden self-stretch">
+            {borrowedAssets.length === 0 && nonBorrowedAssets.length === 0 && (
+              <DataTable
+                title={<div className="animate-pulse bg-lightGray rounded-lg w-24 h-6" />}
+                columns={supplyColumns}
+                data={loadingData}
+              />
+            )}
+
+            {borrowedAssets.length > 0 && (
+              <DataTable title="Borrow" columns={borrowedColumns} data={borrowData} />
+            )}
+            {settings.pendingInfo &&
+              settings.pendingInfo.status &&
+              ['Borrow', 'Repay Borrow'].includes(settings.pendingInfo.type) && (
+                <PendingTransaction />
+              )}
+            {nonBorrowedAssets.length > 0 && (
+              <DataTable
+                title="All Borrow Markets"
+                columns={borrowColumns}
+                data={allBorrowMarketData}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </Styles>
       <MarketHistory
         options={options}
         handleChangeAsset={handleChangeAsset}

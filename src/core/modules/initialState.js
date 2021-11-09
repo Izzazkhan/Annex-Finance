@@ -78,6 +78,7 @@ const lists = {
 
 const application = {
   blockNumber: {},
+  currentChainId: Number(process.env.REACT_APP_DEFAULT_CHAIN_ID || 56)
 }
 
 const transaction = {}

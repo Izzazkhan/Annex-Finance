@@ -1,25 +1,25 @@
-import {withRouter} from "react-router-dom";
-import {bindActionCreators, compose} from "redux";
-import {accountActionCreators, connectAccount} from "../core";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import { withRouter } from "react-router-dom";
+import { bindActionCreators, compose } from "redux";
+import { accountActionCreators, connectAccount } from "../core";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
-import {getComptrollerContract, getTokenContract, methods} from "../utilities/ContractService";
+import { getTokenContract, methods } from "../utilities/ContractService";
 import Layout from "../layouts/MainLayout/MainLayout";
 import commaNumber from "comma-number";
-import {useActiveWeb3React} from "../hooks";
+import { useActiveWeb3React } from "../hooks";
 import Loading from "../components/UI/Loading";
 import Progress from "../components/UI/Progress";
 import Searchbar from "../components/Annex/Searchbar";
 import * as constants from "../utilities/constants";
 import APYSparkline from "../components/Annex/APYSparkline";
 import AnnexTable from "../components/Annex/AnnexTable";
-import {promisify} from "../utilities";
+import { promisify } from "../utilities";
 
 
 const format = commaNumber.bindWith(',', '.');
 
 const Annex = ({ settings, getMarketHistory }) => {
-    const { account } = useActiveWeb3React()
+    const { account, chainId } = useActiveWeb3React()
     const [search, setSearch] = useState("")
     const [markets, setMarkets] = useState([]);
     const [dailyDistribution, setDailyDistribution] = useState('0');
@@ -52,7 +52,6 @@ const Annex = ({ settings, getMarketHistory }) => {
                 new BigNumber(market.totalDistributed)
             );
         }, 0);
-        const compContract = getComptrollerContract();
 
         // total info
         // let annexXAIVaultRate = await methods.call(
@@ -62,11 +61,9 @@ const Annex = ({ settings, getMarketHistory }) => {
         // annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
         //     .div(1e18)
         //     .times(20 * 60 * 24);
-        const tokenContract = getTokenContract('ann');
+        const tokenContract = getTokenContract('ann', chainId);
         const remainedAmount = await methods.call(tokenContract.methods.balanceOf, [
-            process.env.REACT_APP_ENV === 'dev'
-                ? process.env.REACT_APP_TEST_COMPTROLLER_ADDRESS
-                : process.env.REACT_APP_MAIN_COMPTROLLER_ADDRESS
+            constants.CONTRACT_COMPTROLLER_ADDRESS[chainId]
         ]);
         setDailyDistribution(
             new BigNumber(settings.dailyAnnex)
@@ -83,7 +80,7 @@ const Annex = ({ settings, getMarketHistory }) => {
         );
         for (let i = 0; i < settings.markets.length; i += 1) {
             const borrowGraph = await getGraphData(
-                constants.CONTRACT_ABEP_ADDRESS[settings.markets[i].underlyingSymbol?.toLowerCase()].address,
+                constants.CONTRACT_ABEP_ADDRESS[chainId][settings.markets[i].underlyingSymbol?.toLowerCase()].address,
                 process.env.REACT_APP_GRAPH_TICKER || null,
                 60
             )
@@ -166,7 +163,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                                 <img
                                     className={'w-10 h-10'}
                                     src={
-                                        constants.CONTRACT_TOKEN_ADDRESS[
+                                        constants.CONTRACT_TOKEN_ADDRESS[chainId][
                                             value.toLowerCase()
                                         ].asset
                                     }

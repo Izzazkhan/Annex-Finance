@@ -1,19 +1,19 @@
-import {Currency, currencyEquals, ETHER, Token} from "@annex/sdk";
+import { Currency, currencyEquals, ETHERS, Token } from "@annex/sdk";
 import { Text } from "rebass";
 import { Box } from "rebass/styled-components";
 import { FixedSizeList } from "react-window";
-import {useCallback, useMemo} from "react";
+import { useCallback, useMemo } from "react";
 import styled from "styled-components";
 
-import {useActiveWeb3React} from "../../../hooks";
-import {useSelectedTokenList} from "../../../core";
-import {isTokenOnList} from "../../../utils";
-import {useCurrencyBalance} from "../../../hooks/wallet";
+import { useActiveWeb3React } from "../../../hooks";
+import { useSelectedTokenList } from "../../../core";
+import { isTokenOnList } from "../../../utils";
+import { useCurrencyBalance } from "../../../hooks/wallet";
 import CurrencyLogo from "../../common/CurrencyLogo";
 import Loader from "../../UI/Loader";
 
-function currencyKey(currency) {
-	return currency instanceof Token ? currency.address : currency === ETHER ? "ETHER" : "";
+function currencyKey(currency, chainId) {
+	return currency instanceof Token ? currency.address : currency === ETHERS[chainId] ? "ETHER" : "";
 }
 
 const StyledBalanceText = styled(Text)`
@@ -69,8 +69,8 @@ function CurrencyRow({
 	otherSelected,
 	style,
 }) {
-	const { account } = useActiveWeb3React();
-	const key = currencyKey(currency);
+	const { account, chainId } = useActiveWeb3React();
+	const key = currencyKey(currency, chainId);
 	const balance = useCurrencyBalance(account || undefined, currency || undefined);
 
 	return (
@@ -106,11 +106,11 @@ export default function CurrencyList({
 	fixedListRef,
 	showETH,
 }) {
-	const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : [...currencies]), [
+	const { chainId } = useActiveWeb3React();
+	const itemData = useMemo(() => (showETH ? [ETHERS[chainId], ...currencies] : [...currencies]), [
 		currencies,
 		showETH,
 	]);
-
 
 	const Row = useCallback(
 		({ data, index, style }) => {
@@ -131,7 +131,7 @@ export default function CurrencyList({
 		[onCurrencySelect, otherCurrency, selectedCurrency]
 	);
 
-	const itemKey = useCallback((index, data) => currencyKey(data[index]), []);
+	const itemKey = useCallback((index, data) => currencyKey(data[index], chainId), []);
 
 	return (
 		<FixedSizeList

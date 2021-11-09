@@ -4,14 +4,14 @@ import * as constants from '../../../utilities/constants';
 import { useActiveWeb3React } from '../../../hooks';
 
 export default function CreateAuction(props) {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const biddingTokenOptions = React.useMemo(() => {
-    return Object.keys(constants.BIDDING_AUCTION_TOKEN).map((key, index) => ({
-      id: constants.BIDDING_AUCTION_TOKEN[key].id,
-      name: constants.BIDDING_AUCTION_TOKEN[key].symbol,
-      logo: constants.BIDDING_AUCTION_TOKEN[key].asset,
-      addr: constants.BIDDING_AUCTION_TOKEN[key].address,
-      decimal: constants.BIDDING_AUCTION_TOKEN[key].decimals,
+    return Object.keys(constants.BIDDING_AUCTION_TOKEN[chainId]).map((key, index) => ({
+      id: constants.BIDDING_AUCTION_TOKEN[chainId][key].id,
+      name: constants.BIDDING_AUCTION_TOKEN[chainId][key].symbol,
+      logo: constants.BIDDING_AUCTION_TOKEN[chainId][key].asset,
+      addr: constants.BIDDING_AUCTION_TOKEN[chainId][key].address,
+      decimal: constants.BIDDING_AUCTION_TOKEN[chainId][key].decimals,
     }));
   }, []);
 

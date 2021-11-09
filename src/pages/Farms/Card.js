@@ -19,6 +19,39 @@ const Styles = styled.div`
   div.right-col-width {
     width: 38.5%;
   }
+  .tooltip {
+    margin-bottom: 5px;
+    .label {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      color: #e2e2e2;
+      font-size: 14px;
+      font-weight: 400;
+      max-width: 270px;
+      width: 14rem;
+      text-align: center;
+      background: #101016;
+      padding: 5px 10px;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      top: auto;
+      border-radius: 10px;
+      line-height: normal;
+      border: 2px solid #B068009C;
+      height: auto;
+    }
+    .tooltip-label {
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 5px;
+    }
+    .tooltip-label:hover + .label {
+      display: flex;
+    }
+  }
  `
 
 function Card({ item, dipositWithdraw }) {
@@ -61,9 +94,11 @@ function Card({ item, dipositWithdraw }) {
             <div className="flex flex-col">
               <span className="font-bold">
                 {format(
-                  new BigNumber(item.rewardPerDayPerThousand)
-                    .dp(2)
-                    .toString(10)
+                  new BigNumber(item.rewardPerDayPerThousand).gt(10000000)
+                    ? 10000000
+                    : new BigNumber(item.rewardPerDayPerThousand)
+                      .dp(2)
+                      .toString(10)
                 )} ANN / Day
               </span>
               <span className="mt-2 text-primary">{item.allocPoint} allocPoint</span>
@@ -72,13 +107,29 @@ function Card({ item, dipositWithdraw }) {
         </div>
         <div className="flex mt-5 justify-between">
           <div>
-            <span className="mb-2 font-bold text-primary text-lg">APY</span>
+            <div
+              className={` open mb-2 font-bold text-primary text-lg`}
+            >
+              <div className="tooltip relative">
+                <div className="tooltip-label">
+                  APY<span className=""></span>
+                </div>
+                <span className="label">
+                  For Information Purposes. 
+                  Calculated based on current rates 
+                  {" & "}
+                  assuming you manually compound daily. This Pool does not Auto Compound
+                </span>
+              </div>
+            </div>
             <span className="font-bold mt-3.5 flex items-center">
               <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
               {format(
-                new BigNumber(item.apy)
-                  .dp(2)
-                  .toString(10)
+                new BigNumber(item.apy).gt(10000000)
+                  ? 10000000
+                  : new BigNumber(item.apy)
+                    .dp(2)
+                    .toString(10)
               )}%
             </span>
           </div>

@@ -1,11 +1,12 @@
 import RouteMap from "../../routes/RouteMap";
 import circleTick from "../../assets/icons/circleTick.svg";
 import circleCross from "../../assets/icons/circleCross.svg";
-import {compose} from "redux";
-import {withRouter} from "react-router-dom";
-import {useCallback, useEffect, useState} from "react";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
 import * as moment from "moment";
-import {getVoteContract, methods} from "../../utilities/ContractService";
+import { getVoteContract, methods } from "../../utilities/ContractService";
+import { useActiveWeb3React } from "../../hooks";
 import ReactMarkdown from "react-markdown";
 
 const ProposalOverview = ({
@@ -15,6 +16,7 @@ const ProposalOverview = ({
     votingWeight,
     history
 }) => {
+    const { chainId } = useActiveWeb3React();
     const [isLoading, setIsLoading] = useState(false);
     const [voteType, setVoteType] = useState('like');
     const [voteStatus, setVoteStatus] = useState('');
@@ -81,8 +83,8 @@ const ProposalOverview = ({
     };
 
 
+    const voteContract = getVoteContract(chainId);
     const getIsHasVoted = useCallback(async () => {
-        const voteContract = getVoteContract();
         await methods
             .call(voteContract.methods.getReceipt, [proposal.id, address])
             .then(res => {
@@ -99,10 +101,9 @@ const ProposalOverview = ({
     const handleVote = support => {
         setIsLoading(true);
         setVoteType(support);
-        const appContract = getVoteContract();
         methods
             .send(
-                appContract.methods.castVote,
+                voteContract.methods.castVote,
                 [proposal.id, support === 'like'],
                 address
             )

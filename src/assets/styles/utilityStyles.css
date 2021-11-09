@@ -164,17 +164,17 @@ input.gray-placeholder::placeholder {
 
 @media (min-width: 1024px) {
   .my-contents.open {
-    padding-left: 274px;
+    padding-left: 235px;
   }
 }
 @media (min-width: 1440px) {
   .my-contents.open {
-    padding-left: 270px;
+    padding-left: 235px;
   }
 }
 @media (min-width: 1600px) {
   .my-contents.open {
-    padding-left: 324px;
+    padding-left: 245px;
   }
 }
 @media (min-width: 1024px) {

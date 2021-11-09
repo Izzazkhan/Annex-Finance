@@ -1,5 +1,5 @@
 import { parseBytes32String } from "@ethersproject/strings";
-import { ETHER, Token } from "@annex/sdk";
+import { ETHERS, Token } from "@annex/sdk";
 import { useMemo } from "react";
 import { useSelectedTokenList } from "../core/modules/lists/hooks";
 import { NEVER_RELOAD, useSingleCallResult } from "../core";
@@ -87,8 +87,8 @@ export function useToken(tokenAddress) {
 	]);
 }
 
-export function useCurrency(currencyId) {
+export function useCurrency(currencyId, chainId) {
 	const isETH = currencyId?.toUpperCase() === "ETH";
 	const token = useToken(isETH ? undefined : currencyId);
-	return isETH ? ETHER : token;
+	return isETH ? ETHERS[chainId] : token;
 }

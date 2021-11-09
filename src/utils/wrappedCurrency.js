@@ -1,8 +1,8 @@
-import { ETHER, Token, TokenAmount, WETH } from "@annex/sdk";
+import { ETHERS, Token, TokenAmount, WETH } from "@annex/sdk";
 
 export function wrappedCurrency(currency, chainId) {
 	// eslint-disable-next-line no-nested-ternary
-	return chainId && currency === ETHER ? WETH[chainId] : currency instanceof Token ? currency : undefined;
+	return chainId && currency === ETHERS[chainId] ? WETH[chainId] : currency instanceof Token ? currency : undefined;
 }
 
 export function wrappedCurrencyAmount(
@@ -14,6 +14,6 @@ export function wrappedCurrencyAmount(
 }
 
 export function unwrappedToken(token) {
-	if (token.equals(WETH[token.chainId])) return ETHER;
+	if (token.equals(WETH[token.chainId])) return ETHERS[token.chainId];
 	return token;
 }

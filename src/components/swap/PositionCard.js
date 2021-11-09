@@ -15,7 +15,7 @@ import CurrencyLogo from "../common/CurrencyLogo";
 import currencyId from "../../utils/currencyId";
 
 export function MinimalPositionCard({ pair, showUnwrapped = false }) {
-	const { account } = useActiveWeb3React();
+	const { account, chainId } = useActiveWeb3React();
 
 	const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0);
 	const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1);
@@ -76,7 +76,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }) {
 }
 
 export default function FullPositionCard({ pair }) {
-	const { account } = useActiveWeb3React();
+	const { account, chainId } = useActiveWeb3React();
 
 	const currency0 = unwrappedToken(pair.token0);
 	const currency1 = unwrappedToken(pair.token1);
@@ -208,7 +208,7 @@ export default function FullPositionCard({ pair }) {
 								className="bg-primaryLight py-2 rounded w-full
 								transition-all disabled:opacity-50
                                 h-12 text-black flex items-center justify-center"
-								to={`/trade/liquidity/add/${currencyId(currency0)}/${currencyId(currency1)}`}
+								to={`/trade/liquidity/add/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`}
 							>
 								Add
 							</Link>
@@ -216,7 +216,7 @@ export default function FullPositionCard({ pair }) {
 								className="bg-darkGray py-2 rounded w-full
 								transition-all disabled:opacity-50 border border-darkGray
                                 h-12 text-white flex items-center justify-center"
-								to={`/trade/liquidity/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
+								to={`/trade/liquidity/remove/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`}
 							>
 								Remove
 							</Link>

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { put, call, fork, all, take } from 'redux-saga/effects';
+import { put, call, fork, all, take, select } from 'redux-saga/effects';
 
 import {
   GET_MARKET_HISTORY_REQUEST,
@@ -20,10 +20,12 @@ export function* asyncGetMarketHistoryRequest({ payload, resolve, reject }) {
   const { asset, type, limit } = payload;
 
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/market_history/graph?asset=${asset}&type=${type}&limit=${limit}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -35,10 +37,12 @@ export function* asyncGetMarketHistoryRequest({ payload, resolve, reject }) {
 
 export function* asyncGetGovernanceAnnexRequest({ payload, resolve, reject }) {
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/governance/annex`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -51,10 +55,12 @@ export function* asyncGetGovernanceAnnexRequest({ payload, resolve, reject }) {
 export function* asyncGetProposalsRequest({ payload, resolve, reject }) {
   const { limit, offset } = payload;
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/proposals?limit=${limit || 5}&offset=${offset || 0}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -70,6 +76,7 @@ export function* asyncGetFaucetRequest({ payload, resolve, reject }) {
   const { address, asset, amountType } = payload;
 
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/faucet`,
       method: 'POST',
@@ -77,7 +84,8 @@ export function* asyncGetFaucetRequest({ payload, resolve, reject }) {
         address,
         asset,
         amountType
-      }
+      },
+      chainId,
     });
     if (response.status === 200) {
       yield put(accountActionCreators.getFromFaucetSuccess());
@@ -93,10 +101,12 @@ export function* asyncGetFaucetRequest({ payload, resolve, reject }) {
 export function* asyncGetProposalByIdRequest({ payload, resolve, reject }) {
   const { id } = payload;
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/proposals/${id}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -110,10 +120,12 @@ export function* asyncGetProposalByIdRequest({ payload, resolve, reject }) {
 export function* asyncGetVotersRequest({ payload, resolve, reject }) {
   const { limit, filter, id } = payload;
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/voters/${id}?limit=${limit || 3}&filter=${filter}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -127,10 +139,12 @@ export function* asyncGetVotersRequest({ payload, resolve, reject }) {
 export function* asyncGetVoterDetailRequest({ payload, resolve, reject }) {
   const { address } = payload;
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/voters/accounts/${address}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -144,11 +158,13 @@ export function* asyncGetVoterDetailRequest({ payload, resolve, reject }) {
 export function* asyncGetVoterHistoryRequest({ payload, resolve, reject }) {
   const { offset, limit, address } = payload;
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/voters/history/${address}?offset=${offset || 0}&limit=${limit ||
         5}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);
@@ -163,10 +179,12 @@ export function* asyncGetVoterAccountsRequest({ payload, resolve, reject }) {
   const { limit, offset } = payload;
 
   try {
+    const chainId = yield select(state => state.application.currentChainId)
     const response = yield call(restService, {
       api: `/v1/voters/accounts?limit=${limit || 100}&offset=${offset || 0}`,
       method: 'GET',
-      params: {}
+      params: {},
+      chainId,
     });
     if (response.status === 200) {
       resolve(response.data);

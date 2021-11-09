@@ -3,8 +3,10 @@ import Modal from '../UI/Modal';
 import logoMini from '../../assets/icons/logoMini.svg';
 import transactionBroadcast from '../../assets/icons/transactionBroadcast.svg';
 import {showTokenOnExplorer} from "../../utils/address";
+import { useActiveWeb3React } from '../../hooks';
 
 function WalletsModal({ open, onSetOpen, onCloseModal, isCollateralEnable, collateralToken }) {
+  const { chainId } = useActiveWeb3React();
   const title = (
     <div className="text-center text-xl font-bold mt-4 mx-12 py-6 border-b border-solid border-gray-600">
       Confirm Transaction
@@ -21,7 +23,7 @@ function WalletsModal({ open, onSetOpen, onCloseModal, isCollateralEnable, colla
       </div>
       <div className="flex justify-center mt-16">
         <button
-            onClick={showTokenOnExplorer.bind(this, collateralToken?.atokenAddress)}
+            onClick={showTokenOnExplorer.bind(this, collateralToken?.atokenAddress, chainId)}
           className="focus:outline-none bg-primary py-4 rounded text-2xl
                  w-full max-w-350px text-black"
         >

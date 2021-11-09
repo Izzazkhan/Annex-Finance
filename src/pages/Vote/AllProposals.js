@@ -1,20 +1,20 @@
-import {useHistory, withRouter} from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 import Pagination from 'rc-pagination';
 
 import Layout from "../../layouts/MainLayout/MainLayout";
 import Progress from "../../components/UI/Progress";
 import RouteMap from "../../routes/RouteMap";
-import {useCallback, useEffect, useMemo, useState} from "react";
-import {getTokenContract, getVoteContract, methods} from "../../utilities/ContractService";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getTokenContract, getVoteContract, methods } from "../../utilities/ContractService";
 import Web3 from "web3";
 import toast from "../../components/UI/Toast";
 import rightArrow from '../../assets/icons/rightArrow.svg';
 import circleCross from '../../assets/icons/circleCross.svg';
 import circleTick from '../../assets/icons/circleTick.svg';
-import {accountActionCreators, connectAccount} from "../../core";
-import {bindActionCreators, compose} from "redux";
-import {useActiveWeb3React} from "../../hooks";
-import {promisify} from "../../utilities";
+import { accountActionCreators, connectAccount } from "../../core";
+import { bindActionCreators, compose } from "redux";
+import { useActiveWeb3React } from "../../hooks";
+import { promisify } from "../../utilities";
 import Loading from "../../components/UI/Loading";
 import ProposalOverview from "../../components/vote/ProposalOverview";
 import AnnexPieChart from "../../components/Annex/AnnexPieChart";
@@ -24,7 +24,7 @@ const AllProposals = ({
     settings,
     getProposals
 }) => {
-    const { account: address } = useActiveWeb3React();
+    const { account: address, chainId } = useActiveWeb3React();
     const history = useHistory();
 
     const [votingWeight, setVotingWeight] = useState(0);
@@ -77,7 +77,7 @@ const AllProposals = ({
 
     useEffect(() => {
         if (address) {
-            const voteContract = getVoteContract();
+            const voteContract = getVoteContract(chainId);
             methods.call(voteContract.methods.proposalThreshold, []).then(res => {
                 setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
             });
@@ -93,7 +93,7 @@ const AllProposals = ({
             (delegateAddress === '' ||
                 delegateAddress === '0x0000000000000000000000000000000000000000')
         ) {
-            const tokenContract = getTokenContract('ann');
+            const tokenContract = getTokenContract('ann', chainId);
             methods
                 .call(tokenContract.methods.delegates, [address])
                 .then(res => {
@@ -124,7 +124,7 @@ const AllProposals = ({
             });
             return;
         }
-        const voteContract = getVoteContract();
+        const voteContract = getVoteContract(chainId);
         setIsLoading(true);
         methods
             .call(voteContract.methods.latestProposalIds, [address])

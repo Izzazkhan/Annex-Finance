@@ -303,7 +303,7 @@ const ArrowContainer = styled.div`
 `;
 
 const Epoch = ({ setSetting, settings }) => {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
 
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
@@ -315,7 +315,7 @@ const Epoch = ({ setSetting, settings }) => {
   const [holdingAPR, setHoldingAPR] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
-  const epochContract = getEpochContract();
+  const epochContract = getEpochContract(chainId);
 
   const getBalance = async () => {
     if (!account) {
@@ -364,26 +364,28 @@ const Epoch = ({ setSetting, settings }) => {
       return;
     }
     try {
-      let currentEpochROI = await methods.call(epochContract.methods.getCurrentEpochROI, []);
-      setCurrentEpochROI(currentEpochROI / 100);
-      let holdingReward = await methods.call(epochContract.methods.getHoldingReward, [
-        accountAddress,
-      ]);
+      let [currentEpochROI, holdingReward] = await Promise.all([
+        methods.call(epochContract.methods.getCurrentEpochROI, []),
+        methods.call(epochContract.methods.getHoldingReward, [
+          accountAddress,
+        ])
+      ])
 
       if (holdingReward) {
         setHoldingReward((holdingReward / Math.pow(10, decimals)).toFixed(2));
       }
 
-      let eligibleEpochs = await methods.call(epochContract.methods.eligibleEpochs, []);
+      let [eligibleEpochs, getEpoch, transferPoint] = await Promise.all([
+        methods.call(epochContract.methods.eligibleEpochs, []),
+        methods.call(epochContract.methods.getEpochs, [settings.blockNumber]),
+        methods.call(epochContract.methods.transferPoints, [
+          accountAddress,
+          0,
+        ])
+      ]);
       if (eligibleEpochs) {
         seteligibleEpochs(eligibleEpochs);
       }
-
-      let getEpoch = await methods.call(epochContract.methods.getEpochs, [settings.blockNumber]);
-      let transferPoint = await methods.call(epochContract.methods.transferPoints, [
-        accountAddress,
-        0,
-      ]);
       if (annBalance / Math.pow(10, decimals) === 0) {
         setHoldingAPR(0);
       } else if (
@@ -415,7 +417,6 @@ const Epoch = ({ setSetting, settings }) => {
   }, [balanceOf]);
 
   const handleSubmitClaim = () => {
-    const epochContract = getEpochContract();
     methods
       .send(epochContract.methods.claimReward, [], account)
       .then((data) => {
