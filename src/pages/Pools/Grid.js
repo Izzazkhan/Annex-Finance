@@ -31,6 +31,7 @@ const database = [{
     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
     isFinished: false,
     isOpen: false,
+    apr: 50
 },
     // {
     //     id: 2,
@@ -45,10 +46,12 @@ const database = [{
     //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
     //     contract_Abi: CONTRACT_Annex_Farm,
     //     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
-    //     isFinished: false,
+    //     isFinished: true,
     //     isOpen: false
     // },
 ]
+
+const AUTO_VAULT_COMPOUND_FREQUENCY = 5000
 
 const Styles = styled.div`
     .tooltip-label {
@@ -77,6 +80,50 @@ function Grid({ settings, onlyStaked, poolState }) {
         fetchPoolData(database.filter(pool => !pool.isFinished))
     }, [loading]);
 
+    // useEffect(async () => {
+    //     // fetchPoolData(database.filter(pool => !pool.isFinished))
+    //     let interval;
+    //     // if (poolData.length) {
+    //     interval = setInterval(fetchUpdatedPool, 5 * 1000);
+    //     // }
+    //     return () => {
+    //         clearInterval(interval);
+    //     };
+    // }, [loading]);
+
+    // const fetchUpdatedPool = () => {
+    //     // if (onlyStaked) {
+    //     //     const filteredPool = poolData.filter(pool => (pool.userInfo.shares && pool.userInfo.shares > 0)
+    //     //         || (pool.userInfo.amount && pool.userInfo.amount > 0))
+    //     //     fetchPoolData(filteredPool)
+    //     // }
+    //     // else {
+    //     if (poolState === 'live') {
+    //         fetchPoolData(database.filter(pool => !pool.isFinished))
+    //     }
+    //     else {
+    //         fetchPoolData(database.filter(pool => pool.isFinished))
+    //     }
+    //     // }
+    // }
+
+
+    const getApy = (apr, compoundFrequency = 1, performanceFee = 0, days = 365) => {
+        const daysAsDecimalOfYear = days / 365
+        const aprAsDecimal = apr / 100
+        const timesCompounded = 365 * compoundFrequency
+        let apyAsDecimal = (apr / 100) * daysAsDecimalOfYear
+        if (timesCompounded > 0) {
+            apyAsDecimal = (1 + aprAsDecimal / timesCompounded) ** (timesCompounded * daysAsDecimalOfYear) - 1
+        }
+        if (performanceFee) {
+            const performanceFeeAsDecimal = performanceFee / 100
+            const takenAsPerformanceFee = apyAsDecimal * performanceFeeAsDecimal
+            apyAsDecimal -= takenAsPerformanceFee
+        }
+        return apyAsDecimal * 100
+    }
+
     const fetchPoolData = useCallback(async (poolData) => {
         const poolMapped = poolData.map(async (pool) => {
             const tokenContract = getTokenContract(pool.name);
@@ -88,7 +135,8 @@ function Grid({ settings, onlyStaked, poolState }) {
             let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
-            let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked, pendingAnnex, pendingAnnexWithoutDecimal
+            let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked, pendingAnnex, pendingAnnexWithoutDecimal,
+                apyValue = 0
             const contract = new instance.eth.Contract(
                 JSON.parse(pool.contract_Abi),
                 pool.contract_Address,
@@ -106,6 +154,10 @@ function Grid({ settings, onlyStaked, poolState }) {
                         stacked = userInfo.shares / Math.pow(10, decimal)
                     }
                 }
+                let performanceFee = await methods.call(contract.methods.performanceFee, []);
+                performanceFee = (performanceFee / 10000) * 100
+                apyValue = getApy(pool.apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
+
             }
             else {
                 pendingAnnex = await methods.call(contract.methods.pendingAnnex, [pool._pid, account]);
@@ -130,6 +182,7 @@ function Grid({ settings, onlyStaked, poolState }) {
                 isUserInfo,
                 userInfo,
                 pendingAnnex,
+                apyValue,
                 pendingAnnexWithoutDecimal
             }
         })
@@ -165,7 +218,7 @@ function Grid({ settings, onlyStaked, poolState }) {
         }
     }, [poolState])
 
-    console.log('database', poolData)
+    // console.log('database', poolData)
 
     const handleEnable = (item) => {
         setSelectedPool(item)

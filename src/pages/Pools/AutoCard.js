@@ -36,7 +36,7 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                             {`APY includes compounding, APR doesn’t. This pool’s ${item.symbol} is compounded automatically, so we show APY.`}
                         </span>
                     </div>
-                    <div className="text-white font-bold flex items-center">0%
+                    <div className="text-white font-bold flex items-center">{`${item.apyValue.toFixed(2)}%`}
                     </div>
                 </div>
                 <div className="text-white font-bold">Recent {item.symbol} Profit:</div>
