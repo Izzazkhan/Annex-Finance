@@ -395,7 +395,7 @@ function Pools() {
             >
 
               <div className="flex items-center justify-between mb-4">
-                <div className="text-white font-bold">Auto CAKE Bounty</div>
+                <div className="text-white font-bold">Auto ANN Bounty</div>
               </div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex flex-col">
