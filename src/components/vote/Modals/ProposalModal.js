@@ -187,8 +187,7 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
   );
 
   const content = (
-    <Form
-      name={"form1"}
+    <Form 
       form={form}
       onFinishFailed={(errorInfo) => {
         setErrorMsg(errorInfo.errorFields[0].errors[0]);
