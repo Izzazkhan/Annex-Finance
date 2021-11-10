@@ -86,3 +86,21 @@ export function useInactiveListener(suppress = false) {
     return undefined;
   }, [active, error, suppress, activate]);
 }
+
+export function useDetectChainChange(callback) {
+  const { active, error, activate } = useWeb3ReactCore();
+  useEffect(() => {
+    const { ethereum } = window;
+
+    if (ethereum && ethereum.on && !active && !error) {
+      ethereum.on('networkChanged', (networkId) => { callback(networkId) });
+
+      return () => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('networkChanged', (networkId) => { callback(networkId) });
+        }
+      };
+    }
+    return undefined;
+  }, [active, error, activate])
+}
