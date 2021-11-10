@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Input, Form, Dropdown, Menu } from 'antd';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { connectAccount, accountActionCreators } from 'core';
-import MainLayout from 'containers/Layout/MainLayout';
-import { promisify } from 'utilities';
-import Button from '@material-ui/core/Button';
-import LoadingSpinner from 'components/Basic/LoadingSpinner';
-import toast from 'components/Basic/Toast';
+import { promisify, restService } from 'utilities';
+import LoadingSpinner from '../components/UI/Loader';
+import toast from '../components/UI/Toast';
 import * as constants from 'utilities/constants';
-import { Row, Column } from 'components/Basic/Style';
+import MainLayout from 'layouts/MainLayout/MainLayout';
 
 const FaucetWrapper = styled.div`
   width: 100%;
@@ -20,6 +15,7 @@ const FaucetWrapper = styled.div`
   height: 100%;
   flex: 1;
   padding: 20px;
+  margin-top: 50px;
   input {
     width: 100%;
     height: 42px;
@@ -29,13 +25,47 @@ const FaucetWrapper = styled.div`
     font-size: 36px;
     font-weight: 600;
     color: var(--color-text-main);
-    margin-top: 100px;
+    margin-top: 50px;
     margin-bottom: 30px;
     text-align: center;
 
     @media only screen and (max-width: 768px) {
       font-size: 28px;
       margin-top: 0px;
+    }
+  }
+
+  .menu {
+    cursor: pointer;
+    .menu-label {
+      background-image: linear-gradient(to right, rgb(242, 194, 101), rgb(247, 180, 79));
+      color: #ffffff;
+      border-radius: 5px;
+      padding: 1rem;
+    }
+    .menu-item {
+      display: none;
+      overflow: hidden;
+      flex-direction: column;
+      background-color: #ffffff;
+      color: #00000070;
+      width: 100%;
+      top: 105%;
+      left: 0;
+      border-radius: 5px;
+      span {
+        padding: 0.5rem 1rem;
+      }
+      span:hover {
+        background: #a4cbf7;
+      }
+    }
+  }
+
+  .menu:hover {
+
+    .menu-item {
+      display: flex;
     }
   }
 
@@ -53,325 +83,98 @@ const FaucetWrapper = styled.div`
       font-size: 16px;
       font-weight: normal;
       text-align: center;
-    }
-  }
 
-  .button-section {
-    margin: 20px 0;
-  }
-
-  .empty-menu {
-    opacity: 0;
-
-    @media only screen and (max-width: 768px) {
-      display: none;
-    }
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 20px;
-  .button {
-    width: 150px;
-    height: 40px;
-    border-radius: 5px;
-    background-image: linear-gradient(to right, #f2c265, #f7b44f);
-    .MuiButton-label {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--color-text-main);
-      text-transform: capitalize;
-
-      @media only screen and (max-width: 1440px) {
-        font-size: 12px;
+      a {
+        color: #40a9ff;
       }
     }
   }
+
 `;
 
 function Faucet({ form, getFromFaucet }) {
-  const { getFieldDecorator } = form;
+  const [address, setAddress] = useState('')
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleMenuClick = (e, symbol) => {
-    form.validateFields((err, values) => {
-      if (!err) {
-        setIsLoading(true);
-        promisify(getFromFaucet, {
-          address: values.address,
-          asset: symbol,
-          amountType: e.key
-        })
-          .then(() => {
-            setIsLoading(false);
-            let fromAddress;
-            if (symbol === 'xvs') {
-              fromAddress = constants.CONTRACT_XVS_TOKEN_ADDRESS;
-            } else if (symbol === 'bnb') {
-              fromAddress = constants.CONTRACT_XVS_TOKEN_ADDRESS;
-            } else {
-              fromAddress = constants.CONTRACT_TOKEN_ADDRESS[symbol].address;
-            }
-            toast.success({
-              title: `Funding request for ${fromAddress} into ${values.address}`
-            });
-          })
-          .catch(error => {
-            if (error.data && error.data.message) {
-              toast.error({
-                title: error.data.message
-              });
-            }
-            setIsLoading(false);
-          });
-      }
-    });
+  const handleMenuClick = async (data) => {
+    if (address.trim() === '') {
+      toast.error({
+        title: `Please input Address`
+      });
+      return
+    }
+    data.address = address
+    const apiRequest = await restService({
+      third_party: true,
+      api: 'https://cronostestapi.annex.finance/api/v1/faucet',
+      method: 'POST',
+      params: data
+    })
+    if (apiRequest.status !== 200) {
+      toast.error({
+        title: apiRequest.data?.message || 'Unable to Faucet, Please Try Again!'
+      });
+      return
+    }
   };
-
-  const usdcMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'usdc')}>
-      <Menu.Item key="low">1000 USDCs</Menu.Item>
-      <Menu.Item key="medium">2000 USDCs</Menu.Item>
-      <Menu.Item key="high">5000 USDCs</Menu.Item>
-    </Menu>
-  );
-
-  const usdtMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'usdt')}>
-      <Menu.Item key="low">1000 USDTs</Menu.Item>
-      <Menu.Item key="medium">2000 USDTs</Menu.Item>
-      <Menu.Item key="high">5000 USDTs</Menu.Item>
-    </Menu>
-  );
-
-  const busdMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'busd')}>
-      <Menu.Item key="low">1000 BUSDs</Menu.Item>
-      <Menu.Item key="medium">2000 BUSDs</Menu.Item>
-      <Menu.Item key="high">5000 BUSDs</Menu.Item>
-    </Menu>
-  );
-
-  const bnbMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'bnb')}>
-      <Menu.Item key="low">1 BNB</Menu.Item>
-      <Menu.Item key="medium">2.5 BNBs</Menu.Item>
-      <Menu.Item key="high">5 BNBs</Menu.Item>
-    </Menu>
-  );
-
-  const sxpMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'sxp')}>
-      <Menu.Item key="low">100 SXPs</Menu.Item>
-      <Menu.Item key="medium">200 SXPs</Menu.Item>
-      <Menu.Item key="high">500 SXPs</Menu.Item>
-    </Menu>
-  );
-
-  const xvsMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'xvs')}>
-      <Menu.Item key="low">100 XVSs</Menu.Item>
-      <Menu.Item key="medium">200 XVSs</Menu.Item>
-      <Menu.Item key="high">500 XVSs</Menu.Item>
-    </Menu>
-  );
-
-  const btcbMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'btcb')}>
-      <Menu.Item key="low">100 BTCBs</Menu.Item>
-      <Menu.Item key="medium">200 BTCBs</Menu.Item>
-      <Menu.Item key="high">500 BTCBs</Menu.Item>
-    </Menu>
-  );
-
-  const ethMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'eth')}>
-      <Menu.Item key="low">100 ETHs</Menu.Item>
-      <Menu.Item key="medium">200 ETHs</Menu.Item>
-      <Menu.Item key="high">500 ETHs</Menu.Item>
-    </Menu>
-  );
-
-  const ltcMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'ltc')}>
-      <Menu.Item key="low">100 LTCs</Menu.Item>
-      <Menu.Item key="medium">200 LTCs</Menu.Item>
-      <Menu.Item key="high">500 LTCs</Menu.Item>
-    </Menu>
-  );
-
-  const xrpMenu = (
-    <Menu onClick={e => handleMenuClick(e, 'xrp')}>
-      <Menu.Item key="low">100 XRPs</Menu.Item>
-      <Menu.Item key="medium">200 XRPs</Menu.Item>
-      <Menu.Item key="high">500 XRPs</Menu.Item>
-    </Menu>
-  );
 
   return (
     <MainLayout isHeader={false}>
-      <div className="flex just-center align-center">
-        <FaucetWrapper className="flex flex-column align-center just-center">
-          <p className="header">Venus Binance Smart Chain Faucet</p>
-          <Form className="forgot-pwd-form">
-            <Form.Item>
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Address is required!'
-                  }
-                ]
-              })(
-                <Input placeholder="Input your Binance Smart Chain address..." />
-              )}
-            </Form.Item>
-            {isLoading ? (
-              <div className="flex flex-column">
-                <LoadingSpinner size={60} />
+      <div className="flex flex-col items-center text-white">
+        <FaucetWrapper className="flex flex-col">
+          <p className="header">Agile Binance Smart Chain Faucet</p>
+          <div className="flex flex-col justify-center">
+            <input
+              className="bg-transparent text-18 bg-white
+                           mt-1 focus:outline-none font-bold px-3 text-black w-full rounded"
+              value={address}
+              onChange={(e) => {setAddress(e.target.value)}}
+              placeholder="Input your smart chain address..."
+            />
+            <div className="flex justify-between mt-24">
+              <div className="relative menu flex">
+                <span className='menu-label'>Give Me BTC</span>
+                <div className='absolute menu-item'>
+                  <span onClick={() => handleMenuClick({ asset: 'btc', amountType: 'low' })}>Low</span>
+                  <span onClick={() => handleMenuClick({ asset: 'btc', amountType: 'medium' })}>Medium</span>
+                  <span onClick={() => handleMenuClick({ asset: 'btc', amountType: 'high' })}>High</span>
+                </div>
               </div>
-            ) : (
-              <>
-                <Row>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={bnbMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me BNB
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={sxpMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me SXP
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={xvsMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me XVS
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={busdMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me BUSD
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={usdtMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me USDT
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={usdcMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me USDC
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={btcbMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me BTCB
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={ethMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me ETH
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={ltcMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me LTC
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4" className="empty-menu">
-                    <ButtonWrapper />
-                  </Column>
-                  <Column xs="6" sm="4">
-                    <ButtonWrapper>
-                      <Dropdown overlay={xrpMenu} placement="bottomCenter">
-                        <Button className="fill-btn next-btn button">
-                          Give Me XRP
-                        </Button>
-                      </Dropdown>
-                    </ButtonWrapper>
-                  </Column>
-                  <Column xs="6" sm="4" className="empty-menu">
-                    <ButtonWrapper />
-                  </Column>
-                </Row>
-              </>
-            )}
-          </Form>
-          <div className="flex flex-column align-center just-center bottom">
+
+              <div className="relative menu flex">
+                <span className='menu-label'>Give Me ETH</span>
+                <div className='absolute menu-item'>
+                  <span onClick={() => handleMenuClick({ asset: 'eth', amountType: 'low' })}>Low</span>
+                  <span onClick={() => handleMenuClick({ asset: 'eth', amountType: 'medium' })}>Medium</span>
+                  <span onClick={() => handleMenuClick({ asset: 'eth', amountType: 'high' })}>High</span>
+                </div>
+              </div>
+
+              <div className="relative menu flex">
+                <span className='menu-label'>Give Me USDT</span>
+                <div className='absolute menu-item'>
+                  <span onClick={() => handleMenuClick({ asset: 'usdt', amountType: 'low' })}>Low</span>
+                  <span onClick={() => handleMenuClick({ asset: 'usdt', amountType: 'medium' })}>Medium</span>
+                  <span onClick={() => handleMenuClick({ asset: 'usdt', amountType: 'high' })}>High</span>
+                </div>
+              </div>
+
+              <div className="relative menu flex">
+                <span className='menu-label'>Give Me ANN</span>
+                <div className='absolute menu-item'>
+                  <span onClick={() => handleMenuClick({ asset: 'ann', amountType: 'low' })}>Low</span>
+                  <span onClick={() => handleMenuClick({ asset: 'ann', amountType: 'medium' })}>Medium</span>
+                  <span onClick={() => handleMenuClick({ asset: 'ann', amountType: 'high' })}>High</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center bottom mt-12">
             <p className="title">How does this work?</p>
             <p className="description">
               <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.sxp.address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                SXP
-              </a>
-              {`, `}
-              <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_XVS_TOKEN_ADDRESS}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                XVS
-              </a>
-              {`, `}
-              <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.busd.address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                BUSD
-              </a>
-              {`, `}
-              <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.usdc.address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                USDC
-              </a>
-              {`, `}
-              <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.usdt.address}`}
+                href={``}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -379,23 +182,15 @@ function Faucet({ form, getFromFaucet }) {
               </a>
               {`, `}
               <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_VAI_TOKEN_ADDRESS}`}
+                href={``}
                 target="_blank"
                 rel="noreferrer"
               >
-                VAI
+                BTC
               </a>
               {`, `}
               <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.btcb.address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                BTCB
-              </a>
-              {`, `}
-              <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.eth.address}`}
+                href={``}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -403,19 +198,11 @@ function Faucet({ form, getFromFaucet }) {
               </a>
               {`, `}
               <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.ltc.address}`}
+                href={``}
                 target="_blank"
                 rel="noreferrer"
               >
-                LTC
-              </a>
-              {`, `}
-              <a
-                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${constants.CONTRACT_TOKEN_ADDRESS.xrp.address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                XRP
+                ANN
               </a>
               {` are issued as BEP20 token.`}
             </p>
@@ -436,11 +223,6 @@ function Faucet({ form, getFromFaucet }) {
   );
 }
 
-Faucet.propTypes = {
-  form: PropTypes.object.isRequired,
-  getFromFaucet: PropTypes.func.isRequired
-};
-
 const mapDispatchToProps = dispatch => {
   const { getFromFaucet } = accountActionCreators;
 
@@ -452,8 +234,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default compose(
-  withRouter,
-  Form.create({ name: 'faucet-form' }),
-  connectAccount(undefined, mapDispatchToProps)
-)(Faucet);
+// export default compose(
+//   withRouter,
+//   Form.create({ name: 'faucet-form' }),
+//   connectAccount(undefined, mapDispatchToProps)
+// )(Faucet);
+
+
+export default connectAccount(undefined, mapDispatchToProps)(Faucet);
