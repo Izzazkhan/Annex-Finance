@@ -18,4 +18,5 @@ export default {
     proposerOverview: '/vote/address/:address',
     leaderboard: '/vote/leaderboard',
   },
+  faucet: '/faucet',
 };

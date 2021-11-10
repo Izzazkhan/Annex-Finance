@@ -1,5 +1,5 @@
-import React from 'react';
-import { Switch, Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Switch, Route, Redirect, BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 
 import routes from './RouteMap';
 import Dashboard from '../pages/Dashboard';
@@ -23,8 +23,10 @@ import TransactionUpdater from '../core/modules/transactions/updater';
 import ListsUpdater from '../core/modules/lists/updater';
 import Games from 'pages/Games';
 import { useActiveWeb3React } from 'hooks';
+import Faucet from 'pages/Faucet';
 const Routes = () => {
   const { chainId } = useActiveWeb3React();
+  const history = useHistory();
   return (
     <Web3ReactManager>
       <ListsUpdater />
@@ -43,8 +45,8 @@ const Routes = () => {
           <Route path={routes.trade} component={Trade} />
           {![339, 25].includes(chainId) && (
             <>
-            <Route path={routes.games} component={Games} />
-            <Route path={`${routes.auction}`} component={Auction} />
+              <Route path={routes.games} component={Games} />
+              <Route path={`${routes.auction}`} component={Auction} />
             </>
           )}
           <Route exact path={routes.vote.index} component={Vote} />
@@ -52,6 +54,11 @@ const Routes = () => {
           <Route exact path={routes.vote.voteOverview} component={VoteOverview} />
           <Route exact path={routes.vote.proposerOverview} component={ProposerOverview} />
           <Route exact path={routes.vote.leaderboard} component={Leaderboard} />
+          {[339, 25].includes(chainId) && (
+            <>
+              <Route path={`${routes.faucet}`} component={Faucet} />
+            </>
+          )}
           <Route component={NotFound} />
         </Switch>
       </Router>
