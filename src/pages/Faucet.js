@@ -204,9 +204,9 @@ function Faucet({ form, getFromFaucet }) {
               >
                 ANN
               </a>
-              {` are issued as BEP20 token.`}
+              {` are issued as CRC20 token.`}
             </p>
-            <p className="description">
+            {/* <p className="description">
               Click to get detail about{' '}
               <a
                 href="https://github.com/binance-chain/BEPs/blob/master/BEP20.md"
@@ -215,7 +215,7 @@ function Faucet({ form, getFromFaucet }) {
               >
                 BEP20
               </a>
-            </p>
+            </p> */}
           </div>
         </FaucetWrapper>
       </div>
