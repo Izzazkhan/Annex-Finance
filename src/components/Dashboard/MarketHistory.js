@@ -1,14 +1,14 @@
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from "styled-components";
 import Select from "../UI/Select";
 import plusButtonIcon from "../../assets/icons/plusButonIcon.svg";
-import {addToken, getBigNumber} from "../../utilities/common";
+import { addToken, getBigNumber } from "../../utilities/common";
 import CandleChart from "../common/CandleChart";
 import BigNumber from "bignumber.js";
-import {useActiveWeb3React} from "../../hooks";
+import { useActiveWeb3React } from "../../hooks";
 import commaNumber from "comma-number";
 import Annex from '../../assets/icons/logoMini.svg';
-import {nFormatter} from "../../utils/data";
+import { nFormatter } from "../../utils/data";
 import MarketHistoryChart from "./MarketHistoryChart";
 
 const format = commaNumber.bindWith(',', '.');
@@ -52,6 +52,8 @@ const TYPES = {
     Borrow: "BORROW"
 }
 
+const AVAILABLE_NETWORKS = [56, 97, 339]
+
 const MarketHistory = ({
     handleChangeAsset,
     currentAsset,
@@ -80,8 +82,7 @@ const MarketHistory = ({
     }, [selectedAsset, withANN])
 
     const wrongNetwork = useMemo(() => {
-        return (process.env.REACT_APP_ENV === 'prod' && chainId !== 56)
-            || (process.env.REACT_APP_ENV === 'dev' && chainId !== 97)
+        return !AVAILABLE_NETWORKS.includes(chainId)
     }, [chainId])
 
     const changeCurrentSymbol = (value) => {
@@ -106,8 +107,9 @@ const MarketHistory = ({
                                  onClick={() =>
                                      addToken(
                                          currentAsset,
-                                         settings.decimals[currentAsset || 'usdc']?.token,
-                                         'token'
+                                         settings.decimals[currentAsset || 'usdt']?.token,
+                                         'token',
+                                         chainId
                                      )
                                  }>
                                 <span>
@@ -124,8 +126,9 @@ const MarketHistory = ({
                              onClick={() =>
                                  addToken(
                                      currentAsset,
-                                     settings.decimals[currentAsset || 'usdc']?.atoken,
-                                     'atoken'
+                                     settings.decimals[currentAsset || 'usdt']?.atoken,
+                                     'atoken',
+                                     chainId
                                  )
                              }>
                             <span>
@@ -279,7 +282,7 @@ const MarketHistory = ({
                                     : marketInfo?.underlyingPrice ? `$${new BigNumber(marketInfo?.underlyingPrice || 0)
                                         .div(
                                             new BigNumber(10).pow(
-                                                18 + 18 - parseInt(settings.decimals[currentAsset || 'usdc']?.token, 10)
+                                                18 + 18 - parseInt(settings.decimals[currentAsset || 'usdt']?.token, 10)
                                             )
                                         )
                                         .dp(8, 1)
@@ -294,7 +297,7 @@ const MarketHistory = ({
                                     : marketInfo?.cash ? `${format(
                                         new BigNumber(marketInfo?.cash || 0)
                                             .div(
-                                                new BigNumber(10).pow(settings.decimals[currentAsset || 'usdc']?.token)
+                                                new BigNumber(10).pow(settings.decimals[currentAsset || 'usdt']?.token)
                                             )
                                             .dp(8, 1)
                                             .toString(10)
@@ -321,7 +324,7 @@ const MarketHistory = ({
                                 {!account || wrongNetwork
                                     ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
                                     : marketInfo?.totalReserves ? `${new BigNumber(marketInfo?.totalReserves || 0)
-                                        .div(new BigNumber(10).pow(settings.decimals[currentAsset || 'usdc']?.token))
+                                        .div(new BigNumber(10).pow(settings.decimals[currentAsset || 'usdt']?.token))
                                         .dp(8, 1)
                                         .toString(10)} ` : "-"} {!account || wrongNetwork
                                 ? (<div className="animate-pulse w-10 h-6 bg-lightGray rounded-lg inline-block"/>)
@@ -390,11 +393,11 @@ const MarketHistory = ({
                                                     new BigNumber(10).pow(
                                                         18 +
                                                         +parseInt(
-                                                            settings.decimals[currentAsset || 'usdc']?.token,
+                                                            settings.decimals[currentAsset || 'usdt']?.token,
                                                             10
                                                         ) -
                                                         +parseInt(
-                                                            settings.decimals[currentAsset || 'usdc']?.atoken,
+                                                            settings.decimals[currentAsset || 'usdt']?.atoken,
                                                             10
                                                         )
                                                     )

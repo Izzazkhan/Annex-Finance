@@ -32,19 +32,20 @@ export const setLoading = (loading) => {
     return farmsActionCreators.setLoading(loading)
 }
 
-export const fetchFarmsPublicDataAsync = ({ account, data }) => {
+export const fetchFarmsPublicDataAsync = ({ account, data, chainId }) => {
     return async (dispatch) => {
         dispatch(setLoading(true))
         const response = await restService({
             api: `/v1/farming`,
             method: 'GET',
-            params: {}
+            params: {},
+            chainId,
         });
 
         if (response.status === 200) {
             dispatch(farmsActionCreators.setFarmsPublicData(response.data.data.pairs))
             if (account) {
-                dispatch(fetchFarmsUserDataAsync({ account, data }))
+                dispatch(fetchFarmsUserDataAsync({ account, data, chainId }))
             } else {
                 dispatch(setLoading(false))
             }
@@ -54,14 +55,14 @@ export const fetchFarmsPublicDataAsync = ({ account, data }) => {
     }
 }
 
-export const fetchFarmsUserDataAsync = ({ account, data }) => {
+export const fetchFarmsUserDataAsync = ({ account, data, chainId }) => {
     return async dispatch => {
         dispatch(setLoading(true))
         const [userFarmAllowances, userFarmTokenBalances, userStakedBalances, userFarmEarnings] = await Promise.all([
-            fetchFarmUserAllowances(account, data),
-            fetchFarmUserTokenBalances(account, data),
-            fetchFarmUserStakedBalances(account, data),
-            fetchFarmUserEarnings(account, data),
+            fetchFarmUserAllowances(account, data, chainId),
+            fetchFarmUserTokenBalances(account, data, chainId),
+            fetchFarmUserStakedBalances(account, data, chainId),
+            fetchFarmUserEarnings(account, data, chainId),
         ])
 
         const farms = userFarmAllowances.map((farmAllowance, index) => {

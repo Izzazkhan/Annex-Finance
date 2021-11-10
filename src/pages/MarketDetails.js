@@ -1,12 +1,12 @@
-import {accountActionCreators, connectAccount} from "../core";
-import {bindActionCreators, compose} from 'redux';
-import {withRouter} from "react-router-dom";
-import {useCallback, useEffect, useState} from "react";
-import {promisify} from "../utilities";
+import { accountActionCreators, connectAccount } from "../core";
+import { bindActionCreators, compose } from 'redux';
+import { withRouter } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { promisify } from "../utilities";
 import BigNumber from "bignumber.js";
 import * as constants from "../utilities/constants";
 import Layout from "../layouts/MainLayout/MainLayout";
-import {useActiveWeb3React} from "../hooks";
+import { useActiveWeb3React } from "../hooks";
 import MarketInfo from "../components/Market/MarketInfo";
 import MarketDetailsChart from "../components/Market/MarketDetailsChart";
 import InterestRateModel from "../components/Market/InterestRateModel";
@@ -19,7 +19,7 @@ const MarketDetails = ({
     settings,
     getMarketHistory
 }) => {
-    const { account } = useActiveWeb3React();
+    const { account, chainId } = useActiveWeb3React();
     const [marketType, setMarketType] = useState('supply');
     const [currentAsset, setCurrentAsset] = useState('');
     const [data, setData] = useState([]);
@@ -72,7 +72,7 @@ const MarketDetails = ({
     useEffect(() => {
         if (timeStamp % 60 === 0 && currentAsset) {
             getGraphData(
-                constants.CONTRACT_ABEP_ADDRESS[currentAsset].address,
+                constants.CONTRACT_ABEP_ADDRESS[chainId][currentAsset].address,
                 '1day'
             );
         }
@@ -83,7 +83,7 @@ const MarketDetails = ({
     useEffect(() => {
         if (currentAsset) {
             getGraphData(
-                constants.CONTRACT_ABEP_ADDRESS[currentAsset].address,
+                constants.CONTRACT_ABEP_ADDRESS[chainId][currentAsset].address,
                 '1day'
             );
         }
@@ -110,10 +110,10 @@ const MarketDetails = ({
                             <img
                                 className="w-10"
                                 src={
-                                    constants.CONTRACT_TOKEN_ADDRESS[
+                                    constants.CONTRACT_TOKEN_ADDRESS[chainId][
                                         marketInfo?.underlyingSymbol?.toLowerCase()
                                         ]
-                                        ? constants.CONTRACT_TOKEN_ADDRESS[
+                                        ? constants.CONTRACT_TOKEN_ADDRESS[chainId][
                                             marketInfo?.underlyingSymbol?.toLowerCase()
                                             ].asset
                                         : null

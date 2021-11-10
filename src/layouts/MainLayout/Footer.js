@@ -4,10 +4,10 @@ import { useActiveWeb3React } from '../../hooks';
 import { getEtherscanLink } from '../../utils';
 import { bindActionCreators } from 'redux';
 import { accountActionCreators, connectAccount } from '../../core';
-import { CONTRACT_TOKEN_ADDRESS, NETWORK_ID } from '../../utilities/constants';
+import { CONTRACT_TOKEN_ADDRESS } from '../../utilities/constants';
 
 const Footer = ({ settings }) => {
-  //   const { account, chainId, library } = useActiveWeb3React();
+  const { chainId } = useActiveWeb3React();
   //   const [blockNumber, setBlockNumber] = useState(undefined);
 
   //   const wrongNetwork = React.useMemo(() => {
@@ -35,7 +35,7 @@ const Footer = ({ settings }) => {
           target={'_blank'}
           rel={'noreferrer noopener'}
           href={getEtherscanLink(
-            NETWORK_ID,
+            chainId,
             settings.blockNumber,
             'block',
           )}
@@ -49,8 +49,8 @@ const Footer = ({ settings }) => {
       ) : null}
       <a
         href={getEtherscanLink(
-          NETWORK_ID,
-          CONTRACT_TOKEN_ADDRESS.ann.address,
+          chainId,
+          CONTRACT_TOKEN_ADDRESS[chainId].ann.address,
           'token',
         )}
         target={'_blank'}

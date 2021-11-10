@@ -9,6 +9,7 @@ const TOKEN_ABI = {
   busd: constants.CONTRACT_BUSD_TOKEN_ABI,
   ann: constants.CONTRACT_ANN_TOKEN_ABI,
   btcb: constants.CONTRACT_BTCB_TOKEN_ABI,
+  btc: constants.CONTRACT_BTCB_TOKEN_ABI,
   eth: constants.CONTRACT_ETH_TOKEN_ABI,
   // ltc: constants.CONTRACT_LTC_TOKEN_ABI,
   // xrp: constants.CONTRACT_XRP_TOKEN_ABI,
@@ -117,37 +118,38 @@ export default class WalletConnectClass {
   //   );
   // }
 
-  getTokenContract(name) {
+  getTokenContract(name, chainId) {
     return new this.web3.eth.Contract(
       JSON.parse(TOKEN_ABI[name]),
-      constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc']
-        ? constants.CONTRACT_TOKEN_ADDRESS[name || 'usdc'].address
-        : constants.CONTRACT_TOKEN_ADDRESS.usdc.address
+      constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt']
+        ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt'].address
+        : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdt.address
     );
   }
 
-  getAbepContract(name) {
+  getAbepContract(name, chainId) {
     return new this.web3.eth.Contract(
       JSON.parse(
         name !== 'bnb'
           ? constants.CONTRACT_ABEP_ABI
           : constants.CONTRACT_ABNB_ABI
       ),
-      constants.CONTRACT_ABEP_ADDRESS[name || 'usdc']
-        ? constants.CONTRACT_ABEP_ADDRESS[name || 'usdc'].address
-        : constants.CONTRACT_ABEP_ADDRESS.usdc.address
+      constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt']
+        ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt'].address
+        : constants.CONTRACT_ABEP_ADDRESS[chainId].usdt.address
     );
   }
 
-  getComptrollerContract() {
+  getComptrollerContract(chainId) {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
-      constants.CONTRACT_COMPTROLLER_ADDRESS
+      constants.CONTRACT_COMPTROLLER_ADDRESS[chainId]
     );
   }
 
   getPriceOracleContract(
-    address = constants.CONTRACT_PRICE_ORACLE_ADDRESS
+    address = constants.CONTRACT_PRICE_ORACLE_ADDRESS[chainId],
+    chainId
   ) {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI),
@@ -155,10 +157,10 @@ export default class WalletConnectClass {
     );
   }
 
-  getVoteContract() {
+  getVoteContract(chainId) {
     return new this.web3.eth.Contract(
       JSON.parse(constants.CONTRACT_VOTE_ABI),
-      constants.CONTRACT_VOTE_ADDRESS
+      constants.CONTRACT_VOTE_ADDRESS[chainId]
     );
   }
 

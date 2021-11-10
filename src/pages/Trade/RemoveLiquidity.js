@@ -10,7 +10,7 @@ import {
     useUserSlippageTolerance
 } from "../../core";
 import {Field} from "../../core/modules/burn/actions";
-import {currencyEquals, ETHER, Percent, WETH} from "@annex/sdk";
+import {currencyEquals, ETHERS, Percent, WETH} from "@annex/sdk";
 import {usePairContract} from "../../hooks/useContract";
 import {ApprovalState, useApproveCallback} from "../../hooks/useApproveCallback";
 import {ROUTER_ADDRESS} from "../../constants/swap";
@@ -43,9 +43,9 @@ function RemoveLiquidity({
     },
     history,
 }) {
-    const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
-    const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
     const { account, chainId, library } = useActiveWeb3React()
+    const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
+    const [currencyA, currencyB] = [useCurrency(currencyIdA, chainId) ?? undefined, useCurrency(currencyIdB, chainId) ?? undefined]
     const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
         currencyA,
         currencyB,
@@ -91,7 +91,7 @@ function RemoveLiquidity({
 
     // allowance handling
     const [signatureData, setSignatureData] = useState(null)
-    const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS)
+    const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS[chainId])
     async function onAttemptToApprove() {
         if (!pairContract || !pair || !library) throw new Error('missing dependencies')
         const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
@@ -122,7 +122,7 @@ function RemoveLiquidity({
         ]
         const message = {
             owner: account,
-            spender: ROUTER_ADDRESS,
+            spender: ROUTER_ADDRESS[chainId],
             value: liquidityAmount.raw.toString(),
             nonce: nonce.toHexString(),
             deadline: deadlineForSignature,
@@ -188,8 +188,8 @@ function RemoveLiquidity({
         const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
         if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-        const currencyBIsETH = currencyB === ETHER
-        const oneCurrencyIsETH = currencyA === ETHER || currencyBIsETH
+        const currencyBIsETH = currencyB === ETHERS[chainId]
+        const oneCurrencyIsETH = currencyA === ETHERS[chainId] || currencyBIsETH
         const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
         if (!tokenA || !tokenB) throw new Error('could not wrap')
@@ -321,7 +321,7 @@ function RemoveLiquidity({
         [onUserInput]
     )
 
-    const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
+    const oneCurrencyIsETH = currencyA === ETHERS[chainId] || currencyB === ETHERS[chainId]
     const oneCurrencyIsWETH = Boolean(
         chainId &&
         ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
@@ -330,20 +330,20 @@ function RemoveLiquidity({
 
     const handleSelectCurrencyA = useCallback(
         (currency) => {
-            if (currencyIdB && currencyId(currency) === currencyIdB) {
-                history.push(`/trade/liquidity/remove/${currencyId(currency)}/${currencyIdA}`);
+            if (currencyIdB && currencyId(currency, chainId) === currencyIdB) {
+                history.push(`/trade/liquidity/remove/${currencyId(currency, chainId)}/${currencyIdA}`);
             } else {
-                history.push(`/trade/liquidity/remove/${currencyId(currency)}/${currencyIdB}`);
+                history.push(`/trade/liquidity/remove/${currencyId(currency, chainId)}/${currencyIdB}`);
             }
         },
         [currencyIdA, currencyIdB, history]
     );
     const handleSelectCurrencyB = useCallback(
         (currency) => {
-            if (currencyIdA && currencyId(currency) === currencyIdA) {
-                history.push(`/trade/liquidity/remove/${currencyIdB}/${currencyId(currency)}`);
+            if (currencyIdA && currencyId(currency, chainId) === currencyIdA) {
+                history.push(`/trade/liquidity/remove/${currencyIdB}/${currencyId(currency, chainId)}`);
             } else {
-                history.push(`/trade/liquidity/remove/${currencyIdA}/${currencyId(currency)}`);
+                history.push(`/trade/liquidity/remove/${currencyIdA}/${currencyId(currency, chainId)}`);
             }
         },
         [currencyIdA, currencyIdB, history]
@@ -567,11 +567,11 @@ function RemoveLiquidity({
                                                     <Link
                                                         className={"text-primary font-bold focus:outline-none"}
                                                         to={`/trade/liquidity/remove/${
-                                                            currencyA === ETHER
+                                                            currencyA === ETHERS[chainId]
                                                                 ? WETH[chainId].address
                                                                 : currencyIdA
                                                         }/${
-                                                            currencyB === ETHER
+                                                            currencyB === ETHERS[chainId]
                                                                 ? WETH[chainId].address
                                                                 : currencyIdB
                                                         }`}

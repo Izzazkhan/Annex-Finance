@@ -2,7 +2,7 @@
 import React, { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import usdc from '../../assets/images/coins/usdc.png';
+import usdt from '../../assets/images/coins/usdt.png';
 import styled from 'styled-components';
 import * as constants from '../../utilities/constants';
 
@@ -11,7 +11,7 @@ const ListboxOptions = styled(Listbox.Options)`
 `;
 
 const defaultOptions = [
-  { name: 'usdc', logo: <img alt={'usdc'} src={usdc} style={{ width: 32, height: 32 }} /> },
+  { name: 'usdt', logo: <img alt={'usdt'} src={usdt} style={{ width: 32, height: 32 }} /> },
 ];
 
 function Select({

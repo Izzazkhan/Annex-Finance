@@ -96,8 +96,8 @@ export const getBunnySpecialContract = (signer) => {
 export const getLotteryV2Contract = (signer) => {
     return getContract(lotteryV2Abi, getLotteryV2Address(), signer)
 }
-export const getMasterchefContract = (signer) => {
-    return getContract(masterChef, getMasterChefAddress(), signer)
+export const getMasterchefContract = (chainId, signer) => {
+    return getContract(masterChef, getMasterChefAddress(chainId), signer)
 }
 export const getClaimRefundContract = (signer) => {
     return getContract(claimRefundAbi, getClaimRefundAddress(), signer)
@@ -119,8 +119,8 @@ export const getPredictionsContract = (signer) => {
 export const getChainlinkOracleContract = (signer) => {
     return getContract(chainlinkOracleAbi, getChainlinkOracleAddress(), signer)
 }
-export const getMulticallContract = (signer) => {
-    return getContract(MultiCallAbi, getMulticallAddress(), signer)
+export const getMulticallContract = (chainId, signer) => {
+    return getContract(MultiCallAbi, getMulticallAddress(chainId), signer)
 }
 export const getBunnySpecialCakeVaultContract = (signer) => {
     return getContract(bunnySpecialCakeVaultAbi, getBunnySpecialCakeVaultAddress(), signer)

@@ -35,6 +35,8 @@ const store = createStore(
   composeEnhancers(...enhancers)
 );
 
+console.log(store)
+
 sagaMiddleware.run(sagas);
 store.subscribe(throttle(() => saveState(store.getState()), 1000));
 export default store;

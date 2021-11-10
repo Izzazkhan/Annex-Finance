@@ -1,6 +1,6 @@
-import {useState} from "react";
+import { useState } from "react";
 
-import {getTokenContract, methods} from "../../../utilities/ContractService";
+import { getTokenContract, methods } from "../../../utilities/ContractService";
 import Modal from "../../UI/Modal";
 
 import bigArrowPrimary from '../../../assets/icons/bigArrowPrimary.svg';
@@ -9,6 +9,7 @@ import transactionBroadcast from '../../../assets/icons/transactionBroadcast.svg
 import closeWhite from '../../../assets/icons/closeWhite.svg';
 import bigArrow from '../../../assets/icons/bigArrow.svg';
 import DelegationVoting from "./DelegationVoting";
+import { useActiveWeb3React } from "../../../hooks";
 
 const DelegationTypeModal = ({
     visible,
@@ -17,13 +18,14 @@ const DelegationTypeModal = ({
     address,
     onCancel
 }) => {
+    const { chainId } = useActiveWeb3React();
     const [child, setChild] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [txnHash, setTxnHash] = useState('');
 
     const handleVoting = dAddress => {
         setIsLoading(true);
-        const tokenContract = getTokenContract('ann');
+        const tokenContract = getTokenContract('ann', chainId);
         methods
             .send(tokenContract.methods.delegate, [dAddress || address], address)
             .then((res) => {

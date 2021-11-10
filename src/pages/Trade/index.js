@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import _ from 'lodash';
 import { Switch, Route, useRouteMatch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import subGraphContext from '../../contexts/subgraph';
 import { calculateClearingPrice } from '../../utilities/graphClearingPrice';
@@ -13,6 +14,7 @@ import Swap from './Swap';
 import Liquidity from './Liquidity';
 import AddLiquidity from './AddLiquidity';
 import PoolFinder from './PoolFinder';
+import { useActiveWeb3React } from '../../hooks';
 import {
   RedirectDuplicateTokenIds,
   RedirectOldAddLiquidityPathStructure,
@@ -27,6 +29,10 @@ import DownArrow from '../../assets/images/down-arrow.png';
 import coins from '../../assets/icons/coins.svg';
 import styled from 'styled-components';
 import { ANNEX_SWAP_EXCHANGE } from './EndPoints';
+import Loader from 'components/UI/Loader';
+import { currencyFormatter } from 'utilities/common';
+import { restService } from 'utilities';
+import BigNumber from 'bignumber.js';
 
 const Styles = styled.div`
   .sidebar {
@@ -58,12 +64,22 @@ const Styles = styled.div`
     }
   }
 `;
+const EmptyDataStyles = styled.div`
+  width: 100%;
+  overflow: auto;
+  border: double 2px transparent;
+  border-radius: 30px;
+  background-image: transparent;
+  display: flex;
+  justify-content: center;
+`;
 
 function Trade() {
   useEffect(() => {
     getSwap();
   }, []);
 
+  const { chainId } = useActiveWeb3React();
   const { subGraphInstance } = useContext(subGraphContext);
   const { useQuery } = useSubgraph(subGraphInstance);
   const [swapData, setSwapData] = useState([]);
@@ -74,104 +90,32 @@ function Trade() {
   const history = useHistory();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
+
 
   const getSwap = async () => {
-    try {
-      const response = await request(
-        ANNEX_SWAP_EXCHANGE,
-        gql`
-        {
-          pairs(first: 5) {
-            id
-            name
-            token0{
-              symbol
-              decimals
-            }
-            token1{
-              symbol
-              decimals
-            }
-            reserveUSD
-            token0Price
-            token1Price
-          }
-          pairDayDatas{
-            id
-          }
-          pairHourDatas{
-            id
-          reserveUSD
-          }
-        }
-        `,
-      );
-      setSwapData(response.pairs);
-
-      let pairDayMapped = [];
-      response.pairDayDatas.forEach((item) => {
-        response.pairs.forEach((pairItem) => {
-          if (item.id.includes(pairItem.id)) {
-            pairDayMapped.push(pairItem);
-          }
-        });
-      });
-
-      let pairHourMapped = [];
-      response.pairHourDatas.forEach((item) => {
-        pairDayMapped.forEach((pairItem) => {
-          if (item.id.includes(pairItem.id)) {
-            pairHourMapped.push({
-              ...pairItem,
-              calcultedUSD: parseInt(item.reserveUSD) - parseInt(pairItem.reserveUSD)
-            });
-          }
-        });
-      });
-
-      setLiquidityData(pairHourMapped);
-    } catch (error) {
-      console.error(error);
-      return [];
+    setLoading(true)
+    const apiRequest = await restService({
+      third_party: true,
+      api: ANNEX_SWAP_EXCHANGE[chainId],
+      method: 'GET',
+      params: {}
+    });
+    if (apiRequest.status !== 200) {
+      setLoading(false)
+      return
     }
-  };
+    let liquidityPairs = _.cloneDeep(apiRequest.data.pairs)
+    let hrChangePairs = _.cloneDeep(apiRequest.data.pairs)
 
-  // useEffect(() => {
-  //   if (data && data.auctions) {
-  //     let arr = [];
-  //     data.auctions.forEach((element) => {
-  //       let auctionDecimal = element['auctioningToken']['decimals'];
-  //       let biddingDecimal = element['biddingToken']['decimals'];
-  //       let { orders, clearingPriceOrder } = calculateClearingPrice(
-  //         element.orders,
-  //         auctionDecimal,
-  //         biddingDecimal,
-  //       );
-  //       let formatedAuctionDate = moment
-  //         .unix(element['auctionEndDate'])
-  //         .format('MM/DD/YYYY HH:mm:ss');
-  //       let graphData = [];
-  //       orders &&
-  //         orders.forEach((item) => {
-  //           graphData.push({
-  //             ...item,
-  //             isSuccessfull: item.price >= clearingPriceOrder.price,
-  //           });
-  //         });
-  //       arr.push({
-  //         ...element,
-  //         chartType: 'block',
-  //         data: graphData,
-  //         status: 'Live',
-  //         statusClass: 'live',
-  //         dateLabel: 'Completion Date',
-  //         formatedAuctionDate,
-  //         title: element.type + ' Auction',
-  //       });
-  //     });
-  //     setTrade(arr);
-  //   }
-  // }, [data]);
+    liquidityPairs.sort((a, b) => b.liquidity - a.liquidity)
+    setSwapData(liquidityPairs);
+    
+    hrChangePairs.sort((a, b) => b.change24h - a.change24h)
+    setLiquidityData(hrChangePairs);
+    
+    setLoading(false)
+  }
 
   const buttons = [
     { key: 1, title: 'Swap', tab: 'swap', route: `${path}/swap` },
@@ -188,21 +132,38 @@ function Trade() {
         <SettingsModal open={settingsOpen} onCloseModal={() => setSettingsOpen(false)} />
         <HistoryModal open={historyOpen} onCloseModal={() => setHistoryOpen(false)} />
         <div
-          className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl"
+          className="bg-fadeBlack w-full flex justify-between items-center rounded-3xl lg:flex-row flex-col p-10"
         >
-        {/* <div
+          {/* <div
           className="bg-fadeBlack w-full flex flex-col justify-center items-center rounded-3xl 
             grid grid-cols-1 gap-y-6 lg:grid-cols-8 lg:gap-x-6 mt-8 p-5"
         > */}
-          {/* <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar">
+          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar">
             <div className="text-white text-xl font-bold p-5 pt-6">Liquidity By </div>
             <div className=" scroll pr-2">
-              {swapData.map((item, index) => {
+              {
+                loading && (
+                  <div className='flex w-full justify-center'>
+                    <Loader size="160px" className="m-20 self-center" stroke="#ff9800" />
+                  </div>
+                )
+              }
+              {
+                !loading && swapData.length === 0 && (
+                  <EmptyDataStyles>
+                    <div className="text-base p-20 flex justify-center text-white">
+                      <span className="text-center text-2xl md:text-3xl 
+                          text-border title-text">There are no pairs</span>
+                    </div>
+                  </EmptyDataStyles>
+                )
+              }
+              {!loading && swapData.map((item, index) => {
                 return (
                   <div className="rounded-3xl border border-white mb-4" key={index} onClick={() => onBoxHandler(item)}>
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
-                      <div className="text-white font-bold text-sm mx-5">{item.name}</div>
+                      <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>
                       <img width="14px" src={ANN} alt="" />
                     </div>
                     <div
@@ -213,18 +174,16 @@ function Trade() {
                       style={{ borderColor: '#2E2E2E' }}
                     >
                       <div className="flex items-center">
-                        <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0.symbol}{' '}
+                        <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0Symbol}{' '}
                         =
-                        {`${item.token0Price.slice(0, 6)}..${(item.token0Price.length - 4, item.token0Price.length)
-                          }`}{' '}
-                        {item.token1.symbol}
+                        {`${new BigNumber(item.token0Price).div(item.token1Price).toFixed(5)}`}{' '}
+                        {item.token1Symbol}
                       </div>
                       <div className="flex items-center">
                         <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
-                        {item.token1.symbol} =
-                        {`${item.token1Price.slice(0, 6)}..${(item.token1Price.length - 4, item.token1Price.length)
-                          }`}{' '}
-                        {item.token0.symbol}
+                        {item.token1Symbol} =
+                        {`${new BigNumber(item.token1Price).div(item.token0Price).toFixed(5)}`}{' '}
+                        {item.token0Symbol}
                       </div>
                     </div>
                     <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -236,26 +195,28 @@ function Trade() {
                           <div className="mr-2" style={{ width: '14px' }}>
                             <img className="" src={coins} alt="" />
                           </div>
-                          {item.reserveUSD}
+                          {currencyFormatter(item.liquidity)}
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2" style={{ width: '14px' }}>
-                            <img className="" src={Math.sign(item.calcultedUSD) === -1 ? DownArrow : UpArrow} alt="" />
+                            <img className="" src={Math.sign(item?.change24h) === -1 ? DownArrow : UpArrow} alt="" />
                           </div>
-                          {item.calcultedUSD}
+                          {new BigNumber(item?.change24h || 0)
+                            .dp(6, 1)
+                            .toString(10)}%
                         </div>
                       </div>
                       <div className="flex flex-col">
                         <div className=" font-bold">LP Reward APR</div>
-                        <div className="flex text-white font-bold my-2">0</div>
+                        <div className="flex text-white font-bold my-2">{item?.apr || 0}%</div>
                       </div>
                     </div>
                   </div>
                 );
               })}
             </div>
-          </div> */}
-          {/* <div className="col-span-4"> */}
+          </div>
+          <div className="col-span-4">
             <div className="flex space-x-3 mt-14 justify-center">
               {buttons?.map((b) => (
                 <button
@@ -308,17 +269,34 @@ function Trade() {
                 <Redirect to={`${path}/swap`} />
               </Switch>
             </Switch>
-          {/* </div> */}
+          </div>
 
-          {/* <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right ">
+          <div className="col-span-2 py-8 px-5 bg-black rounded-3xl sidebar right">
             <div className="text-white text-xl font-bold p-5 pt-6">24hrs Change</div>
             <div className=" scroll pl-2">
-              {liquidity.map((item, index) => {
+              {
+                loading && (
+                  <div className='flex w-full justify-center'>
+                    <Loader size="160px" className="m-20 self-center" stroke="#ff9800" />
+                  </div>
+                )
+              }
+              {
+                !loading && liquidity.length === 0 && (
+                  <EmptyDataStyles>
+                    <div className="text-base p-20 flex justify-center items-center text-white">
+                      <span className="text-center text-2xl md:text-3xl 
+                          text-border title-text">There are no pairs</span>
+                    </div>
+                  </EmptyDataStyles>
+                )
+              }
+              {!loading && liquidity.map((item, index) => {
                 return (
                   <div className="rounded-3xl border border-white mb-4" key={index} >
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
-                      <div className="text-white font-bold text-sm mx-5">{item.name}</div>
+                      <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>
                       <img width="14px" src={ANN} alt="" />
                     </div>
                     <div
@@ -329,18 +307,16 @@ function Trade() {
                       style={{ borderColor: '#2E2E2E' }}
                     >
                       <div className="flex items-center">
-                        <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0.symbol}{' '}
+                        <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0Symbol}{' '}
                         =
-                        {`${item.token0Price.slice(0, 6)}..${(item.token0Price.length - 4, item.token0Price.length)
-                          }`}{' '}
-                        {item.token1.symbol}
+                        {`${new BigNumber(item.token0Price).div(item.token1Price).toFixed(5)}`}{' '}
+                        {item.token1Symbol}
                       </div>
                       <div className="flex items-center">
                         <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
-                        {item.token1.symbol} =
-                        {`${item.token1Price.slice(0, 6)}..${(item.token1Price.length - 4, item.token1Price.length)
-                          }`}{' '}
-                        {item.token0.symbol}
+                        {item.token1Symbol} =
+                        {`${new BigNumber(item.token1Price).div(item.token0Price).toFixed(5)}`}{' '}
+                        {item.token0Symbol}
                       </div>
                     </div>
                     <div className="flex items-center justify-between py-3 px-3 text-white text-xs">
@@ -352,18 +328,20 @@ function Trade() {
                           <div className="mr-2" style={{ width: '14px' }}>
                             <img className="" src={coins} alt="" />
                           </div>
-                          {item.reserveUSD}
+                          {currencyFormatter(item.liquidity)}
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2" style={{ width: '14px' }}>
-                            <img className="" src={Math.sign(item.calcultedUSD) === -1 ? DownArrow : UpArrow} alt="" />
+                            <img className="" src={Math.sign(item?.change24h) === -1 ? DownArrow : UpArrow} alt="" />
                           </div>
-                          {item.calcultedUSD}
+                          {new BigNumber(item?.change24h || 0)
+                            .dp(4, 1)
+                            .toString(10)}%
                         </div>
                       </div>
                       <div className="flex flex-col">
                         <div className=" font-bold">LP Reward APR</div>
-                        <div className="flex text-white font-bold my-2">0</div>
+                        <div className="flex text-white font-bold my-2">{item?.apr || 0}%</div>
                       </div>
                     </div>
                   </div>
@@ -371,7 +349,7 @@ function Trade() {
               })}
 
             </div>
-          </div> */}
+          </div>
         </div>
       </Layout>
     </Styles>

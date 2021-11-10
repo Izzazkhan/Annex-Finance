@@ -249,7 +249,6 @@ export const fetchPoolsStakingLimits = async (
 const nonBnbPools = poolsConfig.filter((p) => p.stakingToken.symbol !== 'BNB')
 const bnbPools = poolsConfig.filter((p) => p.stakingToken.symbol === 'BNB')
 const nonMasterPools = poolsConfig.filter((p) => p.sousId !== 0)
-const masterChefContract = getMasterchefContract()
 
 export const fetchPoolsAllowance = async (account) => {
     const calls = nonBnbPools.map((p) => ({
@@ -289,45 +288,47 @@ export const fetchUserBalances = async (account) => {
 }
 
 export const fetchUserStakeBalances = async (account) => {
-    const calls = nonMasterPools.map((p) => ({
-        address: getAddress(p.contractAddress),
-        name: 'userInfo',
-        params: [account],
-    }))
-    const userInfo = await multicall(sousChefABI, calls)
-    const stakedBalances = nonMasterPools.reduce(
-        (acc, pool, index) => ({
-            ...acc,
-            [pool.sousId]: new BigNumber(userInfo[index].amount._hex).toJSON(),
-        }),
-        {},
-    )
+    // const masterChefContract = getMasterchefContract(56)
+    // const calls = nonMasterPools.map((p) => ({
+    //     address: getAddress(p.contractAddress),
+    //     name: 'userInfo',
+    //     params: [account],
+    // }))
+    // const userInfo = await multicall(sousChefABI, calls)
+    // const stakedBalances = nonMasterPools.reduce(
+    //     (acc, pool, index) => ({
+    //         ...acc,
+    //         [pool.sousId]: new BigNumber(userInfo[index].amount._hex).toJSON(),
+    //     }),
+    //     {},
+    // )
 
-    // Cake / Cake pool
-    const { amount: masterPoolAmount } = await masterChefContract.userInfo('0', account)
+    // // Cake / Cake pool
+    // const { amount: masterPoolAmount } = await masterChefContract.userInfo('0', account)
 
-    return { ...stakedBalances, 0: new BigNumber(masterPoolAmount.toString()).toJSON() }
+    // return { ...stakedBalances, 0: new BigNumber(masterPoolAmount.toString()).toJSON() }
 }
 
 export const fetchUserPendingRewards = async (account) => {
-    const calls = nonMasterPools.map((p) => ({
-        address: getAddress(p.contractAddress),
-        name: 'pendingReward',
-        params: [account],
-    }))
-    const res = await multicall(sousChefABI, calls)
-    const pendingRewards = nonMasterPools.reduce(
-        (acc, pool, index) => ({
-            ...acc,
-            [pool.sousId]: new BigNumber(res[index]).toJSON(),
-        }),
-        {},
-    )
+    // const masterChefContract = getMasterchefContract(56)
+    // const calls = nonMasterPools.map((p) => ({
+    //     address: getAddress(p.contractAddress),
+    //     name: 'pendingReward',
+    //     params: [account],
+    // }))
+    // const res = await multicall(sousChefABI, calls)
+    // const pendingRewards = nonMasterPools.reduce(
+    //     (acc, pool, index) => ({
+    //         ...acc,
+    //         [pool.sousId]: new BigNumber(res[index]).toJSON(),
+    //     }),
+    //     {},
+    // )
 
-    // Cake / Cake pool
-    const pendingReward = await masterChefContract.pendingCake('0', account)
+    // // Cake / Cake pool
+    // const pendingReward = await masterChefContract.pendingCake('0', account)
 
-    return { ...pendingRewards, 0: new BigNumber(pendingReward.toString()).toJSON() }
+    // return { ...pendingRewards, 0: new BigNumber(pendingReward.toString()).toJSON() }
 }
 
 

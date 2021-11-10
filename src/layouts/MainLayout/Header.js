@@ -9,10 +9,11 @@ import { getXaiTokenContract, methods } from '../../utilities/ContractService';
 import BigNumber from 'bignumber.js';
 import { checkIsValidNetwork } from '../../utilities/common';
 import { useLocation } from 'react-router-dom';
+import { useActiveWeb3React } from 'hooks';
 
 function Header({ onOpen, title, settings }) {
   const [totalXaiMinted, setTotalXaiMinted] = useState('0');
-
+  const { chainId } = useActiveWeb3React();
   // const getTotalXaiMinted = async () => {
   //   // total xai minted
   //   const xaiContract = getXaiTokenContract();
@@ -66,7 +67,7 @@ function Header({ onOpen, title, settings }) {
         </div>
         <h2 className="text-white ml-5 text-4xl font-bold uppercase">{title || currentTitle}</h2>
       </div>
-      {pathname?.includes(RouteMap.auction) && pathname !== `${RouteMap.auction}/create` ? (
+      {pathname?.includes(RouteMap.auction) && pathname !== `${RouteMap.auction}/create` && ![339, 25].includes(chainId) ? (
         <Link
           to="/auction/create"
           className="focus:outline-none bg-transparent border border-primary py-2 px-4 rounded-3xl text-white ml-10 w-80 text-center"

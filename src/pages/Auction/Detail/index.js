@@ -40,13 +40,11 @@ const ArrowDown = styled.button`
   will-change: background-color, border, transform;
   width: 22px;
   height: 22px;
-
   &:focus,
   &:hover,
   &:active {
     outline: none;
   }
-
   &:hover {
     background-color: #101016;
   }
@@ -216,15 +214,18 @@ function Detail(props) {
   }
 `;
 
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
   const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
 
-  const auctionContract = getAuctionContract(state.type);
+  const auctionContract = getAuctionContract(state.type, chainId);
   const dutchContract = dutchAuctionContract();
   const fixedContract = fixedAuctionContract();
 
+  // const { account, chainId } = useActiveWeb3React();
+  // const { apolloClient } = useContext(subGraphContext);
+  // const auctionContract = getAuctionContract(state.type, chainId);
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
@@ -423,7 +424,7 @@ function Detail(props) {
           status: auctionStatus,
           statusClass: auctionStatus,
           title: type + ' Auction',
-          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
           token: elem['auctioningToken']['id'],
           website: elem['about']['website'],
           description: elem['about']['description'],
@@ -555,7 +556,7 @@ function Detail(props) {
           mediumLink: elem['about']['medium'],
           twitterLink: elem['about']['twitter'],
           title: type + ' Auction',
-          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
           token: elem['auctioningToken'],
           website: elem['about']['website'],
           description: elem['about']['description'],
@@ -768,8 +769,7 @@ function Detail(props) {
           ) : (
             <h2 className="text-white mb-1 xl:text-xl md:text-lg font-bold text-primary">
               {state.detail.currentPrice ? Number(state.detail.currentPrice.toFixed(8)) : 0}{' '}
-              {props.location.pathname.includes('fixed') ? `${state.detail.auctionSymbol}`
-                : `${state.detail.auctionSymbol}-${state.detail.biddingSymbol}`}
+              {state.detail.auctionSymbol}-{state.detail.biddingSymbol}
             </h2>
           )}
           <div className="flex items-center text-white text-lg md:text-md ">
@@ -818,7 +818,7 @@ function Detail(props) {
             </a>
           </h2>
           <div className="flex items-center text-white text-lg md:text-md ">
-            {props.location.pathname.includes('fixed') ? 'Purchase With' : 'Bidding With'}
+            Bidding With{' '}
             <div className="tooltip relative">
               <img
                 className="ml-3"
@@ -867,7 +867,7 @@ function Detail(props) {
             </a>
           </h2>
           <div className="flex items-center text-white text-lg md:text-md ">
-            {props.location.pathname.includes('fixed') ? 'Total Sale' : 'Total Auctioned'}
+            Total Auctioned{' '}
             <div className="tooltip relative">
               <img
                 className="ml-3"
@@ -899,7 +899,7 @@ function Detail(props) {
                 src={require('../../../assets/images/info.svg').default}
                 alt=""
               />
-              <span className="label">{props.location.pathname.includes('fixed') ? 'Minimum Buy' : 'Minimum Bid Price'}</span>
+              <span className="label">Minimum Bid Price</span>
             </div>
           </div>
         </div>
@@ -1308,6 +1308,7 @@ function Detail(props) {
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
+            // auctionContract={auctionContract}
             auctionContract={
               state.detail.type === 'DUTCH'
                 ? dutchContract
@@ -1315,7 +1316,7 @@ function Detail(props) {
                   ? fixedContract
                   : auctionContract
             }
-            auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
+            auctionAddr={CONTRACT_ANNEX_AUCTION[chainId][state.type]['address']}
             getData={getData}
             orders={state.orders}
             auctionType={state.detail.type}
@@ -1328,7 +1329,6 @@ function Detail(props) {
           loading={loading}
           isAlreadySettle={state.detail['isAlreadySettle']}
           isAllowCancellation={state.detail['isAllowCancellation']}
-          // auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
           auctionContract={auctionContract}
           account={account}
           auctionStatus={state.auctionStatus}
@@ -1340,7 +1340,6 @@ function Detail(props) {
           data={state.orders}
           loading={loading}
           isAllowCancellation={false}
-          // auctionContract={auctionContract}
           auctionContract={state.detail.type === 'DUTCH' ? dutchContract : fixedContract}
           account={account}
           auctionStatus={state.auctionStatus}

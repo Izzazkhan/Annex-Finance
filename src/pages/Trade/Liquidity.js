@@ -16,10 +16,12 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 
 	// fetch the user's balances of all tracked V2 LP tokens
 	const trackedTokenPairs = useTrackedTokenPairs();
+	console.log('trackedTokenPairs: ', trackedTokenPairs)
 	const tokenPairsWithLiquidityTokens = useMemo(
 		() => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
 		[trackedTokenPairs]
 	);
+	console.log('tokenPairsWithLiquidityTokens: ', tokenPairsWithLiquidityTokens)
 	const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken), [
 		tokenPairsWithLiquidityTokens,
 	]);
@@ -46,8 +48,8 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 	const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair) => Boolean(v2Pair));
 
 	return (
-		<div className="py-10 w-full max-w-2xl mx-auto">
-			<div className="w-full max-w-2xl py-8 px-6 sm:px-10 bg-black rounded-xl">
+		<div className="py-10 w-full mx-auto">
+			<div className="w-full py-8 px-6 sm:px-10 bg-black rounded-xl">
 				<div className="">
 					<div className="flex justify-between">
 						<div

@@ -2,12 +2,12 @@ import React, {useCallback, useState} from 'react';
 
 import Modal from '../UI/Modal';
 import CurrencyLogo from "../common/CurrencyLogo";
-import {getEtherscanLink} from "../../utils";
-import {CHAIN_ID} from "../../constants/swap";
+import { getEtherscanLink } from "../../utils";
+import { useActiveWeb3React } from '../../hooks';
 
 function TokenWarningModal({isOpen, tokens, onConfirm}) {
 	const handleDismiss = useCallback(() => null, []);
-
+	const { chainId } = useActiveWeb3React();
 
 	const title = (
 		<div
@@ -50,7 +50,7 @@ function TokenWarningModal({isOpen, tokens, onConfirm}) {
 								<a
 									target={"_blank"}
 									rel={'noreferrer noopener'}
-									href={getEtherscanLink(CHAIN_ID, token?.address, "token")}
+									href={getEtherscanLink(chainId, token?.address, "token")}
 									className="text-primary no-underline focus:outline-none">
 									View on Explorer
 								</a>

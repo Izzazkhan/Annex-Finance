@@ -1,16 +1,16 @@
 /* eslint-disable */
-import {useActiveWeb3React} from "../../hooks";
-import {compose} from "redux";
-import {connectAccount} from "../../core";
-import {useEffect, useState} from "react";
-import {getTokenContract, getVoteContract, methods} from "../../utilities/ContractService";
+import { useActiveWeb3React } from "../../hooks";
+import { compose } from "redux";
+import { connectAccount } from "../../core";
+import { useEffect, useState } from "react";
+import { getTokenContract, getVoteContract, methods } from "../../utilities/ContractService";
 import Web3 from "web3";
 import toast from "../UI/Toast";
 import RouteMap from "../../routes/RouteMap";
 import Loading from "../UI/Loading";
 import Proposal from "./Proposal";
-import {useHistory} from "react-router-dom";
-import {buttons} from "polished";
+import { useHistory } from "react-router-dom";
+import { buttons } from "polished";
 import ProposalModal from "./Modals/ProposalModal";
 
 const Proposals = ({
@@ -22,7 +22,7 @@ const Proposals = ({
     total,
     onChangePage
 }) => {
-    const { account: address } = useActiveWeb3React();
+    const { account: address, chainId } = useActiveWeb3React();
     const [proposalModal, setProposalModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [proposalThreshold, setProposalThreshold] = useState(0);
@@ -33,7 +33,7 @@ const Proposals = ({
 
     useEffect(() => {
         if (address) {
-            const voteContract = getVoteContract();
+            const voteContract = getVoteContract(chainId);
             methods.call(voteContract.methods.proposalThreshold, []).then(res => {
                 setProposalThreshold(+Web3.utils.fromWei(res, 'ether'));
             });
@@ -49,7 +49,7 @@ const Proposals = ({
             (delegateAddress === '' ||
                 delegateAddress === '0x0000000000000000000000000000000000000000')
         ) {
-            const tokenContract = getTokenContract('ann');
+            const tokenContract = getTokenContract('ann', chainId);
             methods
                 .call(tokenContract.methods.delegates, [address])
                 .then(res => {
@@ -66,7 +66,7 @@ const Proposals = ({
             });
             return;
         }
-        const voteContract = getVoteContract();
+        const voteContract = getVoteContract(chainId);
         setIsLoading(true);
         methods
             .call(voteContract.methods.latestProposalIds, [address])

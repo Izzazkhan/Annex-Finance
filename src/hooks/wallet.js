@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from "@annex/sdk";
+import { CurrencyAmount, ETHERS, JSBI, Token, TokenAmount } from "@annex/sdk";
 import { useMemo } from "react";
 import ERC20_INTERFACE from "../constants/abis/erc20";
 import { useAllTokens } from "./Tokens";
@@ -16,6 +16,7 @@ import { useActiveWeb3React } from "./index";
 export function useETHBalances(
 	uncheckedAddresses
 ) {
+	const { chainId } = useActiveWeb3React();
 	const multicallContract = useMulticallContract();
 
 	const addresses = useMemo(
@@ -39,7 +40,7 @@ export function useETHBalances(
 		() =>
 			addresses.reduce((memo, address, i) => {
 			const value = results?.[i]?.result?.[0];
-			if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()));
+			if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId);
 			return memo;
 		}, {}),
 	[addresses, results]
@@ -105,12 +106,13 @@ export function useCurrencyBalances(
 	account,
 	currencies
 ) {
+	const { chainId } = useActiveWeb3React();
 	const tokens = useMemo(() => currencies?.filter((currency) => currency instanceof Token) || [], [
 		currencies,
 	])
 
 	const tokenBalances = useTokenBalances(account, tokens);
-	const containsETH = useMemo(() => currencies?.some((currency) => currency === ETHER) || false, [
+	const containsETH = useMemo(() => currencies?.some((currency) => currency === ETHERS[chainId]) || false, [
 		currencies,
 	]);
 	const ethBalance = useETHBalances(containsETH ? [account] : []);
@@ -120,7 +122,7 @@ export function useCurrencyBalances(
 			currencies?.map((currency) => {
 				if (!account || !currency) return undefined;
 				if (currency instanceof Token) return tokenBalances[currency.address];
-				if (currency === ETHER) return ethBalance[account];
+				if (currency === ETHERS[chainId]) return ethBalance[account];
 				return undefined;
 			}) || [],
 		[account, currencies, ethBalance, tokenBalances]

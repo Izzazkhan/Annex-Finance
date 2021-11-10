@@ -30,6 +30,7 @@ export const getArgs = (func) => {
 };
 
 export const checkIsValidNetwork = (walletType = 'metamask') => {
+  const AVAILABLE_NETWORKS = [56, 97, 339]
   if (window.ethereum) {
     let netId;
     if (walletType === 'binance' && window.BinanceChain) {
@@ -40,36 +41,30 @@ export const checkIsValidNetwork = (walletType = 'metamask') => {
         : +window.ethereum.chainId;
     }
     if (netId) {
-      if (netId === 97 || netId === 56) {
-        if (netId === 97 && process.env.REACT_APP_ENV === 'prod') {
-          return false;
-        }
-        if (netId === 56 && process.env.REACT_APP_ENV === 'dev') {
-          return false;
-        }
-        return true;
+      if (!AVAILABLE_NETWORKS.includes(netId)) {
+        return false;
       }
-      return false;
+      return true;
     }
   }
   return false;
 };
 
-export const addToken = async (asset = 'xai', decimal, type) => {
+export const addToken = async (asset = 'xai', decimal, type, chainId) => {
   let tokenAddress = '';
   let tokenSymbol = '';
   let tokenDecimals = 18;
   let tokenImage = '';
   if (asset === 'xai') {
-    tokenAddress = constants.CONTRACT_XAI_TOKEN_ADDRESS;
+    tokenAddress = constants.CONTRACT_XAI_TOKEN_ADDRESS[chainId];
     tokenSymbol = 'XAI';
     tokenDecimals = 18;
     tokenImage = `${window.location.origin}/coins/xai.svg`;
   } else {
     tokenAddress =
       type === 'token'
-        ? constants.CONTRACT_TOKEN_ADDRESS[asset].address
-        : constants.CONTRACT_ABEP_ADDRESS[asset].address;
+        ? constants.CONTRACT_TOKEN_ADDRESS[chainId][asset].address
+        : constants.CONTRACT_ABEP_ADDRESS[chainId][asset].address;
     tokenSymbol =
       type === 'token'
         ? asset.toUpperCase()
