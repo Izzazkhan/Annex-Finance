@@ -608,8 +608,8 @@ export const REACT_APP_ANN_Vault_ADDRESS = process.env.REACT_APP_ENV === 'dev' ?
   process.env.REACT_APP_ANN_TEST_Vault_ADDRESS
   : process.env.REACT_APP_ANN_MAIN_Vault_ADDRESS
 
-export const REACT_APP_ANNEX_FARM_ADDRESS = process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_TEST_Annex_Farm_ADDRESS
-  : process.env.REACT_APP_MAIN_Annex_Farm_ADDRESS
+export const REACT_APP_ANNEX_FARM_ADDRESS = process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_BSCTEST_Annex_Farm_ADDRESS
+  : process.env.REACT_APP_BSC_Annex_Farm_ADDRESS
 
 
 export const CONTRACT_DUTCH_AUCTION_ADDRESS =
