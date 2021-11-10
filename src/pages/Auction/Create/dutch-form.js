@@ -232,7 +232,7 @@ export default function DutchForm(props) {
     type: 'batch',
   });
   const annTokenContract = getANNTokenContract();
-  const auctionContract = getAuctionContract(state.type);
+  const auctionContract = getAuctionContract(state.type, props.chainId);
   const dutchAuction = dutchAuctionContract();
 
   useEffect(async () => {

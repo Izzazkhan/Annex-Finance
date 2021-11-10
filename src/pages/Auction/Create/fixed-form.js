@@ -239,7 +239,7 @@ export default function DutchForm(props) {
     type: 'fixed',
   });
   const annTokenContract = getANNTokenContract();
-  const auctionContract = getAuctionContract('fixed');
+  const auctionContract = getAuctionContract('fixed', props.chainId);
   const fixedAuction = fixedAuctionContract();
 
   useEffect(async () => {
