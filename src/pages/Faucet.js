@@ -122,7 +122,7 @@ function Faucet({ form, getFromFaucet }) {
     <MainLayout isHeader={false}>
       <div className="flex flex-col items-center text-white">
         <FaucetWrapper className="flex flex-col">
-          <p className="header">Agile Binance Smart Chain Faucet</p>
+          <p className="header">Annex Cassini Faucet</p>
           <div className="flex flex-col justify-center">
             <input
               className="bg-transparent text-18 bg-white
