@@ -22,11 +22,21 @@ import MulticallUpdater from '../core/modules/multicall/updater';
 import TransactionUpdater from '../core/modules/transactions/updater';
 import ListsUpdater from '../core/modules/lists/updater';
 import Games from 'pages/Games';
-import { useActiveWeb3React } from 'hooks';
+import { useActiveWeb3React, useDetectChainChange } from 'hooks';
 import Faucet from 'pages/Faucet';
 const Routes = () => {
   const { chainId } = useActiveWeb3React();
   const history = useHistory();
+  useDetectChainChange((chainId) => {
+    if ((window.location.pathname.includes(routes.auction) || window.location.pathname.includes(routes.games)) && ['339', '25'].includes(chainId)) {
+      history.push(routes.dashboard)
+      location.reload()
+    }
+    if ((window.location.pathname.includes(routes.faucet)) && !['339', '25'].includes(chainId)) {
+      history.push(routes.dashboard)
+      location.reload()
+    }
+  })
   return (
     <Web3ReactManager>
       <ListsUpdater />
