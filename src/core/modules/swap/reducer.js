@@ -10,7 +10,6 @@ import { initialState } from '../initialState';
 
 export default function swap(state = initialState.swap, action = {}) {
 	const { type, payload } = action;
-
 	switch (type) {
 		case SET_RECIPIENT: {
 			return {

@@ -6,6 +6,7 @@ import { CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, LineCh
 import { getAbepContract, getInterestModelContract, methods } from "../../utilities/ContractService";
 import BigNumber from "bignumber.js";
 import { checkIsValidNetwork } from "../../utilities/common";
+import { useActiveWeb3React } from '../../hooks';
 import styled from "styled-components";
 
 let flag = false;
@@ -91,6 +92,7 @@ const Wrapper = styled.div`
   }
 `;
 const InterestRateModel = ({ settings, currentAsset }) => {
+  const { chainId } = useActiveWeb3React();
   const [graphData, setGraphData] = useState([]);
   const [tickerPos, setTickerPos] = useState(null);
   const [percent, setPercent] = useState(null);
@@ -109,7 +111,7 @@ const InterestRateModel = ({ settings, currentAsset }) => {
 
   const getGraphData = async asset => {
     flag = true;
-    const abepContract = getAbepContract(asset);
+    const abepContract = getAbepContract(asset, chainId);
     let [interestRateModel, cash] = await Promise.all([
       methods.call(
         abepContract.methods.interestRateModel,

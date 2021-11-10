@@ -17,13 +17,14 @@ export function isAddress(value) {
 }
 
 
-const ETHERSCAN_PREFIXES = {
-	56: "",
-	97: "testnet.",
+const EXPLORERS = {
+	56: "https://bscscan.com",
+	97: "https://testnet.bscscan.com",
+	339: 'https://cronos.crypto.org/cassini/explorer/'
 };
 
 export function getEtherscanLink(chainId, data, type) {
-	const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[56]}bscscan.com`;
+	const prefix = `${EXPLORERS[chainId]}`;
 
 	switch (type) {
 		case "transaction": {
@@ -91,8 +92,8 @@ export function getContract(address, ABI, library, account) {
 }
 
 // account is optional
-export function getRouterContract(_, library, account) {
-	return getContract(ROUTER_ADDRESS, IUniswapV2Router02ABI, library, account);
+export function getRouterContract(chainId, library, account) {
+	return getContract(ROUTER_ADDRESS[chainId], IUniswapV2Router02ABI, library, account);
 }
 
 export function escapeRegExp(string) {

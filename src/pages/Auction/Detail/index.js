@@ -216,15 +216,18 @@ function Detail(props) {
   }
 `;
 
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
   const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
 
-  const auctionContract = getAuctionContract(state.type);
+  const auctionContract = getAuctionContract(state.type, chainId);
   const dutchContract = dutchAuctionContract();
   const fixedContract = fixedAuctionContract();
 
+  // const { account, chainId } = useActiveWeb3React();
+  // const { apolloClient } = useContext(subGraphContext);
+  // const auctionContract = getAuctionContract(state.type, chainId);
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
@@ -423,7 +426,7 @@ function Detail(props) {
           status: auctionStatus,
           statusClass: auctionStatus,
           title: type + ' Auction',
-          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
           token: elem['auctioningToken']['id'],
           website: elem['about']['website'],
           description: elem['about']['description'],
@@ -555,7 +558,7 @@ function Detail(props) {
           mediumLink: elem['about']['medium'],
           twitterLink: elem['about']['twitter'],
           title: type + ' Auction',
-          contract: CONTRACT_ANNEX_AUCTION[type.toLowerCase()]['address'],
+          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
           token: elem['auctioningToken'],
           website: elem['about']['website'],
           description: elem['about']['description'],
@@ -1307,14 +1310,8 @@ function Detail(props) {
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
-            auctionContract={
-              state.detail.type === 'DUTCH'
-                ? dutchContract
-                : state.detail.type === 'FIXED'
-                  ? fixedContract
-                  : auctionContract
-            }
-            auctionAddr={CONTRACT_ANNEX_AUCTION[state.type]['address']}
+            auctionContract={auctionContract}
+            auctionAddr={CONTRACT_ANNEX_AUCTION[chainId][state.type]['address']}
             getData={getData}
             orders={state.orders}
             auctionType={state.detail.type}

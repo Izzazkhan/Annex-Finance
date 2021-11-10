@@ -1,13 +1,21 @@
-import { Currency, ETHER, Token } from "@annex/sdk";
+import { ETHERS, Token } from "@annex/sdk";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import useHttpLocations from "../../hooks/useHttpLocations";
 import { WrappedTokenInfo } from "../../core";
+import { useActiveWeb3React } from "../../hooks";
 import Logo from "./Logo";
 import CoinLogo from "./CoinLogo";
 
 const getTokenLogoURL = (address) =>
 	`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/assets/${address}/logo.png`;
+
+const BNBLogoURLS = {
+	56: '/images/coins/bnb.png',
+	97: '/images/coins/bnb.png',
+	339: '/images/coins/cro.png',
+	25: '/images/coins/cro.png'
+}
 
 const StyledBnbLogo = styled.img`
 	width: ${({ size }) => size};
@@ -26,10 +34,11 @@ export default function CurrencyLogo({
 	size = "24px",
 	style,
 }) {
+	const { chainId } = useActiveWeb3React();
 	const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.address : undefined);
 
 	const srcs = useMemo(() => {
-		if (currency === ETHER) return [];
+		if (currency === ETHERS[chainId]) return [];
 
 		if (currency instanceof Token) {
 			if (currency instanceof WrappedTokenInfo) {
@@ -45,8 +54,8 @@ export default function CurrencyLogo({
 		return [];
 	}, [currency, uriLocations]);
 
-	if (currency === ETHER) {
-		return <StyledBnbLogo src="/images/coins/bnb.png" size={size} style={style} />;
+	if (currency === ETHERS[chainId]) {
+		return <StyledBnbLogo src={BNBLogoURLS[chainId]} size={size} style={style} />;
 	}
 
 	return (currency)?.symbol ? (

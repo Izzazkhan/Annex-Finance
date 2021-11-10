@@ -90,8 +90,8 @@ export const useLP = (address) => {
 }
 
 export const useMasterchef = () => {
-    const { library } = useActiveWeb3React()
-    return useMemo(() => getMasterchefContract(library.getSigner()), [library])
+    const { library, chainId } = useActiveWeb3React()
+    return useMemo(() => getMasterchefContract(chainId, library.getSigner()), [library])
 }
 
 export const useSousChef = (id) => {

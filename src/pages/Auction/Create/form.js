@@ -11,6 +11,7 @@ import {
   methods,
 } from '../../../utilities/ContractService';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
+import { useActiveWeb3React } from '../../../hooks';
 import Modal from './modal';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/dark.css';
@@ -44,6 +45,7 @@ const ArrowDown = styled.button`
 `;
 
 export default function Form(props) {
+  const { chainId } = useActiveWeb3React();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [auctionThreshold, setAuctionThreshold] = useState('');
@@ -232,8 +234,8 @@ export default function Form(props) {
     ],
     type: 'batch',
   });
-  const annTokenContract = getANNTokenContract();
-  const auctionContract = getAuctionContract('batch');
+  const annTokenContract = getANNTokenContract(chainId);
+  const auctionContract = getAuctionContract(state.type, chainId);
 
   useEffect(async () => {
     if (showModal) {
@@ -418,7 +420,7 @@ export default function Form(props) {
   const handleApproveANNToken = async () => {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
-      let auctionAddr = CONTRACT_ANNEX_AUCTION['batch']['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[chainId][state.type]['address'];
       let annAllowance = await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
@@ -434,7 +436,7 @@ export default function Form(props) {
     try {
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
       let { auctionToken } = await getFormState();
-      let auctionAddr = CONTRACT_ANNEX_AUCTION['batch']['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[chainId][state.type]['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
       let auctionTokenAllowance = await getTokenAllowance(
         auctionTokenContract.methods,

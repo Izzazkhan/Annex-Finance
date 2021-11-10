@@ -100,12 +100,12 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade, allowedSlippage = 0) {
+export function useApproveCallbackFromTrade(trade, allowedSlippage = 0, chainId) {
 	const amountToApprove = useMemo(
 		() => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
 		[trade, allowedSlippage]
 	);
 	const tradeIsV1 = getTradeVersion(trade) === Version.v1;
 	const v1ExchangeAddress = useV1TradeExchangeAddress(trade);
-	return useApproveCallback(amountToApprove, tradeIsV1 ? v1ExchangeAddress : ROUTER_ADDRESS);
+	return useApproveCallback(amountToApprove, tradeIsV1 ? v1ExchangeAddress : ROUTER_ADDRESS[chainId]);
 }

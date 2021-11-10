@@ -11,6 +11,7 @@ import MarketSummaryCard from '../components/Market/MarketSummaryCard';
 import APYSparkline from '../components/Annex/APYSparkline';
 import { currencyFormatter } from '../utilities/common';
 import MarketTable from '../components/Market/MarketTable';
+import { useActiveWeb3React } from '../hooks';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -21,6 +22,7 @@ const Market = ({ history, settings }) => {
   const [totalBorrower, setTotalBorrower] = useState('0');
   const [availableLiquidity, setAvailableLiquidity] = useState('0');
   const [totalReserves, setTotalReserves] = useState(0);
+  const { chainId } = useActiveWeb3React();
 
   const markets = settings.markets.map(market => {
     const decimals = market.underlyingSymbol ? settings.decimals[market.underlyingSymbol.toLowerCase()]?.token : 18;
@@ -116,7 +118,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-start items-center space-x-2 ml-6 sm:ml-0">
                   <img
                     className={'w-10 h-10'}
-                    src={constants.CONTRACT_TOKEN_ADDRESS[value.toLowerCase()].asset}
+                    src={constants.CONTRACT_TOKEN_ADDRESS[chainId][value.toLowerCase()].asset}
                     alt={value}
                   />
                   <div className="font-semibold text-white">{value}</div>
@@ -154,23 +156,31 @@ const Market = ({ history, settings }) => {
             disableFilters: true,
             // eslint-disable-next-line react/display-name
             Cell: ({ value, row }) => {
-              const apyValue = new BigNumber(value)
+              let apyValue = new BigNumber(value)
                 .plus(new BigNumber(row?.original?.supplyAnnexApy))
+              const color = apyValue.isNegative()
+              let supplyAnnexApy = new BigNumber(row?.original?.supplyAnnexApy)
+              if (apyValue.isGreaterThan(10000)) {
+                apyValue = 'Infinity'
+              } else {
+                apyValue = apyValue.dp(2, 1).toString(10)
+              }
+              if (supplyAnnexApy.isGreaterThan(10000)) {
+                supplyAnnexApy = 'Infinity'
+              } else {
+                supplyAnnexApy = supplyAnnexApy.dp(2, 1).toString(10)
+              }
               return (
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
-                    <div className={`font-bold text-${
-                        apyValue.isNegative()
-                          ? 'red'
-                          : 'green'
+                    <div className={`font-bold text-${color
+                      ? 'red'
+                      : 'green'
                       }`}>
-                      {apyValue
-                        .dp(2, 1)
-                        .toString(10)}
-                      %
+                      {apyValue} %
                     </div>
                     <div className="text-sm">
-                      {new BigNumber(row?.original?.supplyAnnexApy).dp(2, 1).toString(10)}%
+                      {supplyAnnexApy} %
                     </div>
                   </div>
                 </div>
@@ -206,23 +216,31 @@ const Market = ({ history, settings }) => {
             disableFilters: true,
             // eslint-disable-next-line react/display-name
             Cell: ({ value, row }) => {
-              const apyValue = new BigNumber(value)
+              let apyValue = new BigNumber(value)
                 .minus(new BigNumber(row?.original?.borrowApy))
+              const color = apyValue.isNegative()
+              let borrowAnnexApy = new BigNumber(row?.original?.borrowAnnexApy)
+              if (apyValue.isGreaterThan(10000)) {
+                apyValue = 'Infinity'
+              } else {
+                apyValue = apyValue.dp(2, 1).toString(10)
+              }
+              if (borrowAnnexApy.isGreaterThan(10000)) {
+                borrowAnnexApy = 'Infinity'
+              } else {
+                borrowAnnexApy = borrowAnnexApy.dp(2, 1).toString(10)
+              }
               return (
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
-                    <div className={`font-bold text-${
-                      apyValue.isNegative()
-                        ? 'red'
-                        : 'green'
-                    }`}>
-                      {apyValue
-                        .dp(2, 1)
-                        .toString(10)}
-                      %
+                    <div className={`font-bold text-${color
+                      ? 'red'
+                      : 'green'
+                      }`}>
+                      {apyValue} %
                     </div>
                     <div className="text-sm">
-                      {new BigNumber(row?.original?.borrowAnnexApy).dp(2, 1).toString(10)}%
+                      {borrowAnnexApy} %
                     </div>
                   </div>
                 </div>

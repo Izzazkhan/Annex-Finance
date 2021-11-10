@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import styled from 'styled-components';
 import {
     CONTRACT_TOKEN_ADDRESS, CONTRACT_ABEP_ABI, CONTRACT_ANN_Vault,
-    CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS, REACT_APP_ANNEX_FARM_ADDRESS
+    CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS, REACT_APP_ANNEX_FARM_ADDRESS,
+    CONTRACT_ANN_TOKEN_ABI
 } from '../../utilities/constants';
 import { useActiveWeb3React } from '../../hooks';
 import { getTokenContract, methods } from '../../utilities/ContractService';
@@ -17,41 +18,6 @@ import { bindActionCreators } from 'redux';
 import Loader from 'components/UI/Loader';
 import BigNumber from 'bignumber.js';
 
-const database = [{
-    id: 1,
-    _pid: 0,
-    name: 'ann',
-    token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
-    symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
-    decimal: 18,
-    label: 'AUTO ANN',
-    sublabel: 'Automatic restaking',
-    auto_staking: true,
-    contract_Address: REACT_APP_ANN_Vault_ADDRESS,
-    contract_Abi: CONTRACT_ANN_Vault,
-    logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
-    isFinished: false,
-    isOpen: false,
-    apr: 50
-},
-    // {
-    //     id: 2,
-    //     _pid: 0,
-    //     name: 'ann',
-    //     token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
-    //     symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
-    //     decimal: 18,
-    //     label: 'Manual ANN',
-    //     sublabel: 'Earn ANN, stake ANN',
-    //     auto_staking: false,
-    //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
-    //     contract_Abi: CONTRACT_Annex_Farm,
-    //     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
-    //     isFinished: true,
-    //     isOpen: false
-    // },
-]
-
 const AUTO_VAULT_COMPOUND_FREQUENCY = 5000
 
 const Styles = styled.div`
@@ -64,6 +30,44 @@ const Styles = styled.div`
  `
 
 function Grid({ settings, onlyStaked, poolState }) {
+
+    const { account, chainId } = useActiveWeb3React();
+
+    const database = [{
+        id: 1,
+        _pid: 0,
+        name: 'ann',
+        token_address: CONTRACT_TOKEN_ADDRESS[chainId].ann.address,
+        symbol: CONTRACT_TOKEN_ADDRESS[chainId].ann.symbol,
+        decimal: 18,
+        label: 'AUTO ANN',
+        sublabel: 'Automatic restaking',
+        auto_staking: true,
+        contract_Address: REACT_APP_ANN_Vault_ADDRESS,
+        contract_Abi: CONTRACT_ANN_Vault,
+        logo: CONTRACT_TOKEN_ADDRESS[chainId].ann.asset,
+        isFinished: false,
+        isOpen: false,
+        apr: 50
+    },
+        // {
+        //     id: 2,
+        //     _pid: 0,
+        //     name: 'ann',
+        //     token_address: CONTRACT_TOKEN_ADDRESS.ann.address,
+        //     symbol: CONTRACT_TOKEN_ADDRESS.ann.symbol,
+        //     decimal: 18,
+        //     label: 'Manual ANN',
+        //     sublabel: 'Earn ANN, stake ANN',
+        //     auto_staking: false,
+        //     contract_Address: REACT_APP_ANNEX_FARM_ADDRESS,
+        //     contract_Abi: CONTRACT_Annex_Farm,
+        //     logo: CONTRACT_TOKEN_ADDRESS.ann.asset,
+        //     isFinished: true,
+        //     isOpen: false
+        // },
+    ]
+
     const [poolData, setPoolData] = useState([])
     const [loading, setLoading] = useState(false);
     const [stakeModal, setStakeModal] = useState(false);
@@ -75,7 +79,6 @@ function Grid({ settings, onlyStaked, poolState }) {
         type: '',
     });
     const [poolLoading, setPoolLoading] = useState(true)
-    const { account } = useActiveWeb3React();
 
     useEffect(async () => {
         fetchPoolData(database.filter(pool => !pool.isFinished))
@@ -132,7 +135,12 @@ function Grid({ settings, onlyStaked, poolState }) {
 
     const fetchPoolData = useCallback(async (poolData) => {
         const poolMapped = poolData.map(async (pool) => {
-            const tokenContract = getTokenContract(pool.name);
+            // const tokenContract = getTokenContract(pool.name);
+            const tokenContract = new instance.eth.Contract(
+                JSON.parse(CONTRACT_ANN_TOKEN_ABI),
+                pool.token_address,
+            );
+            console.log('tokenContract', tokenContract)
             let allowance = await methods.call(tokenContract.methods.allowance, [
                 account,
                 pool.contract_Address,

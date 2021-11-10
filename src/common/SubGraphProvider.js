@@ -3,6 +3,7 @@ import { Chains, TheGraphProvider, useCreateSubgraph } from 'thegraph-react';
 import SubGraphContext from '../contexts/subgraph';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
+import { useActiveWeb3React } from "../hooks";
 
 const defaultOptions = {
   watchQuery: {
@@ -15,25 +16,31 @@ const defaultOptions = {
   },
 };
 
-const getSubGraphDataSource = (path) => {
+const getSubGraphDataSource = (path, chainId) => {
   switch (path) {
     case '/auction/past': {
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (chainId === 97) {
         return process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+      } else if (chainId === 56) {
+        return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
       } else {
         return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
       }
     }
     case '/auction/live': {
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (chainId === 97) {
         return process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+      } else if (chainId === 56) {
+        return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
       } else {
         return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
       }
     }
     default: {
-      if (process.env.REACT_APP_ENV === 'dev') {
+      if (chainId === 97) {
         return process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
+      } else if (chainId === 56) {
+        return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
       } else {
         return process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
       }
@@ -41,8 +48,9 @@ const getSubGraphDataSource = (path) => {
   }
 };
 export const SubGraphProvider = (props) => {
+  const { chainId } = useActiveWeb3React();
   const location = useLocation();
-  const SUBGRAPH_DATASOURCE = getSubGraphDataSource(location.pathname);
+  const SUBGRAPH_DATASOURCE = getSubGraphDataSource(location.pathname, chainId);
   const subGraphInstance = useCreateSubgraph({
     [Chains.MAINNET]: SUBGRAPH_DATASOURCE,
   });

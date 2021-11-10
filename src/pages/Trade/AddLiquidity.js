@@ -3,7 +3,7 @@ import help from '../../assets/icons/help.svg';
 import blackPlus from '../../assets/icons/blackPlus.svg';
 import { useActiveWeb3React } from '../../hooks';
 import { useCurrency } from '../../hooks/Tokens';
-import { currencyEquals, ETHER, WETH } from '@annex/sdk';
+import { currencyEquals, ETHERS, WETH } from '@annex/sdk';
 import {
   useDerivedMintInfo,
   useMintActionHandlers,
@@ -44,8 +44,8 @@ function AddLiquidity({
   history,
 }) {
   const { account, chainId, library } = useActiveWeb3React();
-  const currencyA = useCurrency(currencyIdA);
-  const currencyB = useCurrency(currencyIdB);
+  const currencyA = useCurrency(currencyIdA, chainId);
+  const currencyB = useCurrency(currencyIdB, chainId);
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
@@ -93,7 +93,7 @@ function AddLiquidity({
   const maxAmounts = [Field.CURRENCY_A, Field.CURRENCY_B].reduce((accumulator, field) => {
     return {
       ...accumulator,
-      [field]: maxAmountSpend(currencyBalances[field]),
+      [field]: maxAmountSpend(currencyBalances[field], chainId),
     };
   }, {});
 
@@ -107,11 +107,11 @@ function AddLiquidity({
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(
     parsedAmounts[Field.CURRENCY_A],
-    ROUTER_ADDRESS,
+    ROUTER_ADDRESS[chainId],
   );
   const [approvalB, approveBCallback] = useApproveCallback(
     parsedAmounts[Field.CURRENCY_B],
-    ROUTER_ADDRESS,
+    ROUTER_ADDRESS[chainId],
   );
 
   const addTransaction = useTransactionAdder();
@@ -142,8 +142,8 @@ function AddLiquidity({
     let method;
     let args;
     let value;
-    if (currencyA === ETHER || currencyB === ETHER) {
-      const tokenBIsETH = currencyB === ETHER;
+    if (currencyA === ETHERS[chainId] || currencyB === ETHERS[chainId]) {
+      const tokenBIsETH = currencyB === ETHERS[chainId];
       estimate = router.estimateGas.addLiquidityETH;
       method = router.addLiquidityETH;
       args = [
@@ -209,18 +209,23 @@ function AddLiquidity({
 
   const handleCurrencyASelect = useCallback(
     (currA) => {
-      const newCurrencyIdA = currencyId(currA);
+      const newCurrencyIdA = currencyId(currA, chainId);
+      console.log('------- ', newCurrencyIdA, currencyIdB)
       if (newCurrencyIdA === currencyIdB) {
         history.push(`/trade/liquidity/add/${currencyIdB}/${currencyIdA}`);
       } else {
-        history.push(`/trade/liquidity/add/${newCurrencyIdA}/${currencyIdB}`);
+        if (currencyIdB) {
+          history.push(`/trade/liquidity/add/${newCurrencyIdA}/${currencyIdB}`);
+        } else {
+          history.push(`/trade/liquidity/add/${newCurrencyIdA}`);
+        }
       }
     },
     [currencyIdB, history, currencyIdA],
   );
   const handleCurrencyBSelect = useCallback(
     (currB) => {
-      const newCurrencyIdB = currencyId(currB);
+      const newCurrencyIdB = currencyId(currB, chainId);
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
           history.push(`/trade/liquidity/add/${currencyIdB}/${newCurrencyIdB}`);

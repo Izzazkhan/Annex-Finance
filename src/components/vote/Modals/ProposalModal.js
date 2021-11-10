@@ -11,11 +11,13 @@ import closeCirclePrimary from '../../../assets/icons/closeCirclePrimary.svg';
 import crossPrimary from '../../../assets/icons/crossPrimary.svg';
 import Loading from '../../UI/Loading';
 import { getVoteContract, methods } from '../../../utilities/ContractService';
+import { useActiveWeb3React } from "../../../hooks";
 import MdEditor from 'react-markdown-editor-lite';
 
 const mdParser = new MarkdownIt();
 
 const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals, ...props }) => {
+  const { chainId } = useActiveWeb3React();
   const [isLoading, setIsLoading] = useState(false);
   const [description, setDescription] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -35,7 +37,9 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
 
   useEffect(() => {
     if (!visible) {
-      form.resetFields();
+      if (form.__INTERNAL__?.name) {
+        form.resetFields();
+      }
       setIsLoading(false);
       setErrorMsg('');
       setDescription('');
@@ -86,7 +90,7 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
       return;
     }
     setIsLoading(true);
-    const appContract = getVoteContract();
+    const appContract = getVoteContract(chainId);
     methods
       .send(
         appContract.methods.propose,
@@ -109,7 +113,9 @@ const ProposalModal = ({ address, visible, maxOperation, onCancel, getProposals,
   };
 
   const handleAdd = (type, index) => {
-    form.resetFields();
+    if (form.__INTERNAL__?.name) {
+      form.resetFields();
+    }
     if (type === 'next') {
       formData.splice(index + 1, 0, {
         targetAddress: '',

@@ -8,13 +8,13 @@ import { fetchFarmsUserDataAsync, useFarms } from 'core'
 const useApproveFarm = (lpContract) => {
     const dispatch = useDispatch()
     const { data } = useFarms()
-    const { account } = useActiveWeb3React()
+    const { account, chainId } = useActiveWeb3React()
     const masterChefContract = useMasterchef()
     const handleApprove = useCallback(async () => {
         try {
             const tx = await lpContract.approve(masterChefContract.address, ethers.constants.MaxUint256)
             const receipt = await tx.wait()
-            dispatch(fetchFarmsUserDataAsync({account, data}))
+            dispatch(fetchFarmsUserDataAsync({account, data, chainId}))
             return receipt.status
         } catch (e) {
             return false

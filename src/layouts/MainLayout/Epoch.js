@@ -303,7 +303,7 @@ const ArrowContainer = styled.div`
 `;
 
 const Epoch = ({ setSetting, settings }) => {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
 
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
@@ -315,7 +315,7 @@ const Epoch = ({ setSetting, settings }) => {
   const [holdingAPR, setHoldingAPR] = useState('');
   const [checkCurrentEligibleEpoch, setCheckCurrentEligibleEpoch] = useState(false);
 
-  const epochContract = getEpochContract();
+  const epochContract = getEpochContract(chainId);
 
   const getBalance = async () => {
     if (!account) {
@@ -417,7 +417,6 @@ const Epoch = ({ setSetting, settings }) => {
   }, [balanceOf]);
 
   const handleSubmitClaim = () => {
-    const epochContract = getEpochContract();
     methods
       .send(epochContract.methods.claimReward, [], account)
       .then((data) => {

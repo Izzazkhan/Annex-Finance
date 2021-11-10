@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@annex/sdk';
+import { CurrencyAmount, ETHERS, JSBI, Token, TokenAmount, Trade } from '@annex/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useENS from '../../../hooks/useENS';
@@ -14,7 +14,7 @@ import { useUserSlippageTolerance } from '../user/hooks';
 import { computeSlippageAdjustedAmounts } from '../../../utils/prices';
 import { useActiveWeb3React } from '../../../hooks';
 
-import { CONTRACT_FACTORY_ADDRESS, CONTRACT_ROUTER_ADDRESS, CONTRACT_TOKEN_ADDRESS } from '../../../utilities/constants';
+import { CONTRACT_FACTORY_ADDRESS, CONTRACT_ROUTER_ADDRESS, CONTRACT_TOKEN_ADDRESS, STABLE_USD_TOKENS } from '../../../utilities/constants';
 
 const { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } =
   swapActionCreators;
@@ -23,7 +23,7 @@ export function useSwapState() {
   return useSelector((state) => state.swap);
 }
 
-export function useSwapActionHandlers() {
+export function useSwapActionHandlers(chainId) {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
     (field, currency) => {
@@ -31,7 +31,7 @@ export function useSwapActionHandlers() {
         selectCurrency({
           field,
           currencyId:
-            currency instanceof Token ? currency.address : currency === ETHER ? 'ETH' : '',
+            currency instanceof Token ? currency.address : currency === ETHERS[chainId] ? 'ETH' : '',
         }),
       );
     },
@@ -65,7 +65,7 @@ export function useSwapActionHandlers() {
 }
 
 // try to parse a user entered amount for a given token
-export function tryParseAmount(value, currency) {
+export function tryParseAmount(value, currency, chainId) {
   if (!value || !currency) {
     return undefined;
   }
@@ -74,7 +74,7 @@ export function tryParseAmount(value, currency) {
     if (typedValueParsed !== '0') {
       return currency instanceof Token
         ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
-        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed));
+        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed), chainId);
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -85,7 +85,6 @@ export function tryParseAmount(value, currency) {
 }
 
 const BAD_RECIPIENT_ADDRESSES = [
-  CONTRACT_FACTORY_ADDRESS, // v2 factory
   '0x299385325392F537Fc6B4281d2dbe31280833Dcb', // v2 router 01
   CONTRACT_ROUTER_ADDRESS, // v2 router 02
 ];
@@ -125,7 +124,7 @@ function involvesAddress(trade, checksummedAddress) {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo() {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   //   fetchPrice();
   const {
     independentField,
@@ -134,8 +133,8 @@ export function useDerivedSwapInfo() {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     recipient,
   } = useSwapState();
-  const inputCurrency = useCurrency(inputCurrencyId);
-  const outputCurrency = useCurrency(outputCurrencyId);
+  const inputCurrency = useCurrency(inputCurrencyId, chainId);
+  const outputCurrency = useCurrency(outputCurrencyId, chainId);
   const recipientLookup = useENS(recipient || undefined);
   const to = (recipient === null ? account : recipientLookup.address) || null;
 
@@ -148,6 +147,7 @@ export function useDerivedSwapInfo() {
   const parsedAmount = tryParseAmount(
     typedValue,
     (isExactIn ? inputCurrency : outputCurrency) || undefined,
+    chainId
   );
 
   const bestTradeExactIn = useTradeExactIn(
@@ -253,9 +253,9 @@ function validatedRecipient(recipient) {
   return null;
 }
 
-export function queryParametersToSwapState(parsedQs) {
-  let inputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS.busd.address);
-  let outputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS.ann.address);
+export function queryParametersToSwapState(parsedQs, chainId) {
+  let inputCurrency = parseCurrencyFromURLParameter(STABLE_USD_TOKENS[chainId].address);
+  let outputCurrency = parseCurrencyFromURLParameter(CONTRACT_TOKEN_ADDRESS[chainId].ann.address);
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs?.outputCurrency === 'string') {
       inputCurrency = '';
@@ -287,8 +287,7 @@ export function useDefaultsFromURLSearch() {
   const [result, setResult] = useState();
 
   useEffect(() => {
-    if (!chainId) return;
-    const parsed = queryParametersToSwapState(parsedQs);
+    const parsed = queryParametersToSwapState(parsedQs, chainId);
 
     dispatch(
       replaceSwapState({
@@ -299,6 +298,7 @@ export function useDefaultsFromURLSearch() {
         recipient: parsed.recipient,
       }),
     );
+
     setResult({
       inputCurrencyId: parsed[Field.INPUT].currencyId,
       outputCurrencyId: parsed[Field.OUTPUT].currencyId,

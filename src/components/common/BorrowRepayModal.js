@@ -44,7 +44,7 @@ const Styles = styled.div`
 const format = commaNumber.bindWith(',', '.');
 
 function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settings, setSetting }) {
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
   const [currentTab, setCurrentTab] = useState('borrow');
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(new BigNumber(0));
@@ -93,7 +93,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
    * Borrow
    */
   const handleBorrow = () => {
-    const appContract = getAbepContract(asset.id);
+    const appContract = getAbepContract(asset.id, chainId);
     if (asset && account) {
       setIsLoading(true);
       setSetting({
@@ -202,7 +202,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
   const onApprove = async () => {
     if (asset && account && asset.id !== 'bnb') {
       setIsLoadingRepay(true);
-      const tokenContract = getTokenContract(asset.id);
+      const tokenContract = getTokenContract(asset.id, chainId);
       methods
         .send(
           tokenContract.methods.approve,
@@ -223,7 +223,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
    * Repay Borrow
    */
   const handleRepayBorrow = async () => {
-    const appContract = getAbepContract(asset.id);
+    const appContract = getAbepContract(asset.id, chainId);
     if (asset && account) {
       setIsLoadingRepay(true);
       setSetting({
@@ -272,6 +272,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
               .times(new BigNumber(10).pow(settings.decimals[asset.id].token))
               .integerValue()
               .toString(10),
+            chainId,
             () => {
               setAmountRepay(new BigNumber(0));
               setIsLoadingRepay(false);
@@ -492,7 +493,6 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
               isAllowed={({ value }) => {
                 const totalBorrowBalance = getBigNumber(settings.totalBorrowBalance);
                 const totalBorrowLimit = getBigNumber(settings.totalBorrowLimit);
-                console.log(totalBorrowBalance.toString(10), totalBorrowLimit.toString(10))
                 return new BigNumber(value || 0)
                   .times(asset.tokenPrice)
                   .plus(totalBorrowBalance)

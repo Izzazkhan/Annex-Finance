@@ -236,6 +236,38 @@
             "address": "0x52ce071bd9b1c4b00a0b92d298c512478cad67e8",
             "chainId": 56,
             "decimals": 18
+        },
+        {
+            "name": "Tether USD",
+            "symbol": "USDT",
+            "address": "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE",
+            "chainId": 339,
+            "decimals": 18,
+            "logoURI": "/images/coins/usdt.png"
+        },
+        {
+            "name": "Ethereum Token",
+            "symbol": "ETH",
+            "address": "0x1D8A354655398EFE91a3Bc5BfAFB9602344Eeaf8",
+            "chainId": 339,
+            "decimals": 18,
+            "logoURI": "/images/coins/eth.png"
+        },
+        {
+            "name": "BTC Token",
+            "symbol": "BTC",
+            "address": "0x01b1E02abD769499cA858A2Ac5892d8F957211C4",
+            "chainId": 339,
+            "decimals": 18,
+            "logoURI": "/images/coins/btc.png"
+        },
+        {
+            "name": "Annex Token",
+            "symbol": "ANN",
+            "address": "0x8Ef3aC0BfC2BEd64F5Ba19987B9369aD72dC7fA8",
+            "chainId": 339,
+            "decimals": 18,
+            "logoURI": "/images/coins/ann.png"
         }
     ]
 }

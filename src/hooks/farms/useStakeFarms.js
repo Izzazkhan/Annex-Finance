@@ -8,13 +8,13 @@ import { fetchFarmsUserDataAsync, useFarms } from 'core'
 const useStakeFarms = (pid) => {
     const dispatch = useDispatch()
     const { data } = useFarms()
-    const { account } = useActiveWeb3React()
+    const { account, chainId } = useActiveWeb3React()
     const masterChefContract = useMasterchef()
 
     const handleStake = useCallback(
         async (amount) => {
             const txHash = await stakeFarm(masterChefContract, pid, amount, account)
-            dispatch(fetchFarmsUserDataAsync({account, data}))
+            dispatch(fetchFarmsUserDataAsync({account, data, chainId}))
         },
         [masterChefContract, pid],
     )
