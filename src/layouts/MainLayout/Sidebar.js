@@ -238,6 +238,7 @@ const sidebarItems = [
       { key: 3, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
     ],
   },
+  { key: 10, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
 ];
 
 const primaryColor = '#FF9800';
@@ -255,6 +256,13 @@ const NavItems = ({
   if ([339, 25].includes(chainId)) {
     items = items.filter((i) => {
       if (['Liquidate', 'Games', 'Auction'].includes(i.title)) {
+        return null
+      }
+      return i
+    })
+  } else {
+    items = items.filter((i) => {
+      if (['Faucet'].includes(i.title)) {
         return null
       }
       return i
