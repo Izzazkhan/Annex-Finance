@@ -144,7 +144,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
                 target={'_blank'}
                 rel={'noreferrer noopener'}
               >
-                View on BscScan &nbsp;
+                View on Explorer &nbsp;
                 <SVG src={ExternalLinkIcon} />
               </a>
               <div
