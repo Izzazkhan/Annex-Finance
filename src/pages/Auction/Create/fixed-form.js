@@ -578,6 +578,8 @@ export default function DutchForm(props) {
         } else {
           obj[element.id] = element.value.value;
         }
+      } else if (element.id === 'maxPurchased') {
+        obj[element.id] = enocodeParamToUint(element.value, auctionDecimal);
       } else if (element.id === 'minBidAmount') {
         obj[element.id] = enocodeParamToUint(element.value, biddingDecimal);
       } else if (element.id === 'sellAmount') {
