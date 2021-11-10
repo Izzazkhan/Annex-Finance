@@ -225,7 +225,7 @@ function Faucet({ form, getFromFaucet }) {
                   }
                 ]
               })(
-                <Input placeholder="Input your Binance Smart Chain address..." />
+                <Input placeholder="Input your Cassini address..." />
               )}
             </Form.Item>
             {isLoading ? (

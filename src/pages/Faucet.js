@@ -129,7 +129,7 @@ function Faucet({ form, getFromFaucet }) {
                            mt-1 focus:outline-none font-bold px-3 text-black w-full rounded"
               value={address}
               onChange={(e) => {setAddress(e.target.value)}}
-              placeholder="Input your smart chain address..."
+              placeholder="Input your Cassini address..."
             />
             <div className="flex justify-between mt-24">
               <div className="relative menu flex">
