@@ -604,23 +604,26 @@ export const CONTRACT_ANN_Vault = '[{"inputs":[{"internalType":"contract IERC20"
 export const CONTRACT_Annex_Farm = '[{"inputs":[{"internalType":"address","name":"_annex","type":"address"},{"internalType":"address","name":"_devaddr","type":"address"},{"internalType":"uint256","name":"_annexPerBlock","type":"uint256"},{"internalType":"uint256","name":"_startBlock","type":"uint256"},{"internalType":"uint256","name":"_bonusEndBlock","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EmergencyWithdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[],"name":"BONUS_MULTIPLIER","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_allocPoint","type":"uint256"},{"internalType":"contract IERC20","name":"_lpToken","type":"address"},{"internalType":"bool","name":"_withUpdate","type":"bool"}],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"annex","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"annexPerBlock","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"bonusEndBlock","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_devaddr","type":"address"}],"name":"dev","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"devaddr","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"emergencyWithdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_from","type":"uint256"},{"internalType":"uint256","name":"_to","type":"uint256"}],"name":"getMultiplier","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"getPoolInfo","outputs":[{"internalType":"contract IERC20","name":"lpToken","type":"address"},{"internalType":"uint256","name":"lpSupply","type":"uint256"},{"internalType":"uint256","name":"allocPoint","type":"uint256"},{"internalType":"uint256","name":"lastRewardBlock","type":"uint256"},{"internalType":"uint256","name":"accAnnexperShare","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"massUpdatePools","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"address","name":"_user","type":"address"}],"name":"pendingAnnex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"poolLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_allocPoint","type":"uint256"},{"internalType":"bool","name":"_withUpdate","type":"bool"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"speed","type":"uint256"}],"name":"setAnnexPerBlock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"startBlock","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalAllocPoint","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"updatePool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"userInfo","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"rewardDebt","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
 
 
-export const REACT_APP_ANN_Vault_ADDRESS = process.env.REACT_APP_ENV === 'dev' ?
-  process.env.REACT_APP_ANN_TEST_Vault_ADDRESS
-  : process.env.REACT_APP_ANN_MAIN_Vault_ADDRESS
+export const REACT_APP_ANN_Vault_ADDRESS = {
+  56: process.env.REACT_APP_ANN_MAIN_Vault_ADDRESS,
+  97: process.env.REACT_APP_ANN_TEST_Vault_ADDRESS
+}
 
-export const REACT_APP_ANNEX_FARM_ADDRESS = process.env.REACT_APP_ENV === 'dev' ? process.env.REACT_APP_BSCTEST_Annex_Farm_ADDRESS
-  : process.env.REACT_APP_BSC_Annex_Farm_ADDRESS
+export const REACT_APP_ANNEX_FARM_ADDRESS = {
+  56: process.env.REACT_APP_BSC_Annex_Farm_ADDRESS,
+  97: process.env.REACT_APP_BSCTEST_Annex_Farm_ADDRESS
+}
 
+export const CONTRACT_DUTCH_AUCTION_ADDRESS = {
+  56: process.env.REACT_APP_MAIN_ANNEX_DUTCH_AUCTION_ADDRESS,
+  97: process.env.REACT_APP_TEST_ANNEX_DUTCH_AUCTION_ADDRESS
+}
 
-export const CONTRACT_DUTCH_AUCTION_ADDRESS =
-  process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_ANNEX_DUTCH_AUCTION_ADDRESS
-    : process.env.REACT_APP_MAIN_ANNEX_DUTCH_AUCTION_ADDRESS;
+export const CONTRACT_FIXED_AUCTION_ADDRESS = {
+  56: process.env.REACT_APP_MAIN_ANNEX_FIXED_AUCTION_ADDRESS,
+  97: process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS
+}
 
-export const CONTRACT_FIXED_AUCTION_ADDRESS =
-  process.env.REACT_APP_ENV === 'dev'
-    ? process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS
-    : process.env.REACT_APP_MAIN_ANNEX_FIXED_AUCTION_ADDRESS;
 
 export const CONTRACT_ROUTER_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_ROUTER_ADDRESS,
@@ -632,4 +635,19 @@ export const CONTRACT_FACTORY_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_FACTORY_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_FACTORY_ADDRESS,
   339: process.env.REACT_APP_CRONOS_TEST_FACTORY_ADDRESS,
+}
+
+export const BATCH_AUCTION_DATASOURCE = {
+  56: process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE,
+  97: process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE,
+}
+
+export const DUTCH_AUCTION_DATASOURCE = {
+  56: process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE,
+  97: process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE,
+}
+
+export const FIXED_AUCTION_DATASOURCE = {
+  56: process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE,
+  97: process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE,
 }

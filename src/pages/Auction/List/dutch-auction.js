@@ -12,9 +12,11 @@ import {
     dutchAuctionContract,
     methods,
 } from '../../../utilities/ContractService';
+import { useActiveWeb3React } from '../../../hooks';
 
 
 function DutchAuction(props) {
+    const { account, chainId } = useActiveWeb3React();
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
@@ -64,7 +66,7 @@ function DutchAuction(props) {
     }
   `;
 
-    const dutchContract = dutchAuctionContract();
+    const dutchContract = dutchAuctionContract(chainId);
 
     const [dutchAuction, setDutchAuction] = useState([]);
     const [data, setData] = useState(undefined);
@@ -87,11 +89,7 @@ function DutchAuction(props) {
                 redirect: 'follow'
             };
             let subGraph
-            if (process.env.REACT_APP_ENV === 'dev') {
-                subGraph = process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-            } else {
-                subGraph = process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE;
-            }
+            subGraph = constants.DUTCH_AUCTION_DATASOURCE[chainId]
 
             fetch(subGraph, requestOptions)
                 .then(response => response.text())

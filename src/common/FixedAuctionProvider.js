@@ -3,6 +3,8 @@ import { Chains, TheGraphProvider, useCreateSubgraph } from 'thegraph-react';
 import FixedAuctionContext from '../contexts/fixedAuction';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
+import { useActiveWeb3React } from '../hooks';
+import * as constants from '../utilities/constants';
 
 const defaultOptions = {
   watchQuery: {
@@ -16,29 +18,18 @@ const defaultOptions = {
 };
 
 const getFixedAuctionSource = (path) => {
+
+  const { account, chainId } = useActiveWeb3React();
+
   switch (path) {
     case '/auction/past': {
-      if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
-      }
+      return constants.FIXED_AUCTION_DATASOURCE[chainId];
     }
     case '/auction/live': {
-      console.log('hello', process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE);
-
-      if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
-      }
+      return constants.FIXED_AUCTION_DATASOURCE[chainId];
     }
     default: {
-      if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
-      }
+      return constants.FIXED_AUCTION_DATASOURCE[chainId];
     }
   }
 };

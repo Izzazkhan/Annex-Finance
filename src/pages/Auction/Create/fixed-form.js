@@ -20,6 +20,7 @@ import toHex from 'to-hex';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
+import { useActiveWeb3React } from '../../../hooks';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -45,6 +46,7 @@ const ArrowDown = styled.button`
 `;
 
 export default function DutchForm(props) {
+  const { account, chainId } = useActiveWeb3React();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [auctionThreshold, setAuctionThreshold] = useState('');
@@ -240,7 +242,7 @@ export default function DutchForm(props) {
   });
   const annTokenContract = getANNTokenContract(props.chainId);
   const auctionContract = getAuctionContract('fixed', props.chainId);
-  const fixedAuction = fixedAuctionContract();
+  const fixedAuction = fixedAuctionContract(chainId);
 
   useEffect(async () => {
     if (showModal) {

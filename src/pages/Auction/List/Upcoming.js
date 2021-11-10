@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import BatchLive from './batch-auction';
 import DutchLive from './dutch-auction';
 import FixedLive from './fixed-auction';
-
+import { useActiveWeb3React } from '../../../hooks';
+import * as constants from '../../../utilities/constants';
 
 function Upcoming(props) {
-
+  const { account, chainId } = useActiveWeb3React();
   const [activeTab, setActiveTab] = useState('batch');
   const [batchActive, setBatchActive] = useState(true);
   const [dutchActive, setDutchActive] = useState(false);
@@ -103,11 +104,7 @@ function Upcoming(props) {
         redirect: 'follow'
       };
       let subGraph
-      if (process.env.REACT_APP_ENV === 'dev') {
-        subGraph = process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
-      } else {
-        subGraph = process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
-      }
+      subGraph = constants.BATCH_AUCTION_DATASOURCE[chainId]
 
       fetch(subGraph, requestOptions)
         .then(response => response.text())
@@ -143,11 +140,7 @@ function Upcoming(props) {
         redirect: 'follow'
       };
       let subGraph
-      if (process.env.REACT_APP_ENV === 'dev') {
-        subGraph = process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
-        subGraph = process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE;
-      }
+      subGraph = constants.DUTCH_AUCTION_DATASOURCE[chainId]
 
       fetch(subGraph, requestOptions)
         .then(response => response.text())
@@ -184,11 +177,7 @@ function Upcoming(props) {
         redirect: 'follow'
       };
       let subGraph
-      if (process.env.REACT_APP_ENV === 'dev') {
-        subGraph = process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
-      } else {
-        subGraph = process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
-      }
+      subGraph = constants.FIXED_AUCTION_DATASOURCE[chainId]
 
       fetch(subGraph, requestOptions)
         .then(response => response.text())

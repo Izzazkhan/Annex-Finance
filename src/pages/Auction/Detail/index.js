@@ -66,6 +66,8 @@ const ArrowContainer = styled.div`
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
+
+
   const [state, setState] = useState({
     auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
@@ -220,8 +222,8 @@ function Detail(props) {
   const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
 
   const auctionContract = getAuctionContract(state.type, chainId);
-  const dutchContract = dutchAuctionContract();
-  const fixedContract = fixedAuctionContract();
+  const dutchContract = dutchAuctionContract(chainId);
+  const fixedContract = fixedAuctionContract(chainId);
 
   // const { account, chainId } = useActiveWeb3React();
   // const { apolloClient } = useContext(subGraphContext);

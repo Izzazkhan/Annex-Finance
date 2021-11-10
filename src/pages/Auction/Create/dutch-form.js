@@ -235,7 +235,7 @@ export default function DutchForm(props) {
   });
   const annTokenContract = getANNTokenContract(props.chainId);
   const auctionContract = getAuctionContract(state.type, props.chainId);
-  const dutchAuction = dutchAuctionContract();
+  const dutchAuction = dutchAuctionContract(props.chainId);
 
   useEffect(async () => {
     if (showModal) {

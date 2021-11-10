@@ -3,6 +3,9 @@ import { Chains, TheGraphProvider, useCreateSubgraph } from 'thegraph-react';
 import DutchAuctionContext from '../contexts/dutchAuction';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
+import { useActiveWeb3React } from '../hooks';
+import * as constants from '../utilities/constants';
+
 
 const defaultOptions = {
   watchQuery: {
@@ -16,27 +19,18 @@ const defaultOptions = {
 };
 
 const getDutchAuctionSource = (path) => {
+
+  const { account, chainId } = useActiveWeb3React();
+
   switch (path) {
     case '/auction/past': {
-      if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE;
-      }
+      return constants.DUTCH_AUCTION_DATASOURCE[chainId];
     }
     case '/auction/live': {
-      if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE;
-      }
+      return constants.DUTCH_AUCTION_DATASOURCE[chainId];
     }
     default: {
-      if (process.env.REACT_APP_ENV === 'dev') {
-        return process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE;
-      } else {
-        return process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE;
-      }
+      return constants.DUTCH_AUCTION_DATASOURCE[chainId];
     }
   }
 };
