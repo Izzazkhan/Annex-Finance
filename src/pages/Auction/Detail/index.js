@@ -40,13 +40,11 @@ const ArrowDown = styled.button`
   will-change: background-color, border, transform;
   width: 22px;
   height: 22px;
-
   &:focus,
   &:hover,
   &:active {
     outline: none;
   }
-
   &:hover {
     background-color: #101016;
   }
@@ -1310,7 +1308,14 @@ function Detail(props) {
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
-            auctionContract={auctionContract}
+            // auctionContract={auctionContract}
+            auctionContract={
+              state.detail.type === 'DUTCH'
+                ? dutchContract
+                : state.detail.type === 'FIXED'
+                  ? fixedContract
+                  : auctionContract
+            }
             auctionAddr={CONTRACT_ANNEX_AUCTION[chainId][state.type]['address']}
             getData={getData}
             orders={state.orders}
@@ -1324,7 +1329,6 @@ function Detail(props) {
           loading={loading}
           isAlreadySettle={state.detail['isAlreadySettle']}
           isAllowCancellation={state.detail['isAllowCancellation']}
-          // auctionContract={state.detail.type === 'DUTCH' ? dutchContract : auctionContract}
           auctionContract={auctionContract}
           account={account}
           auctionStatus={state.auctionStatus}
@@ -1336,7 +1340,6 @@ function Detail(props) {
           data={state.orders}
           loading={loading}
           isAllowCancellation={false}
-          // auctionContract={auctionContract}
           auctionContract={state.detail.type === 'DUTCH' ? dutchContract : fixedContract}
           account={account}
           auctionStatus={state.auctionStatus}
