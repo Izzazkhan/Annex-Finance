@@ -167,7 +167,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       // annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
       // 	.div(1e18)
       // 	.times(20 * 60 * 24);
-      const annMarket = settings.markets.find((ele) => ele.underlyingSymbol === 'ANN');
+      // const annMarket = settings.markets.find((ele) => ele.underlyingSymbol === 'ANN');
       // xaiAPY = new BigNumber(annexXAIVaultRate)
       // 	.times(annMarket.tokenPrice)
       // 	.times(365 * 100)
