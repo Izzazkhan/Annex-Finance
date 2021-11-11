@@ -138,7 +138,7 @@ export const getTokenContractWithDynamicAbi = (addr) => {
 
 export const getEpochContract = (chainId) => {
   return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_EPOCH_ABI),
+    JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI),
     constants.CONTRACT_TOKEN_ADDRESS[chainId].ann.address,
   );
 };
