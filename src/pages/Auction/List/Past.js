@@ -131,7 +131,8 @@ function Past(props) {
            flex items-center ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               }`}
           >
-            Batch Auction  <span className="bg-black text-white number">{batchCount}</span>
+            Batch Auction  <span className={`${batchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}
+            >{batchCount}</span>
           </button>
           <button
             onClick={(e) => {
@@ -142,7 +143,7 @@ function Past(props) {
             flex items-center ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Dutch Auction  <span className="bg-black text-white number">{dutchCount}</span>
+            Dutch Auction  <span className={`${dutchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{dutchCount}</span>
           </button>
           <button
             onClick={(e) => {
@@ -153,7 +154,7 @@ function Past(props) {
             flex items-center ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Fixed  <span className="bg-black text-white number">{fixedCount}</span>
+            Fixed  <span className={`${fixedActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{fixedCount}</span>
           </button>
         </div>
 
