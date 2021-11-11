@@ -239,7 +239,7 @@ const sidebarItems = [
       { key: 3, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
     ],
   },
-  { key: 10, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
+  { key: 11, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
 ];
 
 const primaryColor = '#FF9800';
