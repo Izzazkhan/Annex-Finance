@@ -5,6 +5,7 @@ import DutchLive from './dutch-auction';
 import FixedLive from './fixed-auction';
 import { useActiveWeb3React } from '../../../hooks';
 import * as constants from '../../../utilities/constants';
+import { auctionCount } from './auctionCount'
 
 function Upcoming(props) {
   const { account, chainId } = useActiveWeb3React();
@@ -89,111 +90,9 @@ function Upcoming(props) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    try {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "query": query
-      });
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      let subGraph
-      subGraph = constants.BATCH_AUCTION_DATASOURCE[chainId]
-
-      fetch(subGraph, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-          console.log('JSON.parse(result)', JSON.parse(result))
-          setBatchCount(JSON.parse(result).data.auctions.length)
-        })
-        .catch(error => {
-          console.log(error);
-          setLoading(false)
-          setError('Error while Loading. Please try again later.')
-        });
-    } catch (error) {
-      console.log(error);
-      setLoading(false)
-      setError('Error while Loading. Please try again later.')
-    }
-  }, [])
-
-  useEffect(() => {
-    try {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "query": dutchQuery
-      });
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      let subGraph
-      subGraph = constants.DUTCH_AUCTION_DATASOURCE[chainId]
-
-      fetch(subGraph, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-          console.log('resultttttt', result)
-          setDutchCount(JSON.parse(result).data.auctions.length)
-
-        })
-        .catch(error => {
-          console.log(error);
-          setLoading(false)
-          setError('Error while Loading. Please try again later.')
-        });
-    } catch (error) {
-      console.log(error);
-      setLoading(false)
-      setError('Error while Loading. Please try again later.')
-    }
-  }, [])
-
-  useEffect(() => {
-    try {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "query": fixedQuery
-      });
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      let subGraph
-      subGraph = constants.FIXED_AUCTION_DATASOURCE[chainId]
-
-      fetch(subGraph, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-          setFixedCount(JSON.parse(result).data.auctions.length)
-        })
-        .catch(error => {
-          console.log(error);
-          setLoading(false)
-          setError('Error while Loading. Please try again later.')
-        });
-    } catch (error) {
-      console.log(error);
-      setLoading(false)
-      setError('Error while Loading. Please try again later.')
-    }
+    auctionCount(query, constants.BATCH_AUCTION_DATASOURCE[chainId], setBatchCount, setLoading, setError)
+    auctionCount(dutchQuery, constants.DUTCH_AUCTION_DATASOURCE[chainId], setDutchCount, setLoading, setError)
+    auctionCount(fixedQuery, constants.FIXED_AUCTION_DATASOURCE[chainId], setFixedCount, setLoading, setError)
   }, [])
 
   return (
@@ -241,6 +140,7 @@ function Upcoming(props) {
       {activeTab === 'batch' ? (
         <>
           <BatchLive
+            activeTab={activeTab}
             auctionStatus='upcoming'
           />
         </>
