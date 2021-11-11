@@ -9,9 +9,11 @@ import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
+import { useActiveWeb3React } from '../../../hooks';
 
 
 function FixedAuction(props) {
+    const { account, chainId } = useActiveWeb3React();
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
