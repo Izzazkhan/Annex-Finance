@@ -78,6 +78,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
             account: 'accountConnected',
           });
           localStorage.setItem('connect', 'connected');
+          localStorage.setItem('approveBiddingToken', false)
           const networkDetails = {
             chainId: `0x${(_chainId).toString(16)}`,
             chainName: `BSC ${_chainId === 97 ? 'Testnet' : 'Mainnet'}`,
@@ -87,7 +88,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
               decimals: 18,
             },
             rpcUrls:
-            _chainId === 97
+              _chainId === 97
                 ? ['https://data-seed-prebsc-1-s1.binance.org:8545']
                 : [process.env.REACT_APP_WEB3_PROVIDER],
           };
@@ -249,7 +250,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
         open={open}
         onSetOpen={onSetOpen}
         onCloseModal={onCloseModal}
-        afterCloseModal={() => {}}
+        afterCloseModal={() => { }}
         width="max-w-xl"
       />
     </div>

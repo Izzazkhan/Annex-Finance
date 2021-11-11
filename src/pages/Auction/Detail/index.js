@@ -66,8 +66,6 @@ const ArrowContainer = styled.div`
 
 const emptyAddr = '0x0000000000000000000000000000000000000000000000000000000000000000';
 function Detail(props) {
-
-
   const [state, setState] = useState({
     auctionEndDate: moment().toDate().getTime(),
     auctionStartDate: moment().toDate().getTime(),
@@ -566,6 +564,7 @@ function Detail(props) {
           placeholderSellAmount,
           auctionEndDateFormatted,
         };
+        console.log('orderssss', orders)
         setState({
           ...state,
           detail,

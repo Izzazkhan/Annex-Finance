@@ -83,7 +83,9 @@ const AuctionStatus = ({
     try {
       setApproveBiddingToken({ status: false, isLoading: true, label: 'Loading...' });
       let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase(), chainId);
-      await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
+      if (localStorage.getItem('approveBiddingToken') !== 'true') {
+        await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
+      }
       setApproveBiddingToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
       console.log(error);
@@ -96,6 +98,7 @@ const AuctionStatus = ({
       let maxValue = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       await methods.send(contractMethods.approve, [spenderAddr, maxValue], account);
       allowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+      localStorage.setItem('approveBiddingToken', true);
     }
     return allowance;
   };
