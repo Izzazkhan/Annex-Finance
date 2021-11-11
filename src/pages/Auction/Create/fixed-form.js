@@ -20,6 +20,7 @@ import toHex from 'to-hex';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
+import { useActiveWeb3React } from '../../../hooks';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -45,6 +46,7 @@ const ArrowDown = styled.button`
 `;
 
 export default function DutchForm(props) {
+  const { account, chainId } = useActiveWeb3React();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [auctionThreshold, setAuctionThreshold] = useState('');
@@ -238,9 +240,9 @@ export default function DutchForm(props) {
     ],
     type: 'fixed',
   });
-  const annTokenContract = getANNTokenContract();
-  const auctionContract = getAuctionContract('fixed');
-  const fixedAuction = fixedAuctionContract();
+  const annTokenContract = getANNTokenContract(props.chainId);
+  const auctionContract = getAuctionContract('fixed', props.chainId);
+  const fixedAuction = fixedAuctionContract(chainId);
 
   useEffect(async () => {
     if (showModal) {
@@ -510,13 +512,16 @@ export default function DutchForm(props) {
   const handleApproveANNToken = async () => {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
-      let auctionAddr = CONTRACT_ANNEX_AUCTION['fixed']['address'];
-      console.log('auctionAddr', auctionAddr)
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[props.chainId][state.type]['address'];
+      console.log('auctionAddr', annTokenContract.methods,
+        auctionAddr,
+        auctionThreshold)
       let annAllowance = await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
         auctionThreshold,
       );
+      console.log('annAllowance', annAllowance)
       setApproveANNToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
       console.log(error);
@@ -527,7 +532,7 @@ export default function DutchForm(props) {
     try {
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
       let { auctionToken } = await getFormState();
-      let auctionAddr = CONTRACT_ANNEX_AUCTION['fixed']['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[props.chainId][state.type]['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
       let auctionTokenAllowance = await getTokenAllowance(
         auctionTokenContract.methods,
@@ -578,6 +583,8 @@ export default function DutchForm(props) {
         } else {
           obj[element.id] = element.value.value;
         }
+      } else if (element.id === 'maxPurchased') {
+        obj[element.id] = enocodeParamToUint(element.value, auctionDecimal);
       } else if (element.id === 'minBidAmount') {
         obj[element.id] = enocodeParamToUint(element.value, biddingDecimal);
       } else if (element.id === 'sellAmount') {

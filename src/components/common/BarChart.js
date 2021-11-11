@@ -30,6 +30,7 @@ function CustomTooltip({ payload, label, active, auctionType }) {
 }
 
 export default function Chart(props) {
+  console.log('barrrrrrr', props)
   return (
     <div
       className="relative pt-5"
@@ -45,7 +46,7 @@ export default function Chart(props) {
           margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
           options={{ scales: { y: { tick: 100000 } } }}
         >
-          <Bar dataKey="auctionDivBuyAmount" fill="#C4C4C4">
+          <Bar dataKey={props.auctionType === 'FIXED' ? "auctionDivSellAmount" : "auctionDivBuyAmount"} fill="#C4C4C4">
             {props.data.length &&
               props.data.map((entry, index) => {
                 // console.log('entry', entry);
@@ -63,7 +64,7 @@ export default function Chart(props) {
           </Bar>
           <Tooltip content={<CustomTooltip auctionType={props.auctionType} />} />
           <XAxis fontSize="12" dataKey="price" />
-          <YAxis fontSize="12" dataKey="auctionDivBuyAmount" ticks={[0, props.yMaximum]} />
+          <YAxis fontSize="12" dataKey={props.auctionType === 'FIXED' ? "auctionDivSellAmount" : "auctionDivBuyAmount"} ticks={[0, props.yMaximum]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

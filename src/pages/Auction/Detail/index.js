@@ -220,8 +220,8 @@ function Detail(props) {
   const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
 
   const auctionContract = getAuctionContract(state.type, chainId);
-  const dutchContract = dutchAuctionContract();
-  const fixedContract = fixedAuctionContract();
+  const dutchContract = dutchAuctionContract(chainId);
+  const fixedContract = fixedAuctionContract(chainId);
 
   // const { account, chainId } = useActiveWeb3React();
   // const { apolloClient } = useContext(subGraphContext);
@@ -564,6 +564,7 @@ function Detail(props) {
           placeholderSellAmount,
           auctionEndDateFormatted,
         };
+        console.log('orderssss', orders)
         setState({
           ...state,
           detail,

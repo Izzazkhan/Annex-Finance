@@ -121,6 +121,7 @@ export default function CreateAuction(props) {
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}
+            chainId={chainId}
             activeTab={activeTab}
           />
         </>
@@ -132,6 +133,7 @@ export default function CreateAuction(props) {
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}
+            chainId={chainId}
             activeTab={activeTab}
           />
         </>
@@ -143,6 +145,7 @@ export default function CreateAuction(props) {
             biddingTokenOptions={biddingTokenOptions}
             annexSwapOptions={annexSwapOptions}
             account={account}
+            chainId={chainId}
             activeTab={activeTab}
           />
         </>

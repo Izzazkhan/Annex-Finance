@@ -163,7 +163,7 @@ const DelegationTypeModal = ({
                             );
                         }}
                     >
-                        View on BscScan
+                        View on Explorer
                     </button>
                 </div>
             </div>

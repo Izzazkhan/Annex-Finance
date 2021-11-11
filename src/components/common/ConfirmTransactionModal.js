@@ -27,7 +27,7 @@ function WalletsModal({ open, onSetOpen, onCloseModal, isCollateralEnable, colla
           className="focus:outline-none bg-primary py-4 rounded text-2xl
                  w-full max-w-350px text-black"
         >
-          View on BscScan
+          View on Explorer
         </button>
       </div>
     </div>

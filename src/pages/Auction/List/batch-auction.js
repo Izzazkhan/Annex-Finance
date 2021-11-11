@@ -7,9 +7,14 @@ import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import { useActiveWeb3React } from '../../../hooks';
+import * as constants from '../../../utilities/constants';
 
 
 function BatchAuction(props) {
+
+    const { account, chainId } = useActiveWeb3React();
+    
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
@@ -107,11 +112,8 @@ function BatchAuction(props) {
                 redirect: 'follow'
             };
             let subGraph
-            if (process.env.REACT_APP_ENV === 'dev') {
-                subGraph = process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE;
-            } else {
-                subGraph = process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE;
-            }
+            subGraph = constants.BATCH_AUCTION_DATASOURCE[chainId]
+            
 
             fetch(subGraph, requestOptions)
                 .then(response => response.text())

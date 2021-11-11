@@ -32,13 +32,11 @@ const ArrowDown = styled.button`
   justify-content: center;
   transition: 0.3s ease all;
   will-change: background-color, border, transform;
-
   &:focus,
   &:hover,
   &:active {
     outline: none;
   }
-
   &:hover {
     background-color: #101016;
   }

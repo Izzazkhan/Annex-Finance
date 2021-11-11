@@ -9,9 +9,11 @@ import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
+import { useActiveWeb3React } from '../../../hooks';
 
 
 function FixedAuction(props) {
+    const { account, chainId } = useActiveWeb3React();
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
@@ -86,11 +88,7 @@ function FixedAuction(props) {
                 redirect: 'follow'
             };
             let subGraph
-            if (process.env.REACT_APP_ENV === 'dev') {
-                subGraph = process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
-            } else {
-                subGraph = process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
-            }
+            subGraph = constants.FIXED_AUCTION_DATASOURCE[chainId]
 
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
@@ -132,11 +130,13 @@ function FixedAuction(props) {
                     price = convertExponentToNum(price);
                     let auctionDivBuyAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
                     auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
-
+                    let auctionDivSellAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
+                    auctionDivSellAmount = convertExponentToNum(auctionDivSellAmount);
                     orders.push({
                         ...order,
                         price,
                         auctionDivBuyAmount,
+                        auctionDivSellAmount
                     });
                 });
                 return {

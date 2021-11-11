@@ -138,22 +138,22 @@ export const getTokenContractWithDynamicAbi = (addr) => {
 
 export const getEpochContract = (chainId) => {
   return new instance.eth.Contract(
-    JSON.parse(constants.CONTRACT_EPOCH_ABI),
+    JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI),
     constants.CONTRACT_TOKEN_ADDRESS[chainId].ann.address,
   );
 };
 
-export const dutchAuctionContract = () => {
+export const dutchAuctionContract = (chainId) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANNEX_DUTCH_AUCTION_ABI),
-    constants.CONTRACT_DUTCH_AUCTION_ADDRESS,
+    constants.CONTRACT_DUTCH_AUCTION_ADDRESS[chainId],
   );
 };
 
-export const fixedAuctionContract = () => {
+export const fixedAuctionContract = (chainId) => {
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANNEX_FIXED_AUCTION_ABI),
-    constants.CONTRACT_FIXED_AUCTION_ADDRESS,
+    constants.CONTRACT_FIXED_AUCTION_ADDRESS[chainId],
   );
 };
 

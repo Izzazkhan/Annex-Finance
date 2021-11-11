@@ -43,7 +43,7 @@ function Grid({ settings, onlyStaked, poolState }) {
         label: 'AUTO ANN',
         sublabel: 'Automatic restaking',
         auto_staking: true,
-        contract_Address: REACT_APP_ANN_Vault_ADDRESS,
+        contract_Address: REACT_APP_ANN_Vault_ADDRESS[chainId],
         contract_Abi: CONTRACT_ANN_Vault,
         logo: CONTRACT_TOKEN_ADDRESS[chainId].ann.asset,
         isFinished: false,
@@ -113,7 +113,7 @@ function Grid({ settings, onlyStaked, poolState }) {
 
     const farmContract = new instance.eth.Contract(
         JSON.parse(CONTRACT_Annex_Farm),
-        REACT_APP_ANNEX_FARM_ADDRESS,
+        REACT_APP_ANNEX_FARM_ADDRESS[chainId],
     );
 
 
