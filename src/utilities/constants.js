@@ -650,3 +650,50 @@ export const FIXED_AUCTION_DATASOURCE = {
   56: process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE,
   97: process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE,
 }
+
+export const AVAILABLE_NETWORKS = {
+  56: {
+    chainId: '0x38', // A 0x-prefixed hexadecimal string
+    chainName: 'Binance Chain',
+    rpcUrls: ['https://bsc-dataseed1.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com'],
+    nativeCurrency: {
+      name: 'BinanceCoin',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+  },
+  97: {
+    chainId: '0x61', // A 0x-prefixed hexadecimal string
+    chainName: 'Binance Testnet',
+    rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+    blockExplorerUrls: ['https://testnet.bscscan.com'],
+    nativeCurrency: {
+      name: 'BinanceCoin',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+  },
+  339: {
+    chainId: '0x153', // A 0x-prefixed hexadecimal string
+    chainName: 'Cassini Chain',
+    rpcUrls: ['https://cassini.crypto.org:8545/'],
+    blockExplorerUrls: ['https://cronos.crypto.org/cassini/explorer'],
+    nativeCurrency: {
+      name: 'Cronos',
+      symbol: 'TCRO',
+      decimals: 18,
+    },
+  },
+  25: {
+    chainId: '0x19', // A 0x-prefixed hexadecimal string
+    chainName: 'Cronos Chain',
+    rpcUrls: ['https://evm-cronos.crypto.org'],
+    blockExplorerUrls: ['https://cronos.crypto.org/explorer/'],
+    nativeCurrency: {
+      name: 'Cronos',
+      symbol: 'CRO',
+      decimals: 18,
+    },
+  }
+}

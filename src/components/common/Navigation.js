@@ -4,6 +4,7 @@ import MiniLogo from '../../components/UI/MiniLogo';
 import ConnectWalletModal from './ConnectWalletModal';
 import { useActiveWeb3React } from '../../hooks';
 import { shortenAddress } from '../../utils/address';
+import { AVAILABLE_NETWORKS } from '../../utilities/constants';
 import commaNumber from 'comma-number';
 import BigNumber from 'bignumber.js';
 import { nFormatter } from '../../utils/data';
@@ -77,7 +78,22 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
   );
 
   const handleChangeNetwork = (chainId) => {
-
+    if (AVAILABLE_NETWORKS[chainId]) {
+      window.ethereum
+        .request({
+          method: 'wallet_addEthereumChain',
+          params: [AVAILABLE_NETWORKS[chainId], account],
+        })
+        .then((result) => {
+          console.log('result : ', result)
+          if (!result) {
+            console.log('error')
+          }
+        })
+        .catch((error) => {
+          console.log('error: ', error)
+        });
+      }
   }
 
   return (
