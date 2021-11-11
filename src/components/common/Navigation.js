@@ -9,6 +9,25 @@ import BigNumber from 'bignumber.js';
 import { nFormatter } from '../../utils/data';
 import { useCountUp } from 'react-countup';
 import HeaderLogo from '../../assets/icons/headerLogo.svg';
+import Select from 'components/UI/Select';
+import styled from 'styled-components';
+
+const Styles = styled.div`
+  .custom-max-width {
+    max-width: 500px;
+  }
+  .custom-font-size {
+    font-size: 0.575rem;
+  }
+  @media (min-width: 1280px) {
+    .custom-max-width {
+      max-width: 650px;
+    }
+    .custom-font-size {
+      font-size: 0.875rem;
+    }
+  }
+`
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -44,15 +63,19 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
     </button>
   );
 
+  const handleChangeNetwork = (chainId) => {
+
+  }
+
   return (
-    <div className={`w-full ${wrapperClassName}`}>
+    <Styles className={`w-full ${wrapperClassName}`}>
       <ConnectWalletModal
         open={connectWalletsOpen}
         onSetOpen={() => setConnectWalletsOpen(true)}
         onCloseModal={() => setConnectWalletsOpen(false)}
       />
       {!isOpen && (
-        <ul className="hidden lg:flex justify-between items-center w-full max-w-450 ml-auto">
+        <ul className="hidden lg:flex justify-between items-center w-full custom-max-width ml-auto">
           <li className="flex items-center space-x-2">
             <img src={coins} alt="coins" />
             <div className="">
@@ -63,12 +86,24 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
                 ${nFormatter(new BigNumber(liquidityCountUp).dp(2, 1).toString(10), 2)}
               </div>
               <div
-                className="text-secondary text-sm"
+                className="text-secondary custom-font-size "
                 style={{ color: 'rgb(255, 152, 0)', fontWeight: 'bold' }}
               >
                 Total Value Locked
               </div>
             </div>
+          </li>
+          <li className="">
+            <Select options={[
+              { name: "Binance", logo: null, value: 56 },
+              { name: "Binance Testnet", logo: null, value: 97 },
+              { name: "Cassini", logo: null, value: 339 },
+              { name: "Cronos", logo: null, value: 25 },
+            ]}
+              onChange={(selected) => { handleChangeNetwork(selected.value) }}
+              selectedClassName={'py-1.5 pl-5 rounded-full'}
+              selectedTextClassName={"text-xl font-normal text-white"}
+            />
           </li>
           <li className="">
             <ConnectWallet />
@@ -102,7 +137,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
           <ConnectWallet action={onClose} />
         </li>
       </ul>
-    </div>
+    </Styles>
   );
 }
 
