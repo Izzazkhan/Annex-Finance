@@ -46,13 +46,13 @@ function Pools() {
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [poolState, setPoolState] = useState('live')
 
-  const { account } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
 
   const onClaim = () => {
     setLoading(true)
     const contract = new instance.eth.Contract(
       JSON.parse(CONTRACT_ANN_Vault),
-      REACT_APP_ANN_Vault_ADDRESS,
+      REACT_APP_ANN_Vault_ADDRESS[chainId],
     );
     contract.methods.harvest()
       .send({ from: account })
