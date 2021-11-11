@@ -228,7 +228,7 @@ function Detail(props) {
   // const auctionContract = getAuctionContract(state.type, chainId);
   const [showDetails, setShowDetails] = useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
     getData();
   }, []);
   useEffect(async () => {
@@ -564,7 +564,6 @@ function Detail(props) {
           placeholderSellAmount,
           auctionEndDateFormatted,
         };
-        console.log('orderssss', orders)
         setState({
           ...state,
           detail,
@@ -657,7 +656,6 @@ function Detail(props) {
           })
           .then((response) => {
             let { data } = response;
-            console.log('response', data);
             if (props.location.pathname.includes('batch')) {
               setData(data);
             } else {

@@ -44,8 +44,7 @@ function AuctionItem(props) {
 
   const history = useHistory();
   const redirectToUrl = (url) => {
-    // history.push(url);
-    props.history.push({
+    history.push({
       pathname: url,
       state: { auctionType: props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch', data: props },
     });

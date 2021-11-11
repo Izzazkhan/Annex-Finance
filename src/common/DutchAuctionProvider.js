@@ -37,7 +37,6 @@ const getDutchAuctionSource = (path) => {
 export const DutchAuctionProvider = (props) => {
   const location = useLocation();
   const DUTCH_AUCTION_DATASOURCE = getDutchAuctionSource(location.pathname);
-  console.log('DUTCH_AUCTION_DATASOURCE **', DUTCH_AUCTION_DATASOURCE);
   const dutchAuctionInstance = useCreateSubgraph({
     [Chains.MAINNET]: DUTCH_AUCTION_DATASOURCE,
   });
