@@ -27,6 +27,20 @@ const WALLET_VIEWS = {
   ACCOUNT: 'account',
 };
 
+const WEB3_PROVIDERS = {
+  56: 'https://bsc-dataseed1.binance.org',
+  97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  339: 'https://cassini.crypto.org:8545',
+  25: '',
+}
+
+const CHAIN_NAME = {
+  56: 'Binance',
+  97: 'Testnet',
+  339: 'Cassini',
+  25: 'Cronos',
+}
+
 function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
 
   const { chainId: _chainId } = useActiveWeb3React();
@@ -80,16 +94,13 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
           localStorage.setItem('connect', 'connected');
           const networkDetails = {
             chainId: `0x${(_chainId).toString(16)}`,
-            chainName: `BSC ${_chainId === 97 ? 'Testnet' : 'Mainnet'}`,
+            chainName: CHAIN_NAME[_chainId],
             nativeCurrency: {
               name: 'Binance-Peg Binance',
               symbol: 'BNB',
               decimals: 18,
             },
-            rpcUrls:
-              _chainId === 97
-                ? ['https://data-seed-prebsc-1-s1.binance.org:8545']
-                : [process.env.REACT_APP_WEB3_PROVIDER],
+            rpcUrls: WEB3_PROVIDERS[_chainId],
           };
 
           await window?.ethereum?.request({
