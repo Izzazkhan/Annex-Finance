@@ -36,7 +36,6 @@ const getFixedAuctionSource = (path) => {
 export const FixedAuctionProvider = (props) => {
   const location = useLocation();
   const FIXED_AUCTION_DATASOURCE = getFixedAuctionSource(location.pathname);
-  console.log('FIXED_AUCTION_DATASOURCE **', FIXED_AUCTION_DATASOURCE);
   const fixedAuctionInstance = useCreateSubgraph({
     [Chains.MAINNET]: FIXED_AUCTION_DATASOURCE,
   });

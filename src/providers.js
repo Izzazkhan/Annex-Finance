@@ -14,7 +14,6 @@ import React from 'react';
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
 const Providers = (props) => {
-  console.log('provider', props);
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>

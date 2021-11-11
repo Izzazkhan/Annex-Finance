@@ -30,7 +30,6 @@ function CustomTooltip({ payload, label, active, auctionType }) {
 }
 
 export default function Chart(props) {
-  console.log('barrrrrrr', props)
   return (
     <div
       className="relative pt-5"
@@ -49,7 +48,6 @@ export default function Chart(props) {
           <Bar dataKey={props.auctionType === 'FIXED' ? "auctionDivSellAmount" : "auctionDivBuyAmount"} fill="#C4C4C4">
             {props.data.length &&
               props.data.map((entry, index) => {
-                // console.log('entry', entry);
                 const color =
                   props.auctionType === 'FIXED'
                     ? '#C4C4C4'
