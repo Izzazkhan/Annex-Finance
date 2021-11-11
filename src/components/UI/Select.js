@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import usdt from '../../assets/images/coins/usdt.png';
@@ -23,11 +23,19 @@ function Select({
   logoClassName,
   selectedClassName,
   selectedTextClassName,
+  selectedOption,
   dropDownClass,
   onChange,
 }) {
-  const [selected, setSelected] = useState(options[0]);
+  const [selected, setSelected] = useState(selectedOption || options[0]);
 
+  useEffect(() => {
+    if (!selectedOption) {
+      return
+    }
+    setSelected(selectedOption)
+  }, [selectedOption])
+  
   return (
     <div className={width}>
       <Listbox

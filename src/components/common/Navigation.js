@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import coins from '../../assets/icons/coins.svg';
 import MiniLogo from '../../components/UI/MiniLogo';
 import ConnectWalletModal from './ConnectWalletModal';
@@ -29,15 +29,28 @@ const Styles = styled.div`
   }
 `
 
+const networkArrayOptions = [
+  { name: "Binance", logo: null, value: 56 },
+  { name: "Binance Testnet", logo: null, value: 97 },
+  { name: "Cassini", logo: null, value: 339 },
+  { name: "Cronos", logo: null, value: 25 },
+]
 const format = commaNumber.bindWith(',', '.');
 
 function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
-  const { account, active } = useActiveWeb3React();
+  const { account, active, chainId } = useActiveWeb3React();
   // console.log('account', account);
   const [connectWalletsOpen, setConnectWalletsOpen] = useState(false);
 
   const { countUp: mintedCountUp, update: mintedUpdate } = useCountUp({ end: 0 });
   const { countUp: liquidityCountUp, update: liquidityUpdate } = useCountUp({ end: 0 });
+
+  const currentNetworkObj = useMemo(() => {
+    if (chainId) {
+      return networkArrayOptions.find((i) => i.value === chainId)
+    }
+    return networkArrayOptions[0]
+  }, [chainId])
 
   useEffect(() => {
     liquidityUpdate(Number(totalLiquidity));
@@ -94,12 +107,8 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
             </div>
           </li>
           <li className="">
-            <Select options={[
-              { name: "Binance", logo: null, value: 56 },
-              { name: "Binance Testnet", logo: null, value: 97 },
-              { name: "Cassini", logo: null, value: 339 },
-              { name: "Cronos", logo: null, value: 25 },
-            ]}
+            <Select options={networkArrayOptions}
+              selectedOption={currentNetworkObj}
               onChange={(selected) => { handleChangeNetwork(selected.value) }}
               selectedClassName={'py-1.5 pl-5 rounded-full'}
               selectedTextClassName={"text-xl font-normal text-white"}
