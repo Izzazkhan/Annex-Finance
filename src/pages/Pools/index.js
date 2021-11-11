@@ -327,16 +327,16 @@ function Pools() {
 
   return (
     <Layout mainClassName="min-h-screen py-8">
-      <div className="flex justify-between items-center w-full text-white">
+      {/* <div className="flex justify-between items-center w-full text-white">
         <div className="coming-soon">
           <div className="image">
             <img src={ComingSoon} alt="Coming Soon" className="" />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Styles>
-        {/* <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
+        <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
  pl-6 lg:pr-5 ">
           <div className="col-span-2 flex items-center">
             <div className="list-icon">
@@ -374,9 +374,9 @@ function Pools() {
 
           </div>
 
-        </div> */}
-        {/* <GridView /> */}
-        {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
+        </div>
+        <GridView />
+        {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />}
       </Styles>
     </Layout>
   );

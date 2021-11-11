@@ -9,46 +9,65 @@ function AuctionItem(props) {
   const [orderArr, setOrderArr] = useState([]);
 
   useEffect(() => {
-    const priceMapped = props.orders.map((item) => {
-      return {
-        ...item,
-        priceValue: Number(item.price.split(' ')[0]),
-      };
-    });
-    const mappedOrderData = priceMapped
-      .sort((a, b) => a.priceValue - b.priceValue)
-      .map((item) => {
-        const buyAmount = item.buyAmount.split(' ')[0];
-        const price = Number(item.price.split(' ')[0]).toFixed(2);
+    if (props.type === 'BATCH') {
+      const priceMapped = props.orders.map((item) => {
         return {
           ...item,
-          auctionDivBuyAmount: buyAmount,
-          price: price,
-          minFundingThresholdNotReached: props.minFundingThresholdNotReached,
+          priceValue: Number(item.price.split(' ')[0]),
         };
       });
-
-    let isSuccessfullArr = [];
-    props.data
-      .sort((a, b) => a.price - b.price)
-      .map((item) => {
-        isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+      const mappedOrderData = priceMapped
+        .sort((a, b) => a.priceValue - b.priceValue)
+        .map((item) => {
+          const buyAmount = item.buyAmount.split(' ')[0];
+          const price = Number(item.price.split(' ')[0]).toFixed(2);
+          return {
+            ...item,
+            auctionDivBuyAmount: buyAmount,
+            price: price,
+            minFundingThresholdNotReached: props.minFundingThresholdNotReached,
+          };
+        });
+      let isSuccessfullArr = [];
+      props.data
+        .sort((a, b) => a.price - b.price)
+        .map((item) => {
+          isSuccessfullArr.push({ isSuccessfull: item.isSuccessfull });
+        });
+      mappedOrderData.map((item, i) => {
+        item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
+        item.auctionEndDate = props.auctionEndDate;
       });
-
-    mappedOrderData.map((item, i) => {
-      item.isSuccessfull = isSuccessfullArr[i].isSuccessfull;
-      item.auctionEndDate = props.auctionEndDate;
-    });
-    setOrderArr(mappedOrderData);
+      setOrderArr(mappedOrderData);
+    }
   }, []);
 
   const history = useHistory();
   const redirectToUrl = (url) => {
-    history.push(url);
+    // history.push(url);
+    props.history.push({
+      pathname: url,
+      state: { auctionType: props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch', data: props },
+    });
   };
   return (
     <div className="col-span-12 lg:col-span-4 md:col-span-6 bg-black rounded-2xl p-6 flex flex-col mb-4">
-      <Link className="flex flex-col h-full justify-between" to={`detail/${props.id}`}>
+      <Link
+        className="flex flex-col h-full justify-between"
+        to={{
+          pathname:
+            props.type === 'BATCH'
+              ? `batch-detail/${props.id}`
+              : props.type === 'FIXED'
+                ? `fixed-detail/${props.id}`
+                : `dutch-detail/${props.id}`,
+          state: {
+            auctionType:
+              props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch',
+            data: props,
+          },
+        }}
+      >
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-5">
           <div className="flex flex-col items-start justify-start ">
             <div className="text-white text-2xl ">{props.title}</div>
@@ -61,7 +80,7 @@ function AuctionItem(props) {
           </div>
         </div>
         <div className="graph">
-          {props.chartType === 'block' ? (
+          {props.type === 'BATCH' ? (
             <Fragment>
               <div className="flex justify-between chart-top-label mb-5">
                 <div className="flex flex-col text-sm font-normal">
@@ -86,6 +105,8 @@ function AuctionItem(props) {
                     height="230px"
                     style={{ marginTop: '-25px' }}
                     data={orderArr.length && orderArr}
+                    auctionType={props.type}
+                    yMaximum={props.minFundingThreshold}
                   />
                 ) : (
                   <div
@@ -108,10 +129,11 @@ function AuctionItem(props) {
                 <span className=" border last "></span>
               </div>
             </Fragment>
-          ) : (
+          ) : props.type === 'DUTCH' ? (
             <Fragment>
               <div className="flex items-end relative ">
-                <LineChart width="310px" height="211px" data={props.data} />
+
+                <LineChart width="310px" height="211px" data={props.data} biddingSymbol={props.biddingSymbol} />
               </div>
               <div className="text-white flex flex-row items-center justify-between items-center mt-8 h-10">
                 <div className="items-center ">
@@ -126,14 +148,72 @@ function AuctionItem(props) {
                 </div>
               </div>
             </Fragment>
+          ) : (
+            <Fragment>
+              <div className="flex justify-between chart-top-label mb-5">
+                <div className="flex flex-col text-sm font-normal">
+                  <span className="font-bold">No. of order</span>
+                  <span>{props.orders ? props.orders.length : 0}</span>
+                </div>
+                <div className="flex flex-col text-sm font-normal">
+                  <span className="font-bold">{props.dateLabel ? props.dateLabel : 'Date'}</span>
+                  <span>{props.formatedAuctionDate}</span>
+                </div>
+              </div>
+              <div className="chart flex items-end relative">
+                {props.orders && props.orders.length > 0 ? (
+                  <BarChart
+                    width="310px"
+                    height="230px"
+                    style={{ marginTop: '-25px' }}
+                    data={props.orders}
+                    auctionType={props.type}
+                    yMaximum={props.yMaximum}
+                  />
+                ) : (
+                  <div
+                    className="flex items-center justify-center relative pt-5"
+                    style={{
+                      width: '100%',
+                      height: '230px',
+                      marginBottom: '-29px',
+                    }}
+                  >
+                    <div>No Graph Data found</div>
+                  </div>
+                )}
+              </div>
+            </Fragment>
           )}
         </div>
 
         <div className="text-white flex flex-row items-stretch justify-between items-center mt-8">
-          <div className="items-start " onClick={() => redirectToUrl('/auction/detail')}>
+          <div
+            className="items-start "
+            onClick={() =>
+              redirectToUrl(
+                props.type === 'BATCH'
+                  ? '/auction/batch-detail'
+                  : props.type === 'FIXED'
+                    ? '/auction/fixed-detail'
+                    : '/auction/dutch-detail',
+              )
+            }
+          >
             <div className="text-primary text-sm font-normal">{props.type} auction</div>
           </div>
-          <div className="items-center " onClick={() => redirectToUrl('/auction/detail')}>
+          <div
+            className="items-center "
+            onClick={() =>
+              redirectToUrl(
+                props.type === 'BATCH'
+                  ? '/auction/batch-detail'
+                  : props.type === 'FIXED'
+                    ? '/auction/fixed-detail'
+                    : '/auction/dutch-detail',
+              )
+            }
+          >
             <div className="flex items-center text-primary text-sm font-bold">
               Enter
               <img

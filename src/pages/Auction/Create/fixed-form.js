@@ -9,9 +9,9 @@ import {
   getAuctionContract,
   getTokenContractWithDynamicAbi,
   methods,
+  fixedAuctionContract,
 } from '../../../utilities/ContractService';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
-import { useActiveWeb3React } from '../../../hooks';
 import Modal from './modal';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/dark.css';
@@ -20,6 +20,7 @@ import toHex from 'to-hex';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
+import { useActiveWeb3React } from '../../../hooks';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -32,18 +33,20 @@ const ArrowDown = styled.button`
   justify-content: center;
   transition: 0.3s ease all;
   will-change: background-color, border, transform;
+
   &:focus,
   &:hover,
   &:active {
     outline: none;
   }
+
   &:hover {
     background-color: #101016;
   }
 `;
 
-export default function Form(props) {
-  const { chainId } = useActiveWeb3React();
+export default function DutchForm(props) {
+  const { account, chainId } = useActiveWeb3React();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [auctionThreshold, setAuctionThreshold] = useState('');
@@ -75,6 +78,7 @@ export default function Form(props) {
         value: '',
         colspan: 6,
         label: 'Token Information',
+        isValid: true,
       },
       {
         type: 'select',
@@ -84,17 +88,9 @@ export default function Form(props) {
         options: props.biddingTokenOptions,
         value: props.biddingTokenOptions[0] ? props.biddingTokenOptions[0] : [],
         colspan: 6,
+        isValid: true,
       },
-      // {
-      //   type: 'select',
-      //   id: 'swapExchange',
-      //   placeholder: 'Swap Exchange',
-      //   description: 'This will use to generate your LP Tokens after settle.',
-      //   options: props.annexSwapOptions,
-      //   value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
-      //   colspan: 12,
-      //   label: 'Exchange',
-      // },
+
       {
         type: 'number',
         id: 'sellAmount',
@@ -103,14 +99,8 @@ export default function Form(props) {
         value: '',
         colspan: 12,
         label: 'Details ',
-      },
-      {
-        type: 'number',
-        id: 'buyAmount',
-        placeholder: 'Minimum buy amount',
-        description: 'The minimium amount to buy the auction.',
-        value: '',
-        colspan: 6,
+        name: 'sellAmount',
+        isValid: true,
       },
       {
         type: 'number',
@@ -119,14 +109,17 @@ export default function Form(props) {
         description: 'The minimium amount to bid on the auction.',
         value: '',
         colspan: 6,
+        isValid: true,
       },
       {
         type: 'number',
-        id: 'minFundThreshold',
-        placeholder: 'Minimum funding threshold',
-        description: 'Minimum buy amount against all auctioned tokens and total auctioned tokens.',
+        id: 'maxPurchased',
+        placeholder: 'Max purchased per wallet/account',
+        min: '0',
+        description: 'The Maximum amount purchased per wallet/account.',
         value: '',
-        colspan: 12,
+        colspan: 6,
+        isValid: true,
       },
       {
         type: 'date',
@@ -136,6 +129,7 @@ export default function Form(props) {
         value: new Date(),
         colspan: 6,
         label: 'Date',
+        isValid: true,
       },
       {
         type: 'date',
@@ -144,16 +138,25 @@ export default function Form(props) {
         description: 'The date on which auction end.',
         value: new Date(),
         colspan: 6,
+        isValid: true,
+      },
+      {
+        type: 'checkbox',
+        id: 'isClaim',
+        placeholder: '',
+        description: 'Claim auction at specific date and time',
+        value: false,
+        colspan: 6,
       },
       {
         type: 'date',
-        id: 'cancellationDate',
-        placeholder: 'Order cancellation date',
-        description: 'The date for order cancellation.',
+        id: 'claimDate',
+        placeholder: 'Claim date',
+        description: 'The date on which auction claimed.',
         value: new Date(),
-        colspan: 12,
+        colspan: 6,
+        isValid: true,
       },
-
       {
         type: 'url',
         id: 'websiteLink',
@@ -162,6 +165,7 @@ export default function Form(props) {
         value: '',
         colspan: 6,
         label: 'Others',
+        isValid: true,
       },
       {
         type: 'url',
@@ -170,6 +174,7 @@ export default function Form(props) {
         description: 'Telegram Link',
         value: '',
         colspan: 6,
+        isValid: true,
       },
       {
         type: 'url',
@@ -178,6 +183,7 @@ export default function Form(props) {
         description: 'Discord Link',
         value: '',
         colspan: 6,
+        isValid: true,
       },
       {
         type: 'url',
@@ -186,6 +192,7 @@ export default function Form(props) {
         description: 'Medium Link',
         value: '',
         colspan: 6,
+        isValid: true,
       },
       {
         type: 'url',
@@ -194,6 +201,7 @@ export default function Form(props) {
         description: 'Twitter Link',
         value: '',
         colspan: 6,
+        isValid: true,
       },
       {
         type: 'textarea',
@@ -202,6 +210,7 @@ export default function Form(props) {
         description: 'Auction Description',
         value: '',
         colspan: 12,
+        isValid: true,
       },
     ],
     advanceInputs: [
@@ -209,31 +218,31 @@ export default function Form(props) {
         type: 'checkbox',
         id: 'isAccessAuto',
         placeholder: '',
-        description: 'To settle the auction automatically.',
+        description: 'Only for whitelisters.',
         value: false,
         colspan: 6,
       },
       {
         type: 'text',
         id: 'accessContractAddr',
-        placeholder: 'Access manager contract address',
-        description: 'Access manager contract address.',
+        placeholder: `
+         0x0000000000000000000000000000000000000000,
+         0x0000000000000000000000000000000000000000,
+         0x0000000000000000000000000000000000000000,
+         ...
+         ...
+         ...`,
+        name: 'accessContractAddr',
+        description: 'Enter one address on each line. You can entry 300 addressess as maximum.',
         value: '',
-        colspan: 6,
-      },
-      {
-        type: 'textarea',
-        id: 'accessData',
-        placeholder: 'Access manager data',
-        description: 'Access manager contract data.',
-        value: '',
-        colspan: 6,
+        colspan: 12,
       },
     ],
-    type: 'batch',
+    type: 'fixed',
   });
-  const annTokenContract = getANNTokenContract(chainId);
-  const auctionContract = getAuctionContract(state.type, chainId);
+  const annTokenContract = getANNTokenContract(props.chainId);
+  const auctionContract = getAuctionContract('fixed', props.chainId);
+  const fixedAuction = fixedAuctionContract(chainId);
 
   useEffect(async () => {
     if (showModal) {
@@ -273,8 +282,10 @@ export default function Form(props) {
         element.value === ''
       ) {
         // obj[element.id] = emptyAddr;
-      } else if (element.id === 'cancellationDate' || element.id === 'endDate') {
-        // obj[element.id] = moment(element.value).valueOf();
+      } else if (element.id === 'endDate' && element.value.valueOf() <= state.inputs.find((item) => item.id === 'startDate').value.valueOf()) {
+        isValid = false;
+        errorMessage = 'End date must be greater than the start Date'
+
       } else if (element.type === 'url' && element.value !== '') {
         if (!validURL(element.value)) {
           isValid = false;
@@ -286,8 +297,46 @@ export default function Form(props) {
         errorMessage = `${element.placeholder} required`;
         // document.getElementById(element.id).focus();
         break;
+      } else if (
+        element.id === 'startDate' && new Date().valueOf() > element.value.valueOf()
+      ) {
+        isValid = false;
+        errorMessage = 'Start time must be greater than the current time'
+        break;
+
       }
+
     }
+    const whiteLister = state.advanceInputs
+      .find((item) => item.id === 'accessContractAddr')
+      .value.split(/\r?\n/);
+    const whiteListerMapped = whiteLister.map((item) => Web3.utils.isAddress(item)).every(Boolean);
+    const allData = state.inputs.filter((item) => item.id !== 'isClaim').map((item) => item.isValid).every(Boolean);
+
+    if (!allData) {
+      isValid = false;
+      errorMessage = 'Please Enter the valid data'
+    }
+    else
+      if (
+        (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
+          !whiteListerMapped) ||
+        (state.advanceInputs.find((item) => item.id === 'isAccessAuto').value === true &&
+          state.advanceInputs.find((item) => item.id === 'accessContractAddr').value === '')
+      ) {
+        isValid = false;
+        errorMessage = 'Please add the correct addresses'
+      }
+      else if (
+        state.inputs.find((item) => item.id == 'isClaim').value && (state.inputs.find((item) => item.id === 'claimDate').value.valueOf() <
+          state.inputs.find((item) => item.id === 'startDate').value.valueOf() ||
+          state.inputs.find((item) => item.id === 'claimDate').value.valueOf() <
+          state.inputs.find((item) => item.id === 'endDate').value.valueOf())
+      ) {
+        isValid = false;
+        errorMessage = 'Claim time must be greater than the start and end time'
+      }
+
     if (!isValid) {
       Swal.fire({
         title: 'Error',
@@ -300,11 +349,47 @@ export default function Form(props) {
     return isValid;
   };
   const handleInputChange = (e, type, index, isAdvance) => {
-    let key = isAdvance ? 'advanceInputs' : 'inputs';
-    let inputs = isAdvance ? [...state.advanceInputs] : [...state.inputs];
+    let key = isAdvance && index !== 7 ? 'advanceInputs' : 'inputs';
+    let inputs = isAdvance && index !== 7 ? [...state.advanceInputs] : [...state.inputs];
     let input = inputs[index];
+
     if (input) {
       let value = '';
+      if (index === 0) {
+        if (Web3.utils.isAddress(e.target.value)) {
+          input['description'] = 'The token that will auction.';
+          input['isValid'] = true;
+        } else {
+          input['description'] = 'Please enter the correct token';
+          input['isValid'] = false;
+        }
+      } else if (index === 2) {
+        if (e.target.value >= 1) {
+          input['isValid'] = true;
+          input['description'] = 'The amount to sell the auction token.';
+        } else {
+          input['description'] = 'The amount to sell should be greater than or equal to 1';
+          input['isValid'] = false;
+        }
+      } else if (index === 3) {
+        if (e.target.value > 0) {
+          input['isValid'] = true;
+          input['description'] = 'The minimium amount to bid on the auction.';
+        } else {
+          input['description'] = 'The amount to bid should be greater than 0';
+          input['isValid'] = false;
+        }
+      } else if (index === 4) {
+        if (e.target.value > 0) {
+          input['isValid'] = true;
+          input['description'] = 'The Maximum amount purchased per wallet/account.';
+        } else {
+          input['description'] =
+            'The maximum amount purchased should be greater than 0';
+          input['isValid'] = false;
+        }
+      }
+
       if (type === 'text' || type === 'textarea' || type === 'url' || type === 'number') {
         value = e.target.value;
       } else if (type === 'select') {
@@ -321,7 +406,13 @@ export default function Form(props) {
       [key]: inputs,
     });
   };
+
   const handleSubmit = async (e) => {
+    console.log('state', state)
+    const whiteLister = state.advanceInputs
+      .find((item) => item.id === 'accessContractAddr')
+      .value.split(/\r?\n/);
+
     try {
       e.preventDefault();
       setLoading(true);
@@ -335,20 +426,18 @@ export default function Form(props) {
         //   formatedStateData.sellAmount,
         //   auctionTokenDecimal,
         // );
+        let claimDate = state.inputs.find((item) => item.type === 'checkbox').value ? formatedStateData.claimDate : 0
         let data = [
           formatedStateData.auctionToken,
           formatedStateData.biddingToken,
-          formatedStateData.accessContractAddr,
-          formatedStateData.cancellationDate,
+          formatedStateData.sellAmount,
+          formatedStateData.minBidAmount,
           formatedStateData.startDate,
           formatedStateData.endDate,
-          formatedStateData.minBidAmount,
-          formatedStateData.minFundThreshold,
-          formatedStateData.sellAmount,
-          formatedStateData.buyAmount,
-          formatedStateData.isAccessAuto,
-          formatedStateData.accessData,
-          // formatedStateData.swapExchange,
+          claimDate,
+          formatedStateData.maxPurchased,
+          false,
+          state.advanceInputs.find((item) => item.type === 'checkbox').value,
           [
             formatedStateData.websiteLink,
             formatedStateData.description,
@@ -358,10 +447,15 @@ export default function Form(props) {
             formatedStateData.twitterLink,
           ],
         ];
-        console.log('************ auction data ************: ', data);
+        console.log(
+          '************ auction data ************: ',
+          data,
+          formatedStateData.endDate.valueOf(),
+        );
+        let whiteListerArr = whiteLister.includes('') ? [] : whiteLister;
         let auctionTxDetail = await methods.send(
-          auctionContract.methods.initiateAuction,
-          [data],
+          fixedAuction.methods.initiateAuction,
+          [data, whiteListerArr],
           accountId,
         );
         let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
@@ -418,12 +512,16 @@ export default function Form(props) {
   const handleApproveANNToken = async () => {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
-      let auctionAddr = CONTRACT_ANNEX_AUCTION[chainId][state.type]['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[props.chainId][state.type]['address'];
+      console.log('auctionAddr', annTokenContract.methods,
+        auctionAddr,
+        auctionThreshold)
       let annAllowance = await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
         auctionThreshold,
       );
+      console.log('annAllowance', annAllowance)
       setApproveANNToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
       console.log(error);
@@ -434,7 +532,7 @@ export default function Form(props) {
     try {
       setApproveAuctionToken({ status: false, isLoading: true, label: 'Loading...' });
       let { auctionToken } = await getFormState();
-      let auctionAddr = CONTRACT_ANNEX_AUCTION[chainId][state.type]['address'];
+      let auctionAddr = CONTRACT_ANNEX_AUCTION[props.chainId][state.type]['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
       let auctionTokenAllowance = await getTokenAllowance(
         auctionTokenContract.methods,
@@ -485,11 +583,9 @@ export default function Form(props) {
         } else {
           obj[element.id] = element.value.value;
         }
-      } else if (
-        element.id === 'minBidAmount' ||
-        element.id === 'minFundThreshold' ||
-        element.id === 'buyAmount'
-      ) {
+      } else if (element.id === 'maxPurchased') {
+        obj[element.id] = enocodeParamToUint(element.value, auctionDecimal);
+      } else if (element.id === 'minBidAmount') {
         obj[element.id] = enocodeParamToUint(element.value, biddingDecimal);
       } else if (element.id === 'sellAmount') {
         obj[element.id] = enocodeParamToUint(element.value, auctionDecimal);
@@ -498,7 +594,7 @@ export default function Form(props) {
         element.value === ''
       ) {
         obj[element.id] = emptyAddr;
-      } else if (['cancellationDate', 'endDate', 'startDate'].indexOf(element.id) !== -1) {
+      } else if (['claimDate', 'endDate', 'startDate'].indexOf(element.id) !== -1) {
         let timeStamp = moment(element.value).valueOf();
         timeStamp = Math.floor(timeStamp / 1000);
         obj[element.id] = timeStamp;
@@ -569,6 +665,13 @@ export default function Form(props) {
                     isAdvance={false}
                     handleInputChange={handleInputChange}
                   />
+                ) : input.type === 'checkbox' ? (
+                  <Checkbox
+                    {...input}
+                    index={index}
+                    isAdvance={true}
+                    handleInputChange={handleInputChange}
+                  />
                 ) : input.type === 'date' ? (
                   <DateInput
                     key={index}
@@ -576,6 +679,7 @@ export default function Form(props) {
                     {...input}
                     isAdvance={false}
                     handleInputChange={handleInputChange}
+                    state={state.inputs}
                   />
                 ) : input.type === 'textarea' ? (
                   <Textarea
@@ -599,16 +703,6 @@ export default function Form(props) {
                 ) : (
                   ''
                 )}
-                {/* {index !== 0 && input.label ? (
-                  <Fragment>
-                    <div className=" col-span-12 flex flex-col my-5"></div>
-                    <div className="col-span-12 flex flex-col text-white text-2xl font-normal">
-                      {input.label}
-                    </div>
-                  </Fragment>
-                ) : (
-                  ''
-                )} */}
               </Fragment>
             );
           })}
@@ -653,6 +747,7 @@ export default function Form(props) {
                       index={index}
                       isAdvance={true}
                       handleInputChange={handleInputChange}
+                      state={state}
                     />
                   )}
                 </div>
@@ -692,21 +787,56 @@ export default function Form(props) {
   );
 }
 
-const Input = ({ index, type, placeholder, value, isAdvance, description, handleInputChange }) => {
+const Input = ({
+  index,
+  type,
+  placeholder,
+  value,
+  isAdvance,
+  description,
+  isValid,
+  handleInputChange,
+  state,
+}) => {
   return (
-    <div className={`col-span-12 md:col-span-6  flex flex-col mt-4 md:mt-8`}>
-      <input
-        className="border border-solid border-gray bg-transparent
-                 rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => handleInputChange(e, type, index, isAdvance)}
-        required
-      />
-      <div className="text-gray text-sm font-normal mt-3">{description}</div>
-      {/* <div className="invalid-feedback">title is required.</div> */}
-    </div>
+    <>
+      {state ? (
+        state.advanceInputs.map(
+          (item) =>
+            item.value === true && (
+              <>
+                <div className={`col-span-12 flex flex-col mt-8`}>
+                  <textarea
+                    className="border border-solid border-gray bg-transparent
+               rounded-xl w-full focus:outline-none font-normal px-4 py-2 h-60 text-white text-lg"
+                    type="text"
+                    placeholder={placeholder}
+                    rows="12"
+                    onChange={(e) => handleInputChange(e, type, index, isAdvance)}
+                    value={value}
+                  ></textarea>
+                  <div className="text-gray text-sm font-normal mt-3">{description}</div>
+                </div>
+              </>
+            ),
+        )
+      ) : (
+        <div className={`col-span-12 md:col-span-6  flex flex-col mt-4 md:mt-8`}>
+          <input
+            className={`border border-solid ${isValid ? 'border-gray' : 'border-red'} bg-transparent
+         rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg`}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => handleInputChange(e, type, index, isAdvance)}
+            required
+          />
+          <div className={`${isValid ? 'text-gray' : 'text-red'} text-sm font-normal mt-3`}>
+            {description}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -774,16 +904,43 @@ const SelectInput = ({
   );
 };
 
-const DateInput = ({ index, type, value, isAdvance, description, handleInputChange }) => {
+const DateInput = ({
+  index,
+  type,
+  value,
+  isAdvance,
+  description,
+  handleInputChange,
+  state,
+  id,
+}) => {
   return (
-    <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
-      <Flatpickr
-        className="border border-solid border-gray bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
-        data-enable-time={true}
-        value={value}
-        onChange={(e) => handleInputChange(e, type, index, isAdvance)}
-      />
-      <div className="text-gray text-sm font-normal mt-3">{description}</div>
-    </div>
+    <>
+      {id === state.find((item) => item.id === 'claimDate').id ? (
+        state.find((item) => item.id === 'isClaim').value && (
+          <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
+            <Flatpickr
+              className="border border-solid border-gray
+                 bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
+              data-enable-time={true}
+              value={value}
+              onChange={(e) => handleInputChange(e, type, index, isAdvance)}
+            />
+            <div className="text-gray text-sm font-normal mt-3">{description}</div>
+          </div>
+        )
+      ) : (
+        <div className={`col-span-12 md:col-span-6 flex flex-col mt-4 md:mt-8`}>
+          <Flatpickr
+            className="border border-solid border-gray
+                 bg-transparent rounded-xl w-full focus:outline-none font-normal px-4 h-14 text-white text-lg"
+            data-enable-time={true}
+            value={value}
+            onChange={(e) => handleInputChange(e, type, index, isAdvance)}
+          />
+          <div className="text-gray text-sm font-normal mt-3">{description}</div>
+        </div>
+      )}
+    </>
   );
 };

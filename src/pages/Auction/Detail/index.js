@@ -1,15 +1,22 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
-
+import Web3 from 'web3';
+import * as constants from '../../../utilities/constants';
+const instance = new Web3(window.ethereum);
 import Countdown from 'react-countdown';
 import Table from './Table';
+import DutchTable from './dutch-fixed-table';
 import Progress from '../../../components/UI/Progress';
 import AuctionStatus from './status';
 import moment from 'moment';
 import subGraphContext from '../../../contexts/subgraph';
+import dutchAuctionContext from '../../../contexts/dutchAuction';
+import fixedAuctionContext from '../../../contexts/fixedAuction';
 import { gql } from '@apollo/client';
 import { CONTRACT_ANNEX_AUCTION } from '../../../utilities/constants';
 import {
   getAuctionContract,
+  dutchAuctionContract,
+  fixedAuctionContract,
   methods,
   getTokenContractWithDynamicAbi,
 } from '../../../utilities/ContractService';
@@ -21,6 +28,7 @@ import ArrowIcon from '../../../assets/icons/lendingArrow.svg';
 import SVG from 'react-inlinesvg';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { maxHeight } from 'styled-system';
 
 const ArrowDown = styled.button`
   align-items: center;
@@ -32,20 +40,18 @@ const ArrowDown = styled.button`
   will-change: background-color, border, transform;
   width: 22px;
   height: 22px;
-
   &:focus,
   &:hover,
   &:active {
     outline: none;
   }
-
   &:hover {
     background-color: #101016;
   }
 `;
 
 const Wrapper = styled.div`
-  .show-icon{
+  .show-icon {
     right: calc(50% - 56px);
     bottom: 15%;
     z-index: 9;
@@ -66,7 +72,7 @@ function Detail(props) {
     detail: {},
     orders: [],
     auctionStatus: '',
-    type: 'batch',
+    type: props.location.pathname.includes('batch') ? 'batch' : props.location.pathname.includes('dutch') ? 'dutch' : 'fixed',
   });
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -160,9 +166,66 @@ function Detail(props) {
       }
   }
 `;
+
+  let startingPrice
+  if (props.location.pathname.includes('dutch')) {
+    startingPrice = 'startingPrice'
+  }
+  else {
+    startingPrice = ''
+  }
+  let dutchFixedQuery = gql`
+  {
+    auction(id: ${props.match.params.id}){
+      type
+  auctioner_address
+  auctioningToken
+  biddingToken
+  auctionStartDate
+  auctionEndDate
+  auctionedSellAmount
+  amountMax1
+  amountMin1
+  about {
+    id
+    website
+  description
+  telegram
+  discord
+  medium
+  twitter
+  }
+  timestamp
+  orders {
+    id
+  auctioner_address
+  auctionId {
+    id
+  }
+  
+  buyAmount
+  sellAmount
+  txHash
+  blockNumber
+  timestamp
+  }
+  ${startingPrice}
+    }
+  }
+`;
+
   const { account, chainId } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
+  const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
+  const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
+
   const auctionContract = getAuctionContract(state.type, chainId);
+  const dutchContract = dutchAuctionContract(chainId);
+  const fixedContract = fixedAuctionContract(chainId);
+
+  // const { account, chainId } = useActiveWeb3React();
+  // const { apolloClient } = useContext(subGraphContext);
+  // const auctionContract = getAuctionContract(state.type, chainId);
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(async () => {
@@ -170,7 +233,12 @@ function Detail(props) {
   }, []);
   useEffect(async () => {
     try {
-      if (data && typeof data.auctions !== 'undefined') {
+      if (
+        data &&
+        data.auctions &&
+        data.auctions.length > 0 &&
+        props.location.pathname.includes('batch')
+      ) {
         let elem = data.auctions[0];
         let type = elem['type'];
         let auctionStatus = '';
@@ -204,7 +272,6 @@ function Detail(props) {
         maxAvailable = convertExponentToNum(maxAvailable);
         currentPrice = Number(convertExponentToNum(currentPrice));
         minBuyAmount = convertExponentToNum(minBuyAmount);
-
         let minFundingThreshold = convertExponentToNum(
           new BigNumber(elem['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
         );
@@ -216,7 +283,6 @@ function Detail(props) {
         let minimumBiddingAmountPerOrderValue = elem['minimumBiddingAmountPerOrder'];
 
         let minFundingThresholdNotReached = elem['minFundingThresholdNotReached'];
-
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold_eth'])
             .dividedBy(auctionDecimal)
@@ -245,6 +311,7 @@ function Detail(props) {
         } else {
           auctionStatus = 'inprogress';
         }
+
         let cancelDateDiff = getDateDiff(elem['orderCancellationEndDate']);
         if (cancelDateDiff > 0) {
           isAllowCancellation = true;
@@ -256,24 +323,24 @@ function Detail(props) {
           auctionDecimal: elem['auctioningToken']['decimals'],
           biddingDecimal: elem['biddingToken']['decimals'],
         });
+
         let orders = [];
         let placeHolderMinBuyAmount = 0;
         let placeholderSellAmount = 0;
         let orderLength = data.orders.length;
         let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
         let lpTokenPromises = [];
-        if (auctionStatus == 'completed') {
-          data.orders.forEach((order) => {
-            lpTokenPromises.push(calculateLPTokens(order));
-          });
-        }
+        // if (auctionStatus == 'completed') {
+        //   data.orders.forEach((order) => {
+        //     lpTokenPromises.push(calculateLPTokens(order));
+        //   });
+        // }
         let lpTokenData = [];
         if (isAlreadySettle && auctionStatus == 'completed') {
           lpTokenData = await Promise.all(lpTokenPromises);
         }
         let userOrders = [];
         let otherUserOrders = [];
-
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
           let userId = order.userId.address.toLowerCase();
@@ -283,6 +350,8 @@ function Detail(props) {
           let auctionDivSellAmount = new BigNumber(order['sellAmount_eth'])
             .dividedBy(biddingDecimal)
             .toString();
+          let claimableLP = order['claimableLP'].split(' ')
+          claimableLP = Number(claimableLP[0]).toFixed(18);
           let price = order['price'] ? order['price'] : 0;
           let priceSeparate = price.split(' ');
           price = Number(priceSeparate[0]).toFixed(8);
@@ -295,6 +364,7 @@ function Detail(props) {
               placeholderSellAmount = maxAvailable;
             }
           }
+
           if (userId === accountId) {
             userOrders.push({
               ...order,
@@ -305,6 +375,7 @@ function Detail(props) {
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
               priceUnit: priceUnit,
+              claimableLP: claimableLP
             });
           } else {
             otherUserOrders.push({
@@ -316,6 +387,7 @@ function Detail(props) {
               lpToken: lpTokenData[index] ? lpTokenData[index] : 0,
               price: price,
               priceUnit: priceUnit,
+              claimableLP: claimableLP
             });
           }
         });
@@ -380,6 +452,128 @@ function Detail(props) {
           auctionStatus,
         });
         setLoading(false);
+      } else {
+        let elem = data;
+        const auctioningToken =
+          new instance.eth.Contract(
+            JSON.parse(constants.CONTRACT_ABEP_ABI),
+            elem.auctioningToken,
+          );
+        const biddingToken =
+          new instance.eth.Contract(
+            JSON.parse(constants.CONTRACT_ABEP_ABI),
+            elem.biddingToken,
+          );
+        let type = elem['type'];
+        let auctionStatus = '';
+        let auctionTokenId = elem['auctioningToken'];
+        let biddingTokenId = elem['biddingToken'];
+        let auctionSymbol = await methods.call(auctioningToken.methods.symbol, []);
+        let auctionTokenName = await methods.call(auctioningToken.methods.name, []);
+        let biddingSymbol = await methods.call(biddingToken.methods.symbol, []);
+        let auctionDecimal = await methods.call(auctioningToken.methods.decimals, []);
+        let totalAuctionedValue = elem['auctionedSellAmount'] / Math.pow(10, auctionDecimal);
+        totalAuctionedValue = convertExponentToNum(totalAuctionedValue);
+        let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+        let minimumPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
+        let currentBalance =
+          type === 'DUTCH' &&
+          (await methods.call(dutchContract.methods.currentPrice, [props.match.params.id]));
+
+        let currentPrice =
+          type === 'DUTCH'
+            ? currentBalance / Math.pow(10, biddingDecimal)
+            : ((elem['amountMin1'] / elem['amountMax1']) * Math.pow(10, auctionDecimal)) /
+            Math.pow(10, biddingDecimal);
+        currentPrice = Number(convertExponentToNum(currentPrice));
+        let amountMax1 = elem['amountMax1'];
+        let amountMin1 = elem['amountMin1'];
+        let auctionEndDateFormatted = moment
+          .unix(elem['auctionEndDate'])
+          .format('MM/DD/YYYY HH:mm:ss');
+        let auctionEndDate = elem['auctionEndDate'];
+        let auctionStartDate = elem['auctionStartDate'];
+        let endDateDiff = getDateDiff(auctionEndDate);
+        let startDateDiff = getDateDiff(auctionStartDate);
+        if (startDateDiff > 0) {
+          auctionStatus = 'upcoming';
+        } else if (endDateDiff < 0) {
+          auctionStatus = 'completed';
+        } else {
+          auctionStatus = 'inprogress';
+        }
+        let startingPrice = elem['startingPrice'] / Math.pow(10, biddingDecimal);
+        Number(convertExponentToNum(startingPrice));
+        let graphData = type === 'DUTCH' && [
+          {
+            value: startingPrice,
+          },
+          {
+            value: currentPrice,
+          },
+        ];
+        let orders = [];
+        let placeHolderMinBuyAmount = 0;
+        let placeholderSellAmount = 0;
+
+        let userOrders = [];
+        data.orders.forEach((order, index) => {
+          let auctionDivBuyAmount = order['buyAmount'] / Math.pow(10, auctionDecimal);
+          auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
+          let auctionDivSellAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
+          auctionDivSellAmount = convertExponentToNum(auctionDivSellAmount);
+          let price = order['buyAmount'] / Math.pow(10, auctionDecimal);
+          price = convertExponentToNum(price);
+          userOrders.push({
+            ...order,
+            price,
+            auctionDivBuyAmount,
+            auctionDivSellAmount,
+            auctionSymbol,
+            biddingSymbol,
+          });
+        });
+        orders = userOrders;
+        let detail = {
+          auctionTokenId,
+          biddingTokenId,
+          minimumPrice,
+          amountMax1,
+          amountMin1,
+          currentPrice,
+          type,
+          id: elem.about.id,
+          totalAuctionedValue,
+          auctionTokenName,
+          auctionSymbol,
+          auctionDecimal,
+          biddingSymbol,
+          biddingDecimal,
+          chartType: 'line',
+          data: type === 'DUTCH' ? graphData : [],
+          telegramLink: elem['about']['telegram'],
+          discordLink: elem['about']['discord'],
+          mediumLink: elem['about']['medium'],
+          twitterLink: elem['about']['twitter'],
+          title: type + ' Auction',
+          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
+          token: elem['auctioningToken'],
+          website: elem['about']['website'],
+          description: elem['about']['description'],
+          placeHolderMinBuyAmount,
+          placeholderSellAmount,
+          auctionEndDateFormatted,
+        };
+        console.log('orderssss', orders)
+        setState({
+          ...state,
+          detail,
+          auctionStartDate,
+          auctionEndDate,
+          orders,
+          auctionStatus,
+        });
+        setLoading(false);
       }
     } catch (error) {
       console.log('error', error);
@@ -404,7 +598,6 @@ function Detail(props) {
       auctionDecimal,
       biddingDecimal,
     );
-    // console.log('clearingPriceOrder.price', clearingPriceOrder.price.toString());
     orders &&
       orders.forEach((item) => {
         graphData.push({
@@ -445,18 +638,31 @@ function Detail(props) {
     return 1;
   };
   const getData = () => {
+    let apollo;
+    if (props.location.pathname.includes('dutch')) {
+      apollo = dutchApollo;
+    } else if (props.location.pathname.includes('fixed')) {
+      apollo = fixedApollo;
+    } else {
+      apollo = apolloClient;
+    }
     try {
       setLoading(true);
       setData([]);
       setTimeout(() => {
-        apolloClient
+        apollo
           .query({
-            query: query,
+            query: props.location.pathname.includes('batch') ? query : dutchFixedQuery,
             variables: {},
           })
           .then((response) => {
             let { data } = response;
-            setData(data);
+            console.log('response', data);
+            if (props.location.pathname.includes('batch')) {
+              setData(data);
+            } else {
+              setData(data.auction);
+            }
           })
           .catch((err) => {
             setData([]);
@@ -600,9 +806,8 @@ function Detail(props) {
             )}{' '}
             {state.detail.biddingSymbol}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                state.detail && state.detail.biddingTokenId
-              }`}
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.biddingTokenId
+                }`}
               target="_blank"
               rel="noreferrer"
             >
@@ -646,12 +851,12 @@ function Detail(props) {
                 <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
               </div>
             ) : (
-              `${state.detail.totalAuctionedValue}`
+              `${props.location.pathname.includes('batch') ? `${state.detail.totalAuctionedValue}` :
+                `${state.detail.totalAuctionedValue} ${state.detail.auctionSymbol}`} `
             )}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${
-                state.detail && state.detail.auctionTokenId
-              }`}
+              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.auctionTokenId
+                }`}
               target="_blank"
               rel="noreferrer"
             >
@@ -724,8 +929,7 @@ function Detail(props) {
           </div>
         </div>
 
-        <div
-          className="show-icon flex items-center justify-end text-right text-white absolute">
+        <div className="show-icon flex items-center justify-end text-right text-white absolute">
           <span className="mr-2 text-sm">{showDetails ? 'Less' : 'More Details'} </span>
           <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
             <ArrowContainer active={showDetails}>
@@ -735,7 +939,7 @@ function Detail(props) {
         </div>
       </div>
 
-      {showDetails && (
+      {showDetails && props.location.pathname.includes('batch') ? (
         <div
           className="grid grid-cols-3
         text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
@@ -783,14 +987,13 @@ function Detail(props) {
                       ? (totalSellAmount / Number(state.detail.minFundingThreshold)) * 100
                       : 0
                   }
-                  text={`${
-                    totalSellAmount > 0
-                      ? (
-                          (totalSellAmount / Number(state.detail.minFundingThreshold)) *
-                          100
-                        ).toFixed(0)
-                      : 0
-                  }%`}
+                  text={`${totalSellAmount > 0
+                    ? (
+                      (totalSellAmount / Number(state.detail.minFundingThreshold)) *
+                      100
+                    ).toFixed(0)
+                    : 0
+                    }%`}
                   styles={{
                     root: {},
                     path: {
@@ -921,7 +1124,69 @@ function Detail(props) {
             </div>
           </div>
         </div>
-      )}
+      ) : showDetails ? (
+        <div
+          className="grid grid-cols-3
+    text-white bg-black py-8 border-lightGray border-l border-r border-b rounded-md flex flex-row  justify-between relative"
+        >
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.detail.totalAuctionedValue} {state.detail.auctionSymbol}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Amount For Sale
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Amount For Sale</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">
+                {state.orders &&
+                  state.orders.reduce(function (acc, obj) {
+                    return acc + Number(obj.auctionDivSellAmount);
+                  }, 0)}{' '}
+                {state.detail.biddingSymbol}
+              </div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Amount Raised
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Amount Raised</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2 lg:col-span-1 my-5 px-8 flex flex-col ">
+            <div className="flex flex-col">
+              <div className="text-white text-lg md:text-md font-bold">{state.orders.length}</div>
+              <div className="flex items-center text-white text-md md:text-sm">
+                Participants
+                <div className="tooltip relative">
+                  <img
+                    className="ml-3"
+                    src={require('../../../assets/images/info.svg').default}
+                    alt=""
+                  />
+                  <span className="label">Participants</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : undefined}
       <div className="grid grid-cols-1 md:grid-cols-8 gap-y-4 md:gap-y-0 md:gap-x-4 text-white mt-15">
         <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <div className="text-white flex flex-row items-stretch justify-between items-center  p-6 border-b border-lightGray">
@@ -950,17 +1215,25 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a
-                    href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ wordBreak: 'break-all' }}
-                  >
+                  <div className='flex items-center'>
+                    <a
+                      href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ wordBreak: 'break-all', marginRight: '5px' }}
+                    >
+                      <img
+                        className=""
+                        src={require('../../../assets/images/link.svg').default}
+                        alt=""
+                      />
+                    </a>
                     {state.detail.contract}
-                  </a>
+                  </div>
                 )}
               </div>
             </div>
+
             <div className="flex flex-col mb-8">
               <div className="text-md font-medium mb-0">Token</div>
               <div className="text-xl font-medium">
@@ -969,14 +1242,21 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a
-                    href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ wordBreak: 'break-all' }}
-                  >
+                  <div className='flex items-center'>
+                    <a
+                      href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ wordBreak: 'break-all', marginRight: '5px' }}
+                    >
+                      <img
+                        className=""
+                        src={require('../../../assets/images/link.svg').default}
+                        alt=""
+                      />
+                    </a>
                     {state.detail.token}
-                  </a>
+                  </div>
                 )}
               </div>
             </div>
@@ -1029,24 +1309,45 @@ function Detail(props) {
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
-            auctionContract={auctionContract}
+            // auctionContract={auctionContract}
+            auctionContract={
+              state.detail.type === 'DUTCH'
+                ? dutchContract
+                : state.detail.type === 'FIXED'
+                  ? fixedContract
+                  : auctionContract
+            }
             auctionAddr={CONTRACT_ANNEX_AUCTION[chainId][state.type]['address']}
             getData={getData}
             orders={state.orders}
+            auctionType={state.detail.type}
           />
         </div>
       </div>
-      <Table
-        data={state.orders}
-        loading={loading}
-        isAlreadySettle={state.detail['isAlreadySettle']}
-        isAllowCancellation={state.detail['isAllowCancellation']}
-        auctionContract={auctionContract}
-        account={account}
-        auctionStatus={state.auctionStatus}
-        getData={getData}
-        auctionId={state.detail.id}
-      />
+      {props.location.pathname.includes('batch') ? (
+        <Table
+          data={state.orders}
+          loading={loading}
+          isAlreadySettle={state.detail['isAlreadySettle']}
+          isAllowCancellation={state.detail['isAllowCancellation']}
+          auctionContract={auctionContract}
+          account={account}
+          auctionStatus={state.auctionStatus}
+          getData={getData}
+          auctionId={state.detail.id}
+        />
+      ) : (
+        <DutchTable
+          data={state.orders}
+          loading={loading}
+          isAllowCancellation={false}
+          auctionContract={state.detail.type === 'DUTCH' ? dutchContract : fixedContract}
+          account={account}
+          auctionStatus={state.auctionStatus}
+          getData={getData}
+          auctionId={state.detail.id}
+        />
+      )}
     </Wrapper>
   );
 }

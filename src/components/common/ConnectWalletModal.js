@@ -20,6 +20,7 @@ import useCopyClipboard from '../../hooks/useCopyClipboard';
 import ExternalLinkIcon from '../../assets/icons/externalLink.svg';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
+import { useActiveWeb3React } from '../../hooks';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -27,6 +28,9 @@ const WALLET_VIEWS = {
 };
 
 function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
+
+  const { chainId: _chainId } = useActiveWeb3React();
+
   const [isCopied, setCopied] = useCopyClipboard();
   const { active, account, connector, activate, error, deactivate } = useWeb3React();
 
@@ -75,18 +79,15 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
           });
           localStorage.setItem('connect', 'connected');
           const networkDetails = {
-            chainId:
-              process.env.REACT_APP_ENV === 'dev'
-                ? `0x${(97).toString(16)}`
-                : `0x${(56).toString(16)}`,
-            chainName: `BSC ${process.env.REACT_APP_ENV === 'dev' ? 'Testnet' : 'Mainnet'}`,
+            chainId: `0x${(_chainId).toString(16)}`,
+            chainName: `BSC ${_chainId === 97 ? 'Testnet' : 'Mainnet'}`,
             nativeCurrency: {
               name: 'Binance-Peg Binance',
               symbol: 'BNB',
               decimals: 18,
             },
             rpcUrls:
-              process.env.REACT_APP_ENV === 'dev'
+              _chainId === 97
                 ? ['https://data-seed-prebsc-1-s1.binance.org:8545']
                 : [process.env.REACT_APP_WEB3_PROVIDER],
           };
@@ -248,7 +249,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
         open={open}
         onSetOpen={onSetOpen}
         onCloseModal={onCloseModal}
-        afterCloseModal={() => {}}
+        afterCloseModal={() => { }}
         width="max-w-xl"
       />
     </div>
