@@ -38,10 +38,11 @@ const FaucetWrapper = styled.div`
   .menu {
     cursor: pointer;
     .menu-label {
-      background-image: linear-gradient(to right, rgb(242, 194, 101), rgb(247, 180, 79));
       color: #ffffff;
       border-radius: 5px;
       padding: 1rem;
+      display: flex;
+      align-items: center;
     }
     .menu-item {
       display: none;
@@ -104,18 +105,23 @@ function Faucet({ form, getFromFaucet }) {
       return
     }
     data.address = address
+    setIsLoading(true)
     const apiRequest = await restService({
       third_party: true,
       api: 'https://cronostestapi.annex.finance/api/v1/faucet',
       method: 'POST',
       params: data
     })
+    setIsLoading(false)
     if (apiRequest.status !== 200) {
       toast.error({
         title: apiRequest.data?.message || 'Unable to Faucet, Please Try Again!'
       });
       return
     }
+    toast.success({
+      title: 'Transaction successfull, you transaction hash is' + apiRequest.data.data.transactionHash
+    });
   };
 
   return (
@@ -128,12 +134,17 @@ function Faucet({ form, getFromFaucet }) {
               className="bg-transparent text-18 bg-white
                            mt-1 focus:outline-none font-bold px-3 text-black w-full rounded"
               value={address}
-              onChange={(e) => {setAddress(e.target.value)}}
+              onChange={(e) => { setAddress(e.target.value) }}
               placeholder="Input your Cassini address..."
             />
             <div className="flex justify-between mt-24">
-              <div className="relative menu flex">
-                <span className='menu-label'>Give Me BTC</span>
+              <div className={`relative menu flex ${isLoading ? 'pointer-events-none' : ''}`}>
+                <span className={`menu-label ${isLoading ? 'bg-lightGray opacity-80' : 'bgPrimaryGradient'}`}>
+                  {
+                    isLoading && <LoadingSpinner className="mr-2" />
+                  }
+                  Give Me BTC
+                </span>
                 <div className='absolute menu-item'>
                   <span onClick={() => handleMenuClick({ asset: 'btc', amountType: 'low' })}>Low</span>
                   <span onClick={() => handleMenuClick({ asset: 'btc', amountType: 'medium' })}>Medium</span>
@@ -141,8 +152,13 @@ function Faucet({ form, getFromFaucet }) {
                 </div>
               </div>
 
-              <div className="relative menu flex">
-                <span className='menu-label'>Give Me ETH</span>
+              <div className={`relative menu flex ${isLoading ? 'pointer-events-none' : ''}`}>
+                <span className={`menu-label ${isLoading ? 'bg-lightGray opacity-80' : 'bgPrimaryGradient'}`}>
+                  {
+                    isLoading && <LoadingSpinner className="mr-2" />
+                  }
+                  Give Me ETH
+                </span>
                 <div className='absolute menu-item'>
                   <span onClick={() => handleMenuClick({ asset: 'eth', amountType: 'low' })}>Low</span>
                   <span onClick={() => handleMenuClick({ asset: 'eth', amountType: 'medium' })}>Medium</span>
@@ -150,8 +166,13 @@ function Faucet({ form, getFromFaucet }) {
                 </div>
               </div>
 
-              <div className="relative menu flex">
-                <span className='menu-label'>Give Me USDT</span>
+              <div className={`relative menu flex ${isLoading ? 'pointer-events-none' : ''}`}>
+                <span className={`menu-label ${isLoading ? 'bg-lightGray opacity-80' : 'bgPrimaryGradient'}`}>
+                  {
+                    isLoading && <LoadingSpinner className="mr-2" />
+                  }
+                  Give Me USDT
+                </span>
                 <div className='absolute menu-item'>
                   <span onClick={() => handleMenuClick({ asset: 'usdt', amountType: 'low' })}>Low</span>
                   <span onClick={() => handleMenuClick({ asset: 'usdt', amountType: 'medium' })}>Medium</span>
@@ -159,8 +180,13 @@ function Faucet({ form, getFromFaucet }) {
                 </div>
               </div>
 
-              <div className="relative menu flex">
-                <span className='menu-label'>Give Me ANN</span>
+              <div className={`relative menu flex ${isLoading ? 'pointer-events-none' : ''}`}>
+                <span className={`menu-label ${isLoading ? 'bg-lightGray opacity-80' : 'bgPrimaryGradient'}`}>
+                  {
+                    isLoading && <LoadingSpinner className="mr-2" />
+                  }
+                  Give Me ANN
+                </span>
                 <div className='absolute menu-item'>
                   <span onClick={() => handleMenuClick({ asset: 'ann', amountType: 'low' })}>Low</span>
                   <span onClick={() => handleMenuClick({ asset: 'ann', amountType: 'medium' })}>Medium</span>

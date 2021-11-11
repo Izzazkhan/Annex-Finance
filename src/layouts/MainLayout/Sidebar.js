@@ -25,7 +25,8 @@ import {
   VaultIcon,
   VoteIcon,
   Auction,
-  LiquidateIcon
+  LiquidateIcon,
+  FaucetIcon,
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
 import { CONTRACT_TOKEN_ADDRESS, STABLE_USD_TOKENS } from 'utilities/constants';
@@ -238,7 +239,7 @@ const sidebarItems = [
       { key: 3, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
     ],
   },
-  { key: 10, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
+  { key: 10, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
 ];
 
 const primaryColor = '#FF9800';

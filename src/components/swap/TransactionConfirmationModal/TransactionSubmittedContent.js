@@ -21,7 +21,7 @@ const TransactionSubmittedContent = ({ onDismiss, chainId, hash }) => {
 						flex items-center justify-center
 					 font-bold bg-primaryLight text-black hover:bg-primary`}
 					>
-						View on bscscan
+						View on Explorer
 					</a>
 				</AutoColumn>
 			</Section>
