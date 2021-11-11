@@ -266,7 +266,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                             <Progress
                                 wrapperClassName="mt-4"
                                 percent={new BigNumber(totalDistributed)
-                                    .dividedBy(new BigNumber(mintedAmount))
+                                    .dividedBy(new BigNumber(remainAmount).plus(new BigNumber(totalDistributed)))
                                     .multipliedBy(100)
                                     .toNumber()
                                 }
