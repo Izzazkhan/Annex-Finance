@@ -115,8 +115,8 @@ function Card({ item, dipositWithdraw }) {
                   APY<span className=""></span>
                 </div>
                 <span className="label">
-                  For Information Purposes. 
-                  Calculated based on current rates 
+                  For Information Purposes.
+                  Calculated based on current rates
                   {" & "}
                   assuming you manually compound daily. This Pool does not Auto Compound
                 </span>

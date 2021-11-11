@@ -47,7 +47,7 @@ function Farms({ settings }) {
         let token0Amount = 0
         let token1Amount = 0
         if (pair.userData) {
-          token0Amount = pair.token1Symbol 
+          token0Amount = pair.token1Symbol
             ? new BigNumber(pair.reserve0)
               .div(new BigNumber(10).pow(pair.token0Decimals))
               .times(userPercent)

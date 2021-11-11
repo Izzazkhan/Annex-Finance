@@ -873,7 +873,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
       name: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].symbol,
       logo: constants.CONTRACT_TOKEN_ADDRESS[chainId][key].asset,
     }));
-  }, []);
+  }, [chainId]);
 
   const wrongNetwork = React.useMemo(() => {
     return !AVAILABLE_NETWORKS.includes(chainId)

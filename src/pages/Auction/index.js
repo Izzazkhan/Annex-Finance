@@ -377,7 +377,7 @@ const Styles = styled.div`
       top: auto;
       border-radius: 10px;
       line-height: normal;
-      border: 2px solid #B068009C;
+      border: 2px solid #b068009c;
     }
   }
 
@@ -418,8 +418,17 @@ const Styles = styled.div`
   }
 `;
 
-function Auction() {
+function Auction(props) {
   const { path } = useRouteMatch();
+  let pathname;
+  if (props.location.pathname.includes('dutch')) {
+    pathname = 'dutch-detail';
+  } else if (props.location.pathname.includes('fixed')
+  ) {
+    pathname = 'fixed-detail';
+  } else {
+    pathname = 'batch-detail';
+  }
   return (
     <Layout mainClassName="pt-10 min-h-screen" title={'Auction'}>
       <Styles>
@@ -427,7 +436,7 @@ function Auction() {
           <Route exact strict path={`${path}/past`} component={Past} />
           <Route exact strict path={`${path}/upcoming`} component={Upcoming} />
           <Route exact strict path={`${path}/live`} component={Live} />
-          <Route exact strict path={`${path}/detail/:id`} component={Detail} />
+          <Route exact strict path={`${path}/${pathname}/:id`} component={Detail} />
           <Route exact strict path={`${path}/create`} component={CreateAuction} />
           <Redirect to={`${path}/live`} />
         </Switch>

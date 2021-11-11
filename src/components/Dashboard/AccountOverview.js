@@ -26,7 +26,7 @@ import SVG from 'react-inlinesvg';
 const format = commaNumber.bindWith(',', '.');
 
 const formatValue = (value) => {
-  if (getBigNumber(value).isGreaterThan(1000000)) {
+  if (getBigNumber(value).isGreaterThan(1000000000)) {
     return 'Infinity'
   }
   return `$${format(getBigNumber(value).dp(2, 1).toString(10))}`;

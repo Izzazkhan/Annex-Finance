@@ -176,13 +176,13 @@ function Trade() {
                       <div className="flex items-center">
                         <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0Symbol}{' '}
                         =
-                        {`${item.token0Price}`}{' '}
+                        {`${new BigNumber(item.token0Price).div(item.token1Price).toFixed(5)}`}{' '}
                         {item.token1Symbol}
                       </div>
                       <div className="flex items-center">
                         <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
                         {item.token1Symbol} =
-                        {`${item.token1Price}`}{' '}
+                        {`${new BigNumber(item.token1Price).div(item.token0Price).toFixed(5)}`}{' '}
                         {item.token0Symbol}
                       </div>
                     </div>
@@ -309,13 +309,13 @@ function Trade() {
                       <div className="flex items-center">
                         <img className="mr-1" width="14px" src={BTC} alt="" />1 {item.token0Symbol}{' '}
                         =
-                        {`${item.token0Price}`}{' '}
+                        {`${new BigNumber(item.token0Price).div(item.token1Price).toFixed(5)}`}{' '}
                         {item.token1Symbol}
                       </div>
                       <div className="flex items-center">
                         <img className="mr-1" width="14px" src={ANN} alt="" /> 1{' '}
                         {item.token1Symbol} =
-                        {`${item.token1Price}`}{' '}
+                        {`${new BigNumber(item.token1Price).div(item.token0Price).toFixed(5)}`}{' '}
                         {item.token0Symbol}
                       </div>
                     </div>

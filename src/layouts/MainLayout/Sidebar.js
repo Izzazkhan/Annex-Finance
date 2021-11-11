@@ -25,7 +25,8 @@ import {
   VaultIcon,
   VoteIcon,
   Auction,
-  LiquidateIcon
+  LiquidateIcon,
+  FaucetIcon,
 } from '../../components/common/Icons';
 import plusButtonIcon from '../../assets/icons/plusButonIcon.svg';
 import { CONTRACT_TOKEN_ADDRESS, STABLE_USD_TOKENS } from 'utilities/constants';
@@ -210,9 +211,12 @@ const sidebarItems = [
   },
   // eslint-disable-next-line react/display-name
   { key: 7, icon: (fill) => <FarmsIcon fill={fill} />, title: 'Farms', href: RouteMap.farms },
+
+  { key: 8, icon: (fill) => <PoolsIcon fill={fill} />, title: 'Pools', href: RouteMap.pools },
+
   // eslint-disable-next-line react/display-name
   {
-    key: 8,
+    key: 9,
     icon: (fill) => <PoolsIcon fill={fill} />,
     title: 'Games',
     href: `${RouteMap.games}`,
@@ -224,10 +228,10 @@ const sidebarItems = [
     ]
   },
   {
-    key: 9,
+    key: 10,
     // eslint-disable-next-line react/display-name
     icon: (fill) => <Auction fill={fill} />,
-    title: 'Auction',
+    title: 'IDO',
     href: `${RouteMap.auction}`,
     subCats: [
       { key: 1, icon: underscore, title: 'Live', href: `${RouteMap.auction}/live` },
@@ -235,6 +239,7 @@ const sidebarItems = [
       { key: 3, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
     ],
   },
+  { key: 10, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
 ];
 
 const primaryColor = '#FF9800';
@@ -252,6 +257,13 @@ const NavItems = ({
   if ([339, 25].includes(chainId)) {
     items = items.filter((i) => {
       if (['Liquidate', 'Games', 'Auction'].includes(i.title)) {
+        return null
+      }
+      return i
+    })
+  } else {
+    items = items.filter((i) => {
+      if (['Faucet'].includes(i.title)) {
         return null
       }
       return i
@@ -323,24 +335,24 @@ const NavItems = ({
                       </div>
                     </a>
                   ) : (
-                  <div
-                    className="flex items-center space-x-4 ml-16 mb-2 mt-4 cursor-pointer"
-                    key={cat.key}
-                    onClick={() => {
-                      history.push(cat.href);
-                    }}
-                  >
-                    <img src={cat.icon} alt={cat.title} />
                     <div
-                      className={
-                        `${pathname}${search}`?.includes(cat?.href)
-                          ? 'text-primary text-23'
-                          : 'text-23'
-                      }
+                      className="flex items-center space-x-4 ml-16 mb-2 mt-4 cursor-pointer"
+                      key={cat.key}
+                      onClick={() => {
+                        history.push(cat.href);
+                      }}
                     >
-                      {cat.title}
+                      <img src={cat.icon} alt={cat.title} />
+                      <div
+                        className={
+                          `${pathname}${search}`?.includes(cat?.href)
+                            ? 'text-primary text-23'
+                            : 'text-23'
+                        }
+                      >
+                        {cat.title}
+                      </div>
                     </div>
-                  </div>
                   )
                 ))}
               </div>
