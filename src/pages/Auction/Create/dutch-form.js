@@ -231,7 +231,7 @@ export default function DutchForm(props) {
         colspan: 12,
       },
     ],
-    type: 'batch',
+    type: 'dutch',
   });
   const annTokenContract = getANNTokenContract(props.chainId);
   const auctionContract = getAuctionContract(state.type, props.chainId);

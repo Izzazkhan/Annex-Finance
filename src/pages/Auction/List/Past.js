@@ -56,6 +56,24 @@ function Past(props) {
         border-top-color: #ffab2d;
       }
     }
+
+    .auction-btn-wrapper{
+      button{
+        .number {
+          padding: 0;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-left: 5px;
+          font-weight: bold;
+          color: #fff;
+        }
+      }
+    }
   `;
 
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -109,30 +127,33 @@ function Past(props) {
             }}
             value="batch"
             className={`
-           py-2 rounded px-32 h-15 mr-2  ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+           py-2 rounded px-32 h-15 mr-2  
+           flex items-center ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               }`}
           >
-            Batch Auction  {batchCount}
+            Batch Auction  <span className="bg-black text-white number">{batchCount}</span>
           </button>
           <button
             onClick={(e) => {
               dutchTab(e);
             }}
             value="dutch"
-            className={`py-2 rounded px-32 transition-all h-15 mr-2 ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+            className={`py-2 rounded px-32 transition-all h-15 mr-2 
+            flex items-center ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Dutch Auction  {dutchCount}
+            Dutch Auction  <span className="bg-black text-white number">{dutchCount}</span>
           </button>
           <button
             onClick={(e) => {
               fixedTab(e);
             }}
             value="fixed"
-            className={`py-2 rounded px-32 transition-all h-15  ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+            className={`py-2 rounded px-32 transition-all h-15  
+            flex items-center ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Fixed  {fixedCount}
+            Fixed  <span className="bg-black text-white number">{fixedCount}</span>
           </button>
         </div>
 
