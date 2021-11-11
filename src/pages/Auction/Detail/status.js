@@ -81,24 +81,25 @@ const AuctionStatus = ({
   };
   const handleApproveBiddingToken = async () => {
     try {
+
       setApproveBiddingToken({ status: false, isLoading: true, label: 'Loading...' });
       let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase(), chainId);
-      if (localStorage.getItem('approveBiddingToken') !== 'true') {
-        await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
-      }
+      console.log('biddingTokenContract',biddingTokenContract);
+      await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
       setApproveBiddingToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
       console.log(error);
       setApproveBiddingToken({ status: false, isLoading: false, label: 'Error' });
     }
+
+
   };
   const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
     let allowance = await methods.call(contractMethods.allowance, [account, spenderAddr]);
-    if (allowance < threshold) {
+    if (Number(allowance) < Number(threshold)) {
       let maxValue = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       await methods.send(contractMethods.approve, [spenderAddr, maxValue], account);
       allowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-      localStorage.setItem('approveBiddingToken', true);
     }
     return allowance;
   };

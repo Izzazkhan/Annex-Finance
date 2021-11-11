@@ -78,7 +78,6 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
             account: 'accountConnected',
           });
           localStorage.setItem('connect', 'connected');
-          localStorage.setItem('approveBiddingToken', false)
           const networkDetails = {
             chainId: `0x${(_chainId).toString(16)}`,
             chainName: `BSC ${_chainId === 97 ? 'Testnet' : 'Mainnet'}`,
