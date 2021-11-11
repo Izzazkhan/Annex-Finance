@@ -256,7 +256,7 @@ const NavItems = ({
 }) => {
   if ([339, 25].includes(chainId)) {
     items = items.filter((i) => {
-      if (['Liquidate', 'Games', 'Auction'].includes(i.title)) {
+      if (['Liquidate', 'Games', 'IDO', 'Pools'].includes(i.title)) {
         return null
       }
       return i
