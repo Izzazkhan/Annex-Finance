@@ -86,11 +86,7 @@ function FixedAuction(props) {
                 redirect: 'follow'
             };
             let subGraph
-            if (process.env.REACT_APP_ENV === 'dev') {
-                subGraph = process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE;
-            } else {
-                subGraph = process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE;
-            }
+            subGraph = constants.FIXED_AUCTION_DATASOURCE[chainId]
 
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
