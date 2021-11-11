@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../../layouts/MainLayout/MainLayout';
 import Table from './Table';
 import GridView from './Grid';
@@ -17,6 +17,14 @@ import { Grid } from 'react-virtualized';
 import styled from 'styled-components';
 import ComingSoon from '../../assets/images/coming-soon.png';
 import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
+import {
+  CONTRACT_ANN_Vault, REACT_APP_ANN_Vault_ADDRESS
+} from '../../utilities/constants';
+import { useActiveWeb3React } from '../../hooks';
+import Web3 from 'web3';
+const instance = new Web3(window.ethereum);
+import Loader from 'components/UI/Loader';
+
 
 const Styles = styled.div`
  .border-custom{
@@ -30,10 +38,42 @@ const Styles = styled.div`
 }
 `;
 function Pools() {
-  const [showGrid, setShowGrid] = React.useState(false)
-  const [showList, setShowList] = React.useState(true)
-  const [live, setlive] = React.useState(true)
-  const [finished, setfinished] = React.useState(false)
+  const [showGrid, setShowGrid] = useState(false)
+  const [showList, setShowList] = useState(true)
+  const [live, setlive] = useState(true)
+  const [finished, setfinished] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [onlyStaked, setOnlyStaked] = useState(false)
+  const [poolState, setPoolState] = useState('live')
+
+  const { account } = useActiveWeb3React();
+
+  const onClaim = () => {
+    setLoading(true)
+    const contract = new instance.eth.Contract(
+      JSON.parse(CONTRACT_ANN_Vault),
+      REACT_APP_ANN_Vault_ADDRESS,
+    );
+    contract.methods.harvest()
+      .send({ from: account })
+      .then((res) => {
+        console.log('claim data', res);
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false)
+      });
+  }
+
+  const stakedToggle = (value) => {
+    setOnlyStaked((oldVal) => !oldVal)
+  }
+
+  const stateToggle = (poolState) => {
+    setPoolState(poolState)
+  }
+
   const GridViews = () => {
     setShowGrid(true)
     setShowList(false)
@@ -338,7 +378,7 @@ function Pools() {
       <Styles>
         <div className="grid grid-cols-1 gap-y-3 md:gap-y-0 md:grid-cols-12 md:gap-x-3 px-10 pt-0 py-6
  pl-6 lg:pr-5 ">
-          <div className="col-span-2 flex items-center">
+          {/* <div className="col-span-6 flex items-center">
             <div className="list-icon">
               <a onClick={ListViews}>{showList ? <img src={ListIconActive} alt="" className="" width="28px" height="25px" />
                 : <img src={ListIcon} alt="" className="" width="28px" height="25px" />}</a>
@@ -347,19 +387,46 @@ function Pools() {
               <a onClick={GridViews}>{showGrid ? <img src={GridIconActive} alt="" className="" width="25px" height="25px" />
                 : <img src={GridIcon} alt="" className="" width="25px" height="25px" />}</a>
             </div>
+          </div> */}
+          {/* <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 "> */}
+
+          <div className="col-span-3 claim-card">
+            <div className='bgPrimaryGradient p-5 rounded-2xl flex items-between w-full justify-between flex-col'
+            >
+
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-white font-bold">Auto ANN Bounty</div>
+              </div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col">
+                  <div className="text-white text-sm font-bold text-lg">0.000</div>
+                  <div className="text-white text-sm ">0.000 USD</div>
+                </div>
+                <div className="text-white font-bold flex items-center">
+                  <button className={`flex items-center focus:outline-none bg-white ${loading ?
+                    " bg-lightGray text-gray pointer-events-none " :
+                    "  text-primary "} py-2 px-4
+                        rounded-lg text-center font-bold text-sm`} onClick={onClaim}>
+                    {loading && <Loader size="20px" className="mr-4" stroke="#717579" />}
+                    Claim</button></div>
+              </div>
+
+            </div>
           </div>
-          <div className="col-span-5 flex items-center">
-            <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
-             ${live ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
-            >Live</a>
-            <a href="" className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
-             ${finished ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}>Finished</a>
+          <div className="col-span-9 flex items-center justify-end">
+            <button className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center
+             ${poolState === 'live' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
+              onClick={() => stateToggle('live')}>Live</button>
+            <button className={`focus:outline-none py-2 px-4 rounded-3xl text-white w-40 text-center ml-5
+             ${poolState === 'finished' ? "bgPrimaryGradient" : "bg-transparent border border-primary"} `}
+              onClick={() => stateToggle('finished')}>Finished</button>
             <div className="flex items-center text-white ml-5 pt-2">
-              <Switch />
+              <Switch value={onlyStaked} onChange={stakedToggle} />
               <div className="ml-2 mb-2">Staked only</div>
             </div>
           </div>
-          <div className="col-span-5 flex items-center">
+
+          {/* <div className="col-span-5 flex items-center">
             <div className="mr-5">
               <Select className="border-primary" type="custom-primary" options={sortOptions} />
             </div>
@@ -372,11 +439,12 @@ function Pools() {
               />
             </div>
 
-          </div>
+          </div> */}
 
         </div>
-        <GridView />
-        {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />}
+
+        <GridView onlyStaked={onlyStaked} poolState={poolState} />
+        {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
       </Styles>
     </Layout>
   );
