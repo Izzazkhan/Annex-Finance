@@ -223,9 +223,6 @@ function Detail(props) {
   const dutchContract = dutchAuctionContract(chainId);
   const fixedContract = fixedAuctionContract(chainId);
 
-  // const { account, chainId } = useActiveWeb3React();
-  // const { apolloClient } = useContext(subGraphContext);
-  // const auctionContract = getAuctionContract(state.type, chainId);
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
