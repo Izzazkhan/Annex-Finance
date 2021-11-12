@@ -5,8 +5,11 @@ import Refresh from '../../assets/images/refresh.png';
 import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
 import MetaMask from '../../assets/icons/metaMask.svg';
 import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
+import {
+    EXPLORERS
+} from '../../utilities/constants';
 
-function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice, selectedId, loading }) {
+function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice, selectedId, loading, chainId }) {
 
     const ArrowContainer = styled.div`
     transform: ${({ active }) => active ? 'rotate(180deg)' : 'rotate(0deg)'};
@@ -139,8 +142,8 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                             <div className="my-2 text-white text-xs text-right
                              flex justify-end">View Contract
                                 <a
-                                    href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.contract_Address
-                                        }`}
+                                    href={`${EXPLORERS[chainId]}/address/${item.contract_Address
+                                        }#code`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >

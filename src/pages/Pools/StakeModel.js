@@ -116,14 +116,14 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                         </div>
                         <div className="label flex justify-between font-bold text-primary text-md">
                             <div className=""></div>
-                            <div className="">Balance: {buttonText !== 'plus' ? data.stacked : data.tokenBalance}</div>
+                            <div className="">Balance: {buttonText === 'minus' ? data.stacked : data.tokenBalance}</div>
                         </div>
 
                         <div className="custom-range">
                             <Slider
                                 // handleLabel={'0'}
                                 min={0}
-                                max={buttonText !== 'plus' ? data.stacked : data.tokenBalance}
+                                max={buttonText === 'minus' ? data.stacked : data.tokenBalance}
                                 value={Number(value)}
                                 onChange={onChangeSlider}
                                 step={Number(`${(0 * data.decimal).toFixed(data.decimal - 1)}1`)}
