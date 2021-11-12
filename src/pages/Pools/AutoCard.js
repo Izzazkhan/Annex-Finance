@@ -88,11 +88,26 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
             </div>
             <div className="border-t border-solid border-custom p-5">
                 <div className="flex items-center justify-between">
-                    <div className="">
+                    <div className="flex">
                         <button className="flex items-center focus:outline-none bg-primary py-2 px-4 
                         rounded-3xl text-black text-center text-sm font-bold"><img src={Refresh} className="mr-1" alt="" />
                             {'Auto'}</button>
+                        <div className="flex items-center text-center">
+                            <div className="tooltip relative">
+                                <div className="tooltip-label">
+                                    <span className=""><img
+                                        className="ml-3"
+                                        src={require('../../assets/images/info.svg').default}
+                                        alt=""
+                                    /></span>
+                                </div>
+                                <span className="label">
+                                    {`Any funds you stake in this pool will be automagically harvested and restaked (compounded) for you.`}
+                                </span>
+                            </div>
+                        </div>
                     </div>
+
                     <div onClick={() => openDetails(item, !item.isOpen)} className="text-primary text-sm flex 
                                 items-center cursor-pointer font-bold" >Details
                         <div className="ml-2 order-4 hidden sm:flex">
