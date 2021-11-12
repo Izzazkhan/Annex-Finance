@@ -23,6 +23,8 @@ export function showTokenOnExplorer(address, chainId) {
 	const explorers = {
 		56: 'https://bscscan.com/token/',
 		97: 'https://testnet.bscscan.com/token',
+		25: 'https://cronos.crypto.org/explorer/token',
+		339: 'https://cronos.crypto.org/cassini/explorer/token',
 	}
 
 	const url = `${explorers[chainId]}${address}`

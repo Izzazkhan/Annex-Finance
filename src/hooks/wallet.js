@@ -74,18 +74,18 @@ export function useTokenBalancesWithLoadingIndicator(
 			() =>
 				address && validatedTokens.length > 0
 					? validatedTokens.reduce((memo, token, i) => {
-			const value = balances?.[i]?.result?.[0];
-			const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-			if (amount) {
-				memo[token.address] = new TokenAmount(token, amount);
-			}
-			return memo;
-		}, {})
-	: {},
-	[address, validatedTokens, balances]
-),
-	anyLoading,
-];
+					const value = balances?.[i]?.result?.[0];
+					const amount = value ? JSBI.BigInt(value.toString()) : undefined;
+					if (amount) {
+						memo[token.address] = new TokenAmount(token, amount);
+					}
+					return memo;
+					}, {})
+					: {},
+				[address, validatedTokens, balances]
+		),
+		anyLoading,
+	];
 }
 
 export function useTokenBalances(

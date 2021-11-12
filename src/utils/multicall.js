@@ -14,7 +14,6 @@ const multicall = async (abi, calls, chainId) => {
 
         return res
     } catch (error) {
-        console.log(calls);
         throw new Error(error)
     }
 }
