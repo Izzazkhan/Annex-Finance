@@ -163,7 +163,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                     userInfo = await methods.call(contract.methods.userInfo, [account]);
                     if (userInfo.shares > 0) {
                         isUserInfo = true
-                        stacked = userInfo.shares / Math.pow(10, decimal)
+                        stacked = convertExponentToNum(userInfo.shares / Math.pow(10, decimal))
                     }
                 }
                 const rewardTokenPrice = annPrice
@@ -187,7 +187,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                     userInfo = await methods.call(contract.methods.userInfo, [pool._pid, account]);
                     if (userInfo.amount > 0) {
                         isUserInfo = true
-                        stacked = userInfo.amount / Math.pow(10, decimal)
+                        stacked = (userInfo.amount / Math.pow(10, decimal))
                     }
                 }
             }
@@ -347,6 +347,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
 
     const handleConfirm = (amount, buttonValue) => {
         if (amount > 0) {
+            let returnedValue;
             const contract = new instance.eth.Contract(
                 JSON.parse(selectedPool.contract_Abi),
                 selectedPool.contract_Address,
@@ -359,12 +360,14 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                     contractArray = [selectedPool._pid, amount]
                 }
                 else {
-                    contractArray = [selectedPool._pid, amount]
+                    contractArray = [selectedPool._pid, amount * Math.pow(10, selectedPool.decimal)]
                 }
             }
             else {
-                contractArray = [amount]
+                returnedValue = convertExponentToNum(amount * Math.pow(10, selectedPool.decimal))
+                contractArray = [returnedValue.toString()]
             }
+            console.log('contractArray', returnedValue)
             methods
                 .send(
                     methodName,
@@ -397,6 +400,24 @@ function Grid({ annPrice, onlyStaked, poolState }) {
         }
     }
 
+    const convertExponentToNum = (x) => {
+        if (Math.abs(x) < 1.0) {
+            let e = parseInt(x.toString().split('e-')[1]);
+            if (e) {
+                x *= Math.pow(10, e - 1);
+                x = '0.' + new Array(e).join('0') + x.toString().substring(2);
+            }
+        } else {
+            let e = parseInt(x.toString().split('+')[1]);
+            if (e > 20) {
+                e -= 20;
+                x /= Math.pow(10, e);
+                x += new Array(e + 1).join('0');
+            }
+        }
+        return x;
+    };
+
     const handleToken = () => {
         console.log('Get token called')
     }
@@ -425,7 +446,6 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                                                 annPrice={annPrice}
                                                 selectedId={selectedPool.id}
                                                 loading={loading}
-                                                chainId={chainId}
                                             />
                                         )
                                     }
@@ -435,9 +455,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                                                 openDetails={openDetails} addToken={addToken}
                                                 annPrice={annPrice}
                                                 selectedId={selectedPool.id}
-                                                chainId={chainId}
                                                 loading={loading} />
-
                                         )
                                     }
                                 })}
