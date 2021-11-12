@@ -425,6 +425,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                                                 annPrice={annPrice}
                                                 selectedId={selectedPool.id}
                                                 loading={loading}
+                                                chainId={chainId}
                                             />
                                         )
                                     }
@@ -434,7 +435,9 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                                                 openDetails={openDetails} addToken={addToken}
                                                 annPrice={annPrice}
                                                 selectedId={selectedPool.id}
+                                                chainId={chainId}
                                                 loading={loading} />
+
                                         )
                                     }
                                 })}
