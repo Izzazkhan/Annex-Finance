@@ -651,6 +651,13 @@ export const FIXED_AUCTION_DATASOURCE = {
   97: process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE,
 }
 
+export const EXPLORERS = {
+  56: 'https://bscscan.com/token/',
+  97: 'https://testnet.bscscan.com/token',
+  25: 'https://cronos.crypto.org/explorer/token',
+  339: 'https://cronos.crypto.org/cassini/explorer/token',
+}
+
 export const AVAILABLE_NETWORKS = {
   56: {
     chainId: '0x38', // A 0x-prefixed hexadecimal string

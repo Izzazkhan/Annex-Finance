@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address';
+import { EXPLORERS } from 'utilities/constants';
 
 export function isAddress(value) {
 	try {
@@ -20,14 +21,7 @@ export function shortenAddress(address, chars = 4) {
 }
 
 export function showTokenOnExplorer(address, chainId) {
-	const explorers = {
-		56: 'https://bscscan.com/token/',
-		97: 'https://testnet.bscscan.com/token',
-		25: 'https://cronos.crypto.org/explorer/token',
-		339: 'https://cronos.crypto.org/cassini/explorer/token',
-	}
-
-	const url = `${explorers[chainId]}${address}`
+	const url = `${EXPLORERS[chainId]}token/${address}`
 
 	window.open(url, "_blank");
 
