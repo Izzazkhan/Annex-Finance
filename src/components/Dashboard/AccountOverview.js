@@ -76,7 +76,7 @@ const Styles = styled.span`
   }
 `;
 
-const AVAILABLE_NETWORKS = [56, 97, 339];
+const AVAILABLE_NETWORKS = [56, 97, 339, 25];
 
 const AccountOverview = ({
   available,

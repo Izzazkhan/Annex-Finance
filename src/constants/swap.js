@@ -22,6 +22,7 @@ const WETH_ONLY = {
 	[ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
 	[ChainId.BSCTESTNET]: [WETH[ChainId.BSCTESTNET]],
 	[ChainId.CASSINI]: [WETH[ChainId.CASSINI]],
+	[ChainId.CRONOS]: [WETH[ChainId.CRONOS]],
 };
 
 // used to construct intermediary pairs for trading
@@ -37,6 +38,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST = {
 export const CUSTOM_BASES = {
 	[ChainId.MAINNET]: {},
 	[ChainId.CASSINI]: {},
+	[ChainId.CRONOS]: {},
 };
 
 // used for display in the default list when adding liquidity
@@ -46,6 +48,10 @@ export const SUGGESTED_BASES = {
 	[ChainId.CASSINI]: [
 		...WETH_ONLY[ChainId.CASSINI], 
 		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD")
+	],
+	[ChainId.CRONOS]: [
+		...WETH_ONLY[ChainId.CRONOS], 
+		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 18, "USDT", "Tether USD")
 	],
 };
 
@@ -57,6 +63,12 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR = {
 		...WETH_ONLY[ChainId.CASSINI],
 		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD"),
 		new Token(ChainId.CASSINI, "0x1D8A354655398EFE91a3Bc5BfAFB9602344Eeaf8", 18, "ETH", "Ethereum Token"),
+	],
+	[ChainId.CRONOS]: [
+		...WETH_ONLY[ChainId.CRONOS],
+		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 18, "USDT", "Tether USD"),
+		new Token(ChainId.CRONOS, "0xe44Fd7fCb2b1581822D0c862B68222998a0c299a", 18, "ETH", "Ethereum Token"),
+		new Token(ChainId.CRONOS, "0x062E66477Faf219F25D27dCED647BF57C3107d52", 18, "BTC", "Bitcoin Token"),
 	],
 };
 
@@ -82,6 +94,16 @@ export const PINNED_PAIRS = {
 		[
 			new Token(ChainId.CASSINI, "0x1D8A354655398EFE91a3Bc5BfAFB9602344Eeaf8", 18, "ETH", "Ethereum Token"),
 			new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD"),
+		]
+	],
+	[ChainId.CRONOS]: [
+		[
+			new Token(ChainId.CRONOS, "0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067", 18, "ANN", "Annex Token"),
+			new Token(ChainId.CRONOS, "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23", 18, "WCRO", "Wrapped WCRO"),
+		],
+		[
+			new Token(ChainId.CRONOS, "0xe44Fd7fCb2b1581822D0c862B68222998a0c299a", 18, "ETH", "Ethereum Token"),
+			new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 18, "USDT", "Tether USD"),
 		]
 	]
 };

@@ -49,7 +49,7 @@ const Styles = styled.div`
   }
 `;
 
-const AVAILABLE_NETWORKS = [56, 97, 339]
+const AVAILABLE_NETWORKS = [56, 97, 339, 25]
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
   // debugger;
@@ -824,7 +824,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [getGovernanceData]);
 
   useEffect(() => {
-    if (currentAsset) {
+    if (currentAsset && constants.CONTRACT_ABEP_ADDRESS[chainId][currentAsset]) {
       getGraphData(
         constants.CONTRACT_ABEP_ADDRESS[chainId][currentAsset].address,
         process.env.REACT_APP_GRAPH_TICKER || null,

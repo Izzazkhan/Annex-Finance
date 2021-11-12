@@ -17,7 +17,7 @@ export default {
         56: '0xfF6FD90A470Aaa0c1B8A54681746b07AcdFedc9B',
         97: '0x8F3273Fb89B075b1645095ABaC6ed17B2d4Bc576',
         339: '0x59D6efbaC084f9b2c02888987592260fa6628413',
-        25: '',
+        25: '0x6e744FeEf4903760f8Ef64dDff9730A6F95f4274',
     },
     pancakeProfile: {
         56: '0xDf4dBf6536201370F95e06A0F8a7a70fE40E388a',

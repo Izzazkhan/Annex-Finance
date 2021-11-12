@@ -27,12 +27,11 @@ import Faucet from 'pages/Faucet';
 import CommingSoon from 'pages/CommingSoon';
 const Routes = () => {
   const { chainId } = useActiveWeb3React();
-  console.log('==== ', chainId)
   const history = useHistory();
 
   const [isInDev, setIsInDev] = useState(false)
   useDetectChainChange((chainId) => {
-    if (chainId === 25) {
+    if (chainId == 25) {
       setIsInDev(true)
     } else {
       setIsInDev(false)
@@ -41,7 +40,7 @@ const Routes = () => {
       history.push(routes.dashboard)
       location.reload()
     }
-    if ((window.location.pathname.includes(routes.faucet)) && !['339', '25'].includes(chainId)) {
+    if ((window.location.pathname.includes(routes.faucet)) && !['339'].includes(chainId)) {
       history.push(routes.dashboard)
       location.reload()
     }
@@ -58,7 +57,7 @@ const Routes = () => {
           <Route exact path={routes.farms} component={Farms} />
           <Route path={routes.trade} component={Trade} />
           {
-            (chainId === '25' || isInDev) ? <>
+            (chainId == 25 || isInDev) ? <>
               <Route exact path={routes.dashboard} component={CommingSoon} />
               <Route exact path={routes.annex} component={CommingSoon} />
               <Route exact path={routes.market.index} component={CommingSoon} />

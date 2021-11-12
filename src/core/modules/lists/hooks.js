@@ -25,6 +25,7 @@ const EMPTY_LIST = {
 	[ChainId.MAINNET]: {},
 	[ChainId.BSCTESTNET]: {},
 	[ChainId.CASSINI]: {},
+	[ChainId.CRONOS]: {},
 };
 
 const listCache =

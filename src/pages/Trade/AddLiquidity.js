@@ -210,7 +210,6 @@ function AddLiquidity({
   const handleCurrencyASelect = useCallback(
     (currA) => {
       const newCurrencyIdA = currencyId(currA, chainId);
-      console.log('------- ', newCurrencyIdA, currencyIdB)
       if (newCurrencyIdA === currencyIdB) {
         history.push(`/trade/liquidity/add/${currencyIdB}/${currencyIdA}`);
       } else {
