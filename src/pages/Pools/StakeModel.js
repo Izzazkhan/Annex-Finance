@@ -198,7 +198,16 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                             font-bold py-4 px-28 bg-primary text-black`}
                                     onClick={getToken}
                                 >
-                                    Get {data.symbol}
+                                    <a
+                                        rel={'noreferrer noopener'}
+                                        href={'trade/swap'}
+                                        className="flex flex-row items-center space-x-4 no-underline focus:outline-none"
+                                    >
+                                        <div className="flex w-3 h-3 rounded-full bg-primary" />
+                                        <div className="no-underline focus:outline-none">
+                                            Get {data.symbol}
+                                        </div>
+                                    </a>
                                 </button>
 
                             </div>
