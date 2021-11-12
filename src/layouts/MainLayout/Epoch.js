@@ -243,6 +243,16 @@ const Styles = styled.div`
         }
       }
     }
+    @media (max-width: 818px) {
+      .tooltip {
+        .label {
+          left: 0 !important;
+          font-size: 10px !important;
+          top: 100% !important;
+          bottom: unset !important;
+        }
+      }
+    }
     .tooltip {
       margin-bottom: 5px;
       .label {
@@ -266,6 +276,7 @@ const Styles = styled.div`
         line-height: normal;
         border: 2px solid #B068009C;
         height: auto;
+        z-index: 2;
       }
       .tooltip-label:hover + .label {
         display: flex;
