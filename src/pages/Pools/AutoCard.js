@@ -6,7 +6,7 @@ import OrangeexpandBox from '../../assets/icons/orange-expandBox.png';
 import MetaMask from '../../assets/icons/metaMask.svg';
 import ArrowIconOrange from '../../assets/icons/lendingArrowOrange.png';
 import {
-    AVAILABLE_NETWORKS
+    EXPLORERS
 } from '../../utilities/constants';
 
 function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPrice, selectedId, loading, chainId }) {
@@ -142,7 +142,7 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                             <div className="my-2 text-white text-xs text-right
                              flex justify-end">View Contract
                                 <a
-                                    href={`${AVAILABLE_NETWORKS[chainId].blockExplorerUrls}/address/${item.contract_Address
+                                    href={`${EXPLORERS[chainId]}/address/${item.contract_Address
                                         }#code`}
                                     target="_blank"
                                     rel="noreferrer"
