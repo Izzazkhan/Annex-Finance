@@ -365,6 +365,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
             else {
                 contractArray = [amount * Math.pow(10, selectedPool.decimal)]
             }
+            // console.log('contractArray', contractArray.toHexString())
             methods
                 .send(
                     methodName,
@@ -404,16 +405,20 @@ function Grid({ annPrice, onlyStaked, poolState }) {
     return (
         <Styles>
             <Fragment>
-                <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
-                    {
-                        poolLoading ? (
+                {/* <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 "> */}
+                {
+                    poolLoading ? (
+                        <div className="flex justify-center">
                             <Loader size="160px" className="m-40" stroke="#ff9800" />
-                        ) : poolData.length === 0 ?
-                            <div className="text-white text-base p-20 flex justify-center col-span-12">
-                                <span className="text-center text-grey text-2xl md:text-3xl 
-              text-border title-text">No pools</span>
-                            </div> : (
-                                poolData.length && poolData.map(item => {
+                        </div>
+                    ) : poolData.length === 0 ?
+
+                        <div className="text-white text-base p-20 flex justify-center col-span-12">
+                            <span className="text-center text-grey text-2xl md:text-3xl 
+                      text-border title-text">No pools</span>
+                        </div> : (
+                            <div className="bg-fadeBlack p-6 mt-10 grid grid-cols-1 gap-y-5 md:gap-y-7 md:grid-cols-12 md:gap-x-5 ">
+                                {poolData.length && poolData.map(item => {
                                     if (item.auto_staking) {
                                         return (
                                             <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
@@ -436,11 +441,12 @@ function Grid({ annPrice, onlyStaked, poolState }) {
 
                                         )
                                     }
-                                })
-                            )
-                    }
+                                })}
+                            </div>
+                        )
+                }
 
-                    {/* <div className="bg-black rounded-3xl col-span-4">
+                {/* <div className="bg-black rounded-3xl col-span-4">
                         <div className={`${live ? 'bgPrimaryGradient' : finished ? 'bg-gray relative overflow-hidden' : ''}
                  py-3 md:py-7 px-5 rounded-t-3xl flex items-center w-full justify-between`}>
                             <div className="flex flex-col">
@@ -518,8 +524,8 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                         </div>
                     </div> */}
 
-                    {/* <div className="text-white">grid</div> */}
-                </div>
+                {/* <div className="text-white">grid</div> */}
+                {/* </div> */}
 
                 {
                     <StakeModal

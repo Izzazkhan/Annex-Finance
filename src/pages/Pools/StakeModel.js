@@ -46,7 +46,7 @@ const ErrorMessage = styled.div`
 function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, handleSubmit, getToken, buttonText, loading, annPrice }) {
 
     const [value, setValue] = useState(0);
-    const [inputAmount, setInputAmount] = useState(0)
+    const [inputAmount, setInputAmount] = useState('')
 
     // const handleFocus = (event) => {
     //     event.target.select();
@@ -54,7 +54,7 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
 
     function closeModal() {
         onCloseModal();
-        setInputAmount(0)
+        setInputAmount('')
         setValue(0)
     }
 
@@ -139,28 +139,28 @@ function stakeModal({ openModal, data, onSetOpen, onCloseModal, modalError, hand
                             <button
                                 className={`rounded-xl flex justify-center items-center 
                             font-bold mt-10 py-4 px-8 bg-primary text-black`}
-                                onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance) * (25 / 100))}
+                                onClick={() => onPercentage((buttonText === 'minus' ? data.stacked : data.tokenBalance) * (25 / 100))}
                             >
                                 25%
                             </button>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
                             font-bold mt-10 py-4 px-8 bg-primary text-black`}
-                                onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance) * (50 / 100))}
+                                onClick={() => onPercentage((buttonText === 'minus' ? data.stacked : data.tokenBalance) * (50 / 100))}
                             >
                                 50%
                             </button>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
                             font-bold mt-10 py-4 px-8 bg-primary text-black`}
-                                onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance) * (75 / 100))}
+                                onClick={() => onPercentage((buttonText === 'minus' ? data.stacked : data.tokenBalance) * (75 / 100))}
                             >
                                 75%
                             </button>
                             <button
                                 className={`rounded-xl flex justify-center items-center 
                             font-bold mt-10 py-4 px-8 bg-primary text-black`}
-                                onClick={() => onPercentage((buttonText !== 'plus' ? data.stacked : data.tokenBalance))}
+                                onClick={() => onPercentage((buttonText === 'minus' ? data.stacked : data.tokenBalance))}
                             >
                                 Max
                             </button>
