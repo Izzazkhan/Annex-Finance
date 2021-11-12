@@ -29,12 +29,12 @@ const Routes = () => {
   const { chainId } = useActiveWeb3React();
   const history = useHistory();
 
-  const [isInDev, seIsInDev] = useState(false)
+  const [isInDev, setIsInDev] = useState(false)
   useDetectChainChange((chainId) => {
     if (chainId === '25') {
-      seIsInDev(true)
+      setIsInDev(true)
     } else {
-      seIsInDev(false)
+      setIsInDev(false)
     }
     if ((window.location.pathname.includes(routes.auction) || window.location.pathname.includes(routes.games)) && ['339', '25'].includes(chainId)) {
       history.push(routes.dashboard)
