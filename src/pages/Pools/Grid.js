@@ -13,8 +13,6 @@ import StakeModal from './StakeModel'
 import AutoCard from './AutoCard';
 import ManualCard from './ManualCard';
 import CollectModal from './CollectModal';
-import { accountActionCreators, connectAccount } from '../../core';
-import { bindActionCreators } from 'redux';
 import Loader from 'components/UI/Loader';
 import BigNumber from 'bignumber.js';
 
@@ -29,7 +27,7 @@ const Styles = styled.div`
   }
  `
 
-function Grid({ settings, onlyStaked, poolState }) {
+function Grid({ annPrice, onlyStaked, poolState }) {
 
     const { account, chainId } = useActiveWeb3React();
 
@@ -130,6 +128,7 @@ function Grid({ settings, onlyStaked, poolState }) {
             const takenAsPerformanceFee = apyAsDecimal * performanceFeeAsDecimal
             apyAsDecimal -= takenAsPerformanceFee
         }
+        
         return apyAsDecimal * 100
     }
 
@@ -140,7 +139,6 @@ function Grid({ settings, onlyStaked, poolState }) {
                 JSON.parse(CONTRACT_ANN_TOKEN_ABI),
                 pool.token_address,
             );
-            console.log('tokenContract', tokenContract)
             let allowance = await methods.call(tokenContract.methods.allowance, [
                 account,
                 pool.contract_Address,
@@ -168,8 +166,8 @@ function Grid({ settings, onlyStaked, poolState }) {
                         stacked = userInfo.shares / Math.pow(10, decimal)
                     }
                 }
-                const rewardTokenPrice = settings.annPrice
-                const stakingTokenPrice = settings.annPrice
+                const rewardTokenPrice = annPrice
+                const stakingTokenPrice = annPrice
                 const tokenPerBlock = await methods.call(farmContract.methods.annexPerBlock, [])
                 let totalStaked = await methods.call(contract.methods.balanceOf, []);
                 const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock)
@@ -177,6 +175,7 @@ function Grid({ settings, onlyStaked, poolState }) {
                 const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
                 let performanceFee = await methods.call(contract.methods.performanceFee, []);
                 performanceFee = (performanceFee / 10000) * 100
+
                 apyValue = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
 
             }
@@ -238,8 +237,6 @@ function Grid({ settings, onlyStaked, poolState }) {
             fetchPoolData(filteredPool)
         }
     }, [poolState])
-
-    // console.log('database', poolData)
 
     const handleEnable = (item) => {
         setSelectedPool(item)
@@ -421,7 +418,7 @@ function Grid({ settings, onlyStaked, poolState }) {
                                         return (
                                             <AutoCard item={item} openModal={openModal} handleEnable={handleEnable}
                                                 openDetails={openDetails} addToken={addToken}
-                                                annPrice={settings.annPrice}
+                                                annPrice={annPrice}
                                                 selectedId={selectedPool.id}
                                                 loading={loading}
                                             />
@@ -431,7 +428,7 @@ function Grid({ settings, onlyStaked, poolState }) {
                                         return (
                                             <ManualCard item={item} openModal={openModal} handleEnable={handleEnable}
                                                 openDetails={openDetails} addToken={addToken}
-                                                annPrice={settings.annPrice}
+                                                annPrice={annPrice}
                                                 selectedId={selectedPool.id}
                                                 loading={loading} />
                                         )
@@ -529,7 +526,7 @@ function Grid({ settings, onlyStaked, poolState }) {
                         onCloseModal={() => closeModal()}
                         handleSubmit={handleConfirm}
                         getToken={handleToken}
-                        annPrice={settings.annPrice}
+                        annPrice={annPrice}
                         modalError={modalError}
                         buttonText={buttonName}
                         loading={loading}
@@ -546,7 +543,7 @@ function Grid({ settings, onlyStaked, poolState }) {
                         getToken={handleToken}
                         buttonText={buttonName}
                         loading={loading}
-                        annPrice={settings.annPrice}
+                        annPrice={annPrice}
                     />
                 }
             </Fragment>
@@ -554,19 +551,20 @@ function Grid({ settings, onlyStaked, poolState }) {
     );
 }
 
-const mapStateToProps = ({ account }) => ({
-    settings: account.setting,
-});
+// const mapStateToProps = ({ account }) => ({
+//     settings: account.setting,
+// });
 
-const mapDispatchToProps = (dispatch) => {
-    const { setSetting } = accountActionCreators;
+// const mapDispatchToProps = (dispatch) => {
+//     const { setSetting } = accountActionCreators;
 
-    return bindActionCreators(
-        {
-            setSetting,
-        },
-        dispatch,
-    );
-};
+//     return bindActionCreators(
+//         {
+//             setSetting,
+//         },
+//         dispatch,
+//     );
+// };
 
-export default connectAccount(mapStateToProps, mapDispatchToProps)(Grid);
+// export default connectAccount(mapStateToProps, mapDispatchToProps)(Grid);
+export default Grid
