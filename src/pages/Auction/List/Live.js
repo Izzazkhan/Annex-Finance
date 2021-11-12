@@ -71,6 +71,12 @@ function Live(props) {
         }
       }
     }
+
+    @media (min-width: 432px) {
+      .toggle-label-break {
+        display: none;
+      }
+    }
   `;
 
   const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -128,7 +134,8 @@ function Live(props) {
            rounded h-15 mr-2 flex items-center ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               }`}
           >
-            Batch Auction  <span className={`${batchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}
+            <span>{'Batch '}<br className={'toggle-label-break'} />Auction</span>
+            <span className={`${batchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}
             >{batchCount}</span>
           </button>
           <button
@@ -140,7 +147,8 @@ function Live(props) {
              ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Dutch Auction  <span className={`${dutchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{dutchCount}</span>
+            <span>{'Dutch '}<br className={'toggle-label-break'} />Auction</span>
+            <span className={`${dutchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{dutchCount}</span>
           </button>
           <button
             onClick={(e) => {
@@ -151,7 +159,8 @@ function Live(props) {
             flex items-center ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
-            Fixed  <span className={`${fixedActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{fixedCount}</span>
+            <span>Fixed</span>
+            <span className={`${fixedActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{fixedCount}</span>
           </button>
         </div>
 
