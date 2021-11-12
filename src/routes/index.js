@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Switch, Route, Redirect, BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 
 import routes from './RouteMap';
@@ -24,10 +24,18 @@ import ListsUpdater from '../core/modules/lists/updater';
 import Games from 'pages/Games';
 import { useActiveWeb3React, useDetectChainChange } from 'hooks';
 import Faucet from 'pages/Faucet';
+import CommingSoon from 'pages/CommingSoon';
 const Routes = () => {
   const { chainId } = useActiveWeb3React();
   const history = useHistory();
+
+  const [isInDev, seIsInDev] = useState(false)
   useDetectChainChange((chainId) => {
+    if (chainId === '25') {
+      seIsInDev(true)
+    } else {
+      seIsInDev(false)
+    }
     if ((window.location.pathname.includes(routes.auction) || window.location.pathname.includes(routes.games)) && ['339', '25'].includes(chainId)) {
       history.push(routes.dashboard)
       location.reload()
@@ -46,12 +54,32 @@ const Routes = () => {
       <Router>
         <Switch>
           <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
-          <Route exact path={routes.dashboard} component={Dashboard} />
-          <Route exact path={routes.annex} component={Annex} />
+          {
+            (chainId === 25 || isInDev) ? <>
+              <Route exact path={routes.dashboard} component={CommingSoon} />
+              <Route exact path={routes.annex} component={CommingSoon} />
+              <Route exact path={routes.market.index} component={CommingSoon} />
+              <Route exact path={routes.market.marketDetails} component={CommingSoon} />
+              <Route exact path={routes.pools} component={CommingSoon} />
+              <Route exact path={routes.vote.index} component={CommingSoon} />
+              <Route exact path={routes.vote.allProposals} component={CommingSoon} />
+              <Route exact path={routes.vote.voteOverview} component={CommingSoon} />
+              <Route exact path={routes.vote.proposerOverview} component={CommingSoon} />
+              <Route exact path={routes.vote.leaderboard} component={CommingSoon} />
+            </> : <>
+              <Route exact path={routes.dashboard} component={Dashboard} />
+              <Route exact path={routes.annex} component={Annex} />
+              <Route exact path={routes.market.index} component={Market} />
+              <Route exact path={routes.market.marketDetails} component={MarketDetails} />
+              <Route exact path={routes.pools} component={Pools} />
+              <Route exact path={routes.vote.index} component={Vote} />
+              <Route exact path={routes.vote.allProposals} component={AllProposals} />
+              <Route exact path={routes.vote.voteOverview} component={VoteOverview} />
+              <Route exact path={routes.vote.proposerOverview} component={ProposerOverview} />
+              <Route exact path={routes.vote.leaderboard} component={Leaderboard} />
+            </>
+          }
           <Route exact path={routes.farms} component={Farms} />
-          <Route exact path={routes.market.index} component={Market} />
-          <Route exact path={routes.market.marketDetails} component={MarketDetails} />
-          <Route exact path={routes.pools} component={Pools} />
           <Route path={routes.trade} component={Trade} />
           {![339, 25].includes(chainId) && (
             <>
@@ -59,11 +87,6 @@ const Routes = () => {
               <Route path={`${routes.auction}`} component={Auction} />
             </>
           )}
-          <Route exact path={routes.vote.index} component={Vote} />
-          <Route exact path={routes.vote.allProposals} component={AllProposals} />
-          <Route exact path={routes.vote.voteOverview} component={VoteOverview} />
-          <Route exact path={routes.vote.proposerOverview} component={ProposerOverview} />
-          <Route exact path={routes.vote.leaderboard} component={Leaderboard} />
           {[339, 25].includes(chainId) && (
             <>
               <Route path={`${routes.faucet}`} component={Faucet} />
