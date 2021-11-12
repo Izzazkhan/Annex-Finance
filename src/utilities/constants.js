@@ -57,6 +57,7 @@ export const CONTRACT_XAI_TOKEN_ADDRESS = {
   56: '0x4BD17003473389A42DAF6a0a729f6Fdb328BbBd7',
   97: '0x43e1EeF94Ed575Fd26E2DB1Eca505342D2A70717',
   339: '',
+  25: '',
 }
 
 // eslint-disable-next-line max-len
@@ -66,6 +67,7 @@ export const CONTRACT_XAI_VAULT_ADDRESS = {
   56: '0x0667Eed0a0aAb930af74a3dfeDD263A73994f216',
   97: '0x7Db4f5cC3bBA3e12FF1F528D2e3417afb0a57118',
   339: '',
+  25: '',
 }
 
 // eslint-disable-next-line max-len
@@ -75,6 +77,7 @@ export const CONTRACT_XAI_UNITROLLER_ADDRESS = {
   56: '0x004065D34C6b18cE4370ced1CeBDE94865DbFAFE',
   97: '0xD3c1e636C1332DE84a89ad31E880defC90606306',
   339: '',
+  25: '',
 }
 
 // eslint-disable-next-line max-len
@@ -240,6 +243,22 @@ export const CONTRACT_TOKEN_ADDRESS = {
       aAsset: ann
     },
   },
+  25: {
+    usdt: {
+      id: 'usdt',
+      symbol: 'USDT',
+      address: '0x66e428c3f67a68878562e79A0234c1F83c208770',
+      asset: usdt,
+      aAsset: ausdt
+    },
+    ann: {
+      id: 'ann',
+      symbol: 'ANN',
+      address: process.env.REACT_APP_CRONOS_MAIN_ANN_TOKEN,
+      asset: ann,
+      aAsset: ann
+    },
+  },
 }
 
 export const STABLE_USD_TOKENS = {
@@ -263,6 +282,13 @@ export const STABLE_USD_TOKENS = {
     address: '0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE',
     asset: usdt,
     aAsset: ausdt
+  },
+  25: {
+    id: 'usdt',
+    symbol: 'USDT',
+    address: '0x66e428c3f67a68878562e79A0234c1F83c208770',
+    asset: usdt,
+    aAsset: ausdt
   }
 }
 
@@ -279,6 +305,7 @@ export const CONTRACT_ANN_TOKEN_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_ANN_TOKEN,
   97: process.env.REACT_APP_BSC_TEST_ANN_TOKEN,
   339: process.env.REACT_APP_CRONOS_TEST_ANN_TOKEN,
+  25: ''
 }
 
 // eslint-disable-next-line max-len
@@ -430,6 +457,13 @@ export const CONTRACT_ABEP_ADDRESS = {
       symbol: 'aANN',
       address: process.env.REACT_APP_CRONOS_TEST_ANN_ABEP
     },
+  },
+  25: {
+    ann: {
+      id: 'ann',
+      symbol: 'aANN',
+      address: process.env.REACT_APP_CRONOS_MAIN_ANN_ABEP
+    },
   }
 };
 
@@ -443,6 +477,7 @@ export const CONTRACT_COMPTROLLER_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_COMPTROLLER_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_COMPTROLLER_ADDRESS,
   339: process.env.REACT_APP_CRONOS_TEST_COMPTROLLER_ADDRESS,
+  25: process.env.REACT_APP_CRONOS_MAIN_COMPTROLLER_ADDRESS,
 }
 
 // eslint-disable-next-line max-len
@@ -452,6 +487,7 @@ export const CONTRACT_PRICE_ORACLE_ADDRESS = {
   56: '0xdcb47670FCa9dD027a3599ac15C14e73CB3DbF42',
   97: '0x570FcC5e7E92066225e0dCAF64932A964Ecf3600',
   339: '0xc7b1E3F09429447c6b3E63C5295E2A1F616d4e81',
+  25: ''
 }
 
 // eslint-disable-next-line max-len
@@ -461,6 +497,7 @@ export const CONTRACT_VOTE_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_VOTE_ADDRESS,
   97: process.env.REACT_APP_BSC_TEST_VOTE_ADDRESS,
   339: process.env.REACT_APP_CRONOS_TEST_VOTE_ADDRESS,
+  25: process.env.REACT_APP_CRONOS_MAIN_VOTE_ADDRESS,
 }
 // eslint-disable-next-line max-len
 export const CONTRACT_VOTE_ABI = '[{"inputs":[{"internalType":"address","name":"timelock_","type":"address"},{"internalType":"address","name":"ann_","type":"address"},{"internalType":"address","name":"guardian_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"ProposalCanceled","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"address","name":"proposer","type":"address"},{"indexed":false,"internalType":"address[]","name":"targets","type":"address[]"},{"indexed":false,"internalType":"uint256[]","name":"values","type":"uint256[]"},{"indexed":false,"internalType":"string[]","name":"signatures","type":"string[]"},{"indexed":false,"internalType":"bytes[]","name":"calldatas","type":"bytes[]"},{"indexed":false,"internalType":"uint256","name":"startBlock","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"endBlock","type":"uint256"},{"indexed":false,"internalType":"string","name":"description","type":"string"}],"name":"ProposalCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"ProposalExecuted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"eta","type":"uint256"}],"name":"ProposalQueued","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"voter","type":"address"},{"indexed":false,"internalType":"uint256","name":"proposalId","type":"uint256"},{"indexed":false,"internalType":"bool","name":"support","type":"bool"},{"indexed":false,"internalType":"uint256","name":"votes","type":"uint256"}],"name":"VoteCast","type":"event"},{"constant":true,"inputs":[],"name":"BALLOT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DOMAIN_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"__abdicate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"__acceptAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newPendingAdmin","type":"address"},{"internalType":"uint256","name":"eta","type":"uint256"}],"name":"__executeSetTimelockPendingAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newPendingAdmin","type":"address"},{"internalType":"uint256","name":"eta","type":"uint256"}],"name":"__queueSetTimelockPendingAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"ann","outputs":[{"internalType":"contract ANNInterface","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"cancel","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"},{"internalType":"bool","name":"support","type":"bool"}],"name":"castVote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"},{"internalType":"bool","name":"support","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"castVoteBySig","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"execute","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"getActions","outputs":[{"internalType":"address[]","name":"targets","type":"address[]"},{"internalType":"uint256[]","name":"values","type":"uint256[]"},{"internalType":"string[]","name":"signatures","type":"string[]"},{"internalType":"bytes[]","name":"calldatas","type":"bytes[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"},{"internalType":"address","name":"voter","type":"address"}],"name":"getReceipt","outputs":[{"components":[{"internalType":"bool","name":"hasVoted","type":"bool"},{"internalType":"bool","name":"support","type":"bool"},{"internalType":"uint96","name":"votes","type":"uint96"}],"internalType":"struct GovernorAlpha.Receipt","name":"","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"guardian","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"latestProposalIds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"proposalCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"proposalMaxOperations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"proposalThreshold","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"proposer","type":"address"},{"internalType":"uint256","name":"eta","type":"uint256"},{"internalType":"uint256","name":"startBlock","type":"uint256"},{"internalType":"uint256","name":"endBlock","type":"uint256"},{"internalType":"uint256","name":"forVotes","type":"uint256"},{"internalType":"uint256","name":"againstVotes","type":"uint256"},{"internalType":"bool","name":"canceled","type":"bool"},{"internalType":"bool","name":"executed","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address[]","name":"targets","type":"address[]"},{"internalType":"uint256[]","name":"values","type":"uint256[]"},{"internalType":"string[]","name":"signatures","type":"string[]"},{"internalType":"bytes[]","name":"calldatas","type":"bytes[]"},{"internalType":"string","name":"description","type":"string"}],"name":"propose","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"queue","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"quorumVotes","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"proposalId","type":"uint256"}],"name":"state","outputs":[{"internalType":"enum GovernorAlpha.ProposalState","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"timelock","outputs":[{"internalType":"contract TimelockInterface","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"votingDelay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"votingPeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}]';
@@ -526,6 +563,9 @@ export const BIDDING_AUCTION_TOKEN = {
   },
   339: {
 
+  },
+  25: {
+
   }
 };
 export const CONTRACT_ANNEX_AUCTION = {
@@ -583,6 +623,9 @@ export const CONTRACT_ANNEX_AUCTION = {
   },
   339: {
 
+  },
+  25: {
+
   }
 }
 // eslint-disable-next-line max-len
@@ -605,22 +648,28 @@ export const REACT_APP_ANN_Vault_ADDRESS = {
   56: '',
   97: '0x7A8e7d196B2b04E82393103DEBA2A6eE7dCD9F55',
   339: '',
+  25: '',
 }
 
 export const REACT_APP_ANNEX_FARM_ADDRESS = {
   56: '0x9c821500eaBa9f9737fDAadF7984Dff03edc74d1',
   97: '0xDd1651eb0De5648e73Bd7EE8af8cFEF7681Dc915',
-  339: '0xd1080B4476eE3325e7abA718f03b958AD17b13A4'
+  339: '0xd1080B4476eE3325e7abA718f03b958AD17b13A4',
+  25: '0xEF6d860B22cEFe19Ae124b74eb80F0c0eb8201F4',
 }
 
 export const CONTRACT_DUTCH_AUCTION_ADDRESS = {
   56: process.env.REACT_APP_MAIN_ANNEX_DUTCH_AUCTION_ADDRESS,
-  97: process.env.REACT_APP_TEST_ANNEX_DUTCH_AUCTION_ADDRESS
+  97: process.env.REACT_APP_TEST_ANNEX_DUTCH_AUCTION_ADDRESS,
+  339: '',
+  25: '',
 }
 
 export const CONTRACT_FIXED_AUCTION_ADDRESS = {
   56: process.env.REACT_APP_MAIN_ANNEX_FIXED_AUCTION_ADDRESS,
-  97: process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS
+  97: process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS,
+  339: '',
+  25: '',
 }
 
 
@@ -628,27 +677,35 @@ export const CONTRACT_ROUTER_ADDRESS = {
   56: '0x299385325392F537Fc6B4281d2dbe31280833Dcb',
   97: '0x81A2E0Bdb480aFa026E10F15aB2c536c2F54433D',
   339: '0xa12698E92A59ca25476943180942C2b6ae80b1E5',
+  25: '0xCC4C77aA1311d39bc7Df8b24f1b6E5e095738D0A'
 }
 
 export const CONTRACT_FACTORY_ADDRESS = {
   56: '0x6a616606D9f3BaE02d215db5046b7D1030674622',
   97: '0xd81014579288221814b5E066AaCF0B4A00739a24',
   339: '0xa12698E92A59ca25476943180942C2b6ae80b1E5',
+  25: '0xFb6FE7d66E55831b7e108B77D11b8e4d479c2986'
 }
 
 export const BATCH_AUCTION_DATASOURCE = {
   56: process.env.REACT_APP_MAIN_SUBGRAPH_DATASOURCE,
   97: process.env.REACT_APP_TEST_SUBGRAPH_DATASOURCE,
+  339: '',
+  25: ''
 }
 
 export const DUTCH_AUCTION_DATASOURCE = {
   56: process.env.REACT_APP_MAIN_DUTCH_AUCTION_DATASOURCE,
   97: process.env.REACT_APP_TEST_DUTCH_AUCTION_DATASOURCE,
+  339: '',
+  25: ''
 }
 
 export const FIXED_AUCTION_DATASOURCE = {
   56: process.env.REACT_APP_MAIN_FIXED_AUCTION_DATASOURCE,
   97: process.env.REACT_APP_TEST_FIXED_AUCTION_DATASOURCE,
+  339: '',
+  25: ''
 }
 
 export const EXPLORERS = {

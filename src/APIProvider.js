@@ -189,6 +189,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).filter(item => {
       return settings.decimals[item.id]
     });
+    console.log('contractAddresses: ', contractAddresses)
 
     let web3 = null;
     if (window.ethereum) {
@@ -198,13 +199,14 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       );
     }
 
+    console.log('==== ', settings.markets)
     const contractData = await Promise.all(
       contractAddresses.map(item => {
         let market = settings.markets.find((ele) => ele.underlyingSymbol.toLowerCase() === item.symbol.toLowerCase());
         if (!market) market = {};
 
         const aBepContract = getAbepContract(item.id, chainId);
-        if (item.id !== 'bnb') {
+        if (item.id !== 'bnb' && item.id !== 'cro' && item.id !== 'tcro') {
           const tokenContract = getTokenContract(item.id, chainId);
 
           return Promise.all([
@@ -257,9 +259,13 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     // ) {
     contractData.forEach((data, index) => {
       const tokenDecimal = settings.decimals[data[0].id].token;
-      const allowBalance = data[0].id !== 'bnb' ? new BigNumber(data[3]).div(new BigNumber(10).pow(tokenDecimal)) : 0;
+      const allowBalance = (data[0].id !== 'bnb' && data[0].id !== 'cro' && data[0].id !== 'tcro')
+        ? new BigNumber(data[3]).div(new BigNumber(10).pow(tokenDecimal))
+        : 0;
       const walletBalance = new BigNumber(data[2]).div(new BigNumber(10).pow(tokenDecimal));
-      const isEnabled = data[0].id !== 'bnb' ? allowBalance.isGreaterThan(walletBalance) : true;
+      const isEnabled = (data[0].id !== 'bnb' && data[0].id !== 'cro' && data[0].id !== 'tcro')
+        ? allowBalance.isGreaterThan(walletBalance)
+        : true;
       const borrowBalance = new BigNumber(data[5]).div(new BigNumber(10).pow(tokenDecimal));
       const percentOfLimit = new BigNumber(settings.totalBorrowLimit).isZero()
         ? '0'
