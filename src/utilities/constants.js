@@ -244,13 +244,13 @@ export const CONTRACT_TOKEN_ADDRESS = {
     },
   },
   25: {
-    usdt: {
-      id: 'usdt',
-      symbol: 'USDT',
-      address: '0x66e428c3f67a68878562e79A0234c1F83c208770',
-      asset: usdt,
-      aAsset: ausdt
-    },
+    // usdt: {
+    //   id: 'usdt',
+    //   symbol: 'USDT',
+    //   address: '0x66e428c3f67a68878562e79A0234c1F83c208770',
+    //   asset: usdt,
+    //   aAsset: ausdt
+    // },
     ann: {
       id: 'ann',
       symbol: 'ANN',

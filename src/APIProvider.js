@@ -189,7 +189,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
     const contractAddresses = Object.values(constants.CONTRACT_TOKEN_ADDRESS[chainId]).filter(item => {
       return settings.decimals[item.id]
     });
-    console.log('contractAddresses: ', contractAddresses)
 
     let web3 = null;
     if (window.ethereum) {
@@ -199,7 +198,6 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
       );
     }
 
-    console.log('==== ', settings.markets)
     const contractData = await Promise.all(
       contractAddresses.map(item => {
         let market = settings.markets.find((ele) => ele.underlyingSymbol.toLowerCase() === item.symbol.toLowerCase());

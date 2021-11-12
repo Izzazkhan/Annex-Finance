@@ -27,11 +27,12 @@ import Faucet from 'pages/Faucet';
 import CommingSoon from 'pages/CommingSoon';
 const Routes = () => {
   const { chainId } = useActiveWeb3React();
+  console.log('==== ', chainId)
   const history = useHistory();
 
   const [isInDev, setIsInDev] = useState(false)
   useDetectChainChange((chainId) => {
-    if (chainId === '25') {
+    if (chainId === 25) {
       setIsInDev(true)
     } else {
       setIsInDev(false)
@@ -54,8 +55,10 @@ const Routes = () => {
       <Router>
         <Switch>
           <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
+          <Route exact path={routes.farms} component={Farms} />
+          <Route path={routes.trade} component={Trade} />
           {
-            (chainId === 25 || isInDev) ? <>
+            (chainId === '25' || isInDev) ? <>
               <Route exact path={routes.dashboard} component={CommingSoon} />
               <Route exact path={routes.annex} component={CommingSoon} />
               <Route exact path={routes.market.index} component={CommingSoon} />
@@ -79,15 +82,13 @@ const Routes = () => {
               <Route exact path={routes.vote.leaderboard} component={Leaderboard} />
             </>
           }
-          <Route exact path={routes.farms} component={Farms} />
-          <Route path={routes.trade} component={Trade} />
           {![339, 25].includes(chainId) && (
             <>
               <Route path={routes.games} component={Games} />
               <Route path={`${routes.auction}`} component={Auction} />
             </>
           )}
-          {[339, 25].includes(chainId) && (
+          {[339].includes(chainId) && (
             <>
               <Route path={`${routes.faucet}`} component={Faucet} />
             </>

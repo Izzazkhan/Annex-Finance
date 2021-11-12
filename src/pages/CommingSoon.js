@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Layout from '../layouts/MainLayout/MainLayout';
+import ComingSoon from '../assets/images/coming-soon.png';
 
 const EmptyDataStyles = styled.div`
   width: 100%;
@@ -17,8 +18,9 @@ function CommingSoon() {
     <Layout>
       <EmptyDataStyles>
         <div className="text-base p-20 flex justify-center text-white">
-          <span className="text-center text-2xl md:text-3xl 
-                          text-border title-text">Comming Soon</span>
+          <div className="image">
+            <img src={ComingSoon} alt="Coming Soon" className="" />
+          </div>
         </div>
       </EmptyDataStyles>
     </Layout>

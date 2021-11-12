@@ -3,7 +3,7 @@ export default {
         97: '0xDd1651eb0De5648e73Bd7EE8af8cFEF7681Dc915',
         56: '0x9c821500eaBa9f9737fDAadF7984Dff03edc74d1',
         339: '0xd1080B4476eE3325e7abA718f03b958AD17b13A4',
-        25: '',
+        25: '0xEF6d860B22cEFe19Ae124b74eb80F0c0eb8201F4',
     },
     sousChef: {
         97: '0xd3af5fe61dbaf8f73149bfcfa9fb653ff096029a',

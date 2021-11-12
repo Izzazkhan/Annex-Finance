@@ -86,7 +86,11 @@ export const getTokenContract = (name, chainId) => {
 
 export const getAbepContract = (name, chainId) => {
   return new instance.eth.Contract(
-    JSON.parse(name !== 'bnb' ? constants.CONTRACT_ABEP_ABI : constants.CONTRACT_ABNB_ABI),
+    JSON.parse(
+      (name !== 'bnb' && name !== 'cro' && name !== 'tcro')
+        ? constants.CONTRACT_ABEP_ABI
+        : constants.CONTRACT_ABNB_ABI
+    ),
     constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt']
       ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt'].address
       : constants.CONTRACT_ABEP_ADDRESS[chainId].usdt.address,
