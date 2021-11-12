@@ -1,6 +1,7 @@
 import { rgba } from 'polished';
 import { BarChart, Bar, ResponsiveContainer, Cell, XAxis, YAxis, Tooltip } from 'recharts';
 import moment from 'moment';
+import { currencyFormatter } from 'utilities/common';
 
 function CustomTooltip({ payload, label, active, auctionType }) {
   if (active) {
@@ -62,7 +63,9 @@ export default function Chart(props) {
           </Bar>
           <Tooltip content={<CustomTooltip auctionType={props.auctionType} />} />
           <XAxis fontSize="12" dataKey="price" />
-          <YAxis fontSize="12" dataKey={props.auctionType === 'FIXED' ? "auctionDivSellAmount" : "auctionDivBuyAmount"} ticks={[0, props.yMaximum]} />
+          <YAxis fontSize="12" dataKey={props.auctionType === 'FIXED' ? "auctionDivSellAmount" : "auctionDivBuyAmount"} 
+            tickFormatter={(val, index) => currencyFormatter(val, '')} ticks={[0, props.yMaximum]} 
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
