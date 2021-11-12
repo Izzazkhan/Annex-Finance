@@ -652,10 +652,10 @@ export const FIXED_AUCTION_DATASOURCE = {
 }
 
 export const EXPLORERS = {
-  56: 'https://bscscan.com/token/',
-  97: 'https://testnet.bscscan.com/token',
-  25: 'https://cronos.crypto.org/explorer/token',
-  339: 'https://cronos.crypto.org/cassini/explorer/token',
+  56: 'https://bscscan.com/',
+  97: 'https://testnet.bscscan.com/',
+  25: 'https://cronos.crypto.org/explorer/',
+  339: 'https://cronos.crypto.org/cassini/explorer/',
 }
 
 export const AVAILABLE_NETWORKS = {
