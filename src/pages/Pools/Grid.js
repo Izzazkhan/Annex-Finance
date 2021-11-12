@@ -149,7 +149,7 @@ function Grid({ settings, onlyStaked, poolState }) {
             let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
-            let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked, pendingAnnex, pendingAnnexWithoutDecimal,
+            let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked = 0, pendingAnnex, pendingAnnexWithoutDecimal,
                 apyValue = 0
             const contract = new instance.eth.Contract(
                 JSON.parse(pool.contract_Abi),
