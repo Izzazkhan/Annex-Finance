@@ -123,7 +123,11 @@ export const currencyFormatter = (labelValue, rowValue) => {
   else if (rowValue === 'reservesValue') {
     return `$${(new BigNumber(`${abs}`).dp(2, 1)) / 1.0e6}M`;
   } else {
-    if (abs >= 1.0e9) {
+    if (abs >= 1.0e12) {
+      // Nine Zeroes for Trillion
+      suffix = 'T';
+      unit = 1.0e12;
+    } else if (abs >= 1.0e9) {
       // Nine Zeroes for Billions
       suffix = 'B';
       unit = 1.0e9;
