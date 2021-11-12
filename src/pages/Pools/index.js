@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../layouts/MainLayout/MainLayout';
 import Table from './Table';
 import GridView from './Grid';
@@ -20,10 +20,13 @@ import ComingSoon2 from '../../assets/images/coming-soon-2.jpg';
 import {
   CONTRACT_ANN_Vault, REACT_APP_ANN_Vault_ADDRESS
 } from '../../utilities/constants';
+import { methods } from '../../utilities/ContractService';
 import { useActiveWeb3React } from '../../hooks';
 import Web3 from 'web3';
 const instance = new Web3(window.ethereum);
 import Loader from 'components/UI/Loader';
+import { accountActionCreators, connectAccount } from '../../core';
+import { bindActionCreators } from 'redux';
 
 
 const Styles = styled.div`
@@ -37,7 +40,7 @@ const Styles = styled.div`
   width: 200px;
 }
 `;
-function Pools() {
+function Pools({ settings }) {
   const [showGrid, setShowGrid] = useState(false)
   const [showList, setShowList] = useState(true)
   const [live, setlive] = useState(true)
@@ -45,15 +48,18 @@ function Pools() {
   const [loading, setLoading] = useState(false)
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [poolState, setPoolState] = useState('live')
+  const [autoANNBounty, setAutoANNBounty] = useState(0)
+
 
   const { account, chainId } = useActiveWeb3React();
 
+  const contract = new instance.eth.Contract(
+    JSON.parse(CONTRACT_ANN_Vault),
+    REACT_APP_ANN_Vault_ADDRESS[chainId],
+  );
+
   const onClaim = () => {
     setLoading(true)
-    const contract = new instance.eth.Contract(
-      JSON.parse(CONTRACT_ANN_Vault),
-      REACT_APP_ANN_Vault_ADDRESS[chainId],
-    );
     contract.methods.harvest()
       .send({ from: account })
       .then((res) => {
@@ -64,6 +70,21 @@ function Pools() {
         console.log(err);
         setLoading(false)
       });
+  }
+
+  useEffect(() => {
+    let interval;
+    interval = setInterval(fetchUpdatedAutoANNBounty, 5 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
+
+  }, [])
+
+  const fetchUpdatedAutoANNBounty = async () => {
+    let calculateHarvestANNRewards = await methods.call(contract.methods.calculateHarvestANNRewards, [])
+    calculateHarvestANNRewards = calculateHarvestANNRewards ? (calculateHarvestANNRewards / 1e18).toFixed(3) : (0).toFixed(3)
+    setAutoANNBounty(calculateHarvestANNRewards)
   }
 
   const stakedToggle = (value) => {
@@ -399,11 +420,11 @@ function Pools() {
               </div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex flex-col">
-                  <div className="text-white text-sm font-bold text-lg">0.000</div>
-                  <div className="text-white text-sm ">0.000 USD</div>
+                  <div className="text-white text-sm font-bold text-lg">{autoANNBounty}</div>
+                  <div className="text-white text-sm ">{autoANNBounty * settings.annPrice} USD</div>
                 </div>
                 <div className="text-white font-bold flex items-center">
-                  <button className={`flex items-center focus:outline-none bg-white ${loading ?
+                  <button className={`flex items-center focus:outline-none bg-white ${loading || (autoANNBounty === 0) ?
                     " bg-lightGray text-gray pointer-events-none " :
                     "  text-primary "} py-2 px-4
                         rounded-lg text-center font-bold text-sm`} onClick={onClaim}>
@@ -443,11 +464,26 @@ function Pools() {
 
         </div>
 
-        <GridView onlyStaked={onlyStaked} poolState={poolState} />
+        <GridView onlyStaked={onlyStaked} poolState={poolState} annPrice={settings.annPrice} />
         {/* {showGrid && !showList ? <GridView /> : <Table columns={columns} data={data} tdClassName="" subComponent={subComponent} />} */}
       </Styles>
     </Layout>
   );
 }
 
-export default Pools;
+const mapStateToProps = ({ account }) => ({
+  settings: account.setting,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  const { setSetting } = accountActionCreators;
+
+  return bindActionCreators(
+    {
+      setSetting,
+    },
+    dispatch,
+  );
+};
+
+export default connectAccount(mapStateToProps, mapDispatchToProps)(Pools);
