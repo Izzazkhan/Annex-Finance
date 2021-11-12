@@ -359,13 +359,12 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                     contractArray = [selectedPool._pid, amount]
                 }
                 else {
-                    contractArray = [selectedPool._pid, amount * Math.pow(10, selectedPool.decimal)]
+                    contractArray = [selectedPool._pid, amount]
                 }
             }
             else {
-                contractArray = [amount * Math.pow(10, selectedPool.decimal)]
+                contractArray = [amount]
             }
-            // console.log('contractArray', contractArray.toHexString())
             methods
                 .send(
                     methodName,
