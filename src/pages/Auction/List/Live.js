@@ -124,8 +124,8 @@ function Live(props) {
               batchTab(e);
             }}
             value="batch"
-            className={`
-           py-2 rounded px-32 h-15 mr-2 flex items-center  ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
+            className={`py-2 p-1.5 w-2/6 justify-center 
+           rounded h-15 mr-2 flex items-center ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               }`}
           >
             Batch Auction  <span className={`${batchActive ? "bg-black text-white number" : "bg-primaryLight number"}`}
@@ -136,7 +136,7 @@ function Live(props) {
               dutchTab(e);
             }}
             value="dutch"
-            className={`py-2 rounded px-32 transition-all h-15 mr-2 flex items-center
+            className={`py-2 p-1.5 rounded transition-all h-15 mr-2 flex items-center w-2/6 justify-center 
              ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
@@ -147,7 +147,7 @@ function Live(props) {
               fixedTab(e);
             }}
             value="fixed"
-            className={`py-2 rounded px-32 transition-all h-15  
+            className={`py-2 p-1.5 rounded transition-all h-15 w-2/6 justify-center 
             flex items-center ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >

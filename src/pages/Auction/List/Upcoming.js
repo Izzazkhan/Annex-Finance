@@ -125,8 +125,8 @@ function Upcoming(props) {
               batchTab(e);
             }}
             value="batch"
-            className={`
-           py-2 rounded px-32 h-15 mr-2  
+            className={`py-2 p-1.5 w-2/6 justify-center  
+           rounded h-15 mr-2  
            flex items-center ${batchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               }`}
           >
@@ -138,7 +138,7 @@ function Upcoming(props) {
               dutchTab(e);
             }}
             value="dutch"
-            className={`py-2 rounded px-32 transition-all h-15 mr-2 
+            className={`py-2 p-1.5 w-2/6 justify-center rounded transition-all h-15 mr-2 
             flex items-center ${dutchActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
@@ -149,7 +149,7 @@ function Upcoming(props) {
               fixedTab(e);
             }}
             value="fixed"
-            className={`py-2 rounded px-32 transition-all h-15  
+            className={`py-2 p-1.5 w-2/6 justify-center rounded transition-all h-15  
             flex items-center ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
           >
