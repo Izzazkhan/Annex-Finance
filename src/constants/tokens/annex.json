@@ -300,6 +300,30 @@
             "chainId": 25,
             "decimals": 18,
             "logoURI": "/images/coins/ann.png"
+        },
+        {
+            "name": "USDC Token",
+            "symbol": "USDC",
+            "address": "0xc21223249CA28397B4B6541dfFaEcC539BfF0c59",
+            "chainId": 25,
+            "decimals": 6,
+            "logoURI": "/images/coins/usdc.png"
+        },
+        {
+            "name": "DAI Token",
+            "symbol": "DAI",
+            "address": "0xF2001B145b43032AAF5Ee2884e456CCd805F677D",
+            "chainId": 25,
+            "decimals": 18,
+            "logoURI": "/images/coins/dai.png"
+        },
+        {
+            "name": "WCRO",
+            "symbol": "WCRO",
+            "address": "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23",
+            "chainId": 25,
+            "decimals": 18,
+            "logoURI": "/images/coins/cro.png"
         }
     ]
 }
