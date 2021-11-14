@@ -88,7 +88,6 @@ const getFarmQuoteTokenPrice = (farm, quoteTokenFarm, bnbPriceBusd) => {
 // Fetch Farm users
 export const fetchFarmUserAllowances = async (account, farmsToFetch, chainId) => {
     const masterChefAddress = getMasterChefAddress(chainId)
-    console.log('masterChefAddress: ', masterChefAddress);
 
     const calls = farmsToFetch.map((farm) => {
         const lpContractAddress = farm.lpAddress

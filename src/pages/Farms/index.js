@@ -27,7 +27,6 @@ const Styles = styled.div`
 `;
 
 function Farms({ settings }) {
-  console.log('----------')
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
   const [showDepositeWithdrawModal, setShowDepositeWithdrawModal] = useState(false)
@@ -36,7 +35,6 @@ function Farms({ settings }) {
 
   let { data: pairs, loading } = useFarms()
   usePollFarmsData()
-  console.log('==== ', pairs)
 
   const attatchImgWithData = (data) => {
     if (data && data.length > 0) {
