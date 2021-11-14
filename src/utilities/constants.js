@@ -254,7 +254,7 @@ export const CONTRACT_TOKEN_ADDRESS = {
     ann: {
       id: 'ann',
       symbol: 'ANN',
-      address: process.env.REACT_APP_CRONOS_MAIN_ANN_TOKEN,
+      address: '0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067',
       asset: ann,
       aAsset: ann
     },
@@ -305,7 +305,7 @@ export const CONTRACT_ANN_TOKEN_ADDRESS = {
   56: process.env.REACT_APP_BSC_MAIN_ANN_TOKEN,
   97: process.env.REACT_APP_BSC_TEST_ANN_TOKEN,
   339: process.env.REACT_APP_CRONOS_TEST_ANN_TOKEN,
-  25: process.env.REACT_APP_CRONOS_MAIN_ANN_TOKEN
+  25: '0x98936Bde1CF1BFf1e7a8012Cee5e2583851f2067'
 }
 
 // eslint-disable-next-line max-len
