@@ -51,7 +51,7 @@ export const SUGGESTED_BASES = {
 	],
 	[ChainId.CRONOS]: [
 		...WETH_ONLY[ChainId.CRONOS], 
-		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 18, "USDT", "Tether USD")
+		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 6, "USDT", "Tether USD")
 	],
 };
 
@@ -66,7 +66,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR = {
 	],
 	[ChainId.CRONOS]: [
 		...WETH_ONLY[ChainId.CRONOS],
-		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 18, "USDT", "Tether USD"),
+		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 6, "USDT", "Tether USD"),
 		new Token(ChainId.CRONOS, "0xe44Fd7fCb2b1581822D0c862B68222998a0c299a", 18, "ETH", "Ethereum Token"),
 		new Token(ChainId.CRONOS, "0x062E66477Faf219F25D27dCED647BF57C3107d52", 18, "BTC", "Bitcoin Token"),
 	],
@@ -103,7 +103,7 @@ export const PINNED_PAIRS = {
 		],
 		[
 			new Token(ChainId.CRONOS, "0xe44Fd7fCb2b1581822D0c862B68222998a0c299a", 18, "ETH", "Ethereum Token"),
-			new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 18, "USDT", "Tether USD"),
+			new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 6, "USDT", "Tether USD"),
 		]
 	]
 };
