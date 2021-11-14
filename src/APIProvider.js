@@ -28,7 +28,7 @@ const APIProvider = ({ settings, setSetting, getGovernanceAnnex, ...props }) => 
 
     const contractDecimals = await Promise.all(
       contractAddresses.map(item => {
-        if (item.id !== 'bnb') {
+        if (item.id !== 'bnb' && item.id !== 'cro' && item.id !== 'tcro') {
           const tokenContract = getTokenContract(item.id, chainId);
           const aBepContract = getAbepContract(item.id, chainId);
           return Promise.all([

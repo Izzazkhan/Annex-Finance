@@ -200,7 +200,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
    * Approve underlying token
    */
   const onApprove = async () => {
-    if (asset && account && asset.id !== 'bnb') {
+    if (asset && account && asset.id !== 'bnb' && asset.id !== 'cro' && asset.id !== 'tcro') {
       setIsLoadingRepay(true);
       const tokenContract = getTokenContract(asset.id, chainId);
       methods
@@ -235,7 +235,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         },
       });
       try {
-        if (asset.id !== 'bnb') {
+        if (asset.id !== 'bnb' && asset.id !== 'cro' && asset.id !== 'tcro') {
           if (amountRepay.eq(asset.borrowBalance)) {
             await methods.send(
               appContract.methods.repayBorrow,
@@ -538,7 +538,7 @@ function BorrowRepayModal({ open, onSetOpen, onCloseModal, record: asset, settin
         <div className="flex justify-center">
           {currentTab === 'repayBorrow' ? (
             <div className="flex justify-center mt-16">
-              {!isEnabledRepay && asset.id !== 'bnb' ? (
+              {!isEnabledRepay && (asset.id !== 'bnb' && asset.id !== 'cro' && asset.id !== 'tcro') ? (
                 <button
                   disabled={isLoadingRepay}
                   onClick={() => {

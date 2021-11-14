@@ -107,7 +107,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
    * Approve underlying token
    */
   const onApprove = async () => {
-    if (record.id && account && record.id !== 'bnb') {
+    if (record.id && account && record.id !== 'bnb' && record.id !== 'cro' && record.id !== 'tcro') {
       setIsLoading(true);
       const tokenContract = getTokenContract(record.id, chainId);
       methods
@@ -141,7 +141,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           symbol: record.symbol,
         },
       });
-      if (record.id !== 'bnb') {
+      if (record.id !== 'bnb' && record.id !== 'cro' && record.id !== 'tcro') {
         methods
           .send(
             appContract.methods.mint,
@@ -505,7 +505,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
     <div className="py-6 px-14">
       {currentTab === 'supply' && (
         <>
-          {record.id === 'bnb' || isEnabled ? (
+          {record.id === 'bnb' || record.id === 'cro' || record.id === 'tcro' || isEnabled ? (
             <div className="flex align-center input-wrapper">
               {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
               <StyledNumberFormat
@@ -630,7 +630,7 @@ function SupplyWithdrawModal({ open, onSetOpen, onCloseModal, record, settings, 
           </div>
         ) : (
           <div className="flex justify-center mt-16">
-            {!isEnabled && record.id !== 'bnb' ? (
+            {!isEnabled && (record.id !== 'bnb' && record.id !== 'cro' && record.id !== 'tcro') ? (
               <button
                 disabled={isLoading}
                 onClick={() => {

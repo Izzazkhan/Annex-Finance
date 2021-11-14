@@ -254,9 +254,16 @@ const NavItems = ({
   toggleDropdown,
   chainId,
 }) => {
-  if ([339, 25].includes(chainId)) {
+  if (chainId === 339) {
     items = items.filter((i) => {
       if (['Liquidate', 'Games', 'IDO', 'Pools'].includes(i.title)) {
+        return null
+      }
+      return i
+    })
+  } else if (chainId === 25) {
+    items = items.filter((i) => {
+      if (['Liquidate', 'Games', 'IDO', 'Pools', 'Faucet'].includes(i.title)) {
         return null
       }
       return i

@@ -1,7 +1,7 @@
 import { AddressZero } from "@ethersproject/constants";
 import {
 	currencyEquals,
-	ETHER,
+	ETHERS,
 	JSBI,
 	Pair,
 	Percent,
@@ -114,8 +114,8 @@ export function useV1Trade(
 	const inputPair = useMockV1Pair(inputCurrency);
 	const outputPair = useMockV1Pair(outputCurrency);
 
-	const inputIsETH = inputCurrency === ETHER;
-	const outputIsETH = outputCurrency === ETHER;
+	const inputIsETH = inputCurrency === ETHERS[inputCurrency.chainId];
+	const outputIsETH = outputCurrency === ETHERS[outputCurrency.chainId];
 
 	// construct a direct or through ETH v1 route
 	let pairs = [];

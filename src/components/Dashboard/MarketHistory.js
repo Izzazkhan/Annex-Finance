@@ -102,7 +102,7 @@ const MarketHistory = ({
             <div className="bg-black p-6 mt-4 rounded-xl">
                 <div className="flex flex-col space-y-8 lg:space-y-0 lg:flex-row items-stretch lg:items-center justify-between">
                     <div className="flex space-x-6 text-white">
-                        {currentAsset !== 'bnb' && (
+                        {currentAsset !== 'bnb' && currentAsset !== 'cro' && currentAsset !== 'tcro' && (
                             <div className="flex items-center cursor-pointer"
                                  onClick={() =>
                                      addToken(

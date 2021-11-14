@@ -46,12 +46,14 @@ export const SUGGESTED_BASES = {
 	...WETH_ONLY,
 	[ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], BUSD, USDT],
 	[ChainId.CASSINI]: [
-		...WETH_ONLY[ChainId.CASSINI], 
+		...WETH_ONLY[ChainId.CASSINI],
 		new Token(ChainId.CASSINI, "0x2C074fDeFc6613FA77d48332B5c57A013Ab85DCE", 18, "USDT", "Tether USD")
 	],
 	[ChainId.CRONOS]: [
-		...WETH_ONLY[ChainId.CRONOS], 
-		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 6, "USDT", "Tether USD")
+		...WETH_ONLY[ChainId.CRONOS],
+		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 6, "USDT", "Tether USD"),
+		new Token(ChainId.CRONOS, "0xc21223249CA28397B4B6541dfFaEcC539BfF0c59", 6, "USDC", "USD Coin"),
+		new Token(ChainId.CRONOS, "0xF2001B145b43032AAF5Ee2884e456CCd805F677D", 18, "DAI", "DAI Token")
 	],
 };
 
@@ -68,7 +70,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR = {
 		...WETH_ONLY[ChainId.CRONOS],
 		new Token(ChainId.CRONOS, "0x66e428c3f67a68878562e79A0234c1F83c208770", 6, "USDT", "Tether USD"),
 		new Token(ChainId.CRONOS, "0xe44Fd7fCb2b1581822D0c862B68222998a0c299a", 18, "ETH", "Ethereum Token"),
-		new Token(ChainId.CRONOS, "0x062E66477Faf219F25D27dCED647BF57C3107d52", 18, "BTC", "Bitcoin Token"),
+		new Token(ChainId.CRONOS, "0x062E66477Faf219F25D27dCED647BF57C3107d52", 8, "BTC", "Bitcoin Token"),
 	],
 };
 

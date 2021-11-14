@@ -1,7 +1,7 @@
 import { getAddress } from "@ethersproject/address";
 import {Contract} from "@ethersproject/contracts";
 import {ROUTER_ADDRESS} from "../constants/swap";
-import {ETHER, Percent, JSBI, Token} from "@annex/sdk";
+import {ETHERS, Percent, JSBI, Token} from "@annex/sdk";
 import { abi as IUniswapV2Router02ABI } from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
 import {AddressZero} from "@ethersproject/constants";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -101,7 +101,7 @@ export function escapeRegExp(string) {
 }
 
 export function isTokenOnList(defaultTokens, currency) {
-	if (currency === ETHER) return true;
+	if (currency === ETHERS[currency.chainId]) return true;
 	return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address]);
 }
 

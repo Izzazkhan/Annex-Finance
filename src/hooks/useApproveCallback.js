@@ -1,6 +1,6 @@
 import { MaxUint256 } from "@ethersproject/constants";
 import { TransactionResponse } from "@ethersproject/providers";
-import { Trade, TokenAmount, CurrencyAmount, ETHER } from "@annex/sdk";
+import { Trade, TokenAmount, CurrencyAmount, ETHERS } from "@annex/sdk";
 import { useCallback, useMemo } from "react";
 import { ROUTER_ADDRESS } from "../constants/swap";
 import { useTokenAllowance } from "../data/Allowances";
@@ -32,7 +32,7 @@ export function useApproveCallback(
 	// check the current approval status
 	const approvalState = useMemo(() => {
 		if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
-		if (amountToApprove.currency === ETHER) return ApprovalState.APPROVED;
+		if (amountToApprove.currency === ETHERS[amountToApprove.currency.chainId]) return ApprovalState.APPROVED;
 		// we might not have enough data to know whether or not we need to approve
 		if (!currentAllowance) return ApprovalState.UNKNOWN;
 

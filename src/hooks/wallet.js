@@ -28,7 +28,7 @@ export function useETHBalances(
 					.sort()
 		: [],
 		[uncheckedAddresses]
-);
+	);
 
 	const results = useSingleContractMultipleData(
 		multicallContract,
@@ -43,7 +43,7 @@ export function useETHBalances(
 			if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId);
 			return memo;
 		}, {}),
-	[addresses, results]
+		[addresses, results]
 	);
 }
 
