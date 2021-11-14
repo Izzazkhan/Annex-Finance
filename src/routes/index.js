@@ -56,6 +56,11 @@ const Routes = () => {
           <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
           <Route exact path={routes.farms} component={Farms} />
           <Route path={routes.trade} component={Trade} />
+          {[339].includes(chainId) && (
+            <>
+              <Route path={`${routes.faucet}`} component={Faucet} />
+            </>
+          )}
           {
             (chainId == 25 || isInDev) ? <>
               <Route exact path={routes.dashboard} component={CommingSoon} />
@@ -85,11 +90,6 @@ const Routes = () => {
             <>
               <Route path={routes.games} component={Games} />
               <Route path={`${routes.auction}`} component={Auction} />
-            </>
-          )}
-          {[339].includes(chainId) && (
-            <>
-              <Route path={`${routes.faucet}`} component={Faucet} />
             </>
           )}
           <Route component={NotFound} />
