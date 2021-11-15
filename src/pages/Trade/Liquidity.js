@@ -20,9 +20,11 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 		() => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
 		[trackedTokenPairs]
 	);
+	console.log('tokenPairsWithLiquidityTokens: ', tokenPairsWithLiquidityTokens)
 	const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken), [
 		tokenPairsWithLiquidityTokens,
 	]);
+	console.log('liquidityTokens: ', liquidityTokens)
 	const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
 		account || undefined,
 		liquidityTokens
@@ -36,8 +38,10 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 			),
 		[tokenPairsWithLiquidityTokens, v2PairsBalances]
 	);
+	console.log('liquidityTokensWithBalances: ', liquidityTokensWithBalances)
 
 	const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens));
+	console.log('v2Pairs: ', v2Pairs)
 	const v2IsLoading =
 		fetchingV2PairBalances ||
 		v2Pairs?.length < liquidityTokensWithBalances.length ||
