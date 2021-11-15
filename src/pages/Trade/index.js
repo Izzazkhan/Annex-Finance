@@ -91,7 +91,7 @@ function Trade() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false)
-
+  const [addressPairs, setAddressPairs] = useState(null)
 
   const getSwap = async () => {
     setLoading(true)
@@ -110,10 +110,10 @@ function Trade() {
 
     liquidityPairs.sort((a, b) => b.liquidity - a.liquidity)
     setSwapData(liquidityPairs);
-    
+
     hrChangePairs.sort((a, b) => b.change24h - a.change24h)
     setLiquidityData(hrChangePairs);
-    
+
     setLoading(false)
   }
 
@@ -124,6 +124,7 @@ function Trade() {
 
   const onBoxHandler = (item) => {
     console.log('clicked', item)
+    setAddressPairs({ token0Address: _.toLower(item.token0Address), token1Address: _.toLower(item.token1Address) })
   }
 
   return (
@@ -239,6 +240,7 @@ function Trade() {
                   <Swap
                     onSettingsOpen={() => setSettingsOpen(true)}
                     onHistoryOpen={() => setHistoryOpen(true)}
+                    addressPairs={addressPairs}
                   />
                 </Route>
                 <Route exact strict path={`${path}/liquidity`}>

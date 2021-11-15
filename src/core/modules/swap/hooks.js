@@ -1,6 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
 import { CurrencyAmount, ETHERS, JSBI, Token, TokenAmount, Trade } from '@annex/sdk';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useENS from '../../../hooks/useENS';
 import { useCurrency } from '../../../hooks/Tokens';
