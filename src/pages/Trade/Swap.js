@@ -11,7 +11,6 @@ import {
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-  useGetCurrencyToken
 } from '../../core';
 import { useCurrency } from '../../hooks/Tokens';
 import { useActiveWeb3React } from '../../hooks';
