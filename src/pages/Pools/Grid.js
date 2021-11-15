@@ -149,7 +149,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
             let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked = 0, pendingAnnex, pendingAnnexWithoutDecimal,
-                apyValue = 0
+                apyValue = 0,recentAnnProfit = 0
             const contract = new instance.eth.Contract(
                 JSON.parse(pool.contract_Abi),
                 pool.contract_Address,
@@ -179,7 +179,11 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 let performanceFee = await methods.call(contract.methods.performanceFee, []);
                 performanceFee = (performanceFee / 10000) * 100
                 apyValue = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
-
+                
+                /*ANN RECENT PROFIT*/
+                recentAnnProfit = await methods.call(farmContract.methods.pendingAnnex, [pool._pid,account])
+                recentAnnProfit = recentAnnProfit ? recentAnnProfit/Math.pow(10, decimal) : 0
+                recentAnnProfit = recentAnnProfit.toFixed(5);
             }
             else {
                 pendingAnnex = await methods.call(contract.methods.pendingAnnex, [pool._pid, account]);
@@ -193,6 +197,8 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                     }
                 }
             }
+
+
             return {
                 ...pool,
                 allowance: Number(allowance),
@@ -205,6 +211,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 userInfo,
                 pendingAnnex,
                 apyValue,
+                recentAnnProfit,
                 pendingAnnexWithoutDecimal
             }
         })
