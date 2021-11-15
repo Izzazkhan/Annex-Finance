@@ -168,14 +168,15 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 }
                 const rewardTokenPrice = annPrice
                 const stakingTokenPrice = annPrice
+                const BSC_BLOCK_TIME = 4
+                const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365 // 10512000
                 const tokenPerBlock = await methods.call(farmContract.methods.annexPerBlock, [])
                 let totalStaked = await methods.call(contract.methods.balanceOf, []);
-                const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock)
+                const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(BLOCKS_PER_YEAR)
                 const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked)
-                const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
+                let apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
                 let performanceFee = await methods.call(contract.methods.performanceFee, []);
                 performanceFee = (performanceFee / 10000) * 100
-
                 apyValue = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
 
             }
