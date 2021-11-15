@@ -49,8 +49,8 @@ function useCallsData(calls, options) {
 					?.map(toCallKey)
 					?.sort(), [])
 			),
-	[calls]
-);
+		[calls]
+	);
 
 	// update listeners when there is an actual change that persists for at least 100ms
 	useEffect(() => {
@@ -188,7 +188,7 @@ export function useMultipleContractSingleData(
 						callData,
 					}
 					: undefined;
-			})
+				})
 				: [],
 		[addresses, callData, fragment]
 	);

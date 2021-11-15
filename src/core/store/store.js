@@ -38,5 +38,6 @@ const store = createStore(
 console.log(store)
 
 sagaMiddleware.run(sagas);
-store.subscribe(throttle(() => saveState(store.getState()), 1000));
+// =================================== critical changes
+// store.subscribe(throttle(() => saveState(store.getState()), 1000));
 export default store;

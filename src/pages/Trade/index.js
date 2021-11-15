@@ -123,7 +123,6 @@ function Trade() {
   ];
 
   const onBoxHandler = (item) => {
-    console.log('clicked', item)
     setAddressPairs({ token0Address: _.toLower(item.token0Address), token1Address: _.toLower(item.token1Address) })
   }
 
