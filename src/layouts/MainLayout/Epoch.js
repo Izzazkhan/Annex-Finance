@@ -314,7 +314,7 @@ const ArrowContainer = styled.div`
 `;
 
 const Epoch = ({ setSetting, settings }) => {
-  const { account, chainId } = useActiveWeb3React();
+  const { account, chainId, library } = useActiveWeb3React();
 
   const [showDetails, setShowDetails] = useState(false);
   const [annBalance, setAnnBalance] = useState('');
@@ -386,9 +386,10 @@ const Epoch = ({ setSetting, settings }) => {
         setHoldingReward((holdingReward / Math.pow(10, decimals)).toFixed(2));
       }
 
+      const blockNumber = await library.getBlockNumber()
       let [eligibleEpochs, getEpoch, transferPoint] = await Promise.all([
         methods.call(epochContract.methods.eligibleEpochs, []),
-        methods.call(epochContract.methods.getEpochs, [settings.blockNumber]),
+        methods.call(epochContract.methods.getEpochs, [Math.max(blockNumber, settings.blockNumber)]),
         methods.call(epochContract.methods.transferPoints, [
           accountAddress,
           0,
