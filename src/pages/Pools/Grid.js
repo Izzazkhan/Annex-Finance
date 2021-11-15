@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import {
     CONTRACT_TOKEN_ADDRESS, CONTRACT_ABEP_ABI, CONTRACT_ANN_Vault,
     CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS, REACT_APP_ANNEX_FARM_ADDRESS,
-    CONTRACT_ANN_TOKEN_ABI
+    CONTRACT_ANN_TOKEN_ABI,
+    BLOCK
 } from '../../utilities/constants';
 import { useActiveWeb3React } from '../../hooks';
 import { getTokenContract, methods } from '../../utilities/ContractService';
@@ -148,7 +149,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
             let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked = 0, pendingAnnex, pendingAnnexWithoutDecimal,
-                apyValue = 0
+                apyValue = 0,recentAnnProfit = 0
             const contract = new instance.eth.Contract(
                 JSON.parse(pool.contract_Abi),
                 pool.contract_Address,
@@ -168,16 +169,21 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 }
                 const rewardTokenPrice = annPrice
                 const stakingTokenPrice = annPrice
+                const BSC_BLOCK_TIME = BLOCK[chainId].time
+                const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365 // 10512000
                 const tokenPerBlock = await methods.call(farmContract.methods.annexPerBlock, [])
                 let totalStaked = await methods.call(contract.methods.balanceOf, []);
-                const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock)
+                const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(BLOCKS_PER_YEAR)
                 const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked)
-                const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
+                let apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
                 let performanceFee = await methods.call(contract.methods.performanceFee, []);
                 performanceFee = (performanceFee / 10000) * 100
-
                 apyValue = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
-
+                
+                /*ANN RECENT PROFIT*/
+                recentAnnProfit = await methods.call(farmContract.methods.pendingAnnex, [pool._pid,account])
+                recentAnnProfit = recentAnnProfit ? recentAnnProfit/Math.pow(10, decimal) : 0
+                recentAnnProfit = recentAnnProfit.toFixed(5);
             }
             else {
                 pendingAnnex = await methods.call(contract.methods.pendingAnnex, [pool._pid, account]);
@@ -191,6 +197,8 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                     }
                 }
             }
+
+
             return {
                 ...pool,
                 allowance: Number(allowance),
@@ -203,6 +211,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 userInfo,
                 pendingAnnex,
                 apyValue,
+                recentAnnProfit,
                 pendingAnnexWithoutDecimal
             }
         })

@@ -717,12 +717,28 @@ export const EXPLORERS = {
   339: 'https://cronos.crypto.org/cassini/explorer/',
 }
 
+export const BLOCK = {
+  56:{
+    time: 3
+  },
+  97:{
+    time: 4
+  },
+  339:{
+    time: 3
+  },
+  25:{
+    time: 3
+  }
+};
+
 export const AVAILABLE_NETWORKS = {
   56: {
     chainId: '0x38', // A 0x-prefixed hexadecimal string
     chainName: 'Binance Chain',
     rpcUrls: ['https://bsc-dataseed1.binance.org'],
     blockExplorerUrls: ['https://bscscan.com'],
+    blockTime: 3,
     nativeCurrency: {
       name: 'BinanceCoin',
       symbol: 'BNB',
@@ -734,6 +750,7 @@ export const AVAILABLE_NETWORKS = {
     chainName: 'Binance Testnet',
     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
     blockExplorerUrls: ['https://testnet.bscscan.com'],
+    blockTime: 4,
     nativeCurrency: {
       name: 'BinanceCoin',
       symbol: 'BNB',
@@ -745,6 +762,7 @@ export const AVAILABLE_NETWORKS = {
     chainName: 'Cassini Chain',
     rpcUrls: ['https://cassini.crypto.org:8545/'],
     blockExplorerUrls: ['https://cronos.crypto.org/cassini/explorer'],
+    blockTime: 4,
     nativeCurrency: {
       name: 'Cronos',
       symbol: 'TCRO',
@@ -756,6 +774,7 @@ export const AVAILABLE_NETWORKS = {
     chainName: 'Cronos Chain',
     rpcUrls: ['https://evm-cronos.crypto.org'],
     blockExplorerUrls: ['https://cronos.crypto.org/explorer/'],
+    blockTime: 4,
     nativeCurrency: {
       name: 'Cronos',
       symbol: 'CRO',
