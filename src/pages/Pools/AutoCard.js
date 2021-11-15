@@ -42,7 +42,13 @@ function AutoCard({ item, openModal, handleEnable, openDetails, addToken, annPri
                     <div className="text-white font-bold flex items-center">{`${item.apyValue.toFixed(2)}%`}
                     </div>
                 </div>
-                <div className="text-white font-bold">Recent {item.symbol} Profit:</div>
+                {item.isUserInfo ?
+                <div className="flex items-center text-primary justify-between
+                open mb-2 font-bold text-primary">
+                    <div className="text-white font-bold">Recent {item.symbol} Profit:</div>
+                    <div className="text-white font-bold flex items-center">{item.recentAnnProfit}</div>
+                </div>
+                : undefined }
                 {/* <div className="tooltip relative"> */}
                 <div className="text-white text-sm mt-2 mb-4">{`${`${item.withdrawFee}% unstaking
                                 fee if withdrawn within ${item.withdrawFeePeriod}h`}`}</div>
