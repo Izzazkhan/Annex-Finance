@@ -295,7 +295,7 @@ function Trade() {
               }
               {!loading && liquidity.map((item, index) => {
                 return (
-                  <div className="rounded-3xl border border-white mb-4 cursor-pointer" key={index} >
+                  <div className="rounded-3xl border border-white mb-4 cursor-pointer" key={index} onClick={() => onBoxHandler(item)}>
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
                       <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>
