@@ -4,7 +4,7 @@ import {
     CONTRACT_TOKEN_ADDRESS, CONTRACT_ABEP_ABI, CONTRACT_ANN_Vault,
     CONTRACT_Annex_Farm, REACT_APP_ANN_Vault_ADDRESS, REACT_APP_ANNEX_FARM_ADDRESS,
     CONTRACT_ANN_TOKEN_ABI,
-    AVAILABLE_NETWORKS
+    BLOCK
 } from '../../utilities/constants';
 import { useActiveWeb3React } from '../../hooks';
 import { getTokenContract, methods } from '../../utilities/ContractService';
@@ -169,7 +169,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 }
                 const rewardTokenPrice = annPrice
                 const stakingTokenPrice = annPrice
-                const BSC_BLOCK_TIME = AVAILABLE_NETWORKS[chainId].blockTime
+                const BSC_BLOCK_TIME = BLOCK[chainId].time
                 const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365 // 10512000
                 const tokenPerBlock = await methods.call(farmContract.methods.annexPerBlock, [])
                 let totalStaked = await methods.call(contract.methods.balanceOf, []);

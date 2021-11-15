@@ -717,6 +717,21 @@ export const EXPLORERS = {
   339: 'https://cronos.crypto.org/cassini/explorer/',
 }
 
+export const BLOCK = {
+  56:{
+    time: 3
+  },
+  97:{
+    time: 4
+  },
+  339:{
+    time: 3
+  },
+  25:{
+    time: 3
+  }
+};
+
 export const AVAILABLE_NETWORKS = {
   56: {
     chainId: '0x38', // A 0x-prefixed hexadecimal string
