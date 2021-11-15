@@ -128,7 +128,7 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
               </div>
             </div>
           </li>
-          <li className="">
+          <li className="cursor-pointer">
             <Select options={networkArrayOptions}
               selectedOption={currentNetworkObj}
               onChange={(selected) => { handleChangeNetwork(selected.value) }}
