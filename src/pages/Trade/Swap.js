@@ -33,7 +33,7 @@ import { accountActionCreators, connectAccount } from '../../core';
 import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades';
 import { tryParseAmount } from '../../core/modules/swap/hooks';
 
-function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPairs }) {
+function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   const { account, chainId } = useActiveWeb3React();
   const loadedUrlParams = useDefaultsFromURLSearch();
   // token warning stuff
@@ -57,14 +57,6 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState();
-  const inputCurrency = useCurrency(addressPairs?.token0Address, chainId)
-  const outputCurrency = useCurrency(addressPairs?.token1Address, chainId)
-  const autoFillCurrencies = useMemo(() => {
-    return {
-      [Field.INPUT]: inputCurrency || undefined,
-      [Field.OUTPUT]: outputCurrency || undefined,
-    }
-  }, [addressPairs])
   const {
     v2Trade,
     currencyBalances,
@@ -283,7 +275,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
             }
             value={formattedAmounts[Field.INPUT]}
             showMaxButton={!atMaxAmountInput}
-            currency={(autoFillCurrencies && autoFillCurrencies[Field.INPUT]) || currencies[Field.INPUT]}
+            currency={currencies[Field.INPUT]}
             onUserInput={handleTypeInput}
             onMax={handleMaxInput}
             onCurrencySelect={handleInputSelect}
@@ -307,7 +299,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
             onUserInput={handleTypeOutput}
             title={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
             showMaxButton={false}
-            currency={(autoFillCurrencies && autoFillCurrencies[Field.OUTPUT]) || currencies[Field.OUTPUT]}
+            currency={currencies[Field.OUTPUT]}
             onCurrencySelect={handleOutputSelect}
             otherCurrency={currencies[Field.INPUT]}
             id="swap-currency-output"

@@ -33,6 +33,9 @@ import Loader from 'components/UI/Loader';
 import { currencyFormatter } from 'utilities/common';
 import { restService } from 'utilities';
 import BigNumber from 'bignumber.js';
+import {
+  useSelectedPairs,
+} from '../../core';
 
 const Styles = styled.div`
   .sidebar {
@@ -91,7 +94,6 @@ function Trade() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false)
-  const [addressPairs, setAddressPairs] = useState(null)
 
   const getSwap = async () => {
     setLoading(true)
@@ -123,7 +125,7 @@ function Trade() {
   ];
 
   const onBoxHandler = (item) => {
-    setAddressPairs({ token0Address: _.toLower(item.token0Address), token1Address: _.toLower(item.token1Address) })
+    // useSelectedPairs(_.toLower(item.token0Address), _.toLower(item.token1Address));
   }
 
   return (
@@ -239,7 +241,6 @@ function Trade() {
                   <Swap
                     onSettingsOpen={() => setSettingsOpen(true)}
                     onHistoryOpen={() => setHistoryOpen(true)}
-                    addressPairs={addressPairs}
                   />
                 </Route>
                 <Route exact strict path={`${path}/liquidity`}>

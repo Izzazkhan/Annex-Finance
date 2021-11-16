@@ -307,3 +307,29 @@ export function useDefaultsFromURLSearch() {
 
   return result;
 }
+
+// updates the swap state to use the defaults for a given network
+export function useSelectedPairs(inputCurrency, outputCurrency) {
+  const { chainId } = useActiveWeb3React();
+  const dispatch = useDispatch();
+  const [result, setResult] = useState();
+
+  useEffect(() => {
+    dispatch(
+      replaceSwapState({
+        typedValue: 0,
+        // field: parsed.independentField,
+        inputCurrencyId: inputCurrency,
+        outputCurrencyId: outputCurrency,
+        // recipient: parsed.recipient,
+      }),
+    );
+
+    setResult({
+      inputCurrencyId: inputCurrency,
+      outputCurrencyId: outputCurrency,
+    });
+  }, [dispatch, chainId]);
+
+  return result;
+}
