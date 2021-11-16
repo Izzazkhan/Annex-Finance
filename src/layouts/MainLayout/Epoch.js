@@ -387,9 +387,10 @@ const Epoch = ({ setSetting, settings }) => {
       }
 
       const blockNumber = await library.getBlockNumber()
+      const originBlockNumber = settings.blockNumber ? settings.blockNumber : blockNumber
       let [eligibleEpochs, getEpoch, transferPoint] = await Promise.all([
         methods.call(epochContract.methods.eligibleEpochs, []),
-        methods.call(epochContract.methods.getEpochs, [Math.max(blockNumber, settings.blockNumber)]),
+        methods.call(epochContract.methods.getEpochs, [Math.max(blockNumber, originBlockNumber)]),
         methods.call(epochContract.methods.transferPoints, [
           accountAddress,
           0,

@@ -6,7 +6,7 @@ import {
 	ADD_MULTICALL_LISTENERS, toCallKey
 } from './actions';
 import { initialState } from '../initialState';
-import {notNull} from "../../../utils/notNull";
+import { notNull } from "../../../utils/notNull";
 
 export default function multicall(state = initialState.multicall, action = {}) {
 	const { type, payload } = action;

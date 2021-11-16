@@ -26,6 +26,7 @@ function Select({
   selectedOption,
   dropDownClass,
   onChange,
+  labelHolderClassName,
 }) {
   const [selected, setSelected] = useState(selectedOption || options[0]);
 
@@ -69,7 +70,7 @@ function Select({
                    : 'bg-primary rounded-4xl py-1.5'
                } ${selectedClassName}`}
               >
-                <div className="flex items-center space-x-4">
+                <div className={labelHolderClassName || "flex items-center space-x-4"}>
                   {selected?.logo && (
                     <div className={logoClassName ? logoClassName : ''}>
                       <img

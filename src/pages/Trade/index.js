@@ -91,7 +91,7 @@ function Trade() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false)
-
+  const [addressPairs, setAddressPairs] = useState(null)
 
   const getSwap = async () => {
     setLoading(true)
@@ -110,10 +110,10 @@ function Trade() {
 
     liquidityPairs.sort((a, b) => b.liquidity - a.liquidity)
     setSwapData(liquidityPairs);
-    
+
     hrChangePairs.sort((a, b) => b.change24h - a.change24h)
     setLiquidityData(hrChangePairs);
-    
+
     setLoading(false)
   }
 
@@ -123,7 +123,7 @@ function Trade() {
   ];
 
   const onBoxHandler = (item) => {
-    console.log('clicked', item)
+    setAddressPairs({ token0Address: _.toLower(item.token0Address), token1Address: _.toLower(item.token1Address) })
   }
 
   return (
@@ -160,7 +160,7 @@ function Trade() {
               }
               {!loading && swapData.map((item, index) => {
                 return (
-                  <div className="rounded-3xl border border-white mb-4" key={index} onClick={() => onBoxHandler(item)}>
+                  <div className="rounded-3xl border border-white mb-4 cursor-pointer" key={index} onClick={() => onBoxHandler(item)}>
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
                       <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>
@@ -239,6 +239,7 @@ function Trade() {
                   <Swap
                     onSettingsOpen={() => setSettingsOpen(true)}
                     onHistoryOpen={() => setHistoryOpen(true)}
+                    addressPairs={addressPairs}
                   />
                 </Route>
                 <Route exact strict path={`${path}/liquidity`}>
@@ -293,7 +294,7 @@ function Trade() {
               }
               {!loading && liquidity.map((item, index) => {
                 return (
-                  <div className="rounded-3xl border border-white mb-4" key={index} >
+                  <div className="rounded-3xl border border-white mb-4 cursor-pointer" key={index} onClick={() => onBoxHandler(item)}>
                     <div className="flex items-center justify-center py-3 px-3">
                       <img width="14px" src={BTC} alt="" />
                       <div className="text-white font-bold text-sm mx-5">{item.token0Symbol} - {item.token1Symbol}</div>

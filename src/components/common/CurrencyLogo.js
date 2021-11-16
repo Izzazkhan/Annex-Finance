@@ -11,10 +11,10 @@ const getTokenLogoURL = (address) =>
 	`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/assets/${address}/logo.png`;
 
 const BNBLogoURLS = {
-	56: '/images/coins/bnb.png',
-	97: '/images/coins/bnb.png',
-	339: '/images/coins/cro.png',
-	25: '/images/coins/cro.png'
+	56: '/images/coins/BNB.png',
+	97: '/images/coins/BNB.png',
+	339: '/images/coins/CRO.png',
+	25: '/images/coins/CRO.png'
 }
 
 const StyledBnbLogo = styled.img`

@@ -125,7 +125,7 @@ export function useCurrencyBalances(
 				if (currency === ETHERS[chainId]) return ethBalance[account];
 				return undefined;
 			}) || [],
-		[account, currencies, ethBalance, tokenBalances]
+		[account, currencies, ethBalance, tokenBalances, chainId]
 	);
 }
 

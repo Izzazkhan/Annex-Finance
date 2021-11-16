@@ -10,10 +10,16 @@ import BigNumber from 'bignumber.js';
 import { nFormatter } from '../../utils/data';
 import { useCountUp } from 'react-countup';
 import HeaderLogo from '../../assets/icons/headerLogo.svg';
+import bnbCoin from '../../assets/images/coins/bnb-coin.png';
+import cronosCoin from '../../assets/images/coins/cronos-coin.png';
 import Select from 'components/UI/Select';
 import styled from 'styled-components';
 
 const Styles = styled.div`
+  .selectbox-label {
+    font-size: 0.95rem;
+    margin-left: 5px;
+  }
   .custom-max-width {
     max-width: 500px;
   }
@@ -31,10 +37,10 @@ const Styles = styled.div`
 `
 
 const networkArrayOptions = [
-  { name: "Binance", logo: null, value: 56 },
-  { name: "Binance Testnet", logo: null, value: 97 },
-  { name: "Cassini", logo: null, value: 339 },
-  { name: "Cronos", logo: null, value: 25 },
+  { name: "Binance", logo: bnbCoin, value: 56 },
+  { name: "Binance Testnet", logo: bnbCoin, value: 97 },
+  { name: "Cassini", logo: cronosCoin, value: 339 },
+  { name: "Cronos", logo: cronosCoin, value: 25 },
 ]
 const format = commaNumber.bindWith(',', '.');
 
@@ -122,12 +128,13 @@ function Navigation({ wrapperClassName, isOpen, totalLiquidity, onClose }) {
               </div>
             </div>
           </li>
-          <li className="">
+          <li className="cursor-pointer">
             <Select options={networkArrayOptions}
               selectedOption={currentNetworkObj}
               onChange={(selected) => { handleChangeNetwork(selected.value) }}
               selectedClassName={'py-1.5 pl-5 rounded-full'}
-              selectedTextClassName={"text-xl font-normal text-white"}
+              selectedTextClassName={"selectbox-label font-normal text-white"}
+              labelHolderClassName={"flex items-center"}
             />
           </li>
           <li className="">
