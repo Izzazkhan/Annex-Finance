@@ -374,7 +374,6 @@ const Epoch = ({ setSetting, settings }) => {
       setCheckCurrentEligibleEpoch(false);
       return;
     }
-    console.log('sss.p ==========================================================')
     try {
       let [currentEpochROI, holdingReward] = await Promise.all([
         methods.call(epochContract.methods.getCurrentEpochROI, []),
