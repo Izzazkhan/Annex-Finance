@@ -38,6 +38,7 @@ import trx from '../../assets/images/coins/trx.png';
 import tusd from '../../assets/images/coins/tusd.png';
 import xvs from '../../assets/images/coins/xvs.png';
 import cake from '../../assets/images/coins/cake.png';
+import cro from '../../assets/images/coins/cro.png';
 import ann from '../../assets/images/coins/ann.png';
 
 const icons = {
@@ -62,6 +63,10 @@ const icons = {
   tusd,
   xvs,
   cake,
+  cro,
+  wcro: cro,
+  weth: eth,
+  wbtc: btc,
   ann,
 }
 

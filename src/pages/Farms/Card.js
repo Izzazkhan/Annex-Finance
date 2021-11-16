@@ -125,8 +125,8 @@ function Card({ item, dipositWithdraw }) {
             <span className="font-bold mt-3.5 flex items-center">
               <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
               {format(
-                new BigNumber(item.apy).gt(10000000)
-                  ? 10000000
+                new BigNumber(item.apy).gt(1000000000)
+                  ? 1000000000
                   : new BigNumber(item.apy)
                     .dp(2)
                     .toString(10)
