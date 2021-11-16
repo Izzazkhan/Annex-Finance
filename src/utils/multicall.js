@@ -7,7 +7,6 @@ const multicall = async (abi, calls, chainId, library) => {
         const multi = getMulticallContract(chainId, library)
         const itf = new ethers.utils.Interface(abi)
 
-        console.log(await multi.getCurrentBlockDifficulty())
         const calldata = calls.map((call) => [call.address.toLowerCase(), itf.encodeFunctionData(call.name, call.params)])
         const { returnData } = await multi.aggregate(calldata)
 
