@@ -19,6 +19,8 @@ const TOKEN_ABI = {
   tusd: constants.CONTRACT_TUSD_TOKEN_ABI,
   xvs: constants.CONTRACT_XVS_TOKEN_ABI,
   cake: constants.CONTRACT_CAKE_TOKEN_ABI,
+  link: constants.CONTRACT_LINK_TOKEN_ABI,
+  xrp: constants.CONTRACT_XRP_TOKEN_ABI,
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
