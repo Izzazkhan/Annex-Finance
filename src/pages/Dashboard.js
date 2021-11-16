@@ -835,7 +835,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [account, currentAsset]);
 
   useEffect(() => {
-    setCurrentAsset('usdt');
+    setCurrentAsset('usdc');
   }, []);
 
   useEffect(() => {

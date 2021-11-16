@@ -298,11 +298,11 @@ export const STABLE_USD_TOKENS = {
     aAsset: ausdt
   },
   25: {
-    id: 'usdt',
-    symbol: 'USDT',
-    address: '0x66e428c3f67a68878562e79A0234c1F83c208770',
-    asset: usdt,
-    aAsset: ausdt
+    id: 'usdc',
+    symbol: 'USDC',
+    address: '0xc21223249CA28397B4B6541dfFaEcC539BfF0c59',
+    asset: usdc,
+    aAsset: ausdc
   }
 }
 
