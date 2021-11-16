@@ -11,10 +11,13 @@ import LeaderboardTable from "../../components/vote/LeaderboardTable";
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
 import RouteMap from "../../routes/RouteMap";
+import { useActiveWeb3React } from "hooks";
+import CommingSoon from "pages/CommingSoon";
 
 const format = commaNumber.bindWith(',', '.');
 
 const Leaderboard = ({ history, getVoterAccounts }) => {
+    const { chainId } = useActiveWeb3React();
     const [voterAccounts, setVoterAccounts] = useState([]);
 
 
@@ -104,6 +107,9 @@ const Leaderboard = ({ history, getVoterAccounts }) => {
             });
     }, []);
 
+    if (chainId === 25) {
+        return <CommingSoon />
+    }
     return (
         <Layout title="LEADERBOARD" mainClassName="py-8">
             <LeaderboardTable

@@ -358,7 +358,7 @@ const Epoch = ({ setSetting, settings }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [account]);
+  }, [account, chainId]);
 
   const balanceOf = useCallback(async () => {
     const decimals = annDecimals;

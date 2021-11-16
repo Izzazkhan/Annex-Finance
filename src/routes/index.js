@@ -57,41 +57,24 @@ const Routes = () => {
           <Route exact path={routes.farms} component={Farms} />
           <Route path={routes.trade} component={Trade} />
           {[339].includes(chainId) && (
-            <>
-              <Route path={`${routes.faucet}`} component={Faucet} />
-            </>
+            <Route path={`${routes.faucet}`} component={Faucet} />
           )}
+          <Route exact path={routes.dashboard} component={Dashboard} />
+          <Route exact path={routes.annex} component={Annex} />
+          <Route exact path={routes.market.index} component={Market} />
+          <Route exact path={routes.market.marketDetails} component={MarketDetails} />
+          <Route exact path={routes.pools} component={Pools} />
+          <Route exact path={routes.vote.index} component={Vote} />
+          <Route exact path={routes.vote.allProposals} component={AllProposals} />
+          <Route exact path={routes.vote.voteOverview} component={VoteOverview} />
+          <Route exact path={routes.vote.proposerOverview} component={ProposerOverview} />
+          <Route exact path={routes.vote.leaderboard} component={Leaderboard} />
           {![339, 25].includes(chainId) && (
             <>
               <Route path={routes.games} component={Games} />
               <Route path={`${routes.auction}`} component={Auction} />
             </>
           )}
-          {
-            (chainId == 25 || isInDev) ? <>
-              <Route exact path={routes.dashboard} component={CommingSoon} />
-              <Route exact path={routes.annex} component={CommingSoon} />
-              <Route exact path={routes.market.index} component={CommingSoon} />
-              <Route exact path={routes.market.marketDetails} component={CommingSoon} />
-              <Route exact path={routes.pools} component={CommingSoon} />
-              <Route exact path={routes.vote.index} component={CommingSoon} />
-              <Route exact path={routes.vote.allProposals} component={CommingSoon} />
-              <Route exact path={routes.vote.voteOverview} component={CommingSoon} />
-              <Route exact path={routes.vote.proposerOverview} component={CommingSoon} />
-              <Route exact path={routes.vote.leaderboard} component={CommingSoon} />
-            </> : <>
-              <Route exact path={routes.dashboard} component={Dashboard} />
-              <Route exact path={routes.annex} component={Annex} />
-              <Route exact path={routes.market.index} component={Market} />
-              <Route exact path={routes.market.marketDetails} component={MarketDetails} />
-              <Route exact path={routes.pools} component={Pools} />
-              <Route exact path={routes.vote.index} component={Vote} />
-              <Route exact path={routes.vote.allProposals} component={AllProposals} />
-              <Route exact path={routes.vote.voteOverview} component={VoteOverview} />
-              <Route exact path={routes.vote.proposerOverview} component={ProposerOverview} />
-              <Route exact path={routes.vote.leaderboard} component={Leaderboard} />
-            </>
-          }
           <Route component={NotFound} />
         </Switch>
       </Router>

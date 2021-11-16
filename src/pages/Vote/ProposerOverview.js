@@ -9,8 +9,11 @@ import ProposerInfo from "../../components/vote/ProposerDetails/ProposerInfo";
 import Holding from "../../components/vote/ProposerDetails/Holding";
 import Transactions from "../../components/vote/ProposerDetails/Transactions";
 import VotingHistory from "../../components/vote/ProposerDetails/VotingHistory";
+import CommingSoon from "pages/CommingSoon";
+import { useActiveWeb3React } from "hooks";
 
 const ProposerOverview = ({ match, getVoterDetail, getVoterHistory }) => {
+    const { chainId } = useActiveWeb3React();
     const [holdingInfo, setHoldingInfo] = useState({});
     const [transactions, setTransactions] = useState([]);
     const [data, setData] = useState({});
@@ -68,7 +71,9 @@ const ProposerOverview = ({ match, getVoterDetail, getVoterHistory }) => {
         }
     }, [match]);
 
-
+    if (chainId === 25) {
+        return <CommingSoon />
+    }
     return (
         <Layout title={'Details'}>
             <div className="pt-8 pb-2">

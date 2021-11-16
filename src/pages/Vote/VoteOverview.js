@@ -16,6 +16,7 @@ import VoteCard from '../../components/vote/VoteOverview/VoteCard';
 import ProposalDetails from '../../components/vote/VoteOverview/ProposalDetails';
 import ProposalHistory from '../../components/vote/VoteOverview/ProposalHistory';
 import { useActiveWeb3React } from '../../hooks';
+import CommingSoon from 'pages/CommingSoon';
 
 const Styles = styled.div`
   .tooltip {
@@ -209,6 +210,9 @@ const VoteOverview = ({ settings, getVoters, getProposalById, match }) => {
     }
   };
 
+  if (chainId === 25) {
+    return <CommingSoon />
+  }
   return (
     <Layout title={'Vote'}>
       <div className="py-4">
