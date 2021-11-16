@@ -17,6 +17,54 @@ import { connectAccount, useFarms, usePollFarmsData } from 'core'
 import BigNumber from 'bignumber.js';
 import Loader from 'components/UI/Loader';
 
+import sxp from '../../assets/images/coins/sxp.png';
+import usdc from '../../assets/images/coins/usdc.png';
+import usdt from '../../assets/images/coins/usdt.png';
+import busd from '../../assets/images/coins/busd.png';
+import bnb from '../../assets/images/coins/bnb.png';
+import btc from '../../assets/images/coins/btc.png';
+import eth from '../../assets/images/coins/eth.png';
+import ltc from '../../assets/images/coins/ltc.png';
+import xrp from '../../assets/images/coins/xrp.png';
+import link from '../../assets/images/coins/link.png';
+import dot from '../../assets/images/coins/dot.png';
+import bch from '../../assets/images/coins/bch.png';
+import dai from '../../assets/images/coins/dai.png';
+import fil from '../../assets/images/coins/fil.png';
+import beth from '../../assets/images/coins/beth.png';
+import ada from '../../assets/images/coins/ada.png';
+import doge from '../../assets/images/coins/doge.png';
+import trx from '../../assets/images/coins/trx.png';
+import tusd from '../../assets/images/coins/tusd.png';
+import xvs from '../../assets/images/coins/xvs.png';
+import cake from '../../assets/images/coins/cake.png';
+import ann from '../../assets/images/coins/ann.png';
+
+const icons = {
+  sxp,
+  usdc,
+  usdt,
+  busd,
+  bnb,
+  btc,
+  eth,
+  ltc,
+  xrp,
+  link,
+  dot,
+  bch,
+  dai,
+  fil,
+  beth,
+  ada,
+  doge,
+  trx,
+  tusd,
+  xvs,
+  cake,
+  ann,
+}
+
 const Styles = styled.div`
   width: 100%;
   overflow: auto;
@@ -39,8 +87,6 @@ function Farms({ settings }) {
   const attatchImgWithData = (data) => {
     if (data && data.length > 0) {
       data = data.map(pair => {
-        const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
-        const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
         const userPercent = pair.userData
           ? new BigNumber(pair.userData.stakedBalance).div(1e18).div(pair.totalSupply)
           : new BigNumber(0)
@@ -79,11 +125,11 @@ function Farms({ settings }) {
         return {
           ...pair,
           userPercent: userPercent.toString(10),
-          token0Img: token0
-            ? token0.img
-            : annCoin,
-          token1Img: token1
-            ? token1.img
+          token0Img: icons[pair.token0Symbol.toLowerCase()]
+            ? icons[pair.token0Symbol.toLowerCase()]
+            : null,
+          token1Img: pair.token1Symbol && icons[pair.token1Symbol.toLowerCase()]
+            ? icons[pair.token1Symbol.toLowerCase()]
             : null,
         }
       })
