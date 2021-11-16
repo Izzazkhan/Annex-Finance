@@ -39,6 +39,7 @@ import toast from '../components/UI/Toast';
 import AccountOverview from '../components/Dashboard/AccountOverview.js';
 import MarketHistory from '../components/Dashboard/MarketHistory.js';
 import styled from 'styled-components';
+import CommingSoon from './CommingSoon';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -879,6 +880,9 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     return !AVAILABLE_NETWORKS.includes(chainId)
   }, [chainId]);
 
+  if (chainId === 25) {
+    return <CommingSoon />
+  }
   return (
     <Layout>
       <SupplyWithdrawModal

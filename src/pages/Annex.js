@@ -14,6 +14,7 @@ import * as constants from "../utilities/constants";
 import APYSparkline from "../components/Annex/APYSparkline";
 import AnnexTable from "../components/Annex/AnnexTable";
 import { promisify } from "../utilities";
+import CommingSoon from "./CommingSoon";
 
 
 const format = commaNumber.bindWith(',', '.');
@@ -233,7 +234,9 @@ const Annex = ({ settings, getMarketHistory }) => {
         }]
     }, [])
 
-
+    if (chainId === 25) {
+        return <CommingSoon />
+      }
 
     return (
         <Layout mainClassName="pt-4 pb-6" title={'Annex'}>

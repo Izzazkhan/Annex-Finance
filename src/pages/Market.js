@@ -12,6 +12,7 @@ import APYSparkline from '../components/Annex/APYSparkline';
 import { currencyFormatter } from '../utilities/common';
 import MarketTable from '../components/Market/MarketTable';
 import { useActiveWeb3React } from '../hooks';
+import CommingSoon from './CommingSoon';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -332,6 +333,9 @@ const Market = ({ history, settings }) => {
     ];
   }, []);
 
+  if (chainId === 25) {
+    return <CommingSoon />
+  }
   return (
     <Layout mainClassName="py-8" title={'Market'}>
       <div>

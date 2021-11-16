@@ -17,6 +17,7 @@ import Layout from "../../layouts/MainLayout/MainLayout";
 import * as constants from '../../utilities/constants';
 import VotingWallet from "../../components/vote/VotingWallet";
 import Proposals from "../../components/vote/Proposals";
+import CommingSoon from 'pages/CommingSoon';
 
 let timeStamp = 0;
 
@@ -238,6 +239,10 @@ const Vote = ({ settings, getProposals, setSetting }) => {
             handleAccountChange();
         }
     }, [account]);
+
+    if (chainId === 25) {
+        return <CommingSoon />
+    }
 
     return (
         <Layout title={'Vote'}>
