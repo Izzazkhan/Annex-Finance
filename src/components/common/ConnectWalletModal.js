@@ -31,7 +31,7 @@ const WEB3_PROVIDERS = {
   56: 'https://bsc-dataseed1.binance.org',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   339: 'https://cassini.crypto.org:8545',
-  25: '',
+  25: 'https://evm-cronos.crypto.org',
 }
 
 const CHAIN_NAME = {
@@ -151,7 +151,7 @@ function ConnectWalletModal({ open, onSetOpen, onCloseModal, setSetting }) {
             <div className="text-primary font-bold mb-14">{account}</div>
             <div className="flex flex-row items-center justify-center mb-14">
               <a
-                href={getExplorerLink(account, 'address')}
+                href={getExplorerLink(account, 'address', _chainId)}
                 className="text-white mr-10 flex items-center"
                 target={'_blank'}
                 rel={'noreferrer noopener'}
