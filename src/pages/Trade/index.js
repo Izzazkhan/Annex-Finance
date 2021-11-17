@@ -34,8 +34,9 @@ import { currencyFormatter } from 'utilities/common';
 import { restService } from 'utilities';
 import BigNumber from 'bignumber.js';
 import {
-  useSelectedPairs,
+  useSelectedPairActionHandler,
 } from '../../core';
+import { useCurrency } from 'hooks/Tokens';
 
 const Styles = styled.div`
   .sidebar {
@@ -94,6 +95,11 @@ function Trade() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [addressPair, setAddressPair] = useState(null)
+
+  const inputCurrency = useCurrency(addressPair?.token0Address, chainId)
+  const outputCurrency = useCurrency(addressPair?.token1Address, chainId)
+  useSelectedPairActionHandler(inputCurrency, outputCurrency, chainId)
 
   const getSwap = async () => {
     setLoading(true)
@@ -125,7 +131,10 @@ function Trade() {
   ];
 
   const onBoxHandler = (item) => {
-    // useSelectedPairs(_.toLower(item.token0Address), _.toLower(item.token1Address));
+    setAddressPair({
+      token0Address: _.toLower(item.token0Address),
+      token1Address: _.toLower(item.token1Address)
+    })
   }
 
   return (
