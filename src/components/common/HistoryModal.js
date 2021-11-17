@@ -68,11 +68,11 @@ function HistoryModal({ open, onSetOpen, onCloseModal }) {
         )}
         {account &&
         chainId &&
-        sortedRecentTransactions.map((sortedRecentTransaction) => {
+        sortedRecentTransactions.map((sortedRecentTransaction, index) => {
             const { hash, summary } = sortedRecentTransaction;
 
             return (
-                <>
+                <React.Fragment key={index}>
                     <FlexRow key={hash} className={'self-stretch hover:bg-fadeBlack text-left'}>
                         <a
                             target={"_blank"}
@@ -86,7 +86,7 @@ function HistoryModal({ open, onSetOpen, onCloseModal }) {
                             <ArrowRight size={'16px'}/>
                         </a>
                     </FlexRow>
-                </>
+                </React.Fragment>
             );
         })}
     </div>
