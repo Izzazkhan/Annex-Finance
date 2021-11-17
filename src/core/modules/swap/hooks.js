@@ -309,27 +309,32 @@ export function useDefaultsFromURLSearch() {
 }
 
 // updates the swap state to use the defaults for a given network
-export function useSelectedPairs(inputCurrency, outputCurrency) {
-  const { chainId } = useActiveWeb3React();
+export function useSelectedPairActionHandler(inputCurrency, outputCurrency, chainId) {
   const dispatch = useDispatch();
-  const [result, setResult] = useState();
-
   useEffect(() => {
+    if (!inputCurrency || !outputCurrency) {
+      return
+    }
+    // Set INPUT Currency
+    let field = 'INPUT'
+    let currency = inputCurrency
     dispatch(
-      replaceSwapState({
-        typedValue: 0,
-        // field: parsed.independentField,
-        inputCurrencyId: inputCurrency,
-        outputCurrencyId: outputCurrency,
-        // recipient: parsed.recipient,
+      selectCurrency({
+        field,
+        currencyId:
+          currency instanceof Token ? currency.address : currency === ETHERS[chainId] ? 'ETH' : '',
       }),
-    );
+    )
 
-    setResult({
-      inputCurrencyId: inputCurrency,
-      outputCurrencyId: outputCurrency,
-    });
-  }, [dispatch, chainId]);
-
-  return result;
+    // Set OUTPUT Currency
+    field = 'OUTPUT'
+    currency = outputCurrency
+    dispatch(
+      selectCurrency({
+        field,
+        currencyId:
+          currency instanceof Token ? currency.address : currency === ETHERS[chainId] ? 'ETH' : '',
+      }),
+    )
+  }, [dispatch, inputCurrency, outputCurrency])
 }
