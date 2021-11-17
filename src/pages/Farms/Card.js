@@ -202,14 +202,14 @@ function Card({ item, dipositWithdraw }) {
           item.type === 'annex_lp' ? (
             <Link to={config.annexAddLiquidityURL}
               className={`flex py-2.5 px-28 font-bold 
-              rounded-3xl mt-5 w-full 
+              rounded-3xl mt-5 w-full text-center 
               text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}
               ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
             >Add Liquidity</Link>
           ) : (
             <a
               className={`flex py-2.5 px-28 font-bold 
-              rounded-3xl mt-5 w-full 
+              rounded-3xl mt-5 w-full text-center 
               text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}
               ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
               href={

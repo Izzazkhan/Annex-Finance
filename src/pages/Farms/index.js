@@ -79,6 +79,43 @@ const Styles = styled.div`
   justify-content: center;
 `;
 
+const HeaderStyles = styled.div`
+.search {
+  input {
+    min-width: 200px;
+  }
+}
+@media (max-width: 510px) {
+  .header-row-left {
+    display: none;
+  }
+  .header-row-right {
+    width: 100%;
+  }
+  .search {
+    input {
+      min-width: auto;
+    }
+  }
+}
+@media (max-width: 410px) {
+  .header-row-right {
+    flex-direction: column;
+  }
+  .select-container {
+    width: 100%;
+    margin: 1.25rem 0;
+    > div {
+      width: 100%;
+    }
+  }
+  .search {
+    width: 100%;
+  }
+}
+
+`
+
 function Farms({ settings }) {
   const [onlyStaked, setOnlyStaked] = useState(false)
   const [isGridView, setIsGridView] = useState(true)
@@ -219,8 +256,8 @@ function Farms({ settings }) {
 
   return (
     <Layout mainClassName="min-h-screen py-8">
-      <div className="flex justify-between pt-0 py-6">
-        <div className="flex items-center">
+      <HeaderStyles className="flex justify-between pt-0 py-6">
+        <div className="flex items-center header-row-left">
           <div className="list-icon">
             {/* <a href="#" onClick={() => setIsGridView(false)}>
               <img
@@ -240,12 +277,12 @@ function Farms({ settings }) {
             </a>
           </div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center header-row-right">
           <div className="flex items-center text-white mr-5 pt-2">
             <Switch value={onlyStaked} onChange={stakedFilterToggle} />
             <div className="ml-2 mb-2">Staked only</div>
           </div>
-          <div className="mr-5">
+          <div className="mr-5 select-container">
             <Select className="border-primary" selectedClassName="px-4 py-2" type="custom-primary" options={sortOptions} onChange={sortFilter} />
           </div>
           <div className="search flex-1">
@@ -255,14 +292,13 @@ function Farms({ settings }) {
                 rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
               type="text"
               placeholder="Search"
-              style={{ minWidth: '200px' }}
               onChange={(event) => {
                 filterSearch(event.target.value)
               }}
             />
           </div>
         </div>
-      </div>
+      </HeaderStyles>
       {(filteredPairs.length === 0) ? (
         <Styles>
           <div className="text-white text-base p-20 flex justify-center">
@@ -286,7 +322,7 @@ function Farms({ settings }) {
             (isGridView) ? (
               // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
               <Styles>
-                <div className="p-4 flex flex-row flex-wrap">
+                <div className="p-4 flex flex-row flex-wrap justify-center">
                   {
                     loading ? (
                       <Loader size="160px" className="m-40" stroke="#ff9800" />
