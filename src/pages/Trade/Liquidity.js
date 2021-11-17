@@ -93,10 +93,10 @@ function Liquidity({ onSettingsOpen, onHistoryOpen }) {
 						</div>
 					) : allV2PairsWithLiquidity?.length > 0 ? (
 						<div className={'mt-6'}>
-							{allV2PairsWithLiquidity.map((v2Pair) => (
-								<>
+							{allV2PairsWithLiquidity.map((v2Pair, index) => (
+								<React.Fragment key={index}>
 									<FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
-								</>
+								</React.Fragment>
 							))}
 						</div>
 					) : (
