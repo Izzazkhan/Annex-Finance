@@ -27,7 +27,7 @@ function MainLayout({ children, mainClassName, title }) {
       )}
       <div
         className={`w-full h-full pr-6 py-6 my-contents ${
-          isOpen ? 'open container-fluid' : 'container pl-6'
+          isOpen ? 'open container-fluid' : 'pl-6'
         }`}
       >
         <Header onOpen={() => setIsOpen((bool) => !bool)} />
