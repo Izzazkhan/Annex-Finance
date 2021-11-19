@@ -249,6 +249,28 @@ const Market = ({ history, settings }) => {
             },
           },
           {
+            Header: 'Collateral Factor',
+            accessor: 'collateralFactor',
+            disableFilters: true,
+            // eslint-disable-next-line react/display-name
+            Cell: ({ value, row }) => {
+              let collateralFactor = `${new BigNumber(value || 0)
+                .div(new BigNumber(10).pow(18))
+                .times(100)
+                .dp(2, 1)
+                .toString(10)} %`
+              return (
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className={`font-bold text-white`}>
+                      {collateralFactor}
+                    </div>
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
             Header: 'Total Reserves',
             accessor: 'reserveUSD',
             disableFilters: true,
