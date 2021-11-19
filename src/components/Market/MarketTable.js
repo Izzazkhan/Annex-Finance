@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import { matchSorter } from 'match-sorter';
 import moment from 'moment';
 import { useTable, useSortBy, useExpanded } from 'react-table';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import sortUp from '../../assets/icons/sortUp.svg';
 import sortDown from '../../assets/icons/sortDown.svg';
+import { useWindowSize } from 'hooks/useWindowSize';
 
 const Styles = styled.div`
   width: 100%;
@@ -17,7 +18,9 @@ const Styles = styled.div`
     color: #fff;
     border-spacing: 0;
     border: 1px solid #2b2b2b;
-
+    tr.custom-border-bottom {
+      border-bottom: 2px solid #737373;
+    }
     tr {
       border-bottom: 1px solid #2b2b2b;
       :last-child {
@@ -74,9 +77,19 @@ function Table({ columns, data, onRowClick }) {
     useExpanded,
   );
 
+  const [isTableHorizontal, setIsTableHorizontal] = useState(true);
+  const { width } = useWindowSize() || {}
+  useEffect(() => {
+    if (width < 1280) {
+      setIsTableHorizontal(false);
+    } else {
+      setIsTableHorizontal(true);
+    }
+  }, [width]);
+
   return (
-    <table {...getTableProps()}>
-      <thead>
+    <table {...getTableProps()} className={' sssm-text-xl ssm-text-2xl xl:text-sm'}>
+      {isTableHorizontal && <thead>
         {[headerGroups[1]].map((headerGroup) => (
           // eslint-disable-next-line react/jsx-key
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -106,37 +119,55 @@ function Table({ columns, data, onRowClick }) {
             })}
           </tr>
         ))}
-      </thead>
+      </thead>}
       <tbody {...getTableBodyProps()}>
         {rows.map((row, i) => {
           prepareRow(row);
           return (
             // eslint-disable-next-line react/jsx-key
             <Fragment key={i}>
-              <tr
-                {...row.getRowProps()}
-                onClick={onRowClick.bind(this, row)}
-                className="cursor-pointer"
-              >
-                {row.cells.map((cell) => {
-                  return (
-                    // eslint-disable-next-line react/jsx-key
-                    <td {...cell.getCellProps()} className="">
-                      <div
-                        className={
-                          cell.column.Header === 'Rank'
-                            ? ''
-                            : cell.column.Header === 'Supply'
-                            ? ''
-                            : ''
-                        }
-                      >
-                        {cell.render('Cell')}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
+              {
+                isTableHorizontal ? (
+                  <tr
+                    {...row.getRowProps()}
+                    onClick={onRowClick.bind(this, row)}
+                    className="cursor-pointer"
+                  >
+                    {row.cells.map((cell) => {
+                      return (
+                        // eslint-disable-next-line react/jsx-key
+                        <td {...cell.getCellProps()} className="">
+                          <div
+                            className={
+                              cell.column.Header === 'Rank'
+                                ? ''
+                                : cell.column.Header === 'Supply'
+                                  ? ''
+                                  : ''
+                            }
+                          >
+                            {cell.render('Cell')}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ) : (
+                  row.cells.map((cell, index) => {
+                    console.log(cell, 'sss.p')
+                    return (
+                      <tr {...row.getRowProps()} key={index} className={(index === (row.cells.length - 1)) ? "custom-border-bottom" : ""}>
+                        {cell.column.Header !== '' && <td className="padding-2rem">
+                          {(typeof (cell.column.Header) === "string" ? (cell.column.Header) : (cell.column.Header()))}
+                        </td>}
+                        <td className="padding-2rem" colSpan={cell.column.Header !== '' ? (1) : (2)}>
+                          {cell.render('Cell')}
+                        </td>
+                      </tr>
+                    )
+                  })
+                )
+              }
             </Fragment>
           );
         })}
