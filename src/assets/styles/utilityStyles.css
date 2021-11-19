@@ -21,6 +21,19 @@ body {
   margin-right: auto;
   margin-left: auto;
 }
+@media (min-width: 320px) {
+  .ssm-text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .sssm-text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
 @media (min-width: 576px) {
   .container-sm,
   .container {
