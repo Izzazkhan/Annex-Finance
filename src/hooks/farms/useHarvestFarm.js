@@ -8,12 +8,12 @@ import { fetchFarmsUserDataAsync, useFarms } from 'core'
 const useHarvestFarm = (pid) => {
     const dispatch = useDispatch()
     const { data } = useFarms()
-    const { account, chainId } = useActiveWeb3React()
+    const { account, chainId, library } = useActiveWeb3React()
     const masterChefContract = useMasterchef()
 
     const handleHarvest = useCallback(async () => {
         await harvestFarm(masterChefContract, pid)
-        dispatch(fetchFarmsUserDataAsync({account, data, chainId}))
+        dispatch(fetchFarmsUserDataAsync({account, data, chainId, library}))
     }, [pid, masterChefContract])
 
     return { onReward: handleHarvest }

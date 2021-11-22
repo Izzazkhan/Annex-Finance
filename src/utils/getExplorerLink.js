@@ -1,4 +1,11 @@
-export default function getExplorerLink(value, type = 'account') {
+const EXPLORERS = {
+	56: "https://bscscan.com",
+	97: "https://testnet.bscscan.com",
+	339: 'https://cronos.crypto.org/cassini/explorer/',
+	25: 'https://cronos.crypto.org/explorer',
+};
+
+export default function getExplorerLink(value, type = 'account', chainId) {
 	const prefix = type === 'account'
 		// eslint-disable-next-line no-mixed-spaces-and-tabs
 	    ? 'address'
@@ -6,5 +13,5 @@ export default function getExplorerLink(value, type = 'account') {
 		? 'address'
 		: type === 'transaction'
 		? "tx" : "";
-	return `${process.env.REACT_APP_BSC_EXPLORER}/${prefix}/${value}`
+	return `${EXPLORERS[chainId]}/${prefix}/${value}`
 }

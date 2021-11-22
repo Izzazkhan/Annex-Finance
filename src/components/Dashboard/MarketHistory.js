@@ -107,7 +107,7 @@ const MarketHistory = ({
                                  onClick={() =>
                                      addToken(
                                          currentAsset,
-                                         settings.decimals[currentAsset || 'usdt']?.token,
+                                         settings.decimals[currentAsset || 'usdc']?.token,
                                          'token',
                                          chainId
                                      )
@@ -126,7 +126,7 @@ const MarketHistory = ({
                              onClick={() =>
                                  addToken(
                                      currentAsset,
-                                     settings.decimals[currentAsset || 'usdt']?.atoken,
+                                     settings.decimals[currentAsset || 'usdc']?.atoken,
                                      'atoken',
                                      chainId
                                  )
@@ -282,7 +282,7 @@ const MarketHistory = ({
                                     : marketInfo?.underlyingPrice ? `$${new BigNumber(marketInfo?.underlyingPrice || 0)
                                         .div(
                                             new BigNumber(10).pow(
-                                                18 + 18 - parseInt(settings.decimals[currentAsset || 'usdt']?.token, 10)
+                                                18 + 18 - parseInt(settings.decimals[currentAsset || 'usdc']?.token, 10)
                                             )
                                         )
                                         .dp(8, 1)
@@ -297,7 +297,7 @@ const MarketHistory = ({
                                     : marketInfo?.cash ? `${format(
                                         new BigNumber(marketInfo?.cash || 0)
                                             .div(
-                                                new BigNumber(10).pow(settings.decimals[currentAsset || 'usdt']?.token)
+                                                new BigNumber(10).pow(settings.decimals[currentAsset || 'usdc']?.token)
                                             )
                                             .dp(8, 1)
                                             .toString(10)
@@ -324,7 +324,7 @@ const MarketHistory = ({
                                 {!account || wrongNetwork
                                     ? (<div className="animate-pulse w-20 h-6 bg-lightGray rounded-lg inline-block"/>)
                                     : marketInfo?.totalReserves ? `${new BigNumber(marketInfo?.totalReserves || 0)
-                                        .div(new BigNumber(10).pow(settings.decimals[currentAsset || 'usdt']?.token))
+                                        .div(new BigNumber(10).pow(settings.decimals[currentAsset || 'usdc']?.token))
                                         .dp(8, 1)
                                         .toString(10)} ` : "-"} {!account || wrongNetwork
                                 ? (<div className="animate-pulse w-10 h-6 bg-lightGray rounded-lg inline-block"/>)
@@ -393,11 +393,11 @@ const MarketHistory = ({
                                                     new BigNumber(10).pow(
                                                         18 +
                                                         +parseInt(
-                                                            settings.decimals[currentAsset || 'usdt']?.token,
+                                                            settings.decimals[currentAsset || 'usdc']?.token,
                                                             10
                                                         ) -
                                                         +parseInt(
-                                                            settings.decimals[currentAsset || 'usdt']?.atoken,
+                                                            settings.decimals[currentAsset || 'usdc']?.atoken,
                                                             10
                                                         )
                                                     )

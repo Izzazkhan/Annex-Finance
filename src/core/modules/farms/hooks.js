@@ -15,12 +15,12 @@ export const useFarms = () => {
 export const usePollFarmsData = () => {
     const dispatch = useDispatch()
     const { fastRefresh } = useRefresh()
-    const { account, chainId } = useActiveWeb3React()
+    const { account, chainId, library } = useActiveWeb3React()
     const { data } = useFarms()
 
     useEffect(() => {
-        dispatch(fetchFarmsPublicDataAsync({ account, data, chainId }))
-    }, [dispatch, fastRefresh, account])
+        dispatch(fetchFarmsPublicDataAsync({ account, data, chainId, library }))
+    }, [dispatch, fastRefresh, account, chainId])
 }
 
 export const useFarmFromPid = (pid) => {

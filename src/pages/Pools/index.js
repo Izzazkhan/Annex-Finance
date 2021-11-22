@@ -27,6 +27,7 @@ const instance = new Web3(window.ethereum);
 import Loader from 'components/UI/Loader';
 import { accountActionCreators, connectAccount } from '../../core';
 import { bindActionCreators } from 'redux';
+import CommingSoon from 'pages/CommingSoon';
 
 
 const Styles = styled.div`
@@ -385,6 +386,10 @@ function Pools({ settings }) {
     { name: 'Liquidity' },
   ];
   const data = React.useMemo(() => database, []);
+
+  if (chainId === 25) {
+    return <CommingSoon />
+  }
 
   return (
     <Layout mainClassName="min-h-screen py-8">

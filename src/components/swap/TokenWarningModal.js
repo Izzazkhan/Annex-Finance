@@ -25,12 +25,13 @@ function TokenWarningModal({isOpen, tokens, onConfirm}) {
 		<div className="px-14 py-6">
 			<div className="p-6 bg-black flex flex-col items-stretch mb-6">
 				<div className="text-white">
-					Anyone can create an BEP20 token on BSC with <em>any</em> name, including creating fake versions
+					Anyone can create an {[339, 25].includes(chainId) ? "CRC20 " : "BEP20 "} 
+					token on {[339, 25].includes(chainId) ? "Cronos" : "BSC"} with <em>any</em> name, including creating fake versions
 					of existing tokens and tokens that claim to represent projects that do not have a token.
 				</div>
 				<div className="text-white">
 					This interface can load arbitrary tokens by token addresses. Please take extra caution and do
-					your research when interacting with arbitrary BEP20 tokens.
+					your research when interacting with arbitrary {[339, 25].includes(chainId) ? "CRC20" : "BEP20"} tokens.
 				</div>
 				<div className="text-white">
 					If you purchase an arbitrary token, <strong>you may be unable to sell it back.</strong>

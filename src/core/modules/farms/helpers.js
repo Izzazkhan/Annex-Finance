@@ -86,7 +86,7 @@ const getFarmQuoteTokenPrice = (farm, quoteTokenFarm, bnbPriceBusd) => {
 }
 
 // Fetch Farm users
-export const fetchFarmUserAllowances = async (account, farmsToFetch, chainId) => {
+export const fetchFarmUserAllowances = async (account, farmsToFetch, chainId, library) => {
     const masterChefAddress = getMasterChefAddress(chainId)
 
     const calls = farmsToFetch.map((farm) => {
@@ -94,14 +94,14 @@ export const fetchFarmUserAllowances = async (account, farmsToFetch, chainId) =>
         return { address: lpContractAddress, name: 'allowance', params: [account, masterChefAddress] }
     })
 
-    const rawLpAllowances = await multicall(erc20ABI, calls, chainId)
+    const rawLpAllowances = await multicall(erc20ABI, calls, chainId, library)
     const parsedLpAllowances = rawLpAllowances.map((lpBalance) => {
         return new BigNumber(lpBalance).toJSON()
     })
     return parsedLpAllowances
 }
 
-export const fetchFarmUserTokenBalances = async (account, farmsToFetch, chainId) => {
+export const fetchFarmUserTokenBalances = async (account, farmsToFetch, chainId, library) => {
     const calls = farmsToFetch.map((farm) => {
         const lpContractAddress = farm.lpAddress
         return {
@@ -111,14 +111,14 @@ export const fetchFarmUserTokenBalances = async (account, farmsToFetch, chainId)
         }
     })
 
-    const rawTokenBalances = await multicall(erc20ABI, calls, chainId)
+    const rawTokenBalances = await multicall(erc20ABI, calls, chainId, library)
     const parsedTokenBalances = rawTokenBalances.map((tokenBalance) => {
         return new BigNumber(tokenBalance).toJSON()
     })
     return parsedTokenBalances
 }
 
-export const fetchFarmUserStakedBalances = async (account, farmsToFetch, chainId) => {
+export const fetchFarmUserStakedBalances = async (account, farmsToFetch, chainId, library) => {
     const masterChefAddress = getMasterChefAddress(chainId)
 
     const calls = farmsToFetch.map((farm) => {
@@ -129,14 +129,14 @@ export const fetchFarmUserStakedBalances = async (account, farmsToFetch, chainId
         }
     })
 
-    const rawStakedBalances = await multicall(masterchefABI, calls, chainId)
+    const rawStakedBalances = await multicall(masterchefABI, calls, chainId, library)
     const parsedStakedBalances = rawStakedBalances.map((stakedBalance) => {
         return new BigNumber(stakedBalance[0]._hex).toString(10)
     })
     return parsedStakedBalances
 }
 
-export const fetchFarmUserEarnings = async (account, farmsToFetch, chainId) => {
+export const fetchFarmUserEarnings = async (account, farmsToFetch, chainId, library) => {
     const masterChefAddress = getMasterChefAddress(chainId)
 
     const calls = farmsToFetch.map((farm) => {
@@ -147,7 +147,7 @@ export const fetchFarmUserEarnings = async (account, farmsToFetch, chainId) => {
         }
     })
 
-    const rawEarnings = await multicall(masterchefABI, calls, chainId)
+    const rawEarnings = await multicall(masterchefABI, calls, chainId, library)
     const parsedEarnings = rawEarnings.map((earnings) => {
         return new BigNumber(earnings).toJSON()
     })

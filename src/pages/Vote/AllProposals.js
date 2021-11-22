@@ -18,6 +18,7 @@ import { promisify } from "../../utilities";
 import Loading from "../../components/UI/Loading";
 import ProposalOverview from "../../components/vote/ProposalOverview";
 import AnnexPieChart from "../../components/Annex/AnnexPieChart";
+import CommingSoon from "pages/CommingSoon";
 
 
 const AllProposals = ({
@@ -188,6 +189,10 @@ const AllProposals = ({
 
 
     }, [proposals?.result])
+
+    if (chainId === 25) {
+        return <CommingSoon />
+    }
 
     return (
         <Layout>

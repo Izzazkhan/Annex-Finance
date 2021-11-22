@@ -17,6 +17,59 @@ import { connectAccount, useFarms, usePollFarmsData } from 'core'
 import BigNumber from 'bignumber.js';
 import Loader from 'components/UI/Loader';
 
+import sxp from '../../assets/images/coins/sxp.png';
+import usdc from '../../assets/images/coins/usdc.png';
+import usdt from '../../assets/images/coins/usdt.png';
+import busd from '../../assets/images/coins/busd.png';
+import bnb from '../../assets/images/coins/bnb.png';
+import btc from '../../assets/images/coins/btc.png';
+import eth from '../../assets/images/coins/eth.png';
+import ltc from '../../assets/images/coins/ltc.png';
+import xrp from '../../assets/images/coins/xrp.png';
+import link from '../../assets/images/coins/link.png';
+import dot from '../../assets/images/coins/dot.png';
+import bch from '../../assets/images/coins/bch.png';
+import dai from '../../assets/images/coins/dai.png';
+import fil from '../../assets/images/coins/fil.png';
+import beth from '../../assets/images/coins/beth.png';
+import ada from '../../assets/images/coins/ada.png';
+import doge from '../../assets/images/coins/doge.png';
+import trx from '../../assets/images/coins/trx.png';
+import tusd from '../../assets/images/coins/tusd.png';
+import xvs from '../../assets/images/coins/xvs.png';
+import cake from '../../assets/images/coins/cake.png';
+import cro from '../../assets/images/coins/cro.png';
+import ann from '../../assets/images/coins/ann.png';
+
+const icons = {
+  sxp,
+  usdc,
+  usdt,
+  busd,
+  bnb,
+  btc,
+  eth,
+  ltc,
+  xrp,
+  link,
+  dot,
+  bch,
+  dai,
+  fil,
+  beth,
+  ada,
+  doge,
+  trx,
+  tusd,
+  xvs,
+  cake,
+  cro,
+  wcro: cro,
+  weth: eth,
+  wbtc: btc,
+  ann,
+}
+
 const Styles = styled.div`
   width: 100%;
   overflow: auto;
@@ -25,6 +78,43 @@ const Styles = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+const HeaderStyles = styled.div`
+.search {
+  input {
+    min-width: 200px;
+  }
+}
+@media (max-width: 510px) {
+  .header-row-left {
+    display: none;
+  }
+  .header-row-right {
+    width: 100%;
+  }
+  .search {
+    input {
+      min-width: auto;
+    }
+  }
+}
+@media (max-width: 410px) {
+  .header-row-right {
+    flex-direction: column;
+  }
+  .select-container {
+    width: 100%;
+    margin: 1.25rem 0;
+    > div {
+      width: 100%;
+    }
+  }
+  .search {
+    width: 100%;
+  }
+}
+
+`
 
 function Farms({ settings }) {
   const [onlyStaked, setOnlyStaked] = useState(false)
@@ -39,8 +129,6 @@ function Farms({ settings }) {
   const attatchImgWithData = (data) => {
     if (data && data.length > 0) {
       data = data.map(pair => {
-        const token0 = settings.assetList.find((obj => obj.symbol === pair.token0Symbol))
-        const token1 = settings.assetList.find((obj => obj.symbol === pair.token1Symbol))
         const userPercent = pair.userData
           ? new BigNumber(pair.userData.stakedBalance).div(1e18).div(pair.totalSupply)
           : new BigNumber(0)
@@ -79,11 +167,11 @@ function Farms({ settings }) {
         return {
           ...pair,
           userPercent: userPercent.toString(10),
-          token0Img: token0
-            ? token0.img
-            : annCoin,
-          token1Img: token1
-            ? token1.img
+          token0Img: icons[pair.token0Symbol.toLowerCase()]
+            ? icons[pair.token0Symbol.toLowerCase()]
+            : null,
+          token1Img: pair.token1Symbol && icons[pair.token1Symbol.toLowerCase()]
+            ? icons[pair.token1Symbol.toLowerCase()]
             : null,
         }
       })
@@ -168,8 +256,8 @@ function Farms({ settings }) {
 
   return (
     <Layout mainClassName="min-h-screen py-8">
-      <div className="flex justify-between pt-0 py-6">
-        <div className="flex items-center">
+      <HeaderStyles className="flex justify-between pt-0 py-6">
+        <div className="flex items-center header-row-left">
           <div className="list-icon">
             {/* <a href="#" onClick={() => setIsGridView(false)}>
               <img
@@ -189,12 +277,12 @@ function Farms({ settings }) {
             </a>
           </div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center header-row-right">
           <div className="flex items-center text-white mr-5 pt-2">
             <Switch value={onlyStaked} onChange={stakedFilterToggle} />
             <div className="ml-2 mb-2">Staked only</div>
           </div>
-          <div className="mr-5">
+          <div className="mr-5 select-container">
             <Select className="border-primary" selectedClassName="px-4 py-2" type="custom-primary" options={sortOptions} onChange={sortFilter} />
           </div>
           <div className="search flex-1">
@@ -204,14 +292,13 @@ function Farms({ settings }) {
                 rounded-lg w-full focus:outline-none font-normal px-4 py-2 text-white text-lg"
               type="text"
               placeholder="Search"
-              style={{ minWidth: '200px' }}
               onChange={(event) => {
                 filterSearch(event.target.value)
               }}
             />
           </div>
         </div>
-      </div>
+      </HeaderStyles>
       {(filteredPairs.length === 0) ? (
         <Styles>
           <div className="text-white text-base p-20 flex justify-center">
@@ -235,7 +322,7 @@ function Farms({ settings }) {
             (isGridView) ? (
               // <Cards data={data} harvest={harvest} stake={stake} unStake={unStake} approve={approve} />
               <Styles>
-                <div className="p-4 flex flex-row flex-wrap">
+                <div className="p-4 flex flex-row flex-wrap justify-center">
                   {
                     loading ? (
                       <Loader size="160px" className="m-40" stroke="#ff9800" />

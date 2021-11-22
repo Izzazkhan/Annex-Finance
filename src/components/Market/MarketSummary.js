@@ -195,11 +195,11 @@ const MarketSummary = ({ marketInfo, currentAsset, settings }) => {
                                     new BigNumber(10).pow(
                                         18 +
                                         +parseInt(
-                                            settings.decimals[currentAsset || 'usdt'].token,
+                                            settings.decimals[currentAsset || 'usdc'].token,
                                             10
                                         ) -
                                         +parseInt(
-                                            settings.decimals[currentAsset || 'usdt'].atoken,
+                                            settings.decimals[currentAsset || 'usdc'].atoken,
                                             10
                                         )
                                     )

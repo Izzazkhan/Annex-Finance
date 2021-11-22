@@ -125,8 +125,8 @@ function Card({ item, dipositWithdraw }) {
             <span className="font-bold mt-3.5 flex items-center">
               <img src={upArrow} alt="up" className="mr-3 h-3 md:h-4" />
               {format(
-                new BigNumber(item.apy).gt(10000000)
-                  ? 10000000
+                new BigNumber(item.apy).gt(1000000000)
+                  ? 1000000000
                   : new BigNumber(item.apy)
                     .dp(2)
                     .toString(10)
@@ -202,14 +202,14 @@ function Card({ item, dipositWithdraw }) {
           item.type === 'annex_lp' ? (
             <Link to={config.annexAddLiquidityURL}
               className={`flex py-2.5 px-28 font-bold 
-              rounded-3xl mt-5 w-full 
+              rounded-3xl mt-5 w-full text-center 
               text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}
               ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
             >Add Liquidity</Link>
           ) : (
             <a
               className={`flex py-2.5 px-28 font-bold 
-              rounded-3xl mt-5 w-full 
+              rounded-3xl mt-5 w-full text-center 
               text-2xl outline-none ${item.token1 === null ? 'invisible' : ''}
               ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
               href={

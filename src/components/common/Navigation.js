@@ -37,9 +37,9 @@ const Styles = styled.div`
 `
 
 const networkArrayOptions = [
-  { name: "Binance", logo: bnbCoin, value: 56 },
-  { name: "Binance Testnet", logo: bnbCoin, value: 97 },
-  { name: "Cassini", logo: cronosCoin, value: 339 },
+  // { name: "Binance", logo: bnbCoin, value: 56 },
+  // { name: "Binance Testnet", logo: bnbCoin, value: 97 },
+  // { name: "Cassini", logo: cronosCoin, value: 339 },
   { name: "Cronos", logo: cronosCoin, value: 25 },
 ]
 const format = commaNumber.bindWith(',', '.');

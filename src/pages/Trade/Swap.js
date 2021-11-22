@@ -15,7 +15,6 @@ import {
 import { useCurrency } from '../../hooks/Tokens';
 import { useActiveWeb3React } from '../../hooks';
 import { Field } from '../../core/modules/swap/actions';
-import useToggledVersion, { Version } from '../../hooks/useToggledVersion';
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback';
 import { isTradeBetter } from '../../data/V1';
 import { BETTER_TRADE_LINK_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE } from '../../constants/swap';
@@ -34,7 +33,7 @@ import { accountActionCreators, connectAccount } from '../../core';
 import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades';
 import { tryParseAmount } from '../../core/modules/swap/hooks';
 
-function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPairs }) {
+function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings }) {
   const { account, chainId } = useActiveWeb3React();
   const loadedUrlParams = useDefaultsFromURLSearch();
   // token warning stuff
@@ -44,8 +43,6 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
   ];
 
   const [dismissTokenWarning, setDismissTokenWarning] = useState(false);
-  const [isSyrup, setIsSyrup] = useState(false);
-  const [syrupTransactionType, setSyrupTransactionType] = useState('');
   const urlLoadedTokens = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c) => c instanceof Token) || [],
     [loadedInputCurrency, loadedOutputCurrency],
@@ -55,24 +52,11 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
     localStorage.setItem('tokenWarning', 'false')
   }, []);
 
-  const handleConfirmSyrupWarning = useCallback(() => {
-    setIsSyrup(false);
-    setSyrupTransactionType('');
-  }, []);
-
   const [deadline] = useUserDeadline();
   const [allowedSlippage] = useUserSlippageTolerance();
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState();
-  const inputCurrency = useCurrency(addressPairs?.token0Address, chainId)
-  const outputCurrency = useCurrency(addressPairs?.token1Address, chainId)
-  const autoFillCurrencies = useMemo(() => {
-    return {
-      [Field.INPUT]: inputCurrency || undefined,
-      [Field.OUTPUT]: outputCurrency || undefined,
-    }
-  }, [addressPairs])
   const {
     v2Trade,
     currencyBalances,
@@ -234,27 +218,12 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
     setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }));
   }, [trade]);
 
-  // This will check to see if the user has selected Syrup to either buy or sell.
-  // If so, they will be alerted with a warning message.
-  const checkForSyrup = useCallback(
-    (selected, purchaseType) => {
-      if (selected === 'syrup') {
-        setIsSyrup(true);
-        setSyrupTransactionType(purchaseType);
-      }
-    },
-    [setIsSyrup, setSyrupTransactionType],
-  );
-
   const handleInputSelect = useCallback(
     (inputCurrency) => {
       setApprovalSubmitted(false); // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency);
-      if (inputCurrency.symbol.toLowerCase() === 'syrup') {
-        checkForSyrup(inputCurrency.symbol.toLowerCase(), 'Selling');
-      }
     },
-    [onCurrencySelection, setApprovalSubmitted, checkForSyrup],
+    [onCurrencySelection, setApprovalSubmitted],
   );
 
   const handleMaxInput = useCallback(() => {
@@ -266,11 +235,8 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
   const handleOutputSelect = useCallback(
     (outputCurrency) => {
       onCurrencySelection(Field.OUTPUT, outputCurrency);
-      if (outputCurrency.symbol.toLowerCase() === 'syrup') {
-        checkForSyrup(outputCurrency.symbol.toLowerCase(), 'Buying');
-      }
     },
-    [onCurrencySelection, checkForSyrup],
+    [onCurrencySelection],
   );
 
   return (
@@ -309,7 +275,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
             }
             value={formattedAmounts[Field.INPUT]}
             showMaxButton={!atMaxAmountInput}
-            currency={(autoFillCurrencies && autoFillCurrencies[Field.INPUT]) || currencies[Field.INPUT]}
+            currency={currencies[Field.INPUT]}
             onUserInput={handleTypeInput}
             onMax={handleMaxInput}
             onCurrencySelect={handleInputSelect}
@@ -333,7 +299,7 @@ function Swap({ onSettingsOpen, onHistoryOpen, setSetting, settings, addressPair
             onUserInput={handleTypeOutput}
             title={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
             showMaxButton={false}
-            currency={(autoFillCurrencies && autoFillCurrencies[Field.OUTPUT]) || currencies[Field.OUTPUT]}
+            currency={currencies[Field.OUTPUT]}
             onCurrencySelect={handleOutputSelect}
             otherCurrency={currencies[Field.INPUT]}
             id="swap-currency-output"

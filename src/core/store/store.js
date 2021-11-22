@@ -39,5 +39,5 @@ console.log(store)
 
 sagaMiddleware.run(sagas);
 // =================================== critical changes
-// store.subscribe(throttle(() => saveState(store.getState()), 1000));
+store.subscribe(throttle(() => saveState(store.getState()), 1000));
 export default store;

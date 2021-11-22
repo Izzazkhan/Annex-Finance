@@ -358,7 +358,7 @@ const Epoch = ({ setSetting, settings }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [account]);
+  }, [account, chainId]);
 
   const balanceOf = useCallback(async () => {
     const decimals = annDecimals;
@@ -381,7 +381,6 @@ const Epoch = ({ setSetting, settings }) => {
           accountAddress,
         ])
       ])
-
       if (holdingReward) {
         setHoldingReward((holdingReward / Math.pow(10, decimals)).toFixed(2));
       }
@@ -390,7 +389,7 @@ const Epoch = ({ setSetting, settings }) => {
       const originBlockNumber = settings.blockNumber ? settings.blockNumber : blockNumber
       let [eligibleEpochs, getEpoch, transferPoint] = await Promise.all([
         methods.call(epochContract.methods.eligibleEpochs, []),
-        methods.call(epochContract.methods.getEpochs, [Math.max(blockNumber, originBlockNumber)]),
+        methods.call(epochContract.methods.getEpochs, [blockNumber]),
         methods.call(epochContract.methods.transferPoints, [
           accountAddress,
           0,
@@ -423,7 +422,7 @@ const Epoch = ({ setSetting, settings }) => {
     } catch (error) {
       console.log('error', error);
     }
-  }, [annBalance, annDecimals]);
+  }, [annBalance, annDecimals, chainId]);
 
   useEffect(() => {
     balanceOf();

@@ -32,7 +32,7 @@ export const setLoading = (loading) => {
     return farmsActionCreators.setLoading(loading)
 }
 
-export const fetchFarmsPublicDataAsync = ({ account, data, chainId }) => {
+export const fetchFarmsPublicDataAsync = ({ account, data, chainId, library }) => {
     return async (dispatch) => {
         dispatch(setLoading(true))
         const response = await restService({
@@ -45,7 +45,7 @@ export const fetchFarmsPublicDataAsync = ({ account, data, chainId }) => {
         if (response.status === 200) {
             dispatch(farmsActionCreators.setFarmsPublicData(response.data.data.pairs))
             if (account) {
-                dispatch(fetchFarmsUserDataAsync({ account, data, chainId }))
+                dispatch(fetchFarmsUserDataAsync({ account, data:response.data.data.pairs, chainId, library }))
             } else {
                 dispatch(setLoading(false))
             }
@@ -55,16 +55,16 @@ export const fetchFarmsPublicDataAsync = ({ account, data, chainId }) => {
     }
 }
 
-export const fetchFarmsUserDataAsync = ({ account, data, chainId }) => {
+export const fetchFarmsUserDataAsync = ({ account, data, chainId, library }) => {
     return async dispatch => {
         dispatch(setLoading(true))
         let farms = []
         if (data.length > 0) {
             const [userFarmAllowances, userFarmTokenBalances, userStakedBalances, userFarmEarnings] = await Promise.all([
-                fetchFarmUserAllowances(account, data, chainId),
-                fetchFarmUserTokenBalances(account, data, chainId),
-                fetchFarmUserStakedBalances(account, data, chainId),
-                fetchFarmUserEarnings(account, data, chainId),
+                fetchFarmUserAllowances(account, data, chainId, library),
+                fetchFarmUserTokenBalances(account, data, chainId, library),
+                fetchFarmUserStakedBalances(account, data, chainId, library),
+                fetchFarmUserEarnings(account, data, chainId, library),
             ])
 
             farms = userFarmAllowances.map((farmAllowance, index) => {

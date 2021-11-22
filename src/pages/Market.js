@@ -12,6 +12,7 @@ import APYSparkline from '../components/Annex/APYSparkline';
 import { currencyFormatter } from '../utilities/common';
 import MarketTable from '../components/Market/MarketTable';
 import { useActiveWeb3React } from '../hooks';
+import CommingSoon from './CommingSoon';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -115,7 +116,7 @@ const Market = ({ history, settings }) => {
             // eslint-disable-next-line react/display-name
             Cell: ({ value }) => {
               return (
-                <div className="flex justify-start items-center space-x-2 ml-6 sm:ml-0">
+                <div className="flex justify-end xl:justify-start items-center space-x-2 ml-6 sm:ml-0">
                   <img
                     className={'w-10 h-10'}
                     src={constants.CONTRACT_TOKEN_ADDRESS[chainId][value.toLowerCase()].asset}
@@ -137,7 +138,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">{currencyFormatter(value, '')}</div>
-                    <div className="text-sm">
+                    <div className="">
                       {format(
                         new BigNumber(value)
                           .div(new BigNumber(row?.original?.tokenPrice))
@@ -179,7 +180,7 @@ const Market = ({ history, settings }) => {
                       }`}>
                       {apyValue} %
                     </div>
-                    <div className="text-sm">
+                    <div className="">
                       {supplyAnnexApy} %
                     </div>
                   </div>
@@ -197,7 +198,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">{currencyFormatter(value, '')}</div>
-                    <div className="text-sm">
+                    <div className="">
                       {format(
                         new BigNumber(value)
                           .div(new BigNumber(row?.original?.tokenPrice))
@@ -239,8 +240,30 @@ const Market = ({ history, settings }) => {
                       }`}>
                       {apyValue} %
                     </div>
-                    <div className="text-sm">
+                    <div className="">
                       {borrowAnnexApy} %
+                    </div>
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            Header: 'Collateral Factor',
+            accessor: 'collateralFactor',
+            disableFilters: true,
+            // eslint-disable-next-line react/display-name
+            Cell: ({ value, row }) => {
+              let collateralFactor = `${new BigNumber(value || 0)
+                .div(new BigNumber(10).pow(18))
+                .times(100)
+                .dp(2, 1)
+                .toString(10)} %`
+              return (
+                <div className="flex justify-end">
+                  <div className="flex flex-col justify-center items-end space-x-2">
+                    <div className={`font-bold text-white`}>
+                      {collateralFactor}
                     </div>
                   </div>
                 </div>
@@ -259,7 +282,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">{currencyFormatter(reserveUSD, '')}</div>
-                    <div className="text-sm">
+                    <div className="">
                       {value.dp(2, 1).toString(10)}
                     </div>
                   </div>
@@ -278,7 +301,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">{currencyFormatter(value, '')}</div>
-                    <div className="text-sm">
+                    <div className="">
                       {liquidityTokens}
                     </div>
                   </div>
@@ -319,7 +342,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-end">
                   <div className="flex flex-col justify-center items-end space-x-2">
                     <div className="font-bold">{currencyFormatter(value, 'price')}</div>
-                    <div className="text-sm">
+                    <div className="">
                       {new Date(row?.original?.priceUpdatedTime * 1000).toLocaleTimeString()}
                     </div>
                   </div>
@@ -332,6 +355,9 @@ const Market = ({ history, settings }) => {
     ];
   }, []);
 
+  if (chainId === 25) {
+    return <CommingSoon />
+  }
   return (
     <Layout mainClassName="py-8" title={'Market'}>
       <div>

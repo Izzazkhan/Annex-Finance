@@ -11,6 +11,13 @@ import bigArrow from '../../../assets/icons/bigArrow.svg';
 import DelegationVoting from "./DelegationVoting";
 import { useActiveWeb3React } from "../../../hooks";
 
+const EXPLORERS = {
+	56: "https://bscscan.com",
+	97: "https://testnet.bscscan.com",
+	339: 'https://cronos.crypto.org/cassini/explorer/',
+	25: 'https://cronos.crypto.org/explorer',
+};
+
 const DelegationTypeModal = ({
     visible,
     balance,
@@ -158,7 +165,7 @@ const DelegationTypeModal = ({
                         className="focus:outline-none bg-primary py-2 px-14 mb-2 rounded-md text-xl text-black"
                         onClick={() => {
                             window.open(
-                                `${process.env.REACT_APP_BSC_EXPLORER}/tx/${address}`,
+                                `${EXPLORERS[chainId]}/tx/${address}`,
                                 '_blank'
                             );
                         }}
