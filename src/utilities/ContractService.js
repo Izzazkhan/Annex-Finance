@@ -21,6 +21,8 @@ const TOKEN_ABI = {
   cake: constants.CONTRACT_CAKE_TOKEN_ABI,
   link: constants.CONTRACT_LINK_TOKEN_ABI,
   xrp: constants.CONTRACT_XRP_TOKEN_ABI,
+  fil: constants.CONTRACT_FIL_TOKEN_ABI,
+  band: constants.CONTRACT_BAND_TOKEN_ABI,
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
