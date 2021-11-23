@@ -11,6 +11,13 @@ import { useWindowSize } from 'hooks/useWindowSize';
 const Styles = styled.div`
   width: 100%;
   overflow: auto;
+  overflow: visible;
+  @media (max-width: 1280px) {
+    .tooltip .label {
+      left: 10%;
+      bottom: -50%;
+    }
+  }
 
   table {
     width: 100%;
@@ -96,7 +103,11 @@ function Table({ columns, data, onRowClick }) {
             {headerGroup.headers.map((column, index) => {
               return (
                 // eslint-disable-next-line react/jsx-key
-                <th {...column.getHeaderProps(column.getSortByToggleProps())} key={column.Header}>
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={column.Header}
+                  className={`${column.toolTip ? 'flex justify-end' : ''}`}
+                >
                   {column.render('Header')}
                   {index !== 6 && (
                     <span>
@@ -154,9 +165,11 @@ function Table({ columns, data, onRowClick }) {
                   </tr>
                 ) : (
                   row.cells.map((cell, index) => {
-                    console.log(cell, 'sss.p')
                     return (
-                      <tr {...row.getRowProps()} key={index} className={(index === (row.cells.length - 1)) ? "custom-border-bottom" : ""}>
+                      <tr {...row.getRowProps()}
+                        onClick={onRowClick.bind(this, row)}
+                        key={index}
+                        className={(index === (row.cells.length - 1)) ? "custom-border-bottom" : ""}>
                         {cell.column.Header !== '' && <td className="padding-2rem">
                           {(typeof (cell.column.Header) === "string" ? (cell.column.Header) : (cell.column.Header()))}
                         </td>}
