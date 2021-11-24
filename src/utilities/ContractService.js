@@ -23,6 +23,8 @@ const TOKEN_ABI = {
   xrp: constants.CONTRACT_XRP_TOKEN_ABI,
   fil: constants.CONTRACT_FIL_TOKEN_ABI,
   band: constants.CONTRACT_BAND_TOKEN_ABI,
+  atom: constants.CONTRACT_ATOM_TOKEN_ABI,
+  matic: constants.CONTRACT_MATIC_TOKEN_ABI,
 };
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
