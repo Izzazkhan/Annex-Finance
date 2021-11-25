@@ -2,8 +2,6 @@ import { ChainId } from "@annex/sdk";
 import tokens from "../constants/tokens";
 import addresses from "../constants/contracts";
 
-import store from '../core/store/store';
-
 export const getAddress = (address, chainId = 56) => {
     return address[chainId] ? address[chainId] : address[ChainId.MAINNET]
 }
