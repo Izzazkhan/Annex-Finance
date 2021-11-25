@@ -10,6 +10,7 @@ import commaNumber from "comma-number";
 import Annex from '../../assets/icons/logoMini.svg';
 import { nFormatter } from "../../utils/data";
 import MarketHistoryChart from "./MarketHistoryChart";
+import * as constants from '../../utilities/constants';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -52,8 +53,6 @@ const TYPES = {
     Borrow: "BORROW"
 }
 
-const AVAILABLE_NETWORKS = [56, 97, 339, 25]
-
 const MarketHistory = ({
     handleChangeAsset,
     currentAsset,
@@ -82,7 +81,7 @@ const MarketHistory = ({
     }, [selectedAsset, withANN])
 
     const wrongNetwork = useMemo(() => {
-        return !AVAILABLE_NETWORKS.includes(chainId)
+        return !constants.AVAILABLE_CHAINS.includes(chainId)
     }, [chainId])
 
     const changeCurrentSymbol = (value) => {

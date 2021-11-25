@@ -874,3 +874,12 @@ export const AVAILABLE_NETWORKS = {
     },
   }
 }
+
+export const WEB3_PROVIDERS = {
+  56: 'https://bsc-dataseed1.binance.org',
+  97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  339: 'https://cassini.crypto.org:8545',
+  25: 'https://cronos-rpc.annex.finance',
+}
+
+export const AVAILABLE_CHAINS = [56, 97, 339, 25]

@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import * as constants from './constants';
 
-const instance = new Web3(window.ethereum);
+let instance = new Web3(window.ethereum);
 
 const TOKEN_ABI = {
   usdc: constants.CONTRACT_USDC_TOKEN_ABI,
@@ -82,6 +82,14 @@ const send = (method, params, from) => {
 // };
 
 export const getTokenContract = (name, chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
     constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt']
@@ -91,6 +99,14 @@ export const getTokenContract = (name, chainId) => {
 };
 
 export const getAbepContract = (name, chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(
       (name !== 'bnb' && name !== 'cro' && name !== 'tcro')
@@ -104,6 +120,14 @@ export const getAbepContract = (name, chainId) => {
 };
 
 export const getComptrollerContract = (chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
     constants.CONTRACT_COMPTROLLER_ADDRESS[chainId],
@@ -111,11 +135,27 @@ export const getComptrollerContract = (chainId) => {
 };
 
 export const getPriceOracleContract = (address, chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   address = address ? address :  constants.CONTRACT_PRICE_ORACLE_ADDRESS[chainId]
   return new instance.eth.Contract(JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI), address);
 };
 
 export const getVoteContract = (chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_VOTE_ABI),
     constants.CONTRACT_VOTE_ADDRESS[chainId],
@@ -127,6 +167,14 @@ export const getInterestModelContract = (address) => {
 };
 
 export const getAuctionContract = (name, chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(AUCTION_ABI[name]),
     constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch']
@@ -136,6 +184,14 @@ export const getAuctionContract = (name, chainId) => {
 };
 
 export const getANNTokenContract = (chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI),
     constants.CONTRACT_ANN_TOKEN_ADDRESS[chainId],
@@ -147,6 +203,14 @@ export const getTokenContractWithDynamicAbi = (addr) => {
 };
 
 export const getEpochContract = (chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANN_TOKEN_ABI),
     constants.CONTRACT_TOKEN_ADDRESS[chainId].ann.address,
@@ -154,6 +218,14 @@ export const getEpochContract = (chainId) => {
 };
 
 export const dutchAuctionContract = (chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANNEX_DUTCH_AUCTION_ABI),
     constants.CONTRACT_DUTCH_AUCTION_ADDRESS[chainId],
@@ -161,6 +233,14 @@ export const dutchAuctionContract = (chainId) => {
 };
 
 export const fixedAuctionContract = (chainId) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+
+  if (chainId) {
+    instance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+
   return new instance.eth.Contract(
     JSON.parse(constants.CONTRACT_ANNEX_FIXED_AUCTION_ABI),
     constants.CONTRACT_FIXED_AUCTION_ADDRESS[chainId],

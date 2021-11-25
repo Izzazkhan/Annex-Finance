@@ -40,6 +40,7 @@ import AccountOverview from '../components/Dashboard/AccountOverview.js';
 import MarketHistory from '../components/Dashboard/MarketHistory.js';
 import styled from 'styled-components';
 import CommingSoon from './CommingSoon';
+import { constant } from 'underscore';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -49,8 +50,6 @@ const Styles = styled.div`
     }
   }
 `;
-
-const AVAILABLE_NETWORKS = [56, 97, 339, 25]
 
 function Dashboard({ settings, setSetting, getMarketHistory }) {
   // debugger;
@@ -877,7 +876,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   }, [chainId]);
 
   const wrongNetwork = React.useMemo(() => {
-    return !AVAILABLE_NETWORKS.includes(chainId)
+    return !constants.AVAILABLE_CHAINS.includes(chainId)
   }, [chainId]);
 
   if (chainId === 25) {
