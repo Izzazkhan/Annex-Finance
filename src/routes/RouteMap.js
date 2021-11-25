@@ -19,4 +19,5 @@ export default {
     leaderboard: '/vote/leaderboard',
   },
   faucet: '/faucet',
+  newAuction: '/newAuction',
 };

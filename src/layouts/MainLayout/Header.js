@@ -47,6 +47,7 @@ function Header({ onOpen, title, settings }) {
       liquidity: 'liquidity',
       farms: 'farms',
       pools: 'pools',
+      newAuction: 'newAuction',
     };
     Object.keys(titles)?.forEach((title) => {
       if (path?.includes(title)) {
@@ -73,6 +74,16 @@ function Header({ onOpen, title, settings }) {
           className="focus:outline-none bg-transparent border border-primary py-2 px-4 rounded-3xl text-white ml-10 w-80 text-center"
         >
           Create an IDO{' '}
+        </Link>
+      ) : (
+        ''
+      )}
+      {pathname?.includes(RouteMap.newAuction) && pathname !== `${RouteMap.newAuction}/create` && ![339, 25].includes(chainId) ? (
+        <Link
+          to="/newAuction/create"
+          className="focus:outline-none bg-transparent border border-primary py-2 px-4 rounded-3xl text-white ml-10 w-80 text-center"
+        >
+          New Auction{' '}
         </Link>
       ) : (
         ''
