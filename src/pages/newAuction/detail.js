@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import 'react-circular-progressbar/dist/styles.css';
 import { useWindowSize } from '../../hooks/useWindowSize';
-
+import { restService } from 'utilities';
 
 const Wrapper = styled.div`
   .show-icon {
@@ -88,16 +88,13 @@ function Table(props) {
 
     useEffect(async () => {
         try {
-            fetch(`http://192.168.99.197:3070/api/v1/events?address=${props.match.params.address}`)
-                .then(response => response.json())
-                .then(res => {
-                    console.log('responseData', res)
-                    setDetail(res.data)
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-
+            const response = await restService({
+                third_party: true,
+                api: `http://192.168.99.197:3070/api/v1/events?address=${props.match.params.address}`,
+                method: 'GET',
+                params: {}
+            })
+            setDetail(response.data.data)
         } catch (error) {
             console.log(error);
         }

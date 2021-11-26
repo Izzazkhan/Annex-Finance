@@ -21,7 +21,8 @@ import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { AVAILABLE_NETWORKS } from '../../utilities/constants';
-
+import { restService } from 'utilities';
+import toast from '../../components/UI/Toast';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -71,9 +72,9 @@ export default function Form(props) {
         inputs: [
             {
                 type: 'text',
-                placeholder: 'Auction token',
+                placeholder: 'Contract Address',
                 id: 'auctionToken',
-                description: 'The token that will auction.',
+                description: 'Contract Address',
                 value: '',
                 colspan: 6,
                 label: 'Token Information',
@@ -81,8 +82,8 @@ export default function Form(props) {
             {
                 type: 'select',
                 id: 'swapExchange',
-                placeholder: 'Swap Exchange',
-                description: 'This will use to generate your LP Tokens after settle.',
+                placeholder: 'Select Provider',
+                description: 'Select Provider',
                 options: props.annexSwapOptions,
                 value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
                 colspan: 12,
@@ -91,8 +92,8 @@ export default function Form(props) {
             {
                 type: 'text',
                 id: 'sellAmount',
-                placeholder: 'Auction sell amount',
-                description: 'The amount to sell the auction token.',
+                placeholder: 'Contract Name',
+                description: 'Contract Name',
                 value: '',
                 colspan: 12,
                 label: 'Contract Name',
@@ -100,8 +101,8 @@ export default function Form(props) {
             {
                 type: 'textarea',
                 id: 'description',
-                placeholder: 'Auction Description',
-                description: 'Auction Description',
+                placeholder: 'Contract ABI',
+                description: 'Contract ABI',
                 value: '',
                 colspan: 12,
                 label: 'Contract ABI',
@@ -209,53 +210,37 @@ export default function Form(props) {
         });
     };
 
-    console.log('stateeeee', state, eventArray, checkboxArray)
-    const handleSubmit = (e) => {
+    // console.log('stateeeee', state, eventArray, checkboxArray)
+    const handleSubmit = async (e) => {
         const contractAddress = state.inputs[0].value
         const contractName = state.inputs[1].value.value
         const providerType = state.inputs[2].value
-        // const d = state.inputs[3].value
-        // const requestData = { contractAddress, contractName, providerUrl: c === 'testnet' ? "https://data-seed-prebsc-1-s1.binance.org:8545" : "https://bsc-dataseed.binance.org/" }
-        // console.log('requestData', requestData)
         e.preventDefault();
         try {
-            fetch("http://192.168.99.197:3070/api/v1/contract", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
+            const response = await restService({
+                third_party: true,
+                api: 'http://192.168.99.197:3070/api/v1/contract',
+                method: 'POST',
+                params: {
                     contractAddress, contractName, providerType: providerType, providerUrl: providerType === 'testnet' ?
                         AVAILABLE_NETWORKS[chainId].rpcUrls[0] : "https://bsc-dataseed.binance.org/"
-                })
+                }
             })
-                .then(function (data) {
-                    console.log("Request succeeded with response", data);
-                })
-                .catch(function (error) {
-                    console.log("Request failed", error);
-                });
+            console.log('submitData', response)
+            toast.success({
+                title: 'Data has been added Successfully'
+            });
 
         } catch (error) {
             console.log(error);
+            // if (response.status !== 200) {
+            toast.error({
+                title: 'Failed'
+            });
+            return
+            // }
+
         }
-        // try {
-        //     const response = await fetch('http://192.168.99.197:3070/api/v1/contract', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({
-        //             contractAddress, contractName, providerType: providerType, providerUrl: providerType === 'testnet' ?
-        //                 "https://data-seed-prebsc-1-s1.binance.org:8545" : "https://bsc-dataseed.binance.org/"
-        //         })
-        //     });
-        //     const data = await response.json();
-        //     console.log(data);
-        // } catch (error) {
-        //     console.log(error)
-        // }
     };
     // const auctionCreationChecks = (e) => {
     //     try {
@@ -455,11 +440,11 @@ export default function Form(props) {
                                         handleInputChange={handleInputChange}
                                     />
                                 )}
-                                {input.colspan === 12 ? (
+                                {/* {input.colspan === 12 ? (
                                     <div className={`col-span-6 flex flex-col mt-8`}></div>
                                 ) : (
                                     ''
-                                )}
+                                )} */}
                             </Fragment>
                         );
                     })}
@@ -467,14 +452,14 @@ export default function Form(props) {
                     {eventArray.length ? eventArray.map(item => {
                         return (
                             <Fragment key={item.name}>
-                                <div className={`col-span-12 md:col-span-6 flex mt-4 md:mt-8 items-center custom-check`}>
+                                <div className={`col-span-12 md:col-span-3 flex mt-4 md:mt-8 items-center custom-check`}>
                                     <label className="container text-base ml-2 font-normal">
                                         <input type="checkbox"
                                             id={item.name}
                                             onChange={handleCheckboxChange}
                                         />
 
-                                        <span className="checkmark">{item.name}</span>
+                                        <span className="checkmark"></span>{item.name}
                                     </label>
                                 </div>
                             </Fragment>

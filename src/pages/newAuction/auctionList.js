@@ -4,6 +4,7 @@ import { useActiveWeb3React } from '../../hooks';
 import * as constants from '../../utilities/constants';
 // import { auctionCount } from './auctionCount'
 import Table from './Table'
+import { restService } from 'utilities';
 
 function Live(props) {
   const { account, chainId } = useActiveWeb3React();
@@ -53,38 +54,23 @@ function Live(props) {
 
   useEffect(async () => {
     try {
-      fetch("http://192.168.99.197:3070/api/v1/contract")
-        .then(response => response.json())
-        .then(res => {
-          // console.log('response Data', res)
-          setData(res.data)
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
+      const response = await restService({
+        third_party: true,
+        api: 'http://192.168.99.197:3070/api/v1/contract',
+        method: 'GET',
+        params: {}
+      })
+      setData(response.data.data)
+      console.log('responseeee', response)
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-
-    // try {
-    //   const response = await fetch('http://192.168.99.197:3070/api/v1/contract');
-    //   console.log('response.data',);
-    //   const res = await response.json()
-    //   console.log('aaaaaa', res)
-    // } catch (error) {
-    //   console.error(error);
-    // }
   }, [])
 
 
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-
-  // useEffect(() => {
-  //     auctionCount(query, constants.BATCH_AUCTION_DATASOURCE[chainId], setBatchCount, setLoading, setError)
-  // }, [])
 
 
   return (
