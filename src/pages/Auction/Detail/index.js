@@ -654,6 +654,7 @@ function Detail(props) {
           .then((response) => {
             let { data } = response;
             if (props.location.pathname.includes('batch')) {
+              console.log('detailData', data)
               setData(data);
             } else {
               setData(data.auction);

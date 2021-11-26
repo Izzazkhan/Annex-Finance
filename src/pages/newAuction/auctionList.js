@@ -52,15 +52,30 @@ function Live(props) {
     }
   `;
 
+  // useEffect(async () => {
+  //   try {
+  //     const response = await restService({
+  //       third_party: true,
+  //       api: 'http://192.168.99.197:3070/api/v1/contract',
+  //       method: 'GET',
+  //       params: {}
+  //     })
+  //     setData(response.data.data)
+  //     console.log('responseeee', response)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [])
+
   useEffect(async () => {
     try {
       const response = await restService({
         third_party: true,
-        api: 'http://192.168.99.197:3070/api/v1/contract',
+        api: 'http://192.168.99.197:3070/api/v1/getAllAuctions',
         method: 'GET',
         params: {}
       })
-      setData(response.data.data)
+      // setData(response.data.data)
       console.log('responseeee', response)
     } catch (error) {
       console.error(error);
@@ -80,23 +95,15 @@ function Live(props) {
           className="auction-btn-wrapper flex justify-start items-center 
       mb-5 border-b border-solid border-primary"
         >
-          <h2 className="text-white ml-5 text-4xl font-normal">Auctions List</h2>
+          <h2 className="text-white ml-5 text-4xl font-normal">Contract List</h2>
         </div>
 
       </Styles>
 
       <>
-        <Table
+        {/* <Table
           data={data}
-        // loading={loading}
-        // isAlreadySettle={state.detail['isAlreadySettle']}
-        // isAllowCancellation={state.detail['isAllowCancellation']}
-        // auctionContract={auctionContract}
-        // account={account}
-        // auctionStatus={state.auctionStatus}
-        // getData={getData}
-        // auctionId={state.detail.id}
-        />
+        /> */}
       </>
 
     </div>

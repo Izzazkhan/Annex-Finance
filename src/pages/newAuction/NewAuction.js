@@ -117,7 +117,7 @@ export default function CreateAuction(props) {
             </Styles> */}
             {/* {activeTab === 'batch' ? ( */}
             <>
-                <h2 className="text-white text-4xl font-normal">Create Batch Auction</h2>
+                <h2 className="text-white text-4xl font-normal">New Auction</h2>
                 <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
                 <Form
                     biddingTokenOptions={biddingTokenOptions}

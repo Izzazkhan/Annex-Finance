@@ -106,6 +106,13 @@ function Table(props) {
         <div className="relative w-full">
             <div className="bg-fadeBlack w-full p-6 mt-16">
                 <Styles>
+                    <div
+                        className="auction-btn-wrapper flex justify-start items-center 
+      mb-5 border-b border-solid border-primary"
+                    >
+                        <h2 className="text-white ml-5 text-4xl font-normal">Contract Event List</h2>
+                    </div>
+
                     <table
                         className={`text-left ${!isTableHorizontal && 'border-thick'} ${detail.length === 0 && 'no-data'
                             }`}

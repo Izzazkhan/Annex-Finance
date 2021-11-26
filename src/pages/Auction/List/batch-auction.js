@@ -9,12 +9,12 @@ import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import * as constants from '../../../utilities/constants';
-
+import { restService } from 'utilities';
 
 function BatchAuction(props) {
 
     const { account, chainId } = useActiveWeb3React();
-    
+
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
@@ -96,48 +96,71 @@ function BatchAuction(props) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    useEffect(() => {
+    useEffect(async () => {
         try {
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
+            const response = await restService({
+                third_party: true,
+                api: 'http://192.168.99.197:3070/api/v1/getAllAuctions',
+                method: 'GET',
+                params: {}
+            })
+            setData(response.data.data)
+            console.log('responseeee', response)
+            console.log('responseeee', JSON.parse(response.data.data[0].socials))
 
-            var raw = JSON.stringify({
-                "query": query
-            });
-
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-            let subGraph
-            subGraph = constants.BATCH_AUCTION_DATASOURCE[chainId]
-            
-
-            fetch(subGraph, requestOptions)
-                .then(response => response.text())
-                .then(result => {
-                    setData(JSON.parse(result))
-                })
-                .catch(error => {
-                    console.log(error);
-                    setLoading(false)
-                    setError('Error while Loading. Please try again later.')
-                });
         } catch (error) {
-            console.log(error);
-            setLoading(false)
-            setError('Error while Loading. Please try again later.')
+            console.error(error);
         }
     }, [])
 
+
+    // useEffect(() => {
+    //     try {
+    //         var myHeaders = new Headers();
+    //         myHeaders.append("Content-Type", "application/json");
+
+    //         var raw = JSON.stringify({
+    //             "query": query
+    //         });
+
+    //         var requestOptions = {
+    //             method: 'POST',
+    //             headers: myHeaders,
+    //             body: raw,
+    //             redirect: 'follow'
+    //         };
+    //         let subGraph
+    //         subGraph = constants.BATCH_AUCTION_DATASOURCE[chainId]
+
+
+    //         fetch(subGraph, requestOptions)
+    //             .then(response => response.text())
+    //             .then(result => {
+    //                 console.log('resulttt', JSON.parse(result))
+    //                 setData(JSON.parse(result))
+    //             })
+    //             .catch(error => {
+    //                 console.log(error);
+    //                 setLoading(false)
+    //                 setError('Error while Loading. Please try again later.')
+    //             });
+    //     } catch (error) {
+    //         console.log(error);
+    //         setLoading(false)
+    //         setError('Error while Loading. Please try again later.')
+    //     }
+    // }, [])
+
     useEffect(() => {
-        if (data && data.data.auctions.length > 0) {
+        if (data && data.length > 0) {
             let arr = [];
-            data.data.auctions.forEach((element) => {
-                let auctionDecimal = element['auctioningToken']['decimals'];
-                let biddingDecimal = element['biddingToken']['decimals'];
+            data.forEach((element) => {
+                let auctionDecimal = (element['auctioningToken']);
+                auctionDecimal = JSON.parse(auctionDecimal)
+                auctionDecimal = JSON.parse(auctionDecimal.decimals)
+                let biddingDecimal = (element['biddingToken']);
+                biddingDecimal = JSON.parse(biddingDecimal)
+                biddingDecimal = JSON.parse(biddingDecimal.decimals)
                 let auctionEndDate = element['auctionEndDate'];
                 let clearingPrice = element['clearingPrice'];
                 let initialAuctionOrder = element['initialAuctionOrder'];
@@ -178,10 +201,61 @@ function BatchAuction(props) {
             setAuction(arr);
             setLoading(false)
         }
-        else if (data && data.data.auctions.length === 0) {
+        else if (data && data.length === 0) {
             setLoading(false)
         }
     }, [data]);
+
+    // useEffect(() => {
+    //     if (data && data.data.auctions.length > 0) {
+    //         let arr = [];
+    //         data.data.auctions.forEach((element) => {
+    //             let auctionDecimal = element['auctioningToken']['decimals'];
+    //             let biddingDecimal = element['biddingToken']['decimals'];
+    //             let auctionEndDate = element['auctionEndDate'];
+    //             let clearingPrice = element['clearingPrice'];
+    //             let initialAuctionOrder = element['initialAuctionOrder'];
+    //             let { orders, clearingPriceOrder } = calculateClearingPrice(
+    //                 initialAuctionOrder,
+    //                 element.orders,
+    //                 auctionDecimal,
+    //                 biddingDecimal,
+    //                 auctionEndDate,
+    //             );
+    //             let minFundingThreshold = convertExponentToNum(
+    //                 new BigNumber(element['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
+    //             );
+    //             let formatedAuctionDate = moment
+    //                 .unix(element['auctionEndDate'])
+    //                 .format('MM/DD/YYYY HH:mm:ss');
+    //             let graphData = [];
+    //             orders &&
+    //                 orders.forEach((item) => {
+    //                     graphData.push({
+    //                         ...item,
+    //                         isSuccessfull: item.price >= new BigNumber(clearingPrice),
+    //                         auctionEndDate: auctionEndDate,
+    //                     });
+    //                 });
+    //             arr.push({
+    //                 ...element,
+    //                 chartType: 'block',
+    //                 data: graphData,
+    //                 status: props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming',
+    //                 statusClass: props.auctionStatus === 'live' ? 'live' : props.auctionStatus === 'past' ? 'past' : 'upcoming',
+    //                 dateLabel: 'Completion Date',
+    //                 formatedAuctionDate,
+    //                 minFundingThreshold,
+    //                 title: element.type + ' Auction',
+    //             });
+    //         });
+    //         setAuction(arr);
+    //         setLoading(false)
+    //     }
+    //     else if (data && data.data.auctions.length === 0) {
+    //         setLoading(false)
+    //     }
+    // }, [data]);
 
     const convertExponentToNum = (x) => {
         if (Math.abs(x) < 1.0) {
