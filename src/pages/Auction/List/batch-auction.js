@@ -100,16 +100,19 @@ function BatchAuction(props) {
         try {
             const response = await restService({
                 third_party: true,
-                api: 'http://192.168.99.197:3070/api/v1/getAllAuctions',
+                api: 'http://192.168.99.19:3070/api/v1/getAllAuctions',
                 method: 'GET',
                 params: {}
             })
             setData(response.data.data)
             console.log('responseeee', response)
-            console.log('responseeee', JSON.parse(response.data.data[0].socials))
+            setLoading(false)
+            // console.log('responseeee', JSON.parse(response.data.data[0].socials))
 
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+            setError('Error while loading data')
+            setLoading(false)
         }
     }, [])
 
@@ -153,6 +156,7 @@ function BatchAuction(props) {
 
     useEffect(() => {
         if (data && data.length > 0) {
+            console.log('dataaaaaa', data)
             let arr = [];
             data.forEach((element) => {
                 let auctionDecimal = (element['auctioningToken']);
@@ -205,6 +209,7 @@ function BatchAuction(props) {
             setLoading(false)
         }
     }, [data]);
+
 
     // useEffect(() => {
     //     if (data && data.data.auctions.length > 0) {
