@@ -110,7 +110,7 @@ function Table(props) {
                         className="auction-btn-wrapper flex justify-start items-center 
       mb-5 border-b border-solid border-primary"
                     >
-                        <h2 className="text-white ml-5 text-4xl font-normal">Contract Event List</h2>
+                        <h2 className="text-white ml-5 text-4xl font-normal">Contract List</h2>
                     </div>
 
                     <table
