@@ -128,7 +128,7 @@ const Market = ({ history, settings }) => {
             },
           },
           {
-            Header: 'Total Supply',
+            Header: 'Supply',
             accessor: 'totalSupplyUsd',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
@@ -189,7 +189,7 @@ const Market = ({ history, settings }) => {
             },
           },
           {
-            Header: 'Total Borrow',
+            Header: 'Borrow',
             accessor: 'totalBorrowsUsd',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
@@ -249,7 +249,17 @@ const Market = ({ history, settings }) => {
             },
           },
           {
-            Header: 'Collateral Factor',
+            Header: () => {
+              return (
+                  <div className="tooltip relative">
+                    <div className="tooltip-label flex">
+                      CF
+                    </div>
+                    <span className="label">Collateral Factor</span>
+                  </div>
+                )
+            },
+            toolTip: true,
             accessor: 'collateralFactor',
             disableFilters: true,
             // eslint-disable-next-line react/display-name
@@ -271,7 +281,7 @@ const Market = ({ history, settings }) => {
             },
           },
           {
-            Header: 'Total Reserves',
+            Header: 'Reserves',
             accessor: 'reserveUSD',
             disableFilters: true,
             // eslint-disable-next-line react/display-name

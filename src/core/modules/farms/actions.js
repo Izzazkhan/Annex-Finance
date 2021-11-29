@@ -45,7 +45,7 @@ export const fetchFarmsPublicDataAsync = ({ account, data, chainId, library }) =
         if (response.status === 200) {
             dispatch(farmsActionCreators.setFarmsPublicData(response.data.data.pairs))
             if (account) {
-                dispatch(fetchFarmsUserDataAsync({ account, data:response.data.data.pairs, chainId, library }))
+                dispatch(fetchFarmsUserDataAsync({ account, data, chainId, library }))
             } else {
                 dispatch(setLoading(false))
             }

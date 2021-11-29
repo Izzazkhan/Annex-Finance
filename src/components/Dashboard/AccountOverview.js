@@ -11,6 +11,7 @@ import FireImage from '../../assets/images/fire.png';
 import GreyFireImage from '../../assets/images/fire_emoji.png';
 import { getComptrollerContract, methods } from '../../utilities/ContractService';
 
+import * as constants from '../../utilities/constants';
 import Switch from '../UI/Switch';
 import fire from '../../assets/icons/fire.svg';
 import React, { useEffect, useState } from 'react';
@@ -76,8 +77,6 @@ const Styles = styled.span`
   }
 `;
 
-const AVAILABLE_NETWORKS = [56, 97, 339, 25];
-
 const AccountOverview = ({
   available,
   borrowPercent,
@@ -112,7 +111,7 @@ const AccountOverview = ({
   }, [settings.totalBorrowBalance]);
 
   const wrongNetwork = React.useMemo(() => {
-    return !AVAILABLE_NETWORKS.includes(chainId)
+    return !constants.AVAILABLE_CHAINS.includes(chainId)
   }, [chainId]);
 
   const handleCollect = () => {
