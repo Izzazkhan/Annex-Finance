@@ -79,42 +79,21 @@ function Grid({ annPrice, onlyStaked, poolState }) {
     });
     const [poolLoading, setPoolLoading] = useState(true)
 
-    useEffect(async () => {
+    useEffect(() => {
         fetchPoolData(database.filter(pool => !pool.isFinished))
-    }, [loading]);
-
-    // useEffect(async () => {
-    //     // fetchPoolData(database.filter(pool => !pool.isFinished))
-    //     let interval;
-    //     // if (poolData.length) {
-    //     interval = setInterval(fetchUpdatedPool, 5 * 1000);
-    //     // }
-    //     return () => {
-    //         clearInterval(interval);
-    //     };
-    // }, [loading]);
-
-    // const fetchUpdatedPool = () => {
-    //     // if (onlyStaked) {
-    //     //     const filteredPool = poolData.filter(pool => (pool.userInfo.shares && pool.userInfo.shares > 0)
-    //     //         || (pool.userInfo.amount && pool.userInfo.amount > 0))
-    //     //     fetchPoolData(filteredPool)
-    //     // }
-    //     // else {
-    //     if (poolState === 'live') {
-    //         fetchPoolData(database.filter(pool => !pool.isFinished))
-    //     }
-    //     else {
-    //         fetchPoolData(database.filter(pool => pool.isFinished))
-    //     }
-    //     // }
-    // }
+        let interval;
+        if (account) {
+            interval = setInterval(fetchPoolData, 30 * 1000, database.filter(pool => !pool.isFinished));
+        }
+        return () => {
+            clearInterval(interval);
+        };
+    }, [loading, account, onlyStaked, poolState]);
 
     const farmContract = new instance.eth.Contract(
         JSON.parse(CONTRACT_Annex_Farm),
         REACT_APP_ANNEX_FARM_ADDRESS[chainId],
     );
-
 
     const getApy = (apr, compoundFrequency = 1, performanceFee = 0, days = 365) => {
         const daysAsDecimalOfYear = days / 365
@@ -134,6 +113,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
     }
 
     const fetchPoolData = useCallback(async (poolData) => {
+        console.log('hello', poolData)
         const poolMapped = poolData.map(async (pool) => {
             // const tokenContract = getTokenContract(pool.name);
             const tokenContract = new instance.eth.Contract(
@@ -149,7 +129,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
             const decimal = await methods.call(tokenContract.methods.decimals, []);
             balanceOf = balanceOf / Math.pow(10, decimal)
             let withdrawFee = 0, withdrawFeePeriod = 0, userInfo = 0, isUserInfo = false, stacked = 0, pendingAnnex, pendingAnnexWithoutDecimal,
-                apyValue = 0,recentAnnProfit = 0
+                apyValue = 0, recentAnnProfit = 0
             const contract = new instance.eth.Contract(
                 JSON.parse(pool.contract_Abi),
                 pool.contract_Address,
@@ -179,10 +159,10 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                 let performanceFee = await methods.call(contract.methods.performanceFee, []);
                 performanceFee = (performanceFee / 10000) * 100
                 apyValue = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, performanceFee)
-                
+
                 /*ANN RECENT PROFIT*/
-                recentAnnProfit = await methods.call(farmContract.methods.pendingAnnex, [pool._pid,account])
-                recentAnnProfit = recentAnnProfit ? recentAnnProfit/Math.pow(10, decimal) : 0
+                recentAnnProfit = await methods.call(farmContract.methods.pendingAnnex, [pool._pid, account])
+                recentAnnProfit = recentAnnProfit ? recentAnnProfit / Math.pow(10, decimal) : 0
                 recentAnnProfit = recentAnnProfit.toFixed(5);
             }
             else {
@@ -216,36 +196,25 @@ function Grid({ annPrice, onlyStaked, poolState }) {
             }
         })
         const resolvedArray = await Promise.all(poolMapped);
-        setPoolData(resolvedArray)
-        setPoolLoading(false)
-    }, [poolData])
-
-    useEffect(() => {
         if (onlyStaked) {
-            const filteredPool = poolData.filter(pool => (pool.userInfo.shares && pool.userInfo.shares > 0)
+            const filteredPool = resolvedArray.filter(pool => (pool.userInfo.shares && pool.userInfo.shares > 0)
                 || (pool.userInfo.amount && pool.userInfo.amount > 0))
-            fetchPoolData(filteredPool)
+            sortPoolData(poolState, filteredPool)
         }
         else {
-            if (poolState === 'live') {
-                fetchPoolData(database.filter(pool => !pool.isFinished))
-            }
-            else {
-                fetchPoolData(database.filter(pool => pool.isFinished))
-            }
+            sortPoolData(poolState, resolvedArray)
         }
-    }, [onlyStaked])
+        setPoolLoading(false)
+    }, [poolData, account, onlyStaked, poolState])
 
-    useEffect(() => {
+    const sortPoolData = (poolState, sortedData) => {
         if (poolState === 'live') {
-            const filteredPool = database.filter(pool => !pool.isFinished)
-            fetchPoolData(filteredPool)
+            setPoolData(sortedData.filter(pool => !pool.isFinished))
         }
         else {
-            const filteredPool = database.filter(pool => pool.isFinished)
-            fetchPoolData(filteredPool)
+            setPoolData(sortedData.filter(pool => pool.isFinished))
         }
-    }, [poolState])
+    }
 
     const handleEnable = (item) => {
         setSelectedPool(item)
@@ -455,6 +424,7 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                                                 annPrice={annPrice}
                                                 selectedId={selectedPool.id}
                                                 loading={loading}
+                                                chainId={chainId}
                                             />
                                         )
                                     }
@@ -464,7 +434,9 @@ function Grid({ annPrice, onlyStaked, poolState }) {
                                                 openDetails={openDetails} addToken={addToken}
                                                 annPrice={annPrice}
                                                 selectedId={selectedPool.id}
-                                                loading={loading} />
+                                                loading={loading}
+                                                chainId={chainId}
+                                            />
                                         )
                                     }
                                 })}
@@ -585,21 +557,4 @@ function Grid({ annPrice, onlyStaked, poolState }) {
         </Styles>
     );
 }
-
-// const mapStateToProps = ({ account }) => ({
-//     settings: account.setting,
-// });
-
-// const mapDispatchToProps = (dispatch) => {
-//     const { setSetting } = accountActionCreators;
-
-//     return bindActionCreators(
-//         {
-//             setSetting,
-//         },
-//         dispatch,
-//     );
-// };
-
-// export default connectAccount(mapStateToProps, mapDispatchToProps)(Grid);
 export default Grid
