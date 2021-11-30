@@ -57,7 +57,7 @@ const Styles = styled.div`
 function Card({ item, dipositWithdraw }) {
   const format = commaNumber.bindWith(',', '.');
   const [pendingTx, setPendingTx] = useState(false)
-  const lpContract = useLP(item.lpAddress)
+  const lpContract = useLP(item.lpAddress, true)
   const { onApprove } = useApproveFarm(lpContract)
   const { onReward } = useHarvestFarm(item.pid)
 

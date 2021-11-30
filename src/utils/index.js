@@ -1,10 +1,11 @@
 import { getAddress } from "@ethersproject/address";
-import {Contract} from "@ethersproject/contracts";
-import {ROUTER_ADDRESS} from "../constants/swap";
-import {ETHERS, Percent, JSBI, Token} from "@annex/sdk";
+import { Contract } from "@ethersproject/contracts";
+import { ROUTER_ADDRESS } from "../constants/swap";
+import { ETHERS, Percent, JSBI, Token } from "@annex/sdk";
 import { abi as IUniswapV2Router02ABI } from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
-import {AddressZero} from "@ethersproject/constants";
+import { AddressZero } from "@ethersproject/constants";
 import { BigNumber } from "@ethersproject/bignumber";
+import { simpleRpcProviders } from "./providers";
 
 export { fillArray } from './fillArray';
 
@@ -78,22 +79,23 @@ export function getSigner(library, account) {
 }
 
 // account is optional
-export function getProviderOrSigner(library, account) {
-	return account ? getSigner(library, account) : library;
+export function getProviderOrSigner(library, chainId, account) {
+	const signerOrProvider = simpleRpcProviders[chainId] || library
+	return account ? getSigner(library, account) : signerOrProvider;
 }
 
 // account is optional
-export function getContract(address, ABI, library, account) {
+export function getContract(address, ABI, library, chainId, account) {
 	if (!isAddress(address) || address === AddressZero) {
 		throw Error(`Invalid 'address' parameter '${address}'.`);
 	}
 
-	return new Contract(address, ABI, getProviderOrSigner(library, account));
+	return new Contract(address, ABI, getProviderOrSigner(library, chainId, account));
 }
 
 // account is optional
 export function getRouterContract(chainId, library, account) {
-	return getContract(ROUTER_ADDRESS[chainId], IUniswapV2Router02ABI, library, account);
+	return getContract(ROUTER_ADDRESS[chainId], IUniswapV2Router02ABI, library, chainId, account);
 }
 
 export function escapeRegExp(string) {

@@ -9,7 +9,7 @@ const useApproveFarm = (lpContract) => {
     const dispatch = useDispatch()
     const { data } = useFarms()
     const { account, chainId, library } = useActiveWeb3React()
-    const masterChefContract = useMasterchef()
+    const masterChefContract = useMasterchef(false)
     const handleApprove = useCallback(async () => {
         try {
             const tx = await lpContract.approve(masterChefContract.address, ethers.constants.MaxUint256)
