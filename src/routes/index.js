@@ -25,7 +25,6 @@ import Games from 'pages/Games';
 import { useActiveWeb3React, useDetectChainChange } from 'hooks';
 import Faucet from 'pages/Faucet';
 import CommingSoon from 'pages/CommingSoon';
-import NewAuction from '../pages/newAuction/index'
 
 const Routes = () => {
   const { chainId } = useActiveWeb3React();
@@ -57,7 +56,6 @@ const Routes = () => {
         <Switch>
           <Route exact path="/" render={() => <Redirect to={routes.dashboard} />} />
           <Route exact path={routes.farms} component={Farms} />
-          <Route path={`${routes.newAuction}`} component={NewAuction} />
           <Route path={routes.trade} component={Trade} />
           {[339].includes(chainId) && (
             <Route path={`${routes.faucet}`} component={Faucet} />

@@ -114,7 +114,7 @@ function Upcoming(props) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    auctionCount(query, constants.BATCH_AUCTION_DATASOURCE[chainId], setBatchCount, setLoading, setError)
+    // auctionCount(query, constants.BATCH_AUCTION_DATASOURCE[chainId], setBatchCount, setLoading, setError)
     auctionCount(dutchQuery, constants.DUTCH_AUCTION_DATASOURCE[chainId], setDutchCount, setLoading, setError)
     auctionCount(fixedQuery, constants.FIXED_AUCTION_DATASOURCE[chainId], setFixedCount, setLoading, setError)
   }, [])
@@ -160,7 +160,7 @@ function Upcoming(props) {
             className={`py-2 p-1.5 w-2/6 justify-center rounded transition-all h-15  
             flex items-center ${fixedActive ? 'bg-primaryLight text-black active' : `bg-black text-white`
               } `}
-          > 
+          >
             <span>Fixed</span>
             <span className={`${fixedActive ? "bg-black text-white number" : "bg-primaryLight number"}`}>{fixedCount}</span>
           </button>
@@ -173,6 +173,7 @@ function Upcoming(props) {
           <BatchLive
             activeTab={activeTab}
             auctionStatus='upcoming'
+            setBatchCount={setBatchCount}
           />
         </>
       ) : activeTab === 'dutch' ? (

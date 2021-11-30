@@ -56,10 +56,10 @@ function AuctionItem(props) {
         to={{
           pathname:
             props.type === 'BATCH'
-              ? `batch-detail/${props.id}`
+              ? `batch-detail/${props.auctionId}`
               : props.type === 'FIXED'
-                ? `fixed-detail/${props.id}`
-                : `dutch-detail/${props.id}`,
+                ? `fixed-detail/${props.auctionId}`
+                : `dutch-detail/${props.auctionId}`,
           state: {
             auctionType:
               props.type === 'BATCH' ? 'batch' : props.type === 'FIXED' ? 'fixed' : 'dutch',
@@ -70,7 +70,7 @@ function AuctionItem(props) {
         <div className="text-white flex flex-row items-stretch justify-between items-center mb-5">
           <div className="flex flex-col items-start justify-start ">
             <div className="text-white text-2xl ">{props.title}</div>
-            <div className="text-base font-normal">Auction id#{props.id}</div>
+            <div className="text-base font-normal">Auction id#{props.auctionId}</div>
           </div>
           <div className="flex flex-col items-end relative">
             <span className={`${props.statusClass}-icon absolute right-0 top-0`}></span>

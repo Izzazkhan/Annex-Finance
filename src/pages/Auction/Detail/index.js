@@ -29,6 +29,7 @@ import SVG from 'react-inlinesvg';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { maxHeight } from 'styled-system';
+import { restService } from 'utilities';
 
 const ArrowDown = styled.button`
   align-items: center;
@@ -225,33 +226,54 @@ function Detail(props) {
 
   const [showDetails, setShowDetails] = useState(false);
 
+  useEffect(async () => {
+    try {
+      const response = await restService({
+        third_party: true,
+        api: `${process.env.REACT_APP_GET_AUCTION_BY_ID_API}=${props.match.params.id}`,
+        method: 'GET',
+        params: {}
+      })
+      setData(response.data.data)
+      console.log('submitData', response.data.data)
+
+    } catch (error) {
+      console.log(error);
+    }
+  }, [])
+
+
   useEffect(() => {
     getData();
   }, []);
+
   useEffect(async () => {
     try {
       if (
         data &&
-        data.auctions &&
-        data.auctions.length > 0 &&
         props.location.pathname.includes('batch')
       ) {
-        let elem = data.auctions[0];
+        let elem = data;
         let type = elem['type'];
         let auctionStatus = '';
-        let auctionTokenId = elem['auctioningToken']['id'];
-        let biddingTokenId = elem['biddingToken']['id'];
-        let auctionSymbol = `${elem['auctioningToken']['symbol']}`;
-        let auctionTokenName = elem['auctioningToken']['name'];
-        let biddingSymbol = `${elem['biddingToken']['symbol']}`;
-        let biddingTokenName = elem['biddingToken']['name'];
-        let auctionDecimal = Number('1e' + elem['auctioningToken']['decimals']);
-        let biddingDecimal = Number('1e' + elem['biddingToken']['decimals']);
+        let auctionToken = (elem['auctioningToken']);
+        auctionToken = JSON.parse(auctionToken)
+        let auctionTokenId = auctionToken.id
+        let biddingToken = (elem['biddingToken']);
+        biddingToken = JSON.parse(biddingToken)
+        let biddingTokenId = biddingToken.id
+        let auctionSymbol = auctionToken.symbol
+        let auctionTokenName = auctionToken.name
+        let biddingSymbol = biddingToken.symbol
+        let biddingTokenName = biddingToken.name
+        let auctionDecimal = Number('1e' + Number(auctionToken.decimals));
+        let biddingDecimal = Number('1e' + Number(biddingToken.decimals));
         let auctionBalance = await getTokenBalance(auctionTokenId, auctionDecimal);
         let biddingBalance = await getTokenBalance(biddingTokenId, biddingDecimal);
         let totalAuction = elem['auctionedSellAmount_eth']
           ? new BigNumber(elem['auctionedSellAmount_eth']).dividedBy(auctionDecimal).toString()
           : 0;
+
         let totalAuctionedValue = elem['auctionedSellAmount'];
         let minimumPrice = new BigNumber(elem['minimumPrice_eth'])
           .dividedBy(biddingDecimal)
@@ -265,6 +287,7 @@ function Detail(props) {
         let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(biddingDecimal)
           .toNumber();
+
         minimumPrice = convertExponentToNum(minimumPrice);
         maxAvailable = convertExponentToNum(maxAvailable);
         currentPrice = Number(convertExponentToNum(currentPrice));
@@ -273,12 +296,12 @@ function Detail(props) {
           new BigNumber(elem['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
         );
         let minFundingThresholdValue = elem['minFundingThreshold'];
-
+        let socials = elem['socials'];
+        socials = JSON.parse(JSON.parse(socials))
         let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(1000000)
           .toNumber();
         let minimumBiddingAmountPerOrderValue = elem['minimumBiddingAmountPerOrder'];
-
         let minFundingThresholdNotReached = elem['minFundingThresholdNotReached'];
         let estimatedTokenSold = convertExponentToNum(
           new BigNumber(elem['estimatedTokenSold_eth'])
@@ -308,7 +331,6 @@ function Detail(props) {
         } else {
           auctionStatus = 'inprogress';
         }
-
         let cancelDateDiff = getDateDiff(elem['orderCancellationEndDate']);
         if (cancelDateDiff > 0) {
           isAllowCancellation = true;
@@ -317,8 +339,8 @@ function Detail(props) {
           clearingPrice: elem['clearingPrice'],
           initialAuctionOrder: elem['initialAuctionOrder'],
           ordersList: data.orders,
-          auctionDecimal: elem['auctioningToken']['decimals'],
-          biddingDecimal: elem['biddingToken']['decimals'],
+          auctionDecimal: Number(auctionToken.decimals),
+          biddingDecimal: Number(biddingToken.decimals),
         });
 
         let orders = [];
@@ -336,6 +358,7 @@ function Detail(props) {
         if (isAlreadySettle && auctionStatus == 'completed') {
           lpTokenData = await Promise.all(lpTokenPromises);
         }
+        console.log('dataaaaaaa2', data)
         let userOrders = [];
         let otherUserOrders = [];
         let accountId = account ? account.toLowerCase() : '0x';
@@ -361,7 +384,7 @@ function Detail(props) {
               placeholderSellAmount = maxAvailable;
             }
           }
-
+          console.log('dataaaaaaa1', data)
           if (userId === accountId) {
             userOrders.push({
               ...order,
@@ -402,7 +425,7 @@ function Detail(props) {
           maxAvailable,
           currentPrice,
           type,
-          id: elem.id,
+          id: elem.auctionId,
           totalAuction,
           totalAuctionedValue,
           minBuyAmount,
@@ -414,17 +437,17 @@ function Detail(props) {
           biddingDecimal,
           chartType: 'block',
           data: graphData,
-          telegramLink: elem['about']['telegram'],
-          discordLink: elem['about']['discord'],
-          mediumLink: elem['about']['medium'],
-          twitterLink: elem['about']['twitter'],
+          telegramLink: socials[3],
+          discordLink: socials[2],
+          mediumLink: socials[1],
+          twitterLink: socials[0],
           status: auctionStatus,
           statusClass: auctionStatus,
           title: type + ' Auction',
           contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
-          token: elem['auctioningToken']['id'],
-          website: elem['about']['website'],
-          description: elem['about']['description'],
+          token: auctionTokenId,
+          website: socials[5],
+          description: socials[4],
           isAlreadySettle,
           isAllowCancellation,
           placeHolderMinBuyAmount,
@@ -449,132 +472,134 @@ function Detail(props) {
           auctionStatus,
         });
         setLoading(false);
-      } else {
-        let elem = data;
-        const auctioningToken =
-          new instance.eth.Contract(
-            JSON.parse(constants.CONTRACT_ABEP_ABI),
-            elem.auctioningToken,
-          );
-        const biddingToken =
-          new instance.eth.Contract(
-            JSON.parse(constants.CONTRACT_ABEP_ABI),
-            elem.biddingToken,
-          );
-        let type = elem['type'];
-        let auctionStatus = '';
-        let auctionTokenId = elem['auctioningToken'];
-        let biddingTokenId = elem['biddingToken'];
-        let auctionSymbol = await methods.call(auctioningToken.methods.symbol, []);
-        let auctionTokenName = await methods.call(auctioningToken.methods.name, []);
-        let biddingSymbol = await methods.call(biddingToken.methods.symbol, []);
-        let auctionDecimal = await methods.call(auctioningToken.methods.decimals, []);
-        let totalAuctionedValue = elem['auctionedSellAmount'] / Math.pow(10, auctionDecimal);
-        totalAuctionedValue = convertExponentToNum(totalAuctionedValue);
-        let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
-        let minimumPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
-        let currentBalance =
-          type === 'DUTCH' &&
-          (await methods.call(dutchContract.methods.currentPrice, [props.match.params.id]));
-
-        let currentPrice =
-          type === 'DUTCH'
-            ? currentBalance / Math.pow(10, biddingDecimal)
-            : ((elem['amountMin1'] / elem['amountMax1']) * Math.pow(10, auctionDecimal)) /
-            Math.pow(10, biddingDecimal);
-        currentPrice = Number(convertExponentToNum(currentPrice));
-        let amountMax1 = elem['amountMax1'];
-        let amountMin1 = elem['amountMin1'];
-        let auctionEndDateFormatted = moment
-          .unix(elem['auctionEndDate'])
-          .format('MM/DD/YYYY HH:mm:ss');
-        let auctionEndDate = elem['auctionEndDate'];
-        let auctionStartDate = elem['auctionStartDate'];
-        let endDateDiff = getDateDiff(auctionEndDate);
-        let startDateDiff = getDateDiff(auctionStartDate);
-        if (startDateDiff > 0) {
-          auctionStatus = 'upcoming';
-        } else if (endDateDiff < 0) {
-          auctionStatus = 'completed';
-        } else {
-          auctionStatus = 'inprogress';
-        }
-        let startingPrice = elem['startingPrice'] / Math.pow(10, biddingDecimal);
-        Number(convertExponentToNum(startingPrice));
-        let graphData = type === 'DUTCH' && [
-          {
-            value: startingPrice,
-          },
-          {
-            value: currentPrice,
-          },
-        ];
-        let orders = [];
-        let placeHolderMinBuyAmount = 0;
-        let placeholderSellAmount = 0;
-
-        let userOrders = [];
-        data.orders.forEach((order, index) => {
-          let auctionDivBuyAmount = order['buyAmount'] / Math.pow(10, auctionDecimal);
-          auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
-          let auctionDivSellAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
-          auctionDivSellAmount = convertExponentToNum(auctionDivSellAmount);
-          let price = order['buyAmount'] / Math.pow(10, auctionDecimal);
-          price = convertExponentToNum(price);
-          userOrders.push({
-            ...order,
-            price,
-            auctionDivBuyAmount,
-            auctionDivSellAmount,
-            auctionSymbol,
-            biddingSymbol,
-          });
-        });
-        orders = userOrders;
-        let detail = {
-          auctionTokenId,
-          biddingTokenId,
-          minimumPrice,
-          amountMax1,
-          amountMin1,
-          currentPrice,
-          type,
-          id: elem.about.id,
-          totalAuctionedValue,
-          auctionTokenName,
-          auctionSymbol,
-          auctionDecimal,
-          biddingSymbol,
-          biddingDecimal,
-          chartType: 'line',
-          data: type === 'DUTCH' ? graphData : [],
-          telegramLink: elem['about']['telegram'],
-          discordLink: elem['about']['discord'],
-          mediumLink: elem['about']['medium'],
-          twitterLink: elem['about']['twitter'],
-          title: type + ' Auction',
-          contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
-          token: elem['auctioningToken'],
-          website: elem['about']['website'],
-          description: elem['about']['description'],
-          placeHolderMinBuyAmount,
-          placeholderSellAmount,
-          auctionEndDateFormatted,
-        };
-        setState({
-          ...state,
-          detail,
-          auctionStartDate,
-          auctionEndDate,
-          orders,
-          auctionStatus,
-        });
-        setLoading(false);
       }
+      // else {
+      //   let elem = data;
+      //   const auctioningToken =
+      //     new instance.eth.Contract(
+      //       JSON.parse(constants.CONTRACT_ABEP_ABI),
+      //       elem.auctioningToken,
+      //     );
+      //   const biddingToken =
+      //     new instance.eth.Contract(
+      //       JSON.parse(constants.CONTRACT_ABEP_ABI),
+      //       elem.biddingToken,
+      //     );
+      //   let type = elem['type'];
+      //   let auctionStatus = '';
+      //   let auctionTokenId = elem['auctioningToken'];
+      //   let biddingTokenId = elem['biddingToken'];
+      //   let auctionSymbol = await methods.call(auctioningToken.methods.symbol, []);
+      //   let auctionTokenName = await methods.call(auctioningToken.methods.name, []);
+      //   let biddingSymbol = await methods.call(biddingToken.methods.symbol, []);
+      //   let auctionDecimal = await methods.call(auctioningToken.methods.decimals, []);
+      //   let totalAuctionedValue = elem['auctionedSellAmount'] / Math.pow(10, auctionDecimal);
+      //   totalAuctionedValue = convertExponentToNum(totalAuctionedValue);
+      //   let biddingDecimal = await methods.call(biddingToken.methods.decimals, []);
+      //   let minimumPrice = elem['amountMin1'] / Math.pow(10, biddingDecimal);
+      //   let currentBalance =
+      //     type === 'DUTCH' &&
+      //     (await methods.call(dutchContract.methods.currentPrice, [props.match.params.id]));
+
+      //   let currentPrice =
+      //     type === 'DUTCH'
+      //       ? currentBalance / Math.pow(10, biddingDecimal)
+      //       : ((elem['amountMin1'] / elem['amountMax1']) * Math.pow(10, auctionDecimal)) /
+      //       Math.pow(10, biddingDecimal);
+      //   currentPrice = Number(convertExponentToNum(currentPrice));
+      //   let amountMax1 = elem['amountMax1'];
+      //   let amountMin1 = elem['amountMin1'];
+      //   let auctionEndDateFormatted = moment
+      //     .unix(elem['auctionEndDate'])
+      //     .format('MM/DD/YYYY HH:mm:ss');
+      //   let auctionEndDate = elem['auctionEndDate'];
+      //   let auctionStartDate = elem['auctionStartDate'];
+      //   let endDateDiff = getDateDiff(auctionEndDate);
+      //   let startDateDiff = getDateDiff(auctionStartDate);
+      //   if (startDateDiff > 0) {
+      //     auctionStatus = 'upcoming';
+      //   } else if (endDateDiff < 0) {
+      //     auctionStatus = 'completed';
+      //   } else {
+      //     auctionStatus = 'inprogress';
+      //   }
+      //   let startingPrice = elem['startingPrice'] / Math.pow(10, biddingDecimal);
+      //   Number(convertExponentToNum(startingPrice));
+      //   let graphData = type === 'DUTCH' && [
+      //     {
+      //       value: startingPrice,
+      //     },
+      //     {
+      //       value: currentPrice,
+      //     },
+      //   ];
+      //   let orders = [];
+      //   let placeHolderMinBuyAmount = 0;
+      //   let placeholderSellAmount = 0;
+
+      //   let userOrders = [];
+      //   data.orders.forEach((order, index) => {
+      //     let auctionDivBuyAmount = order['buyAmount'] / Math.pow(10, auctionDecimal);
+      //     auctionDivBuyAmount = convertExponentToNum(auctionDivBuyAmount);
+      //     let auctionDivSellAmount = order['sellAmount'] / Math.pow(10, biddingDecimal);
+      //     auctionDivSellAmount = convertExponentToNum(auctionDivSellAmount);
+      //     let price = order['buyAmount'] / Math.pow(10, auctionDecimal);
+      //     price = convertExponentToNum(price);
+      //     userOrders.push({
+      //       ...order,
+      //       price,
+      //       auctionDivBuyAmount,
+      //       auctionDivSellAmount,
+      //       auctionSymbol,
+      //       biddingSymbol,
+      //     });
+      //   });
+      //   orders = userOrders;
+      //   let detail = {
+      //     auctionTokenId,
+      //     biddingTokenId,
+      //     minimumPrice,
+      //     amountMax1,
+      //     amountMin1,
+      //     currentPrice,
+      //     type,
+      //     id: elem.about.id,
+      //     totalAuctionedValue,
+      //     auctionTokenName,
+      //     auctionSymbol,
+      //     auctionDecimal,
+      //     biddingSymbol,
+      //     biddingDecimal,
+      //     chartType: 'line',
+      //     data: type === 'DUTCH' ? graphData : [],
+      //     telegramLink: elem['about']['telegram'],
+      //     discordLink: elem['about']['discord'],
+      //     mediumLink: elem['about']['medium'],
+      //     twitterLink: elem['about']['twitter'],
+      //     title: type + ' Auction',
+      //     contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
+      //     token: elem['auctioningToken'],
+      //     website: elem['about']['website'],
+      //     description: elem['about']['description'],
+      //     placeHolderMinBuyAmount,
+      //     placeholderSellAmount,
+      //     auctionEndDateFormatted,
+      //   };
+      //   setState({
+      //     ...state,
+      //     detail,
+      //     auctionStartDate,
+      //     auctionEndDate,
+      //     orders,
+      //     auctionStatus,
+      //   });
+      //   setLoading(false);
+      // }
     } catch (error) {
       console.log('error', error);
     }
   }, [data]);
+
   const getDateDiff = (endDate) => {
     endDate = moment.unix(endDate);
     let currentDate = moment();
@@ -655,7 +680,7 @@ function Detail(props) {
             let { data } = response;
             if (props.location.pathname.includes('batch')) {
               console.log('detailData', data)
-              setData(data);
+              // setData(data);
             } else {
               setData(data.auction);
             }

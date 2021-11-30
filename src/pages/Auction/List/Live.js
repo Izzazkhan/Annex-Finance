@@ -111,7 +111,7 @@ function Live(props) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    auctionCount(query, constants.BATCH_AUCTION_DATASOURCE[chainId], setBatchCount, setLoading, setError)
+    // auctionCount(query, constants.BATCH_AUCTION_DATASOURCE[chainId], setBatchCount, setLoading, setError)
     auctionCount(dutchQuery, constants.DUTCH_AUCTION_DATASOURCE[chainId], setDutchCount, setLoading, setError)
     auctionCount(fixedQuery, constants.FIXED_AUCTION_DATASOURCE[chainId], setFixedCount, setLoading, setError)
   }, [])
@@ -171,6 +171,7 @@ function Live(props) {
           <BatchLive
             activeTab={activeTab}
             auctionStatus='live'
+            setBatchCount={setBatchCount}
           />
         </>
       ) : activeTab === 'dutch' ? (

@@ -143,7 +143,7 @@ export const getPriceOracleContract = (address, chainId) => {
     );
   }
 
-  address = address ? address :  constants.CONTRACT_PRICE_ORACLE_ADDRESS[chainId]
+  address = address ? address : constants.CONTRACT_PRICE_ORACLE_ADDRESS[chainId]
   return new instance.eth.Contract(JSON.parse(constants.CONTRACT_PRICE_ORACLE_ABI), address);
 };
 
@@ -174,6 +174,12 @@ export const getAuctionContract = (name, chainId) => {
       new Web3.providers.HttpProvider(rpcProvider)
     );
   }
+
+  console.log('aaaaaaaaaaaaaaa',
+    constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch']
+      ? constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch'].address
+      : constants.CONTRACT_ANNEX_AUCTION[chainId].batch.address,
+  )
 
   return new instance.eth.Contract(
     JSON.parse(AUCTION_ABI[name]),

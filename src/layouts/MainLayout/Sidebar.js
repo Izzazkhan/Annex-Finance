@@ -239,8 +239,7 @@ const sidebarItems = [
       { key: 3, icon: underscore, title: 'Past', href: `${RouteMap.auction}/past` },
     ],
   },
-  { key: 11, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet },
-  { key: 12, icon: (fill) => <PoolsIcon fill={fill} />, title: 'NewAuction', href: RouteMap.newAuction }
+  { key: 11, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet }
 ];
 
 const primaryColor = '#FF9800';
@@ -257,14 +256,14 @@ const NavItems = ({
 }) => {
   if (chainId === 339) {
     items = items.filter((i) => {
-      if (['Liquidate', 'Games', 'IDO', 'Pools', 'newAuction'].includes(i.title)) {
+      if (['Liquidate', 'Games', 'IDO', 'Pools'].includes(i.title)) {
         return null
       }
       return i
     })
   } else if (chainId === 25) {
     items = items.filter((i) => {
-      if (['Liquidate', 'Games', 'IDO', 'Pools', 'newAuction', 'Faucet'].includes(i.title)) {
+      if (['Liquidate', 'Games', 'IDO', 'Pools', 'Faucet'].includes(i.title)) {
         return null
       }
       return i

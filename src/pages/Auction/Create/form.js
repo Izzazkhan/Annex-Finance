@@ -20,6 +20,8 @@ import toHex from 'to-hex';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
+import * as constants from '../../../utilities/constants';
+let instance = new Web3(window.ethereum);
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -233,6 +235,7 @@ export default function Form(props) {
     type: 'batch',
   });
   const annTokenContract = getANNTokenContract(chainId);
+  console.log('state', state.type)
   const auctionContract = getAuctionContract(state.type, chainId);
 
   useEffect(async () => {
@@ -359,8 +362,12 @@ export default function Form(props) {
           ],
         ];
         console.log('************ auction data ************: ', data);
+        const contract = new instance.eth.Contract(
+          JSON.parse(constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI),
+          constants.CONTRACT_ANNEX_AUCTION[chainId][state.type].address
+        );
         let auctionTxDetail = await methods.send(
-          auctionContract.methods.initiateAuction,
+          contract.methods.initiateAuction,
           [data],
           accountId,
         );
