@@ -15,17 +15,17 @@ import { useActiveWeb3React } from "./index";
 
 // returns null on errors
 function useContract(address, ABI, withSignerIfPossible = true) {
-	const { account, library } = useActiveWeb3React();
+	const { account, library, chainId } = useActiveWeb3React();
 
 	return useMemo(() => {
 		if (!address || !ABI || !library) return null;
 		try {
-			return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined);
+			return getContract(address, ABI, library, chainId, withSignerIfPossible && account ? account : undefined);
 		} catch (error) {
 			console.error("Failed to get contract", error);
 			return null;
 		}
-	}, [address, ABI, library, withSignerIfPossible, account]);
+	}, [address, ABI, library, withSignerIfPossible, account, chainId]);
 }
 
 export function useV1FactoryContract() {

@@ -90,7 +90,7 @@ const harvest = (obj) => { }
 const stake = (obj) => { }
 const unStake = (obj) => { }
 const approve = async (obj) => {
-  const lpContract = useLP(obj.lpAddress)
+  const lpContract = useLP(obj.lpAddress, true)
   const { onApprove } = useApproveFarm(lpContract)
   const [pendingTx, setPendingTx] = useState(false)
 

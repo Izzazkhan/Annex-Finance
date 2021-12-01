@@ -192,7 +192,6 @@ export function useMintActionHandlers(noLiquidity) {
 
   const onFieldAInput = useCallback(
     (typedValue) => {
-      console.log('typedValue: ', typedValue)
       dispatch(
         typeInput({ field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true }),
       );

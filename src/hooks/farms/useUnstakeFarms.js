@@ -9,7 +9,7 @@ const useUnstakeFarms = (pid) => {
     const dispatch = useDispatch()
     const { data } = useFarms()
     const { account, chainId, library } = useActiveWeb3React()
-    const masterChefContract = useMasterchef()
+    const masterChefContract = useMasterchef(true)
 
     const handleUnstake = useCallback(
         async (amount) => {
