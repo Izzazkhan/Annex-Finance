@@ -175,12 +175,6 @@ export const getAuctionContract = (name, chainId) => {
     );
   }
 
-  console.log('aaaaaaaaaaaaaaa',
-    constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch']
-      ? constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch'].address
-      : constants.CONTRACT_ANNEX_AUCTION[chainId].batch.address,
-  )
-
   return new instance.eth.Contract(
     JSON.parse(AUCTION_ABI[name]),
     constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch']

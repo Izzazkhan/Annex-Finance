@@ -236,7 +236,7 @@ export default function Form(props) {
   });
   const annTokenContract = getANNTokenContract(chainId);
   console.log('state', state.type)
-  const auctionContract = getAuctionContract(state.type, chainId);
+  const auctionContract = getAuctionContract('batch', chainId);
 
   useEffect(async () => {
     if (showModal) {

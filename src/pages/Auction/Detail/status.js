@@ -8,6 +8,16 @@ import { getTokenContract, methods } from '../../../utilities/ContractService';
 import Modal from './modal';
 import Swal from 'sweetalert2';
 import { useActiveWeb3React } from '../../../hooks';
+import Web3 from 'web3';
+import * as constants from '../../../utilities/constants';
+let instance = new Web3(window.ethereum);
+
+const AUCTION_ABI = {
+  batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
+  dutch: constants.CONTRACT_ANNEX_DUTCH_AUCTION_ABI,
+  fixed: constants.CONTRACT_ANNEX_FIXED_AUCTION_ABI,
+};
+
 
 const AuctionStatus = ({
   auctionEndDate,
@@ -28,6 +38,11 @@ const AuctionStatus = ({
   auctionType,
 }) => {
   const { chainId } = useActiveWeb3React();
+
+  const contractAuction = new instance.eth.Contract(
+    JSON.parse(AUCTION_ABI['batch']),
+    constants.CONTRACT_ANNEX_AUCTION[chainId]['batch'].address
+  );
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
@@ -45,14 +60,14 @@ const AuctionStatus = ({
   const [showClaimButton, setShowClaimButton] = useState(false);
   useEffect(async () => {
     if (showModal) {
-      const threshold = await methods.call(auctionContract.methods.threshold, []);
+      const threshold = await methods.call(contractAuction.methods.threshold, []);
       setAuctionThreshold(threshold);
     }
   }, [showModal]);
 
   useEffect(async () => {
     if (auctionStatus === 'completed') {
-      const showClaimButton = await methods.call(auctionContract.methods.myClaimed, [
+      const showClaimButton = await methods.call(contractAuction.methods.myClaimed, [
         account,
         auctionId,
       ]);
@@ -84,7 +99,7 @@ const AuctionStatus = ({
 
       setApproveBiddingToken({ status: false, isLoading: true, label: 'Loading...' });
       let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase(), chainId);
-      console.log('biddingTokenContract',biddingTokenContract);
+      console.log('biddingTokenContract', biddingTokenContract);
       await getTokenAllowance(biddingTokenContract.methods, auctionAddr, auctionThreshold);
       setApproveBiddingToken({ status: true, isLoading: false, label: 'Done' });
     } catch (error) {
@@ -141,12 +156,12 @@ const AuctionStatus = ({
 
       if (auctionType !== 'FIXED') {
         let auctionTxDetail = await methods.send(
-          auctionContract.methods.placeSellOrders,
+          contractAuction.methods.placeSellOrders,
           data,
           account,
         );
       } else {
-        await methods.send(auctionContract.methods.swap, data, account);
+        await methods.send(contractAuction.methods.swap, data, account);
       }
       setLoading(false);
       updateShowModal(true);
@@ -171,12 +186,12 @@ const AuctionStatus = ({
       e.preventDefault();
       setLoading(true);
       if (auctionType === 'BATCH') {
-        await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
+        await methods.send(contractAuction.methods.settleAuction, [auctionId], account);
       } else {
         if (account === auctionId) {
-          await methods.send(auctionContract.methods.creatorClaim, [auctionId], account);
+          await methods.send(contractAuction.methods.creatorClaim, [auctionId], account);
         } else {
-          await methods.send(auctionContract.methods.bidderClaim, [auctionId], account);
+          await methods.send(contractAuction.methods.bidderClaim, [auctionId], account);
         }
       }
       getData();

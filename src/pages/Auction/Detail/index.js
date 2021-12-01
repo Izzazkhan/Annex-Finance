@@ -358,12 +358,12 @@ function Detail(props) {
         if (isAlreadySettle && auctionStatus == 'completed') {
           lpTokenData = await Promise.all(lpTokenPromises);
         }
-        console.log('dataaaaaaa2', data)
         let userOrders = [];
         let otherUserOrders = [];
         let accountId = account ? account.toLowerCase() : '0x';
         data.orders.forEach((order, index) => {
-          let userId = order.userId.address.toLowerCase();
+          // let userId = (JSON.parse(order._userId));
+          // userId = userId.userAddress.toLowerCase()
           let auctionDivBuyAmount = new BigNumber(order['buyAmount_eth'])
             .dividedBy(auctionDecimal)
             .toString();
@@ -384,8 +384,8 @@ function Detail(props) {
               placeholderSellAmount = maxAvailable;
             }
           }
-          console.log('dataaaaaaa1', data)
-          if (userId === accountId) {
+          // if (userId === accountId) {
+          if (order.address) {
             userOrders.push({
               ...order,
               auctionDivBuyAmount,
@@ -648,16 +648,6 @@ function Detail(props) {
     return x;
   };
 
-  const getCurrentPriceDecimal = (auctionDecimal, biddingDecimal) => {
-    // let decimal = 0;
-    // if (auctionDecimal !== biddingDecimal) {
-    //   decimal = auctionDecimal - biddingDecimal;
-    // } else {
-    //   decimal = biddingDecimal;
-    // }
-    // return Number('1e' + biddingDecimal);
-    return 1;
-  };
   const getData = () => {
     let apollo;
     if (props.location.pathname.includes('dutch')) {
@@ -702,62 +692,7 @@ function Detail(props) {
     // });
     getData();
   };
-  const convertToHex = (data) => {
-    let msg = '';
-    for (var i = 0; i < data.length; i++) {
-      var s = data.charCodeAt(i).toString(16);
-      while (s.length < 2) {
-        s = '0' + s;
-      }
-      msg += s;
-    }
-    return msg;
-  };
 
-  const encodeOrder = (userId, sellAmount, buyAmount) => {
-    return (
-      '0x' +
-      new BigNumber(userId).toString(16).padStart(16, '0') +
-      // buyAmount.padStart(24, '0') +
-      new BigNumber(buyAmount).toString(16).padStart(24, '0') +
-      // sellAmount.padStart(24, '0')
-      new BigNumber(sellAmount).toString(16).padStart(24, '0')
-    );
-  };
-
-  const calculateLPTokens = async (auction) => {
-    return new Promise((resolve, reject) => {
-      // console.log('auction: ', auction, {
-      //   userId: auction.userId.id,
-      //   buyAmount: auction.buyAmount,
-      //   sellAmount: auction.sellAmount,
-      // });
-      // let encodedOrder = encodeOrder({userId: auction.userId.id, buyAmount: auction.buyAmount, sellAmount: auction.sellAmount});
-      // auction.userId.id = 17;
-      let encodedOrder = encodeOrder(
-        auction.userId.id,
-        auction.buyAmount_eth,
-        auction.sellAmount_eth,
-      );
-      // let encodedOrder = encodeOrder(auction.userId.id, 0, 0);
-      // console.log('encode order: ', [auction.auctionId.id, auction.userId.id, encodedOrder]);
-      methods
-        .call(auctionContract.methods.calculateLPTokens, [
-          auction.auctionId.id,
-          auction.userId.id,
-          encodedOrder,
-        ])
-        .then((res) => {
-          let lpToken = new BigNumber(res).dividedBy(Number('1e' + 18)).toString();
-          lpToken = convertExponentToNum(lpToken);
-          resolve(lpToken);
-        })
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-    });
-  };
   const getTokenBalance = async (token, decimal) => {
     const tokenContract = getTokenContractWithDynamicAbi(token);
     let balanceOf = await methods.call(tokenContract.methods.balanceOf, [account]);
@@ -827,7 +762,7 @@ function Detail(props) {
             )}{' '}
             {state.detail.biddingSymbol}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.biddingTokenId
+              href={`${constants.EXPLORERS[chainId]}/address/${state.detail && state.detail.biddingTokenId
                 }`}
               target="_blank"
               rel="noreferrer"
@@ -876,7 +811,7 @@ function Detail(props) {
                 `${state.detail.totalAuctionedValue} ${state.detail.auctionSymbol}`} `
             )}
             <a
-              href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail && state.detail.auctionTokenId
+              href={`${constants.EXPLORERS[chainId]}/address/${state.detail && state.detail.auctionTokenId
                 }`}
               target="_blank"
               rel="noreferrer"
@@ -1238,7 +1173,7 @@ function Detail(props) {
                 ) : (
                   <div className='flex items-center'>
                     <a
-                      href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${state.detail.contract}#code`}
+                      href={`${constants.EXPLORERS[chainId]}/address/${state.detail.contract}#code`}
                       target="_blank"
                       rel="noreferrer"
                       style={{ wordBreak: 'break-all', marginRight: '5px' }}
@@ -1265,7 +1200,7 @@ function Detail(props) {
                 ) : (
                   <div className='flex items-center'>
                     <a
-                      href={`${process.env.REACT_APP_BSC_EXPLORER}/token/${state.detail.token}`}
+                      href={`${constants.EXPLORERS[chainId]}/token/${state.detail.token}`}
                       target="_blank"
                       rel="noreferrer"
                       style={{ wordBreak: 'break-all', marginRight: '5px' }}
@@ -1289,7 +1224,7 @@ function Detail(props) {
                     <div className="animate-pulse rounded-lg w-24 bg-lightGray w-full flex items-center px-8 py-3 justify-end" />
                   </div>
                 ) : (
-                  <a href={state.detail.website} target="_blank" rel="noreferrer">
+                  <a href={`https://${state.detail.website}`} target="_blank" rel="noreferrer">
                     {state.detail.website}
                   </a>
                 )}
@@ -1330,7 +1265,6 @@ function Detail(props) {
             biddingDecimal={state.detail.biddingDecimal}
             auctionDecimal={state.detail.auctionDecimal}
             auctionStatus={state.auctionStatus}
-            // auctionContract={auctionContract}
             auctionContract={
               state.detail.type === 'DUTCH'
                 ? dutchContract
@@ -1356,6 +1290,7 @@ function Detail(props) {
           auctionStatus={state.auctionStatus}
           getData={getData}
           auctionId={state.detail.id}
+          explorer={constants.EXPLORERS[chainId]}
         />
       ) : (
         <DutchTable
@@ -1433,10 +1368,11 @@ const ProgressBar = ({
 };
 
 const MediaIcon = ({ name, src, url }) => {
+  console.log('urllllll', url)
   return (
     <div className="flex items-center text-xl font-medium underline mb-3">
       <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}
-      <a href={url} target="_blank" rel="noreferrer">
+      <a href={`https://${url}`} target="_blank" rel="noreferrer">
         {name}
       </a>
     </div>

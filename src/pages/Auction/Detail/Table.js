@@ -72,10 +72,6 @@ function Table(props) {
   const [selectedClaimOrders, updateSelectedClaimOrders] = useState([]);
   const [selectedCancelOrders, updateSelectedCancelOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [blockNumberSorted, setBlockNumberSorted] = useState(true);
-  const [upDownValue, setUpDownValue] = useState(true);
-  const [sortPrice, setSortPrice] = useState(true);
-  const [priceUpDownValue, setPriceUpDownValue] = useState(true);
   const [propsData, setPropsData] = useState([]);
   const [currentSort, setCurrentSort] = useState('default');
   const [isTableHorizontal, setIsTableHorizontal] = useState(true);
@@ -121,7 +117,6 @@ function Table(props) {
         [auctionId, orders],
         props.account,
       );
-      // updateSelectedClaimOrders([]);
       props.getData();
       setLoading(false);
     } catch (error) {
@@ -322,15 +317,16 @@ function Table(props) {
                     </tr>
                   ) : (
                     propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                      let userId = item.userId.address.toLowerCase();
+                      console.log('itemmm', item)
+                      // let userId = (JSON.parse(item._userId));
                       let account = props.account ? props.account.toLowerCase() : '0x';
-                      return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
+                      return !isShowMyOrder || (isShowMyOrder && item.address === account) ? (
                         <tr key={index}>
                           <td>
                             <div className="flex justify-start items-center space-x-2">
                               <div className="text-primary flex items-center">
                                 {/* <a
-                                  href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                                  href={`${props.explorer}/address/${item.userId.address}`}
                                   target="_blank"
                                   rel="noreferrer"
                                   style={{ wordBreak: 'break-all', marginRight: '5px' }}
@@ -342,11 +338,11 @@ function Table(props) {
                                   />
                                 </a> */}
                                 <a
-                                  href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                                  href={`${props.explorer}/address/${item.address}`}
                                   target="_blank"
                                 >
-                                  {item.userId.address
-                                    ? item.userId.address.substring(0, 5) + '...'
+                                  {item.address
+                                    ? item.address.toLowerCase().substring(0, 5) + '...'
                                     : 'xxx'}
                                 </a>
                               </div>
@@ -366,7 +362,7 @@ function Table(props) {
                           <td>
                             <div className="text-primary flex items-center">
                               {/* <a
-                                href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                                href={`${props.explorer}/tx/${item.transactionHash}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{ wordBreak: 'break-all', marginRight: '5px' }}
@@ -378,10 +374,10 @@ function Table(props) {
                                 />
                               </a> */}
                               <a
-                                href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                                href={`${props.explorer}/tx/${item.transactionHash}`}
                                 target="_blank"
                               >
-                                {trimAddress(item.txHash)}
+                                {trimAddress(item.transactionHash)}
                               </a>
                             </div>
                           </td>
@@ -395,7 +391,7 @@ function Table(props) {
                             <div>{item.sellAmount}</div>
                           </td>
                           <td>
-                            {account === userId &&
+                            {account === item.address &&
                               props.auctionStatus === 'completed' &&
                               props.isAlreadySettle &&
                               item.status !== 'CANCELLED' ? (
@@ -428,7 +424,7 @@ function Table(props) {
                                   </span>
                                 </label>
                               </div>
-                            ) : account === userId &&
+                            ) : account === item.address &&
                               props.isAllowCancellation &&
                               props.auctionStatus !== 'completed' &&
                               item.status !== 'CANCELLED' ? (
@@ -632,9 +628,10 @@ function Table(props) {
             ) : (
               <tbody>
                 {propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                  let userId = item.userId.address.toLowerCase();
+                  // let userId = item.userId.userAddress.toLowerCase();
+                  // let userId = (JSON.parse(item._userId));
                   let account = props.account ? props.account.toLowerCase() : '0x';
-                  return !isShowMyOrder || (isShowMyOrder && userId === account) ? (
+                  return !isShowMyOrder || (isShowMyOrder && item.address === account) ? (
                     <React.Fragment key={index}>
                       <tr className={'top-border-thick'}>
                         <th>Address</th>
@@ -642,10 +639,10 @@ function Table(props) {
                           <div className="flex justify-start items-center space-x-2">
                             <div className="text-primary">
                               <a
-                                href={`${process.env.REACT_APP_BSC_EXPLORER}/address/${item.userId.address}`}
+                                href={`${props.explorer}/address/${item.address}`}
                                 target="_blank"
                               >
-                                {item.userId ? item.userId.address.substring(0, 5) + '...' : 'xxx'}
+                                {item ? item.address.toLowerCase().substring(0, 5) + '...' : 'xxx'}
                               </a>
                             </div>
                           </div>
@@ -702,10 +699,10 @@ function Table(props) {
                         <td>
                           <div className="text-primary">
                             <a
-                              href={`${process.env.REACT_APP_BSC_EXPLORER}/tx/${item.txHash}`}
+                              href={`${props.explorer}/tx/${item.transactionHash}`}
                               target="_blank"
                             >
-                              {trimAddress(item.txHash)}
+                              {trimAddress(item.transactionHash)}
                             </a>
                           </div>
                         </td>
@@ -749,7 +746,7 @@ function Table(props) {
                       <tr>
                         <th className="text-center">Status</th>
                         <td>
-                          {account === userId &&
+                          {account === item.address &&
                             props.auctionStatus === 'completed' &&
                             props.isAlreadySettle &&
                             item.status !== 'CANCELLED' ? (
@@ -780,7 +777,7 @@ function Table(props) {
                                 </span>
                               </label>
                             </div>
-                          ) : account === userId &&
+                          ) : account === item.address &&
                             props.isAllowCancellation &&
                             props.auctionStatus !== 'completed' &&
                             item.status !== 'CANCELLED' ? (

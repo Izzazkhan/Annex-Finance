@@ -669,10 +669,10 @@ export const BIDDING_AUCTION_TOKEN = {
 export const CONTRACT_ANNEX_AUCTION = {
   97: {
     batch: {
-      id: 'batch',
-      name: "Annex Batch Auction",
-      symbol: "batch",
-      address: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
+      "id": 'batch',
+      "name": "Annex Batch Auction",
+      "symbol": "batch",
+      "address": process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
     },
     dutch: {
       id: 'dutch',
@@ -687,18 +687,18 @@ export const CONTRACT_ANNEX_AUCTION = {
       address: process.env.REACT_APP_TEST_ANNEX_FIXED_AUCTION_ADDRESS,
     },
     ann: {
-      id: 'ann',
-      name: "ANN",
-      symbol: "ann",
-      address: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
+      "id": 'ann',
+      "name": "ANN",
+      "symbol": "ann",
+      "address": process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS,
     }
   },
   56: {
     batch: {
-      id: 'batch',
-      name: "Annex Batch Auction",
-      symbol: "batch",
-      address: process.env.REACT_APP_BSC_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
+      "id": 'batch',
+      "name": "Annex Batch Auction",
+      "symbol": "batch",
+      "address": process.env.REACT_APP_BSC_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
     },
     dutch: {
       id: 'dutch',
@@ -713,10 +713,10 @@ export const CONTRACT_ANNEX_AUCTION = {
       address: process.env.REACT_APP_MAIN_ANNEX_FIXED_AUCTION_ADDRESS,
     },
     ann: {
-      id: 'ann',
-      name: "ANN",
-      symbol: "ann",
-      address: process.env.REACT_APP_BSC_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
+      "id": 'ann',
+      "name": "ANN",
+      "symbol": "ann",
+      "address": process.env.REACT_APP_BSC_MAIN_ANNEX_BATCH_AUCTION_ADDRESS,
     }
   },
   339: {

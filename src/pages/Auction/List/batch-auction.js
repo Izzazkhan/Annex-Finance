@@ -108,25 +108,27 @@ function BatchAuction(props) {
             })
             console.log('responseeee', response)
             if (props.auctionStatus === 'live') {
-                const filteredData = response.data.data.filter(item => Number(item.auctionEndDate) > currentTimeStamp &&
-                    Number(item.auctionStartDate) < currentTimeStamp)
+                const filteredData = response.data.data.filter(item =>
+                    new BigNumber(item.auctionEndDate).isGreaterThan(new BigNumber(currentTimeStamp))
+                    && new BigNumber(item.auctionStartDate).isLessThan(new BigNumber(currentTimeStamp)))
                 props.setBatchCount(filteredData.length)
                 setData(filteredData)
             }
             else if (props.auctionStatus === 'past') {
-                const filteredData = response.data.data.filter(item => Number(item.auctionEndDate) < currentTimeStamp &&
-                    Number(item.auctionStartDate) < currentTimeStamp)
+                const filteredData = response.data.data.filter(item =>
+                    new BigNumber(item.auctionEndDate).isLessThan(new BigNumber(currentTimeStamp))
+                    && new BigNumber(item.auctionStartDate).isLessThan(new BigNumber(currentTimeStamp)))
                 props.setBatchCount(filteredData.length)
                 setData(filteredData)
             }
             else {
-                const filteredData = response.data.data.filter(item => Number(item.auctionEndDate) > currentTimeStamp &&
-                    Number(item.auctionStartDate) > currentTimeStamp)
+                const filteredData = response.data.data.filter(item =>
+                    new BigNumber(item.auctionEndDate).isGreaterThan(new BigNumber(currentTimeStamp))
+                    && new BigNumber(item.auctionStartDate).isGreaterThan(new BigNumber(currentTimeStamp)))
                 props.setBatchCount(filteredData.length)
                 setData(filteredData)
             }
             setLoading(false)
-
         } catch (error) {
             // console.error(error);
             setError('Error while loading data')
@@ -174,8 +176,8 @@ function BatchAuction(props) {
 
     useEffect(() => {
         if (data && data.length > 0) {
-            const arr = useAuction(data, props)
-            setAuction(arr);
+            const returnedAuction = useAuction(data, props)
+            setAuction(returnedAuction);
             setLoading(false)
         }
         else if (data && data.length === 0) {

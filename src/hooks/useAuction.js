@@ -3,6 +3,7 @@ import moment from 'moment';
 import BigNumber from 'bignumber.js';
 
 export function useAuction(data, props) {
+    console.log('data', data)
     let arr = [];
     data.forEach((element) => {
         let auctionDecimal = (element['auctioningToken']);
@@ -29,14 +30,14 @@ export function useAuction(data, props) {
             .unix(element['auctionEndDate'])
             .format('MM/DD/YYYY HH:mm:ss');
         let graphData = [];
-        orders &&
-            orders.forEach((item) => {
-                graphData.push({
-                    ...item,
-                    isSuccessfull: item.price >= new BigNumber(clearingPrice),
-                    auctionEndDate: auctionEndDate,
-                });
+        orders && orders.length
+        orders.forEach((item) => {
+            graphData.push({
+                ...item,
+                isSuccessfull: item.price >= new BigNumber(clearingPrice),
+                auctionEndDate: auctionEndDate,
             });
+        });
         arr.push({
             ...element,
             chartType: 'block',

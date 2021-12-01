@@ -144,10 +144,10 @@ export function calculateClearingPrice(
   const initialOrder = orders[0]
     ? decodeOrder(initialAuctionOrder)
     : {
-        userId: new BigNumber(0),
-        sellAmount: new BigNumber(0),
-        buyAmount: new BigNumber(0),
-      };
+      userId: new BigNumber(0),
+      sellAmount: new BigNumber(0),
+      buyAmount: new BigNumber(0),
+    };
 
   const interimOrder = {
     userId: new BigNumber(0),
