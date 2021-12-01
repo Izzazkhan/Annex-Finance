@@ -79,7 +79,7 @@ const VotingWallet = ({
             methods
                 .send(
                     appContract.methods.claimAnnex,
-                    [account],
+                    [account, atokenAddresses],
                     account
                 )
                 .then(() => {
