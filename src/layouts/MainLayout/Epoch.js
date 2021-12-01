@@ -321,6 +321,7 @@ const Epoch = ({ setSetting, settings }) => {
   const [annDecimals, setAnnDecimals] = useState(18);
   const [currentEpochROI, setCurrentEpochROI] = useState('');
   const [holdingReward, setHoldingReward] = useState('');
+  const [eligibleReward, setEligibleReward] = useState('');
   const [eligibleEpochs, seteligibleEpochs] = useState('');
   const [currentEpoch, setCurrentEpoch] = useState('');
   const [holdingAPR, setHoldingAPR] = useState('');
@@ -334,14 +335,18 @@ const Epoch = ({ setSetting, settings }) => {
       setAnnDecimals(18);
       setCurrentEpochROI('');
       setHoldingReward('');
+      setEligibleReward('');
       seteligibleEpochs('');
       setCurrentEpoch('');
       setHoldingAPR('');
       setCheckCurrentEligibleEpoch(false);
       return;
     } else {
-      const balance = await methods.call(epochContract.methods.balanceOf, [account]);
-      const decimals = await methods.call(epochContract.methods.decimals, []);
+      const [balance, decimals] = await Promise.all([
+        methods.call(epochContract.methods.balanceOf, [account]),
+        methods.call(epochContract.methods.decimals, [])
+      ]);
+
       if (balance && decimals) {
         setAnnDecimals(decimals);
         setAnnBalance((balance / Math.pow(10, decimals)).toFixed(2));
@@ -368,6 +373,7 @@ const Epoch = ({ setSetting, settings }) => {
       setAnnDecimals(18);
       setCurrentEpochROI('');
       setHoldingReward('');
+      setEligibleReward('');
       seteligibleEpochs('');
       setCurrentEpoch('');
       setHoldingAPR('');
@@ -381,6 +387,8 @@ const Epoch = ({ setSetting, settings }) => {
           accountAddress,
         ])
       ])
+      setCurrentEpochROI(currentEpochROI / 100);
+
       if (holdingReward) {
         setHoldingReward((holdingReward / Math.pow(10, decimals)).toFixed(2));
       }
@@ -398,35 +406,45 @@ const Epoch = ({ setSetting, settings }) => {
       if (eligibleEpochs) {
         seteligibleEpochs(eligibleEpochs);
       }
-      if (annBalance / Math.pow(10, decimals) === 0) {
+      if (annBalance === 0) {
         setHoldingAPR(0);
       } else if (
-        Number(getEpoch) - Number(transferPoint[0]) > Number(eligibleEpochs) ||
-        Number(getEpoch) - Number(transferPoint[0]) === Number(eligibleEpochs)
+        Number(getEpoch) - Number(transferPoint[0]) >= Number(eligibleEpochs)
       ) {
         setHoldingAPR(
-          ((currentEpochROI / 100) * (Number(getEpoch) - Number(transferPoint[0]))).toFixed(2),
+          ((currentEpochROI / 100) * (Number(getEpoch) - Number(transferPoint[0]))).toFixed(2)
         );
       } else {
         setHoldingAPR(0);
       }
 
-      if (annBalance / Math.pow(10, decimals) === 0) {
+      if (
+        Number(getEpoch) - Number(transferPoint[0]) > 0
+      ) {
+        setEligibleReward(
+          (annBalance *
+            ((currentEpochROI / 100) * (Number(getEpoch) - Number(transferPoint[0]))) / 100).toFixed(2)
+        );
+      } else {
+        setEligibleReward(0);
+      }
+
+      if (annBalance === 0) {
         setCurrentEpoch(0);
       } else {
         setCurrentEpoch(Number(getEpoch) - Number(transferPoint[0]));
       }
       setSetting({
-        annBalance: annBalance / Math.pow(10, decimals),
+        annBalance
       });
     } catch (error) {
       console.log('error', error);
     }
-  }, [annBalance, annDecimals, chainId]);
+  }, [annBalance, annDecimals, chainId, account]);
 
   useEffect(() => {
     balanceOf();
-  }, [balanceOf]);
+  }, [balanceOf, chainId, account]);
 
   const handleSubmitClaim = () => {
     methods
@@ -448,7 +466,7 @@ const Epoch = ({ setSetting, settings }) => {
     } else {
       setCheckCurrentEligibleEpoch(false);
     }
-  }, [currentEpoch, eligibleEpochs]);
+  }, [currentEpoch, eligibleEpochs, chainId, account]);
 
   return (
     <Styles>
@@ -531,10 +549,18 @@ const Epoch = ({ setSetting, settings }) => {
           </div>
           <div
             className={` ${showDetails && 'custom-top mr-0'
-              } flex items-center font-bold md:mr-3 flex-col lg:flex-row`}
+              } font-bold md:mr-3 flex-col lg:flex-row`}
           >
-            <div className="text-md md:text-lg">ANN Holding Rewards : </div>
-            <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
+            <div className="flex items-center">
+              <div className="text-md md:text-lg">ANN Eligible Rewards : </div>
+              <div className="text-sm md:text-md ml-1"> {eligibleReward} ANN</div>
+            </div>
+            {showDetails && (
+              <div className="flex items-center">
+                <div className="text-md md:text-lg">ANN Holding Rewards : </div>
+                <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
+              </div>
+            )}
           </div>
           <div className="absolute right-0">
             <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
