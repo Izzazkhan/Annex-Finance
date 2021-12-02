@@ -148,7 +148,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
   const getVoteInfo = async () => {
     const myAddress = account;
     if (!myAddress) return;
-    const appContract = getComptrollerContract(chainId);
+    const appContract = getComptrollerContract(chainId, false);
     // const xaiContract = getXaiControllerContract();
     const annexInitialIndex = await methods.call(appContract.methods.annexInitialIndex, []);
     let annexEarned = new BigNumber(0);
@@ -161,7 +161,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     let assetValues = [];
     try {
       promiseAssetCall = settings.assetList.map((asset) => {
-        const aBepContract = getAbepContract(asset.id, chainId);
+        const aBepContract = getAbepContract(asset.id, chainId, false);
 
         return Promise.all([
           methods.call(appContract.methods.annexSupplyState, [asset.atokenAddress]),
@@ -216,7 +216,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     /* **************************************** */
     // will be removed after ANN listed to market
     const ann = Object.values(constants.CONTRACT_ABEP_ADDRESS[chainId]).find((t) => t.id === 'ann');
-    const annContract = getTokenContract(ann.id, chainId);
+    const annContract = getTokenContract(ann.id, chainId, false);
     const annWalletBalance = await methods.call(annContract.methods.balanceOf, [myAddress]);
     annexBalance = new BigNumber(annWalletBalance).div(1e18);
     /////////////////////////////////
@@ -345,7 +345,7 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     setSetting({
       withANN,
     });
-  }, [withANN]);
+  }, [withANN, account]);
   // Markets
   const [suppliedAssets, setSuppliedAssets] = useState([]);
   const [nonSuppliedAssets, setNonSuppliedAssets] = useState([]);

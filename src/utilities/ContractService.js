@@ -81,8 +81,16 @@ const send = (method, params, from) => {
 //   );
 // };
 
-export const getTokenContract = (name, chainId) => {
-  return new instance.eth.Contract(
+export const getTokenContract = (name, chainId, isWrite = true) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+  let readInstance = null;
+  if (!isWrite && chainId) {
+    readInstance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+  const newInstance = readInstance || instance
+  return new newInstance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
     constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc']
       ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc'].address
@@ -90,8 +98,16 @@ export const getTokenContract = (name, chainId) => {
   );
 };
 
-export const getAbepContract = (name, chainId) => {
-  return new instance.eth.Contract(
+export const getAbepContract = (name, chainId, isWrite = true) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+  let readInstance = null;
+  if (!isWrite && chainId) {
+    readInstance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+  const newInstance = readInstance || instance
+  return new newInstance.eth.Contract(
     JSON.parse(
       (name !== 'bnb' && name !== 'cro' && name !== 'tcro')
         ? constants.CONTRACT_ABEP_ABI
@@ -103,8 +119,16 @@ export const getAbepContract = (name, chainId) => {
   );
 };
 
-export const getComptrollerContract = (chainId) => {
-  return new instance.eth.Contract(
+export const getComptrollerContract = (chainId, isWrite = true) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+  let readInstance = null;
+  if (!isWrite && chainId) {
+    readInstance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+  const newInstance = readInstance || instance
+  return new newInstance.eth.Contract(
     JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
     constants.CONTRACT_COMPTROLLER_ADDRESS[chainId],
   );
