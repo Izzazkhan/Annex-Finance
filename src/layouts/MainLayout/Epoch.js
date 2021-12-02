@@ -429,7 +429,7 @@ const Epoch = ({ setSetting, settings }) => {
         setEligibleReward(0);
       }
 
-      if (annBalance === 0) {
+      if (Number(annBalance) === 0) {
         setCurrentEpoch(0);
       } else {
         setCurrentEpoch(Number(getEpoch) - Number(transferPoint[0]));
