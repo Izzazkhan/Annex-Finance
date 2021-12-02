@@ -552,12 +552,12 @@ const Epoch = ({ setSetting, settings }) => {
               } font-bold md:mr-3 flex-col lg:flex-row`}
           >
             <div className="flex items-center">
-              <div className="text-md md:text-lg">ANN Eligible Rewards : </div>
+              <div className="text-md md:text-lg">ANN Earned Rewards : </div>
               <div className="text-sm md:text-md ml-1"> {eligibleReward} ANN</div>
             </div>
             {showDetails && (
               <div className="flex items-center">
-                <div className="text-md md:text-lg">ANN Holding Rewards : </div>
+                <div className="text-md md:text-lg">ANN Pending Rewards : </div>
                 <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
               </div>
             )}
