@@ -84,9 +84,9 @@ const send = (method, params, from) => {
 export const getTokenContract = (name, chainId) => {
   return new instance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
-    constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt']
-      ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt'].address
-      : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdt.address,
+    constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc']
+      ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc'].address
+      : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdc.address,
   );
 };
 
@@ -97,9 +97,9 @@ export const getAbepContract = (name, chainId) => {
         ? constants.CONTRACT_ABEP_ABI
         : constants.CONTRACT_ABNB_ABI
     ),
-    constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt']
-      ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt'].address
-      : constants.CONTRACT_ABEP_ADDRESS[chainId].usdt.address,
+    constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc']
+      ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc'].address
+      : constants.CONTRACT_ABEP_ADDRESS[chainId].usdc.address,
   );
 };
 

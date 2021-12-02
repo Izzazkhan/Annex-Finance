@@ -157,20 +157,28 @@ function Dashboard({ settings, setSetting, getMarketHistory }) {
     let annexBalance = new BigNumber(0);
     ///////////////////////////////////
     // console.log('===== ', constants.CONTRACT_ABEP_ADDRESS)
-    const promiseAssetCall = settings.assetList.map((asset) => {
-      const aBepContract = getAbepContract(asset.id, chainId);
+    let promiseAssetCall = null;
+    let assetValues = [];
+    try {
+      promiseAssetCall = settings.assetList.map((asset) => {
+        const aBepContract = getAbepContract(asset.id, chainId);
 
-      return Promise.all([
-        methods.call(appContract.methods.annexSupplyState, [asset.atokenAddress]),
-        methods.call(appContract.methods.annexSupplierIndex, [asset.atokenAddress, myAddress]),
-        methods.call(aBepContract.methods.balanceOf, [myAddress]),
-        methods.call(appContract.methods.annexBorrowState, [asset.atokenAddress]),
-        methods.call(appContract.methods.annexBorrowerIndex, [asset.atokenAddress, myAddress]),
-        methods.call(aBepContract.methods.borrowBalanceStored, [myAddress]),
-        methods.call(aBepContract.methods.borrowIndex, []),
-      ]);
-    });
-    const assetValues = await Promise.all(promiseAssetCall);
+        return Promise.all([
+          methods.call(appContract.methods.annexSupplyState, [asset.atokenAddress]),
+          methods.call(appContract.methods.annexSupplierIndex, [asset.atokenAddress, myAddress]),
+          methods.call(aBepContract.methods.balanceOf, [myAddress]),
+          methods.call(appContract.methods.annexBorrowState, [asset.atokenAddress]),
+          methods.call(appContract.methods.annexBorrowerIndex, [asset.atokenAddress, myAddress]),
+          methods.call(aBepContract.methods.borrowBalanceStored, [myAddress]),
+          methods.call(aBepContract.methods.borrowIndex, []),
+        ]);
+      });
+
+      assetValues = await Promise.all(promiseAssetCall);
+    } catch (err) {
+      console.log(err)
+    }
+
     assetValues.forEach(
       ([
         supplyState,
