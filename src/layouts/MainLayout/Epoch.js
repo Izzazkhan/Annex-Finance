@@ -622,7 +622,7 @@ const Epoch = ({ setSetting, settings }) => {
                 handleLabel={checkCurrentEligibleEpoch ? holdingAPR.toString() : '0'}
                 min={0}
                 max={100}
-                value={checkCurrentEligibleEpoch ? parseFloat(holdingAPR).toFixed(2) : 0}
+                value={checkCurrentEligibleEpoch ? parseFloat(parseFloat(holdingAPR).toFixed(2)) : 0}
                 tooltip={true}
               />
             </div>
