@@ -4,7 +4,7 @@ import BarChart from '../../../components/common/BarChart';
 import LineChart from '../../../components/common/LineChart';
 import Slider from 'react-rangeslider';
 import BigNumber from 'bignumber.js';
-import { getTokenContract, methods } from '../../../utilities/ContractService';
+import { getTokenContract, getAuctionContract1, methods } from '../../../utilities/ContractService';
 import Modal from './modal';
 import Swal from 'sweetalert2';
 import { useActiveWeb3React } from '../../../hooks';
@@ -39,10 +39,12 @@ const AuctionStatus = ({
 }) => {
   const { chainId } = useActiveWeb3React();
 
-  const contractAuction = new instance.eth.Contract(
-    JSON.parse(AUCTION_ABI['batch']),
-    constants.CONTRACT_ANNEX_AUCTION[chainId]['batch'].address
-  );
+  // const auctionContract = new instance.eth.Contract(
+  //   JSON.parse(AUCTION_ABI['batch']),
+  //   constants.CONTRACT_ANNEX_AUCTION['97']['batch'].address
+  // );
+  // const auctionContract = getAuctionContract1('batch', chainId);
+
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
@@ -60,14 +62,14 @@ const AuctionStatus = ({
   const [showClaimButton, setShowClaimButton] = useState(false);
   useEffect(async () => {
     if (showModal) {
-      const threshold = await methods.call(contractAuction.methods.threshold, []);
+      const threshold = await methods.call(auctionContract.methods.threshold, []);
       setAuctionThreshold(threshold);
     }
   }, [showModal]);
 
   useEffect(async () => {
     if (auctionStatus === 'completed') {
-      const showClaimButton = await methods.call(contractAuction.methods.myClaimed, [
+      const showClaimButton = await methods.call(auctionContract.methods.myClaimed, [
         account,
         auctionId,
       ]);
@@ -156,13 +158,13 @@ const AuctionStatus = ({
 
       if (auctionType !== 'FIXED') {
         let auctionTxDetail = await methods.send(
-          contractAuction.methods.placeSellOrders,
+          auctionContract.methods.placeSellOrders,
           data,
           account,
         );
         console.log('auctionTxDetail', auctionTxDetail)
       } else {
-        await methods.send(contractAuction.methods.swap, data, account);
+        await methods.send(auctionContract.methods.swap, data, account);
       }
       setLoading(false);
       updateShowModal(true);
@@ -187,12 +189,12 @@ const AuctionStatus = ({
       e.preventDefault();
       setLoading(true);
       if (auctionType === 'BATCH') {
-        await methods.send(contractAuction.methods.settleAuction, [auctionId], account);
+        await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
       } else {
         if (account === auctionId) {
-          await methods.send(contractAuction.methods.creatorClaim, [auctionId], account);
+          await methods.send(auctionContract.methods.creatorClaim, [auctionId], account);
         } else {
-          await methods.send(contractAuction.methods.bidderClaim, [auctionId], account);
+          await methods.send(auctionContract.methods.bidderClaim, [auctionId], account);
         }
       }
       getData();

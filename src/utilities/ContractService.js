@@ -183,6 +183,15 @@ export const getAuctionContract = (name, chainId) => {
   );
 };
 
+export const getAuctionContract1 = (name, chainId) => {
+  console.log('chainId', chainId)
+
+  return new instance.eth.Contract(
+    JSON.parse(AUCTION_ABI['batch']),
+    constants.CONTRACT_ANNEX_AUCTION[chainId][name].address
+  );
+};
+
 export const getANNTokenContract = (chainId) => {
   const rpcProvider = constants.WEB3_PROVIDERS[chainId];
 
