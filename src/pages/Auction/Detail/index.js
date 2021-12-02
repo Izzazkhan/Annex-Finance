@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import Web3 from 'web3';
 import * as constants from '../../../utilities/constants';
-let instance = new Web3(window.ethereum);
 import Countdown from 'react-countdown';
 import Table from './Table';
 import DutchTable from './dutch-fixed-table';
@@ -215,44 +214,12 @@ function Detail(props) {
   }
 `;
 
-  const AUCTION_ABI = {
-    batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
-    dutch: constants.CONTRACT_ANNEX_DUTCH_AUCTION_ABI,
-    fixed: constants.CONTRACT_ANNEX_FIXED_AUCTION_ABI,
-  };
-
   const { account, chainId } = useActiveWeb3React();
   const { apolloClient } = useContext(subGraphContext);
   const { apolloClient: dutchApollo } = useContext(dutchAuctionContext);
   const { apolloClient: fixedApollo } = useContext(fixedAuctionContext);
 
-  // const auctionContract = getAuctionContract(state.type, chainId);
-
-  // new instance.eth.Contract(
-  //   JSON.parse(AUCTION_ABI['batch']),
-  //   constants.CONTRACT_ANNEX_AUCTION['97']['batch'].address
-  // );
-
-  const getAuctionCon = () => {
-    const rpcProvider = constants.WEB3_PROVIDERS[chainId];
-    if (chainId) {
-      instance = new Web3(
-        new Web3.providers.HttpProvider(rpcProvider)
-      );
-    }
-
-    return new instance.eth.Contract(
-      JSON.parse(AUCTION_ABI['batch']),
-      constants.CONTRACT_ANNEX_AUCTION['97']['batch'].address
-    );
-    // new instance.eth.Contract(
-    //   JSON.parse(AUCTION_ABI[name]),
-    //   constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch']
-    //     ? constants.CONTRACT_ANNEX_AUCTION[chainId][name || 'batch'].address
-    //     : constants.CONTRACT_ANNEX_AUCTION[chainId].batch.address,
-    // );
-  };
-  const auctionContract = getAuctionCon()
+  const auctionContract = getAuctionContract(state.type, chainId);
   const dutchContract = dutchAuctionContract(chainId);
   const fixedContract = fixedAuctionContract(chainId);
 

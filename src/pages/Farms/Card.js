@@ -185,8 +185,12 @@ function Card({ item, dipositWithdraw }) {
                     ${pendingTx ? " bg-lightGray text-gray pointer-events-none " : " bgPrimaryGradient text-black "}`}
                     onClick={async () => {
                       setPendingTx(true)
-                      await onReward(item.pid)
-                      setPendingTx(false)
+                      try {
+                        await onReward(item.pid)
+                        setPendingTx(false)
+                      } catch (err) {
+                        setPendingTx(false)
+                      }
                     }}>
                     {pendingTx && <Loader size="20px" className="mr-1.5" stroke="#717579" />}
                     Harvest Now

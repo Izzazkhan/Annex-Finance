@@ -6,6 +6,7 @@ import { getEtherscanLink } from "../../utils";
 import { useActiveWeb3React } from "../../hooks";
 import commaNumber from "comma-number";
 import DelegationTypeModal from "./Modals/DelegationTypeModal";
+import { getBigNumber } from '../../utilities/common';
 
 const format = commaNumber.bindWith(',', '.');
 
@@ -23,6 +24,35 @@ const VotingWallet = ({
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingEarn, setIsLoadingEarn] = useState(false);
+
+    const tempArr = [];
+    settings.assetList.forEach((item) => {
+        const temp = {
+            ...item,
+            supplyApy: getBigNumber(item.supplyApy),
+            borrowApy: getBigNumber(item.borrowApy),
+            walletBalance: getBigNumber(item.walletBalance),
+            supplyBalance: getBigNumber(item.supplyBalance),
+            aTokenBalance: getBigNumber(item.aTokenBalance),
+            borrowBalance: getBigNumber(item.borrowBalance),
+            collateralFactor: getBigNumber(item.collateralFactor),
+            tokenPrice: getBigNumber(item.tokenPrice),
+            liquidity: getBigNumber(item.liquidity),
+        };
+        tempArr.push(temp);
+    });
+
+    const marketAddresses = [];
+    tempArr.forEach((element) => {
+        if (!element.supplyBalance.isZero()) {
+            marketAddresses.push(element.atokenAddress);
+        }
+
+        if (!element.borrowBalance.isZero()) {
+            marketAddresses.push(element.atokenAddress);
+        }
+    });
+    const atokenAddresses = [...new Set(marketAddresses)]
 
     useEffect(() => {
         if (!earnedBalance) {
@@ -49,7 +79,7 @@ const VotingWallet = ({
             methods
                 .send(
                     appContract.methods.claimAnnex,
-                    [account],
+                    [account, atokenAddresses],
                     account
                 )
                 .then(() => {

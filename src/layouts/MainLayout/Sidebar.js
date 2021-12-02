@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -35,6 +35,10 @@ const Wrapper = styled.aside`
   // @media (min-width: 1024px) {
   //   min-width: 244px;
   // }
+  .logo-network-subtext {
+    top: 80%;
+    right: 18%;
+  }
   .sidebar-item {
     padding: 0.7rem 1rem 0.7em 1rem;
     font-size: 1rem;
@@ -242,6 +246,13 @@ const sidebarItems = [
   { key: 11, icon: (fill) => <FaucetIcon fill={fill} />, title: 'Faucet', href: RouteMap.faucet }
 ];
 
+const networkArrayOptions = [
+  { name: "BSC", value: 56 },
+  { name: "BSC Testnet", value: 97 },
+  { name: "Cassini", value: 339 },
+  { name: "Cronos", value: 25 },
+]
+
 const primaryColor = '#FF9800';
 
 const NavItems = ({
@@ -412,6 +423,13 @@ function Sidebar({ isOpen, onClose, settings }) {
     updateActiveMenu(val !== activeMenu ? val : '');
   };
 
+  const currentNetworkObj = useMemo(() => {
+    if (chainId) {
+      return networkArrayOptions.find((i) => i.value === chainId)
+    }
+    return networkArrayOptions[0]
+  }, [chainId])
+
   return (
     <>
       <Wrapper
@@ -419,8 +437,9 @@ function Sidebar({ isOpen, onClose, settings }) {
                    transform ease-in-out transition-all duration-300 z-30 
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="flex justify-center items-center mt-14 cursor-pointer" onClick={onClose}>
+        <div className="flex justify-center items-center mt-14 cursor-pointer relative" onClick={onClose}>
           <Logo src={logo} alt="Annex" />
+          <span className="absolute text-white logo-network-subtext">{currentNetworkObj.name}</span>
         </div>
         <NavItems
           items={sidebarItems}

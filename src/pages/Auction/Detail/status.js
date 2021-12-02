@@ -39,12 +39,6 @@ const AuctionStatus = ({
 }) => {
   const { chainId } = useActiveWeb3React();
 
-  // const auctionContract = new instance.eth.Contract(
-  //   JSON.parse(AUCTION_ABI['batch']),
-  //   constants.CONTRACT_ANNEX_AUCTION['97']['batch'].address
-  // );
-  // const auctionContract = getAuctionContract1('batch', chainId);
-
   const [showModal, updateShowModal] = useState(false);
   const [modalType, updateModalType] = useState('inprogress');
   const [modalError, setModalError] = useState({
