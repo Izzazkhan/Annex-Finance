@@ -371,6 +371,7 @@ export default function Form(props) {
           [data],
           accountId,
         );
+        console.log('auctionTxDetail', auctionTxDetail)
         let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
         setLoading(false);
         updateShowModal(true);

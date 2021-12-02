@@ -384,8 +384,8 @@ function Detail(props) {
               placeholderSellAmount = maxAvailable;
             }
           }
-          // if (userId === accountId) {
-          if (order.address) {
+          if (order.address === accountId) {
+            // if (order.address) {
             userOrders.push({
               ...order,
               auctionDivBuyAmount,
@@ -600,6 +600,8 @@ function Detail(props) {
     }
   }, [data]);
 
+  console.log('state', state)
+
   const getDateDiff = (endDate) => {
     endDate = moment.unix(endDate);
     let currentDate = moment();
@@ -613,7 +615,7 @@ function Detail(props) {
     biddingDecimal,
   }) => {
     let graphData = [];
-    let { orders, clearingPriceOrder } = calculateClearingPrice(
+    let { orders } = calculateClearingPrice(
       initialAuctionOrder,
       ordersList,
       auctionDecimal,
@@ -1368,7 +1370,6 @@ const ProgressBar = ({
 };
 
 const MediaIcon = ({ name, src, url }) => {
-  console.log('urllllll', url)
   return (
     <div className="flex items-center text-xl font-medium underline mb-3">
       <img className="mr-3" src={require(`../../../assets/images/${src}.svg`).default} alt="" />{' '}

@@ -160,6 +160,7 @@ const AuctionStatus = ({
           data,
           account,
         );
+        console.log('auctionTxDetail', auctionTxDetail)
       } else {
         await methods.send(contractAuction.methods.swap, data, account);
       }
@@ -301,9 +302,6 @@ const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye, showClaim
         {!isAlreadySettle ? (
           <Fragment>
             <div className="text-white text-4xl mt-10 mb-3">Auction Finished Successfully</div>
-            {/* <div className="text-white text-base mb-10">
-              you are able to claim 1 Non-Fungible Bible
-            </div> */}
             {auctionTye === 'DUTCH' || (auctionTye === 'FIXED' && showClaimButton) ? (
               <button
                 className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
@@ -368,8 +366,6 @@ const AuctionProgress = (props) => {
   const [state, setState] = useState({
     minBuyAmount: '',
     sellAmount: '',
-    // allowListCallData: '0x0000000000000000000000000000000000000000000000000000000000000001',
-    // prevOrder: '0x',
   });
   const [fixedAmount, setFixedAmount] = useState('');
 
@@ -398,7 +394,6 @@ const AuctionProgress = (props) => {
       let value = Number(state[key]);
       let minBuyAmount = Number(props.minBuyAmount);
       let maxAvailable = Number(props.maxAvailable);
-      let minBiddingPerOrder = Number(props.detail.minimumBiddingAmountPerOrder);
       let biddingSymbol = props.detail.biddingSymbol;
       let auctioningSymbol = props.detail.auctionSymbol;
 
@@ -406,7 +401,6 @@ const AuctionProgress = (props) => {
         errorMessage = `${placeholder} required`;
         isValid = false;
         break;
-        // } else if (key === 'minBuyAmount' && (value < minBuyAmount || value > maxAvailable)) {
       } else if (key === 'minBuyAmount' && state['sellAmount'] / value > maxAvailable) {
         errorMessage = `${placeholder} must be less than Maximum Auctioning Amount - ${maxAvailable} ${auctioningSymbol}`;
         isValid = false;
@@ -418,7 +412,6 @@ const AuctionProgress = (props) => {
       }
     }
     if (isValid) {
-      // let bidPrice = state['sellAmount'] / state['minBuyAmount'];
       if (
         state['minBuyAmount'] < props.detail.currentPrice ||
         state['minBuyAmount'] < props.detail.minimumPrice
@@ -453,14 +446,14 @@ const AuctionProgress = (props) => {
     return isValid;
   };
   const showCommitModal = () => {
-    // let isValid = validateForm();
-    // if (isValid) {
-    props.handleSubmit(
-      state.minBuyAmount,
-      state.sellAmount,
-      fixedAmount,
-    );
-    // }
+    let isValid = validateForm();
+    if (isValid) {
+      props.handleSubmit(
+        state.minBuyAmount,
+        state.sellAmount,
+        fixedAmount,
+      );
+    }
   };
 
   const onChangeSlider = (newValue) => {
@@ -496,7 +489,6 @@ const AuctionProgress = (props) => {
             <span className="label info unsuccess text-sm font-normal">
               <span></span>UnSuccessfull
             </span>
-            {/*  */}
             {orderArr && orderArr.length > 0 ? (
               <BarChart
                 width="100%"
@@ -617,7 +609,6 @@ const AuctionProgress = (props) => {
                   value={Number(value)}
                   onChange={onChangeSlider}
                 />
-                {/* <input id="range" className="w-full" type="range" min="0" max="951.7" /> */}
               </div>
             </div>
           )}
@@ -714,32 +705,6 @@ const AuctionProgress = (props) => {
               </div>
             </div>
           )}
-          {/* <div className="flex justify-between">
-            <div className="mb-3 w-full">
-              <span className="label">Allow List Call Data</span>
-              <input
-                // placeholder={props.detail ? props.detail.placeholderSellAmount : 0}
-                id="allowListCallData"
-                onChange={handleInputChange}
-                className="border border-solid border-gray bg-transparent
-                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
-                // type="number"
-                value={state.allowListCallData}
-              />
-            </div>
-            <div className="mb-3 w-full pl-2">
-              <span className="label">Previous Order</span>
-              <input
-                // placeholder={props.detail ? props.detail.placeHolderMinBuyAmount : 0}
-                id="prevOrder"
-                className="border border-solid border-gray bg-transparent
-                           rounded-xl w-full focus:outline-none font-bold px-4 h-14 text-white"
-                // type="number"
-                onChange={handleInputChange}
-                value={state.prevOrder}
-              />
-            </div>
-          </div> */}
           <div className="input-with-button text-right">
             <button
               className="focus:outline-none py-2 md:px-12 px-6 text-black text-xl 2xl:text-24
@@ -755,32 +720,32 @@ const AuctionProgress = (props) => {
   );
 };
 
-const AuctionClaim = () => {
-  return (
-    <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
-      <div className="w-full flex flex-col items-center justify-center ">
-        <div className="text-white text-4xl mb-10">Countdown</div>
-        <div className="counter bg-primary flex flex-row items-center py-10 rounded-2xl">
-          <div className="flex flex-col items-center px-6 border-r border-lightprimary">
-            <div className="text-3xl font-bold">01</div>
-            <div className="text-2xl font-normal">DAYs</div>
-          </div>
-          <div className="flex flex-col items-center px-6 border-r border-lightprimary">
-            <div className="text-3xl font-bold">07</div>
-            <div className="text-2xl font-normal">HOURS</div>
-          </div>
-          <div className="flex flex-col items-center px-6 border-r border-lightprimary">
-            <div className="text-3xl font-bold">50</div>
-            <div className="text-2xl font-normal">MIN</div>
-          </div>
-          <div className="flex flex-col items-center px-6">
-            <div className="text-3xl font-bold">32</div>
-            <div className="text-3xl font-normal">SEC</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+// const AuctionClaim = () => {
+//   return (
+//     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
+//       <div className="w-full flex flex-col items-center justify-center ">
+//         <div className="text-white text-4xl mb-10">Countdown</div>
+//         <div className="counter bg-primary flex flex-row items-center py-10 rounded-2xl">
+//           <div className="flex flex-col items-center px-6 border-r border-lightprimary">
+//             <div className="text-3xl font-bold">01</div>
+//             <div className="text-2xl font-normal">DAYs</div>
+//           </div>
+//           <div className="flex flex-col items-center px-6 border-r border-lightprimary">
+//             <div className="text-3xl font-bold">07</div>
+//             <div className="text-2xl font-normal">HOURS</div>
+//           </div>
+//           <div className="flex flex-col items-center px-6 border-r border-lightprimary">
+//             <div className="text-3xl font-bold">50</div>
+//             <div className="text-2xl font-normal">MIN</div>
+//           </div>
+//           <div className="flex flex-col items-center px-6">
+//             <div className="text-3xl font-bold">32</div>
+//             <div className="text-3xl font-normal">SEC</div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default AuctionStatus;

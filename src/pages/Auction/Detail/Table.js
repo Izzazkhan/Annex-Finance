@@ -317,7 +317,6 @@ function Table(props) {
                     </tr>
                   ) : (
                     propsData.sort(sortTypes[currentSort].fn).map((item, index) => {
-                      console.log('itemmm', item)
                       // let userId = (JSON.parse(item._userId));
                       let account = props.account ? props.account.toLowerCase() : '0x';
                       return !isShowMyOrder || (isShowMyOrder && item.address === account) ? (
@@ -325,18 +324,6 @@ function Table(props) {
                           <td>
                             <div className="flex justify-start items-center space-x-2">
                               <div className="text-primary flex items-center">
-                                {/* <a
-                                  href={`${props.explorer}/address/${item.userId.address}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  style={{ wordBreak: 'break-all', marginRight: '5px' }}
-                                >
-                                  <img
-                                    style={{ height: '29px' }}
-                                    src={require('../../../assets/images/link.svg').default}
-                                    alt=""
-                                  />
-                                </a> */}
                                 <a
                                   href={`${props.explorer}/address/${item.address}`}
                                   target="_blank"
@@ -361,18 +348,6 @@ function Table(props) {
                           </td>
                           <td>
                             <div className="text-primary flex items-center">
-                              {/* <a
-                                href={`${props.explorer}/tx/${item.transactionHash}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{ wordBreak: 'break-all', marginRight: '5px' }}
-                              >
-                                <img
-                                  style={{ height: '39px' }}
-                                  src={require('../../../assets/images/link.svg').default}
-                                  alt=""
-                                />
-                              </a> */}
                               <a
                                 href={`${props.explorer}/tx/${item.transactionHash}`}
                                 target="_blank"
