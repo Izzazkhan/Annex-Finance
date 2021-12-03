@@ -278,6 +278,16 @@ const Styles = styled.div`
         height: auto;
         z-index: 2;
       }
+      .reward-label {
+        bottom: -600%;
+        left: -130%;
+        max-width: 360px;
+      }
+      .reward-label-open {
+        bottom: -300%;
+        left: -130%;
+        max-width: 360px;
+      }
       .tooltip-label:hover + .label {
         display: flex;
       }
@@ -551,16 +561,29 @@ const Epoch = ({ setSetting, settings }) => {
             className={` ${showDetails && 'custom-top mr-0'
               } font-bold md:mr-3 flex-col lg:flex-row`}
           >
-            <div className="flex items-center">
-              <div className="text-md md:text-lg">ANN Earned Rewards : </div>
-              <div className="text-sm md:text-md ml-1"> {eligibleReward} ANN</div>
-            </div>
-            {showDetails && (
-              <div className="flex items-center">
-                <div className="text-md md:text-lg">ANN Pending Rewards : </div>
-                <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
+            <div className="tooltip relative">
+              <div className="tooltip-label">
+                <div className="flex items-center">
+                  <div className="text-md md:text-lg">ANN Earned Rewards : </div>
+                  <div className="text-sm md:text-md ml-1"> {eligibleReward} ANN</div>
+                </div>
+                {showDetails && (
+                  <div className="flex items-center">
+                    <div className="text-md md:text-lg">ANN Pending Rewards : </div>
+                    <div className="text-sm md:text-md ml-1"> {holdingReward} ANN</div>
+                  </div>
+                )}
               </div>
-            )}
+              <span className={`label ${showDetails ? 'reward-label-open' : 'reward-label'}`}>
+                User will earn 0.2% on your ANN holdings in your wallet daily. 
+                but only claimable after 30 epoch, 1 epoch is about 1 day approximately. <br/>
+                Moving ANN out of the wallet in any way will resets this timer back to 0 epoch. 
+                Adding ANN to holding wallet will not reset timer but all 
+                the newly added ANN token will require additional 30 epoch to mature for claim <br/>
+                User will need to wait until Epoch is fully mature (any new token will require 30 epoch before it is claimable. 
+                once it is claimable, the amount will increases 0.2% per day.
+              </span>
+            </div>
           </div>
           <div className="absolute right-0">
             <ArrowDown onClick={() => setShowDetails((s) => !s)} className={'order-4 flex'}>
