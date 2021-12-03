@@ -48,66 +48,70 @@ const Annex = ({ settings, getMarketHistory }) => {
 
     const getANNInfo = async () => {
         const tempMarkets = [];
-        const sum = (settings.markets || []).reduce((accumulator, market) => {
-            return new BigNumber(accumulator).plus(
-                new BigNumber(market.totalDistributed)
-            );
-        }, 0);
+        try {
+            const sum = (settings.markets || []).reduce((accumulator, market) => {
+                return new BigNumber(accumulator).plus(
+                    new BigNumber(market.totalDistributed)
+                );
+            }, 0);
 
-        // total info
-        // let annexXAIVaultRate = await methods.call(
-        //     compContract.methods.annexXAIVaultRate,
-        //     []
-        // );
-        // annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
-        //     .div(1e18)
-        //     .times(20 * 60 * 24);
-        const tokenContract = getTokenContract('ann', chainId);
-        const remainedAmount = await methods.call(tokenContract.methods.balanceOf, [
-            constants.CONTRACT_COMPTROLLER_ADDRESS[chainId]
-        ]);
-        setDailyDistribution(
-            new BigNumber(settings.dailyAnnex)
-                .div(new BigNumber(10).pow(18))
-                .dp(2, 1)
-                .toString(10)
-        );
-        setTotalDistributed(settings.totalAnnexDistributed);
-        setRemainAmount(
-            new BigNumber(remainedAmount)
-                .div(new BigNumber(10).pow(18))
-                .dp(2, 1)
-                .toString(10)
-        );
-        for (let i = 0; i < settings.markets.length; i += 1) {
-            const borrowGraph = await getGraphData(
-                constants.CONTRACT_ABEP_ADDRESS[chainId][settings.markets[i].underlyingSymbol?.toLowerCase()].address,
-                process.env.REACT_APP_GRAPH_TICKER || null,
-                60
-            )
-            tempMarkets.push({
-                underlyingSymbol: settings.markets[i].underlyingSymbol,
-                perDay: +new BigNumber(settings.markets[i].supplierDailyAnnex)
-                    .plus(new BigNumber(settings.markets[i].borrowerDailyAnnex))
+            // total info
+            // let annexXAIVaultRate = await methods.call(
+            //     compContract.methods.annexXAIVaultRate,
+            //     []
+            // );
+            // annexXAIVaultRate = new BigNumber(annexXAIVaultRate)
+            //     .div(1e18)
+            //     .times(20 * 60 * 24);
+            const tokenContract = getTokenContract('ann', chainId);
+            const remainedAmount = await methods.call(tokenContract.methods.balanceOf, [
+                constants.CONTRACT_COMPTROLLER_ADDRESS[chainId]
+            ]);
+            setDailyDistribution(
+                new BigNumber(settings.dailyAnnex)
                     .div(new BigNumber(10).pow(18))
                     .dp(2, 1)
-                    .toString(10),
-                supplyAPY: +(new BigNumber(
-                    settings.markets[i].supplyAnnexApy
-                ).isLessThan(0.01)
-                    ? '0.01'
-                    : new BigNumber(settings.markets[i].supplyAnnexApy)
+                    .toString(10)
+            );
+            setTotalDistributed(settings.totalAnnexDistributed);
+            setRemainAmount(
+                new BigNumber(remainedAmount)
+                    .div(new BigNumber(10).pow(18))
+                    .dp(2, 1)
+                    .toString(10)
+            );
+            for (let i = 0; i < settings.markets.length; i += 1) {
+                const borrowGraph = await getGraphData(
+                    constants.CONTRACT_ABEP_ADDRESS[chainId][settings.markets[i].underlyingSymbol?.toLowerCase()].address,
+                    process.env.REACT_APP_GRAPH_TICKER || null,
+                    60
+                )
+                tempMarkets.push({
+                    underlyingSymbol: settings.markets[i].underlyingSymbol,
+                    perDay: +new BigNumber(settings.markets[i].supplierDailyAnnex)
+                        .plus(new BigNumber(settings.markets[i].borrowerDailyAnnex))
+                        .div(new BigNumber(10).pow(18))
                         .dp(2, 1)
-                        .toString(10)),
-                borrowAPY: +(new BigNumber(
-                    settings.markets[i].borrowAnnexApy
-                ).isLessThan(0.01)
-                    ? '0.01'
-                    : new BigNumber(settings.markets[i].borrowAnnexApy)
-                        .dp(2, 1)
-                        .toString(10)),
-                borrowAnnexAPY: borrowGraph
-            });
+                        .toString(10),
+                    supplyAPY: +(new BigNumber(
+                        settings.markets[i].supplyAnnexApy
+                    ).isLessThan(0.01)
+                        ? '0.01'
+                        : new BigNumber(settings.markets[i].supplyAnnexApy)
+                            .dp(2, 1)
+                            .toString(10)),
+                    borrowAPY: +(new BigNumber(
+                        settings.markets[i].borrowAnnexApy
+                    ).isLessThan(0.01)
+                        ? '0.01'
+                        : new BigNumber(settings.markets[i].borrowAnnexApy)
+                            .dp(2, 1)
+                            .toString(10)),
+                    borrowAnnexAPY: borrowGraph
+                });
+            }
+        } catch (err) {
+            console.log(err)
         }
         setMarkets(tempMarkets);
     };
@@ -120,7 +124,7 @@ const Annex = ({ settings, getMarketHistory }) => {
         if (settings.markets && settings.markets.length > 0 && settings.dailyAnnex) {
             getANNInfo();
         }
-    }, [settings.markets]);
+    }, [settings.markets, chainId]);
 
     const filteredMarkets = useMemo(() => {
         if(!markets) {
@@ -135,7 +139,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                 .filter(stringMarket => stringMarket.toLowerCase().indexOf(search.toLowerCase()) > -1)
                 .map(filteredMarket => JSON.parse(filteredMarket));
         }
-    }, [search, markets])
+    }, [search, markets, chainId])
 
     const columns = useMemo(() => {
         return [{
@@ -166,7 +170,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                                     src={
                                         constants.CONTRACT_TOKEN_ADDRESS[chainId][
                                             value.toLowerCase()
-                                        ].asset
+                                        ]?.asset
                                     }
                                     alt={value}
                                 />
@@ -222,7 +226,7 @@ const Annex = ({ settings, getMarketHistory }) => {
                             <div className="w-full flex flex-row items-center justify-end">
                                 <div className="w-60 md:w-72" style={{ height: 75 }}>
                                     <APYSparkline
-                                        color={value[0].borrowAnnexApy >= 0 ? "green" : "red"}
+                                        color={value[0]?.borrowAnnexApy >= 0 ? "green" : "red"}
                                         data={value}
                                     />
                                 </div>

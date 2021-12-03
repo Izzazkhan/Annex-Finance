@@ -103,32 +103,38 @@ const Vote = ({ settings, getProposals, setSetting }) => {
         );
         let annexEarned = new BigNumber(0);
 
-        const promiseAssetCall = settings.assetList.map(asset => {
-            const aBepContract = getAbepContract(asset.id, chainId);
-      
-            return Promise.all([
-                methods.call(appContract.methods.annexSupplyState, [
-                    asset.atokenAddress,
-                ]),
-                methods.call(appContract.methods.annexSupplierIndex, [
-                    asset.atokenAddress,
-                    myAddress,
-                ]),
-                methods.call(aBepContract.methods.balanceOf, [myAddress]),
-                methods.call(appContract.methods.annexBorrowState, [
-                    asset.atokenAddress,
-                ]),
-                methods.call(appContract.methods.annexBorrowerIndex, [
-                    asset.atokenAddress,
-                    myAddress,
-                ]),
-                methods.call(aBepContract.methods.borrowBalanceStored, [
-                    myAddress,
-                ]),
-                methods.call(aBepContract.methods.borrowIndex, [])
-            ])
-        });
-        const assetValues = await Promise.all(promiseAssetCall);
+        let promiseAssetCall = null;
+        let assetValues =  [];
+        try {
+            promiseAssetCall = settings.assetList.map(asset => {
+                const aBepContract = getAbepContract(asset.id, chainId);
+        
+                return Promise.all([
+                    methods.call(appContract.methods.annexSupplyState, [
+                        asset.atokenAddress,
+                    ]),
+                    methods.call(appContract.methods.annexSupplierIndex, [
+                        asset.atokenAddress,
+                        myAddress,
+                    ]),
+                    methods.call(aBepContract.methods.balanceOf, [myAddress]),
+                    methods.call(appContract.methods.annexBorrowState, [
+                        asset.atokenAddress,
+                    ]),
+                    methods.call(appContract.methods.annexBorrowerIndex, [
+                        asset.atokenAddress,
+                        myAddress,
+                    ]),
+                    methods.call(aBepContract.methods.borrowBalanceStored, [
+                        myAddress,
+                    ]),
+                    methods.call(aBepContract.methods.borrowIndex, [])
+                ])
+            });
+            assetValues = await Promise.all(promiseAssetCall);
+        } catch (err) {
+            console.log(err)
+        }
         assetValues.forEach(([
             supplyState,
             supplierIndex,

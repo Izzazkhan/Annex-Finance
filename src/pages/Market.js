@@ -119,7 +119,7 @@ const Market = ({ history, settings }) => {
                 <div className="flex justify-end xl:justify-start items-center space-x-2 ml-6 sm:ml-0">
                   <img
                     className={'w-10 h-10'}
-                    src={constants.CONTRACT_TOKEN_ADDRESS[chainId][value.toLowerCase()].asset}
+                    src={constants.CONTRACT_TOKEN_ADDRESS[chainId][value.toLowerCase()]?.asset}
                     alt={value}
                   />
                   <div className="font-semibold text-white">{value}</div>

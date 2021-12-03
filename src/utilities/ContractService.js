@@ -81,30 +81,54 @@ const send = (method, params, from) => {
 //   );
 // };
 
-export const getTokenContract = (name, chainId) => {
-  return new instance.eth.Contract(
+export const getTokenContract = (name, chainId, isWrite = true) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+  let readInstance = null;
+  if (!isWrite && chainId) {
+    readInstance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+  const newInstance = readInstance || instance
+  return new newInstance.eth.Contract(
     JSON.parse(TOKEN_ABI[name]),
-    constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt']
-      ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdt'].address
-      : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdt.address,
+    constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc']
+      ? constants.CONTRACT_TOKEN_ADDRESS[chainId][name || 'usdc'].address
+      : constants.CONTRACT_TOKEN_ADDRESS[chainId].usdc.address,
   );
 };
 
-export const getAbepContract = (name, chainId) => {
-  return new instance.eth.Contract(
+export const getAbepContract = (name, chainId, isWrite = true) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+  let readInstance = null;
+  if (!isWrite && chainId) {
+    readInstance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+  const newInstance = readInstance || instance
+  return new newInstance.eth.Contract(
     JSON.parse(
       (name !== 'bnb' && name !== 'cro' && name !== 'tcro')
         ? constants.CONTRACT_ABEP_ABI
         : constants.CONTRACT_ABNB_ABI
     ),
-    constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt']
-      ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdt'].address
-      : constants.CONTRACT_ABEP_ADDRESS[chainId].usdt.address,
+    constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc']
+      ? constants.CONTRACT_ABEP_ADDRESS[chainId][name || 'usdc'].address
+      : constants.CONTRACT_ABEP_ADDRESS[chainId].usdc.address,
   );
 };
 
-export const getComptrollerContract = (chainId) => {
-  return new instance.eth.Contract(
+export const getComptrollerContract = (chainId, isWrite = true) => {
+  const rpcProvider = constants.WEB3_PROVIDERS[chainId];
+  let readInstance = null;
+  if (!isWrite && chainId) {
+    readInstance = new Web3(
+      new Web3.providers.HttpProvider(rpcProvider)
+    );
+  }
+  const newInstance = readInstance || instance
+  return new newInstance.eth.Contract(
     JSON.parse(constants.CONTRACT_COMPTROLLER_ABI),
     constants.CONTRACT_COMPTROLLER_ADDRESS[chainId],
   );
