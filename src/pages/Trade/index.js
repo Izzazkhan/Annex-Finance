@@ -79,9 +79,6 @@ const EmptyDataStyles = styled.div`
 `;
 
 function Trade() {
-  useEffect(() => {
-    getSwap();
-  }, []);
 
   const { chainId } = useActiveWeb3React();
   const { subGraphInstance } = useContext(subGraphContext);
@@ -124,6 +121,14 @@ function Trade() {
 
     setLoading(false)
   }
+  
+  useEffect(() => {
+    getSwap();
+  }, []);
+  
+  useEffect(() => {
+    getSwap();
+  }, [chainId]);
 
   const buttons = [
     { key: 1, title: 'Swap', tab: 'swap', route: `${path}/swap` },

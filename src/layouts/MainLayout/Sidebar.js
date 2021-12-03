@@ -439,7 +439,7 @@ function Sidebar({ isOpen, onClose, settings }) {
       >
         <div className="flex justify-center items-center mt-14 cursor-pointer relative" onClick={onClose}>
           <Logo src={logo} alt="Annex" />
-          <span className="absolute text-white logo-network-subtext">{currentNetworkObj.name}</span>
+          <span className="absolute text-white logo-network-subtext">{currentNetworkObj?.name}</span>
         </div>
         <NavItems
           items={sidebarItems}
