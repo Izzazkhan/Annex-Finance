@@ -3,6 +3,7 @@ import Modal from '../../../components/UI/Modal';
 import { CloseIcon } from '../../../../src/components/swap/SearchModal/ListSelect';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { restService } from 'utilities';
 
 const types = {
   SUCCESS: 'success',
@@ -34,16 +35,33 @@ function AuctionModal({
   auctionType
 }) {
   const history = useHistory();
-  const redirectAndCloseModal = () => {
+  const redirectAndCloseModal = async () => {
+    try {
+      console.log('close modal')
+      const response = await restService({
+        third_party: true,
+        api: process.env.REACT_APP_ADD_CUSTOM_CONTRACT_API,
+        method: 'POST',
+        params: { contractAddress: '0x3250a660047424f2e801ad8f7c2a45a618f1c77b' }
+      })
+      console.log('responsePost', response)
+      // if(response.code === 200) {
+      //   history.push({
+      //     pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
+      //       }`,
+      //     state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
+      //   });
+      // onCloseModal();
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+
     history.push({
       pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
         }`,
       state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
     });
-    // history.push(
-    //   `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
-    //   }`,
-    // );
     onCloseModal();
   };
   const title = (

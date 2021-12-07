@@ -227,6 +227,7 @@ function Detail(props) {
 
   useEffect(async () => {
     try {
+      // setLoading(true);
       const response = await restService({
         third_party: true,
         api: `${process.env.REACT_APP_GET_AUCTION_BY_ID_API}=${props.match.params.id}`,
@@ -234,10 +235,12 @@ function Detail(props) {
         params: {}
       })
       setData(response.data.data)
+      // setLoading(false);
       console.log('submitData', response.data.data)
 
     } catch (error) {
       console.log(error);
+      // setLoading(false);
     }
   }, [])
 
@@ -673,7 +676,7 @@ function Detail(props) {
               console.log('detailData', data)
               // setData(data);
             } else {
-              setData(data.auction);
+              // setData(data.auction);
             }
           })
           .catch((err) => {
@@ -1253,7 +1256,7 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
+        {/* <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <AuctionStatus
             auctionEndDate={state.auctionEndDate}
             auctionStartDate={state.auctionStartDate}
@@ -1278,9 +1281,9 @@ function Detail(props) {
             orders={state.orders}
             auctionType={state.detail.type}
           />
-        </div>
+        </div> */}
       </div>
-      {props.location.pathname.includes('batch') ? (
+      {/* {props.location.pathname.includes('batch') ? (
         <Table
           data={state.orders}
           loading={loading}
@@ -1304,7 +1307,7 @@ function Detail(props) {
           getData={getData}
           auctionId={state.detail.id}
         />
-      )}
+      )} */}
     </Wrapper>
   );
 }

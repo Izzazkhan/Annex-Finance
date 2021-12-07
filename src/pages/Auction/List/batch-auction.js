@@ -154,8 +154,6 @@ function BatchAuction(props) {
             };
             let subGraph
             subGraph = constants.BATCH_AUCTION_DATASOURCE[chainId]
-
-
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
                 .then(result => {
