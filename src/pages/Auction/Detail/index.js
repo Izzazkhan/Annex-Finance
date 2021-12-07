@@ -275,7 +275,6 @@ function Detail(props) {
         let totalAuction = elem['auctionedSellAmount_eth']
           ? new BigNumber(elem['auctionedSellAmount_eth']).dividedBy(auctionDecimal).toString()
           : 0;
-
         let totalAuctionedValue = elem['auctionedSellAmount'];
         let minimumPrice = new BigNumber(elem['minimumPrice_eth'])
           .dividedBy(biddingDecimal)
@@ -289,7 +288,6 @@ function Detail(props) {
         let minBuyAmount = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(biddingDecimal)
           .toNumber();
-
         minimumPrice = convertExponentToNum(minimumPrice);
         maxAvailable = convertExponentToNum(maxAvailable);
         currentPrice = Number(convertExponentToNum(currentPrice));
@@ -299,7 +297,6 @@ function Detail(props) {
         );
         let minFundingThresholdValue = elem['minFundingThreshold'];
         let socials = elem['socials'];
-        socials = JSON.parse(JSON.parse(socials))
         let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(1000000)
           .toNumber();
@@ -1256,7 +1253,7 @@ function Detail(props) {
             </div>
           </div>
         </div>
-        {/* <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
+        <div className="col-span-4 bg-fadeBlack rounded-2xl flex flex-col justify-between">
           <AuctionStatus
             auctionEndDate={state.auctionEndDate}
             auctionStartDate={state.auctionStartDate}
@@ -1281,9 +1278,9 @@ function Detail(props) {
             orders={state.orders}
             auctionType={state.detail.type}
           />
-        </div> */}
+        </div>
       </div>
-      {/* {props.location.pathname.includes('batch') ? (
+      {props.location.pathname.includes('batch') ? (
         <Table
           data={state.orders}
           loading={loading}
@@ -1307,7 +1304,7 @@ function Detail(props) {
           getData={getData}
           auctionId={state.detail.id}
         />
-      )} */}
+      )}
     </Wrapper>
   );
 }
