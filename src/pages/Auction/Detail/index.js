@@ -341,6 +341,7 @@ function Detail(props) {
           auctionDecimal: Number(auctionToken.decimals),
           biddingDecimal: Number(biddingToken.decimals),
         });
+        console.log('graphData', graphData)
 
         let orders = [];
         let placeHolderMinBuyAmount = 0;
