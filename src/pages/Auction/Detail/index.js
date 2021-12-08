@@ -234,9 +234,9 @@ function Detail(props) {
         method: 'GET',
         params: {}
       })
+      console.log('submitData', response)
       setData(response.data.data)
       // setLoading(false);
-      console.log('submitData', response.data.data)
 
     } catch (error) {
       console.log(error);

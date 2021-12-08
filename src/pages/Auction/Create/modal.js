@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/UI/Modal';
 import { CloseIcon } from '../../../../src/components/swap/SearchModal/ListSelect';
 import styled from 'styled-components';
@@ -34,36 +34,44 @@ function AuctionModal({
   isCreatingAuction,
   auctionType
 }) {
+  // const [auctionButton, setAuctionButton] = useState(true);
   const history = useHistory();
   const redirectAndCloseModal = async () => {
     try {
       console.log('close modal')
       const response = await restService({
         third_party: true,
-        api: process.env.REACT_APP_ADD_CUSTOM_CONTRACT_API,
+        api: process.env.REACT_APP_AUCTION_LOAD_API,
         method: 'POST',
-        params: { contractAddress: '0x3250a660047424f2e801ad8f7c2a45a618f1c77b' }
+        params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
       })
       console.log('responsePost', response)
-      // if(response.code === 200) {
-      //   history.push({
-      //     pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
-      //       }`,
-      //     state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
-      //   });
-      // onCloseModal();
-      // }
+      if (response.status === 200) {
+        history.push({
+          pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
+            }`,
+          state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
+        });
+        onCloseModal();
+      }
     } catch (error) {
       console.log(error);
     }
 
-    history.push({
-      pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
-        }`,
-      state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
-    });
-    onCloseModal();
+    // history.push({
+    //   pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
+    //     }`,
+    //   state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
+    // });
+    // onCloseModal();
   };
+
+  // useEffect(() => {
+  //   if (type === types['SUCCESS']) {
+  //     setTimeout(() => setAuctionButton(false), 7000)
+  //   }
+  // }, [type])
+
   const title = (
     <div className="flex items-center justify-between mt-4 mx-12 py-4 border-b border-solid border-gray-600">
       <div className="text-left text-xl font-normal  ">Create Auction </div>
@@ -119,6 +127,13 @@ function AuctionModal({
           >
             Go to auction detail{' '}
           </button>
+          {/* <button
+            className="focus:outline-none bg-primary py-4 rounded text-2xl
+                 w-full max-w-350px text-black"
+            disabled={auctionButton}
+          >
+            Hello{' '}
+          </button> */}
         </div>
       </div>
     ) : (
