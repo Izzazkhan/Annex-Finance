@@ -117,6 +117,102 @@ const AuctionStatus = ({
   };
   const commitAuction = async (e) => {
     try {
+      e.preventDefault();
+      setLoading(true);
+      let sellAmount = modalError.payload.sellAmount;
+      let buyAmount =
+        auctionType === 'BATCH'
+          ? modalError.payload.sellAmount / modalError.payload.minBuyAmount
+          : modalError.payload.minBuyAmount;
+      sellAmount =
+        auctionType === 'BATCH'
+          ? new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10)
+          : new BigNumber(sellAmount).multipliedBy(Number('1e' + biddingDecimal)).toString(10);
+      buyAmount =
+        auctionType === 'BATCH'
+          ? new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10)
+          : new BigNumber(buyAmount).multipliedBy(Number('1e' + auctionDecimal)).toString(10);
+      let fixedAmount = Number(modalError.payload.fixedAmount);
+      fixedAmount = new BigNumber(fixedAmount)
+        .multipliedBy(Number('1e' + biddingDecimal))
+        .toString(10);
+      let data;
+      if (auctionType === 'BATCH') {
+        data = [
+          auctionId,
+          [buyAmount],
+          [sellAmount],
+          ['0x0000000000000000000000000000000000000000000000000000000000000001'],
+          '0x',
+        ];
+      } else if (auctionType === 'DUTCH') {
+        data = [auctionId, buyAmount, sellAmount];
+      } else {
+        data = [auctionId, fixedAmount];
+      }
+
+      if (auctionType !== 'FIXED') {
+        let auctionTxDetail = await methods.send(
+          auctionContract.methods.placeSellOrders,
+          data,
+          account,
+        );
+        console.log('auctionTxDetail', auctionTxDetail)
+      } else {
+        await methods.send(auctionContract.methods.swap, data, account);
+      }
+      setLoading(false);
+      updateShowModal(true);
+      updateModalType('success');
+      // getData();
+      setModalError({
+        message: '',
+        type: '',
+        payload: {},
+      });
+    } catch (error) {
+      console.log(error);
+      setModalError({
+        ...modalError,
+        message: error.message,
+      });
+      setLoading(false);
+    }
+  };
+  const settlAuction = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      if (auctionType === 'BATCH') {
+        await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
+      } else {
+        if (account === auctionId) {
+          await methods.send(auctionContract.methods.creatorClaim, [auctionId], account);
+        } else {
+          await methods.send(auctionContract.methods.bidderClaim, [auctionId], account);
+        }
+      }
+      try {
+        const response = await restService({
+          third_party: true,
+          api: process.env.REACT_APP_AUCTION_LOAD_API,
+          method: 'POST',
+          params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
+        })
+        console.log('responseSettle', response)
+        if (response.status === 200) {
+          getData();
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  const closeModal = async () => {
+    try {
       const response = await restService({
         third_party: true,
         api: process.env.REACT_APP_AUCTION_LOAD_API,
@@ -126,110 +222,16 @@ const AuctionStatus = ({
       console.log('responseOrder', response)
       if (response.status === 200) {
         try {
-          e.preventDefault();
-          setLoading(true);
-          let sellAmount = modalError.payload.sellAmount;
-          let buyAmount =
-            auctionType === 'BATCH'
-              ? modalError.payload.sellAmount / modalError.payload.minBuyAmount
-              : modalError.payload.minBuyAmount;
-          sellAmount =
-            auctionType === 'BATCH'
-              ? new BigNumber(sellAmount).multipliedBy(biddingDecimal).toString(10)
-              : new BigNumber(sellAmount).multipliedBy(Number('1e' + biddingDecimal)).toString(10);
-          buyAmount =
-            auctionType === 'BATCH'
-              ? new BigNumber(buyAmount).multipliedBy(auctionDecimal).toString(10)
-              : new BigNumber(buyAmount).multipliedBy(Number('1e' + auctionDecimal)).toString(10);
-          let fixedAmount = Number(modalError.payload.fixedAmount);
-          fixedAmount = new BigNumber(fixedAmount)
-            .multipliedBy(Number('1e' + biddingDecimal))
-            .toString(10);
-          let data;
-          if (auctionType === 'BATCH') {
-            data = [
-              auctionId,
-              [buyAmount],
-              [sellAmount],
-              ['0x0000000000000000000000000000000000000000000000000000000000000001'],
-              '0x',
-            ];
-          } else if (auctionType === 'DUTCH') {
-            data = [auctionId, buyAmount, sellAmount];
-          } else {
-            data = [auctionId, fixedAmount];
-          }
-
-          if (auctionType !== 'FIXED') {
-            let auctionTxDetail = await methods.send(
-              auctionContract.methods.placeSellOrders,
-              data,
-              account,
-            );
-            console.log('auctionTxDetail', auctionTxDetail)
-          } else {
-            await methods.send(auctionContract.methods.swap, data, account);
-          }
-          setLoading(false);
-          updateShowModal(true);
-          updateModalType('success');
+          updateShowModal(false);
+          updateModalType('inprogress');
           getData();
-          setModalError({
-            message: '',
-            type: '',
-            payload: {},
-          });
         } catch (error) {
           console.log(error);
-          setModalError({
-            ...modalError,
-            message: error.message,
-          });
-          setLoading(false);
         }
       }
     } catch (error) {
       console.log(error);
     }
-
-
-  };
-  const settlAuction = async (e) => {
-    try {
-      const response = await restService({
-        third_party: true,
-        api: process.env.REACT_APP_AUCTION_LOAD_API,
-        method: 'POST',
-        params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
-      })
-      console.log('responseSettle', response)
-      if (response.status === 200) {
-        try {
-          e.preventDefault();
-          setLoading(true);
-          if (auctionType === 'BATCH') {
-            await methods.send(auctionContract.methods.settleAuction, [auctionId], account);
-          } else {
-            if (account === auctionId) {
-              await methods.send(auctionContract.methods.creatorClaim, [auctionId], account);
-            } else {
-              await methods.send(auctionContract.methods.bidderClaim, [auctionId], account);
-            }
-          }
-          getData();
-          setLoading(false);
-        } catch (error) {
-          setLoading(false);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-  };
-  const closeModal = () => {
-    updateShowModal(false);
-    updateModalType('inprogress');
   };
   return (
     <Fragment>

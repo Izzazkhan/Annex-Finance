@@ -225,24 +225,21 @@ function Detail(props) {
 
   const [showDetails, setShowDetails] = useState(false);
 
-  useEffect(async () => {
-    try {
-      // setLoading(true);
-      const response = await restService({
-        third_party: true,
-        api: `${process.env.REACT_APP_GET_AUCTION_BY_ID_API}=${props.match.params.id}`,
-        method: 'GET',
-        params: {}
-      })
-      console.log('submitData', response)
-      setData(response.data.data)
-      // setLoading(false);
+  // useEffect(async () => {
+  //   try {
+  //     const response = await restService({
+  //       third_party: true,
+  //       api: `${process.env.REACT_APP_GET_AUCTION_BY_ID_API}=${props.match.params.id}`,
+  //       method: 'GET',
+  //       params: {}
+  //     })
+  //     console.log('submitData', response)
+  //     setData(response.data.data)
 
-    } catch (error) {
-      console.log(error);
-      // setLoading(false);
-    }
-  }, [])
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [])
 
 
   useEffect(() => {
@@ -437,17 +434,17 @@ function Detail(props) {
           biddingDecimal,
           chartType: 'block',
           data: graphData,
-          telegramLink: socials[3],
-          discordLink: socials[2],
-          mediumLink: socials[1],
-          twitterLink: socials[0],
+          telegramLink: socials[2],
+          discordLink: socials[3],
+          mediumLink: socials[4],
+          twitterLink: socials[5],
           status: auctionStatus,
           statusClass: auctionStatus,
           title: type + ' Auction',
           contract: CONTRACT_ANNEX_AUCTION[chainId][type.toLowerCase()]['address'],
           token: auctionTokenId,
-          website: socials[5],
-          description: socials[4],
+          website: socials[0],
+          description: socials[1],
           isAlreadySettle,
           isAllowCancellation,
           placeHolderMinBuyAmount,
@@ -650,41 +647,56 @@ function Detail(props) {
     return x;
   };
 
-  const getData = () => {
-    let apollo;
-    if (props.location.pathname.includes('dutch')) {
-      apollo = dutchApollo;
-    } else if (props.location.pathname.includes('fixed')) {
-      apollo = fixedApollo;
-    } else {
-      apollo = apolloClient;
-    }
+  const getData = async () => {
     try {
       setLoading(true);
-      setData([]);
-      setTimeout(() => {
-        apollo
-          .query({
-            query: props.location.pathname.includes('batch') ? query : dutchFixedQuery,
-            variables: {},
-          })
-          .then((response) => {
-            let { data } = response;
-            if (props.location.pathname.includes('batch')) {
-              console.log('detailData', data)
-              // setData(data);
-            } else {
-              // setData(data.auction);
-            }
-          })
-          .catch((err) => {
-            setData([]);
-            setLoading(false);
-          });
-      }, 1000);
+      const response = await restService({
+        third_party: true,
+        api: `${process.env.REACT_APP_GET_AUCTION_BY_ID_API}=${props.match.params.id}`,
+        method: 'GET',
+        params: {}
+      })
+      console.log('submitData', response)
+      setData(response.data.data)
+
     } catch (error) {
+      console.log(error);
       setLoading(false);
     }
+    // let apollo;
+    // if (props.location.pathname.includes('dutch')) {
+    //   apollo = dutchApollo;
+    // } else if (props.location.pathname.includes('fixed')) {
+    //   apollo = fixedApollo;
+    // } else {
+    //   apollo = apolloClient;
+    // }
+    // try {
+    //   setLoading(true);
+    //   setData([]);
+    //   setTimeout(() => {
+    //     apollo
+    //       .query({
+    //         query: props.location.pathname.includes('batch') ? query : dutchFixedQuery,
+    //         variables: {},
+    //       })
+    //       .then((response) => {
+    //         let { data } = response;
+    //         if (props.location.pathname.includes('batch')) {
+    //           console.log('detailData', data)
+    //           // setData(data);
+    //         } else {
+    //           // setData(data.auction);
+    //         }
+    //       })
+    //       .catch((err) => {
+    //         setData([]);
+    //         setLoading(false);
+    //       });
+    //   }, 1000);
+    // } catch (error) {
+    //   setLoading(false);
+    // }
   };
   const updateAuctionStatus = (auctionStatus) => {
     // setState({

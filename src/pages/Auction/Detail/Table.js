@@ -95,91 +95,94 @@ function Table(props) {
     return address;
   };
   const claimAuction = async (item) => {
+
     try {
-      const response = await restService({
-        third_party: true,
-        api: process.env.REACT_APP_AUCTION_LOAD_API,
-        method: 'POST',
-        params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
-      })
-      console.log('responseClaim', response)
-      if (response.status === 200) {
-        try {
-          setLoading(true);
-          let auctionId = props['auctionId'];
-          let orders = [];
-          for (let index = 0; index < selectedClaimOrders.length; index++) {
-            const element = selectedClaimOrders[index];
-            console.log('element: ', element);
-            let userId = element['userId']['id'];
-            let sellAmount = element['sellAmount_eth'];
-            let buyAmount = element['buyAmount_eth'];
-            console.log('user claim data: ', userId, sellAmount, buyAmount);
-            userId = toHex(userId, { addPrefix: true });
-            sellAmount = toHex(sellAmount, { addPrefix: true });
-            buyAmount = toHex(buyAmount, { addPrefix: true });
-            let orderData = encodeOrder(userId, sellAmount, buyAmount);
-            orders.push(orderData);
-          }
-          console.log('claim orders: ', orders);
-          await methods.send(
-            props.auctionContract.methods.claimFromParticipantOrder,
-            [auctionId, orders],
-            props.account,
-          );
+      setLoading(true);
+      let auctionId = props['auctionId'];
+      let orders = [];
+      for (let index = 0; index < selectedClaimOrders.length; index++) {
+        const element = selectedClaimOrders[index];
+        console.log('element: ', element);
+        let userId = element['userId']['id'];
+        let sellAmount = element['sellAmount_eth'];
+        let buyAmount = element['buyAmount_eth'];
+        console.log('user claim data: ', userId, sellAmount, buyAmount);
+        userId = toHex(userId, { addPrefix: true });
+        sellAmount = toHex(sellAmount, { addPrefix: true });
+        buyAmount = toHex(buyAmount, { addPrefix: true });
+        let orderData = encodeOrder(userId, sellAmount, buyAmount);
+        orders.push(orderData);
+      }
+      console.log('claim orders: ', orders);
+      await methods.send(
+        props.auctionContract.methods.claimFromParticipantOrder,
+        [auctionId, orders],
+        props.account,
+      );
+      try {
+        const response = await restService({
+          third_party: true,
+          api: process.env.REACT_APP_AUCTION_LOAD_API,
+          method: 'POST',
+          params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
+        })
+        console.log('responseClaim', response)
+        if (response.status === 200) {
           props.getData();
           setLoading(false);
-        } catch (error) {
-          updateSelectedClaimOrders([]);
-          setLoading(false);
         }
+      } catch (error) {
+        console.log(error);
       }
     } catch (error) {
-      console.log(error);
+      updateSelectedClaimOrders([]);
+      setLoading(false);
     }
+
 
   };
   const cancelAuction = async () => {
     try {
-      const response = await restService({
-        third_party: true,
-        api: process.env.REACT_APP_AUCTION_LOAD_API,
-        method: 'POST',
-        params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
-      })
-      console.log('responseCancel', response)
-      if (response.status === 200) {
-        try {
-          setLoading(true);
-          let auctionId = props['auctionId'];
-          let orders = [];
-          for (let index = 0; index < selectedCancelOrders.length; index++) {
-            const element = selectedCancelOrders[index];
-            let userId = element['userId']['id'];
-            let sellAmount = element['sellAmount_eth'];
-            let buyAmount = element['buyAmount_eth'];
-            userId = toHex(userId, { addPrefix: true });
-            sellAmount = toHex(sellAmount, { addPrefix: true });
-            buyAmount = toHex(buyAmount, { addPrefix: true });
-            let orderData = encodeOrder(userId, sellAmount, buyAmount);
-            orders.push(orderData);
-          }
-          await methods.send(
-            props.auctionContract.methods.cancelSellOrders,
-            [auctionId, orders],
-            props.account,
-          );
-          // updateSelectedCancelOrders([]);
+      setLoading(true);
+      let auctionId = props['auctionId'];
+      let orders = [];
+      for (let index = 0; index < selectedCancelOrders.length; index++) {
+        const element = selectedCancelOrders[index];
+        let userId = element['userId']['id'];
+        let sellAmount = element['sellAmount_eth'];
+        let buyAmount = element['buyAmount_eth'];
+        userId = toHex(userId, { addPrefix: true });
+        sellAmount = toHex(sellAmount, { addPrefix: true });
+        buyAmount = toHex(buyAmount, { addPrefix: true });
+        let orderData = encodeOrder(userId, sellAmount, buyAmount);
+        orders.push(orderData);
+      }
+      await methods.send(
+        props.auctionContract.methods.cancelSellOrders,
+        [auctionId, orders],
+        props.account,
+      );
+      // updateSelectedCancelOrders([]);
+      try {
+        const response = await restService({
+          third_party: true,
+          api: process.env.REACT_APP_AUCTION_LOAD_API,
+          method: 'POST',
+          params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
+        })
+        console.log('responseCancel', response)
+        if (response.status === 200) {
           props.getData();
           setLoading(false);
-        } catch (error) {
-          updateSelectedCancelOrders([]);
-          setLoading(false);
         }
+      } catch (error) {
+        console.log(error);
       }
     } catch (error) {
-      console.log(error);
+      updateSelectedCancelOrders([]);
+      setLoading(false);
     }
+
 
 
   };
