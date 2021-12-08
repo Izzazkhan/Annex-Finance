@@ -132,8 +132,8 @@ function Table(props) {
       for (let index = 0; index < selectedCancelOrders.length; index++) {
         const element = selectedCancelOrders[index];
         let userId = element['userId']['id'];
-        let sellAmount = element['sellAmount'];
-        let buyAmount = element['buyAmount'];
+        let sellAmount = element['sellAmount_eth'];
+        let buyAmount = element['buyAmount_eth'];
         userId = toHex(userId, { addPrefix: true });
         sellAmount = toHex(sellAmount, { addPrefix: true });
         buyAmount = toHex(buyAmount, { addPrefix: true });
