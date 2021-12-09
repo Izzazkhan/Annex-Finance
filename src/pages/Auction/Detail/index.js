@@ -28,6 +28,7 @@ import SVG from 'react-inlinesvg';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { maxHeight } from 'styled-system';
+import { convertExponentToNum } from '../../../utilities/convertExponentToNum'
 import { restService } from 'utilities';
 
 const ArrowDown = styled.button`
@@ -117,8 +118,6 @@ function Detail(props) {
       auctionEndDate
       auctionedSellAmount
       minBuyAmount
-      liquidity
-      soldAuctioningTokens
       clearingPriceOrder
       minFundingThreshold
       isAtomicClosureAllowed
@@ -126,8 +125,6 @@ function Detail(props) {
       minimumBiddingAmountPerOrder
       auctionedSellAmount_eth
       minBuyAmount_eth
-      liquidity_eth
-      soldAuctioningTokens_eth
       minimumBiddingAmountPerOrder_eth
       estimatedTokenSold_eth
       minFundingThreshold_eth
@@ -225,26 +222,11 @@ function Detail(props) {
 
   const [showDetails, setShowDetails] = useState(false);
 
-  // useEffect(async () => {
-  //   try {
-  //     const response = await restService({
-  //       third_party: true,
-  //       api: `${process.env.REACT_APP_GET_AUCTION_BY_ID_API}=${props.match.params.id}`,
-  //       method: 'GET',
-  //       params: {}
-  //     })
-  //     console.log('submitData', response)
-  //     setData(response.data.data)
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [])
-
 
   useEffect(() => {
     getData();
   }, []);
+
 
   useEffect(async () => {
     try {
@@ -346,11 +328,6 @@ function Detail(props) {
         let orderLength = data.orders.length;
         let isAlreadySettle = elem['clearingPriceOrder'] !== emptyAddr;
         let lpTokenPromises = [];
-        // if (auctionStatus == 'completed') {
-        //   data.orders.forEach((order) => {
-        //     lpTokenPromises.push(calculateLPTokens(order));
-        //   });
-        // }
         let lpTokenData = [];
         if (isAlreadySettle && auctionStatus == 'completed') {
           lpTokenData = await Promise.all(lpTokenPromises);
@@ -629,23 +606,7 @@ function Detail(props) {
     return graphData;
   };
 
-  const convertExponentToNum = (x) => {
-    if (Math.abs(x) < 1.0) {
-      let e = parseInt(x.toString().split('e-')[1]);
-      if (e) {
-        x *= Math.pow(10, e - 1);
-        x = '0.' + new Array(e).join('0') + x.toString().substring(2);
-      }
-    } else {
-      let e = parseInt(x.toString().split('+')[1]);
-      if (e > 20) {
-        e -= 20;
-        x /= Math.pow(10, e);
-        x += new Array(e + 1).join('0');
-      }
-    }
-    return x;
-  };
+
 
   const getData = async () => {
     try {
@@ -663,40 +624,40 @@ function Detail(props) {
       console.log(error);
       setLoading(false);
     }
-    // let apollo;
-    // if (props.location.pathname.includes('dutch')) {
-    //   apollo = dutchApollo;
-    // } else if (props.location.pathname.includes('fixed')) {
-    //   apollo = fixedApollo;
-    // } else {
-    //   apollo = apolloClient;
-    // }
-    // try {
-    //   setLoading(true);
-    //   setData([]);
-    //   setTimeout(() => {
-    //     apollo
-    //       .query({
-    //         query: props.location.pathname.includes('batch') ? query : dutchFixedQuery,
-    //         variables: {},
-    //       })
-    //       .then((response) => {
-    //         let { data } = response;
-    //         if (props.location.pathname.includes('batch')) {
-    //           console.log('detailData', data)
-    //           // setData(data);
-    //         } else {
-    //           // setData(data.auction);
-    //         }
-    //       })
-    //       .catch((err) => {
-    //         setData([]);
-    //         setLoading(false);
-    //       });
-    //   }, 1000);
-    // } catch (error) {
-    //   setLoading(false);
-    // }
+    let apollo;
+    if (props.location.pathname.includes('dutch')) {
+      apollo = dutchApollo;
+    } else if (props.location.pathname.includes('fixed')) {
+      apollo = fixedApollo;
+    } else {
+      apollo = apolloClient;
+    }
+    try {
+      setLoading(true);
+      setData([]);
+      setTimeout(() => {
+        apollo
+          .query({
+            query: props.location.pathname.includes('batch') ? query : dutchFixedQuery,
+            variables: {},
+          })
+          .then((response) => {
+            let { data } = response;
+            if (props.location.pathname.includes('batch')) {
+              console.log('detailData', data)
+              // setData(data);
+            } else {
+              // setData(data.auction);
+            }
+          })
+          .catch((err) => {
+            // setData([]);
+            // setLoading(false);
+          });
+      }, 1000);
+    } catch (error) {
+      // setLoading(false);
+    }
   };
   const updateAuctionStatus = (auctionStatus) => {
     // setState({

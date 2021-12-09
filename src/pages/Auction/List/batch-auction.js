@@ -10,7 +10,8 @@ import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import * as constants from '../../../utilities/constants';
 import { restService } from 'utilities';
-import { useAuction } from '../../../hooks/useAuction'
+// import { useAuction } from '../../../hooks/useAuction'
+import { convertExponentToNum } from '../../../utilities/convertExponentToNum'
 
 function BatchAuction(props) {
 
@@ -56,10 +57,6 @@ function BatchAuction(props) {
       initialAuctionOrder
       auctionedSellAmount_eth
       minBuyAmount_eth
-      liquidity_eth
-      soldAuctioningTokens_eth
-      minimumBiddingAmountPerOrder_eth
-      estimatedTokenSold_eth
       minFundingThreshold_eth
       maxAvailable_eth
       minimumPrice_eth
@@ -102,11 +99,11 @@ function BatchAuction(props) {
         try {
             const response = await restService({
                 third_party: true,
-                api: process.env.REACT_APP_GET_All_AUCTIONS_API, //'http://192.168.99.197:3070/api/v1/getAllAuctions',
+                api: process.env.REACT_APP_GET_All_AUCTIONS_API,
                 method: 'GET',
                 params: {}
             })
-            console.log('responseeee', response)
+            console.log('DataWith API', response)
             if (props.auctionStatus === 'live') {
                 const filteredData = response.data.data.filter(item =>
                     new BigNumber(item.auctionEndDate).isGreaterThan(new BigNumber(currentTimeStamp))
@@ -130,7 +127,6 @@ function BatchAuction(props) {
             }
             setLoading(false)
         } catch (error) {
-            // console.error(error);
             setError('Error while loading data')
             setLoading(false)
         }
@@ -157,7 +153,7 @@ function BatchAuction(props) {
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
                 .then(result => {
-                    console.log('resulttt', JSON.parse(result))
+                    console.log('DataWith subgraph', JSON.parse(result))
                     // setData(JSON.parse(result))
                 })
                 .catch(error => {
@@ -172,9 +168,59 @@ function BatchAuction(props) {
         }
     }, [])
 
+    const mapAuction = (data, props) => {
+        let auctionArray = [];
+        data.forEach((element) => {
+            let auctionDecimal = (element['auctioningToken']);
+            auctionDecimal = JSON.parse(auctionDecimal)
+            auctionDecimal = JSON.parse(auctionDecimal.decimals)
+            let biddingDecimal = (element['biddingToken']);
+            biddingDecimal = JSON.parse(biddingDecimal)
+            biddingDecimal = JSON.parse(biddingDecimal.decimals)
+            let auctionEndDate = element['auctionEndDate'];
+            let clearingPrice = element['clearingPrice'];
+            clearingPrice = convertExponentToNum(clearingPrice)
+            let initialAuctionOrder = element['initialAuctionOrder'];
+            let { orders } = calculateClearingPrice(
+                initialAuctionOrder,
+                element.orders,
+                auctionDecimal,
+                biddingDecimal,
+                auctionEndDate,
+            );
+            let minFundingThreshold = convertExponentToNum(
+                new BigNumber(element['minFundingThreshold_eth']).dividedBy(1000000).toNumber(),
+            );
+            let formatedAuctionDate = moment
+                .unix(element['auctionEndDate'])
+                .format('MM/DD/YYYY HH:mm:ss');
+            let graphData = [];
+            orders && orders.length
+            orders.forEach((item) => {
+                graphData.push({
+                    ...item,
+                    isSuccessfull: item.price >= new BigNumber(clearingPrice),
+                    auctionEndDate: auctionEndDate,
+                });
+            });
+            auctionArray.push({
+                ...element,
+                chartType: 'block',
+                data: graphData,
+                status: props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming',
+                statusClass: props.auctionStatus === 'live' ? 'live' : props.auctionStatus === 'past' ? 'past' : 'upcoming',
+                dateLabel: 'Completion Date',
+                formatedAuctionDate,
+                minFundingThreshold,
+                title: element.type + ' Auction',
+            });
+        });
+        return auctionArray
+    }
+
     useEffect(() => {
         if (data && data.length > 0) {
-            const returnedAuction = useAuction(data, props)
+            const returnedAuction = mapAuction(data, props)
             setAuction(returnedAuction);
             setLoading(false)
         }
