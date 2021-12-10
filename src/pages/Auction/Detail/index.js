@@ -633,7 +633,7 @@ function Detail(props) {
       apollo = apolloClient;
     }
     try {
-      setLoading(true);
+      // setLoading(true);
       setData([]);
       setTimeout(() => {
         apollo

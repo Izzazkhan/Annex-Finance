@@ -12,6 +12,7 @@ import Web3 from 'web3';
 import * as constants from '../../../utilities/constants';
 let instance = new Web3(window.ethereum);
 import { restService } from 'utilities';
+import Loader from '../../../components/UI/Loader';
 
 const AUCTION_ABI = {
   batch: constants.CONTRACT_ANNEX_BATCH_AUCTION_ABI,
@@ -93,7 +94,6 @@ const AuctionStatus = ({
   };
   const handleApproveBiddingToken = async () => {
     try {
-
       setApproveBiddingToken({ status: false, isLoading: true, label: 'Loading...' });
       let biddingTokenContract = getTokenContract(biddingSymbol.toLowerCase(), chainId);
       console.log('biddingTokenContract', biddingTokenContract);
@@ -161,10 +161,27 @@ const AuctionStatus = ({
       } else {
         await methods.send(auctionContract.methods.swap, data, account);
       }
-      setLoading(false);
       updateShowModal(true);
       updateModalType('success');
-      // getData();
+      try {
+        const response = await restService({
+          third_party: true,
+          api: process.env.REACT_APP_AUCTION_LOAD_API,
+          method: 'POST',
+          params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
+        })
+        console.log('responseOrder', response)
+        if (response.status === 200) {
+          try {
+            setLoading(false);
+            getData();
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
       setModalError({
         message: '',
         type: '',
@@ -192,6 +209,7 @@ const AuctionStatus = ({
           await methods.send(auctionContract.methods.bidderClaim, [auctionId], account);
         }
       }
+      setLoading(true);
       try {
         const response = await restService({
           third_party: true,
@@ -212,26 +230,8 @@ const AuctionStatus = ({
     }
   };
   const closeModal = async () => {
-    try {
-      const response = await restService({
-        third_party: true,
-        api: process.env.REACT_APP_AUCTION_LOAD_API,
-        method: 'POST',
-        params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
-      })
-      console.log('responseOrder', response)
-      if (response.status === 200) {
-        try {
-          updateShowModal(false);
-          updateModalType('inprogress');
-          getData();
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    updateShowModal(false);
+    updateModalType('inprogress');
   };
   return (
     <Fragment>
@@ -262,6 +262,7 @@ const AuctionStatus = ({
         />
       ) : auctionStatus === 'completed' ? (
         <AuctionCompleted
+          loading={loading}
           settlAuction={settlAuction}
           isAlreadySettle={detail['isAlreadySettle']}
           auctionTye={auctionType}
@@ -321,7 +322,7 @@ const AuctionCountDown = ({ auctionStartDate }) => {
   );
 };
 
-const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye, showClaimButton }) => {
+const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye, showClaimButton, loading }) => {
   return (
     <div className="flex-1 text-white flex flex-row items-stretch justify-between items-center  p-6">
       <div className="w-full flex flex-col items-center justify-center ">
@@ -341,11 +342,16 @@ const AuctionCompleted = ({ settlAuction, isAlreadySettle, auctionTye, showClaim
             ) : (
               auctionTye === 'BATCH' && (
                 <button
-                  className="focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
-         h-14 bg-white rounded-lg bgPrimaryGradient rounded-lg"
+                  //           className="flex focus:outline-none py-2 px-12 text-black text-xl 2xl:text-24
+                  //  h-14 bg-white rounded-lg bgPrimaryGradient rounded-lg"
+                  className={`flex items-center focus:outline-none text-black bg-white h-14 text-xl 2xl:text-24 bgPrimaryGradient ${loading ?
+                    "bg-lightGray text-gray pointer-events-none" :
+                    "text-black "} py-2 px-12
+                        rounded-lg text-center text-sm`}
                   onClick={settlAuction}
                 >
-                  Settle Auction
+                  {loading && <Loader size="20px" className="mr-4" stroke="#717579" />}
+                  {loading ? 'Setting Auction' : 'Settle Auction'}
                 </button>
               )
             )}

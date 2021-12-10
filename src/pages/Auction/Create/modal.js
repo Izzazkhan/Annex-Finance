@@ -4,6 +4,7 @@ import { CloseIcon } from '../../../../src/components/swap/SearchModal/ListSelec
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { restService } from 'utilities';
+import transactionBroadcast from '../../../assets/icons/transactionBroadcast.svg';
 
 const types = {
   SUCCESS: 'success',
@@ -37,33 +38,12 @@ function AuctionModal({
   // const [auctionButton, setAuctionButton] = useState(true);
   const history = useHistory();
   const redirectAndCloseModal = async () => {
-    try {
-      console.log('close modal')
-      const response = await restService({
-        third_party: true,
-        api: process.env.REACT_APP_AUCTION_LOAD_API,
-        method: 'POST',
-        params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
-      })
-      console.log('responsePost', response)
-      if (response.status === 200) {
-        history.push({
-          pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
-            }`,
-          state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
-        });
-        onCloseModal();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    // history.push({
-    //   pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
-    //     }`,
-    //   state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
-    // });
-    // onCloseModal();
+    history.push({
+      pathname: `/auction/${auctionType}-detail/${modalError.payload && modalError.payload.auctionId ? modalError.payload.auctionId : ''
+        }`,
+      state: { auctionType: auctionType, data: { id: modalError.payload.auctionId } },
+    });
+    onCloseModal();
   };
 
   // useEffect(() => {
@@ -112,20 +92,22 @@ function AuctionModal({
     ) : type === types['SUCCESS'] ? (
       <div className="p-14">
         <div className="flex flex-col items-center">
-          <img
-            className="w-150px "
-            src={require('../../../assets/images/check.svg').default}
-            alt="transaction broadcast"
-          />
-          <div className="text-xl font-normal mt-8">{`Auction Created Successfully`}</div>
+          {isCreatingAuction ? <img className="w-150px animate-spin" src={transactionBroadcast} alt="transaction broadcast" />
+            : <img
+              className="w-150px "
+              src={require('../../../assets/images/check.svg').default}
+              alt="transaction broadcast"
+            />}
+
+          <div className="text-xl font-normal mt-8">{isCreatingAuction ? 'Processing Auction' : `Auction Created Successfully`}</div>
         </div>
-        <div className="flex justify-center mt-16">
+        {!isCreatingAuction && <div className="flex justify-center mt-16">
           <button
             className="focus:outline-none bg-primary py-4 rounded text-2xl
                  w-full max-w-350px text-black"
             onClick={redirectAndCloseModal}
           >
-            Go to auction detail{' '}
+            {'Go to auction detail'}
           </button>
           {/* <button
             className="focus:outline-none bg-primary py-4 rounded text-2xl
@@ -134,7 +116,8 @@ function AuctionModal({
           >
             Hello{' '}
           </button> */}
-        </div>
+        </div>}
+
       </div>
     ) : (
       ''

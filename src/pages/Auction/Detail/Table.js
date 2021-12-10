@@ -399,87 +399,89 @@ function Table(props) {
                             <div>{item.sellAmount}</div>
                           </td>
                           <td>
-                            {account === item.address &&
+                            {
+                              // account === item.address &&
                               props.auctionStatus === 'completed' &&
-                              props.isAlreadySettle &&
-                              item.status !== 'CANCELLED' ? (
-                              <div className="flex items-center custom-check">
-                                <label
-                                  className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
-                                    }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    disabled={
-                                      loading ||
-                                      !props.isAlreadySettle ||
-                                      item.status === 'PROCESSED'
-                                    }
-                                    checked={
-                                      item.status === 'PROCESSED' ||
-                                      selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
-                                    }
-                                    onChange={() => { }}
-                                    onClick={() => handleClaimCheckbox(item)}
-                                  />
-                                  <span
-                                    className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''
+                                props.isAlreadySettle &&
+                                item.status !== 'CANCELLED' ? (
+                                <div className="flex items-center custom-check">
+                                  <label
+                                    className={`container text-base ml-2 font-normal ${loading || !props.isAlreadySettle ? 'disabled' : ''
                                       }`}
                                   >
-                                    <span style={{ display: 'none' }} className="text">
-                                      {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
+                                    <input
+                                      type="checkbox"
+                                      disabled={
+                                        loading ||
+                                        !props.isAlreadySettle ||
+                                        item.status === 'PROCESSED'
+                                      }
+                                      checked={
+                                        item.status === 'PROCESSED' ||
+                                        selectedClaimOrders.findIndex((x) => x.id === item.id) !== -1
+                                      }
+                                      onChange={() => { }}
+                                      onClick={() => handleClaimCheckbox(item)}
+                                    />
+                                    <span
+                                      className={`checkmark ${item.status === 'PROCESSED' ? 'green' : ''
+                                        }`}
+                                    >
+                                      <span style={{ display: 'none' }} className="text">
+                                        {item.status === 'PROCESSED' ? 'Claimed' : 'Claim'}
+                                      </span>
                                     </span>
-                                  </span>
-                                </label>
-                              </div>
-                            ) : account === item.address &&
-                              props.isAllowCancellation &&
-                              props.auctionStatus !== 'completed' &&
-                              item.status !== 'CANCELLED' ? (
-                              <div className="flex items-center custom-check">
-                                <label
-                                  className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
-                                    }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    disabled={loading || item.status === 'CANCELLED'}
-                                    checked={
-                                      item.status === 'CANCELLED' ||
-                                      selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
-                                    }
-                                    onChange={() => { }}
-                                    onClick={() => handleCancelCheckbox(item)}
-                                  />
-                                  <span className="checkmark">
-                                    <span style={{ display: 'none' }} className="text">
-                                      Cancel
-                                    </span>
-                                  </span>
-                                </label>
-                              </div>
-                            ) : item.status === 'CANCELLED' ? (
-                              <div className="flex items-center custom-check">
-                                <label className={`container text-base ml-2 font-normal `}>
-                                  <input
-                                    type="checkbox"
-                                    disabled={true}
-                                    checked={true}
-                                    onChange={() => { }}
-                                  />
-                                  <span className="checkmark red">
-                                    <span style={{ display: 'none' }} className="text">
-                                      {' '}
-                                      Cancelled
-                                    </span>
-                                  </span>
-                                </label>
-                              </div>
-                            ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
-                              <div>Waiting to settle</div>
-                            ) : (
-                              'Bid'
-                            )}
+                                  </label>
+                                </div>
+                              ) :
+                                // account === item.address &&
+                                props.isAllowCancellation &&
+                                  props.auctionStatus !== 'completed' &&
+                                  item.status !== 'CANCELLED' ? (
+                                  <div className="flex items-center custom-check">
+                                    <label
+                                      className={`container text-base ml-2 font-normal ${loading || item.status === 'CANCELLED' ? 'disabled' : ''
+                                        }`}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        disabled={loading || item.status === 'CANCELLED'}
+                                        checked={
+                                          item.status === 'CANCELLED' ||
+                                          selectedCancelOrders.findIndex((x) => x.id === item.id) !== -1
+                                        }
+                                        onChange={() => { }}
+                                        onClick={() => handleCancelCheckbox(item)}
+                                      />
+                                      <span className="checkmark">
+                                        <span style={{ display: 'none' }} className="text">
+                                          Cancel
+                                        </span>
+                                      </span>
+                                    </label>
+                                  </div>
+                                ) : item.status === 'CANCELLED' ? (
+                                  <div className="flex items-center custom-check">
+                                    <label className={`container text-base ml-2 font-normal `}>
+                                      <input
+                                        type="checkbox"
+                                        disabled={true}
+                                        checked={true}
+                                        onChange={() => { }}
+                                      />
+                                      <span className="checkmark red">
+                                        <span style={{ display: 'none' }} className="text">
+                                          {' '}
+                                          Cancelled
+                                        </span>
+                                      </span>
+                                    </label>
+                                  </div>
+                                ) : props.auctionStatus === 'completed' && !props.isAlreadySettle ? (
+                                  <div>Waiting to settle</div>
+                                ) : (
+                                  'Bid'
+                                )}
                           </td>
                         </tr>
                       ) : (
