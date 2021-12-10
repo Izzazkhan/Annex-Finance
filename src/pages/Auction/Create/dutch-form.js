@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
+import { restService } from 'utilities';
 
 const ArrowContainer = styled.div`
   transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -446,7 +447,6 @@ export default function DutchForm({ biddingTokenOptions, account, chainId, activ
             accountId,
           )
           let auctionId = auctionTxDetail['events']['NewAuction']['returnValues']['auctionId'];
-          setLoading(false);
           updateShowModal(true);
           updateModalType('success');
           setModalError({
@@ -456,7 +456,20 @@ export default function DutchForm({ biddingTokenOptions, account, chainId, activ
               auctionId,
             },
           });
-          // history.push('/auction/live');
+          try {
+            const response = await restService({
+              third_party: true,
+              api: process.env.REACT_APP_AUCTION_LOAD_API,
+              method: 'POST',
+              params: { contractAddress: process.env.REACT_APP_BSC_TEST_ANNEX_BATCH_AUCTION_ADDRESS }
+            })
+            console.log('handleSubmit', response)
+            if (response.status === 200) {
+              setLoading(false);
+            }
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           setModalError({
             type: 'error',

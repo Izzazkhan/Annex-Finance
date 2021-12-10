@@ -172,8 +172,8 @@ function Table(props) {
         })
         console.log('responseCancel', response)
         if (response.status === 200) {
-          props.getData();
           setLoading(false);
+          props.getData();
         }
       } catch (error) {
         console.log(error);

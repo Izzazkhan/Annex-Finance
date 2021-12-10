@@ -276,6 +276,7 @@ function Detail(props) {
         );
         let minFundingThresholdValue = elem['minFundingThreshold'];
         let socials = elem['socials'];
+        socials = JSON.parse(JSON.parse(socials))
         let minimumBiddingAmountPerOrder = new BigNumber(elem['minimumBiddingAmountPerOrder_eth'])
           .dividedBy(1000000)
           .toNumber();
