@@ -7,13 +7,14 @@ import fixedAuctionContext from '../../../contexts/fixedAuction';
 import { methods } from '../../../utilities/ContractService';
 import { gql } from '@apollo/client';
 import { useSubgraph } from 'thegraph-react';
+import { convertExponentToNum } from '../../../utilities/convertExponentToNum'
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
 import { useActiveWeb3React } from '../../../hooks';
-
+import { APICall } from './APICall'
 
 function FixedAuction(props) {
-    const { account, chainId } = useActiveWeb3React();
+    const { chainId } = useActiveWeb3React();
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     let auctionTime1, auctionTime2
     if (props.auctionStatus === 'live') {
@@ -93,6 +94,7 @@ function FixedAuction(props) {
             fetch(subGraph, requestOptions)
                 .then(response => response.text())
                 .then(result => {
+                    console.log('DataWith subgraph', JSON.parse(result))
                     setData(JSON.parse(result))
                 })
                 .catch(error => {
@@ -105,6 +107,10 @@ function FixedAuction(props) {
             setLoading(false)
             setError('Error while Loading. Please try again later.')
         }
+    }, [])
+
+    useEffect(() => {
+        APICall(props.auctionStatus, props.setBatchCount, process.env.REACT_APP_GET_All_AUCTIONS_API, setData, setLoading, setError)
     }, [])
 
     useEffect(async () => {
@@ -159,24 +165,6 @@ function FixedAuction(props) {
             setLoading(false)
         }
     }, [data]);
-
-    const convertExponentToNum = (x) => {
-        if (Math.abs(x) < 1.0) {
-            let e = parseInt(x.toString().split('e-')[1]);
-            if (e) {
-                x *= Math.pow(10, e - 1);
-                x = '0.' + new Array(e).join('0') + x.toString().substring(2);
-            }
-        } else {
-            let e = parseInt(x.toString().split('+')[1]);
-            if (e > 20) {
-                e -= 20;
-                x /= Math.pow(10, e);
-                x += new Array(e + 1).join('0');
-            }
-        }
-        return x;
-    };
 
     return (
         <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
