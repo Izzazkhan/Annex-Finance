@@ -11,7 +11,7 @@ import { convertExponentToNum } from '../../../utilities/convertExponentToNum'
 import Loading from '../../../components/UI/Loading';
 import moment from 'moment';
 import { useActiveWeb3React } from '../../../hooks';
-import { APICall } from './APICall'
+import NetworkCall from './networkCall'
 
 function FixedAuction(props) {
     const { chainId } = useActiveWeb3React();
@@ -110,7 +110,7 @@ function FixedAuction(props) {
     }, [])
 
     useEffect(() => {
-        APICall(props.auctionStatus, props.setBatchCount, process.env.REACT_APP_GET_All_AUCTIONS_API, setData, setLoading, setError)
+        NetworkCall(props.auctionStatus, props.setBatchCount, process.env.REACT_APP_GET_All_AUCTIONS_API, setData, setLoading, setError)
     }, [])
 
     useEffect(async () => {

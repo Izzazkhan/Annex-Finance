@@ -45,8 +45,7 @@ const ArrowDown = styled.button`
   }
 `;
 
-export default function Form(props) {
-  const { chainId } = useActiveWeb3React();
+export default function Form({ biddingTokenOptions, annexSwapOptions, account, chainId, activeTab }) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [auctionThreshold, setAuctionThreshold] = useState('');
@@ -84,8 +83,8 @@ export default function Form(props) {
         id: 'biddingToken',
         placeholder: 'Bidding token ',
         description: 'The token that will use to bid the auction.',
-        options: props.biddingTokenOptions,
-        value: props.biddingTokenOptions[0] ? props.biddingTokenOptions[0] : [],
+        options: biddingTokenOptions,
+        value: biddingTokenOptions[0] ? biddingTokenOptions[0] : [],
         colspan: 6,
       },
       // {
@@ -93,8 +92,8 @@ export default function Form(props) {
       //   id: 'swapExchange',
       //   placeholder: 'Swap Exchange',
       //   description: 'This will use to generate your LP Tokens after settle.',
-      //   options: props.annexSwapOptions,
-      //   value: props.annexSwapOptions[0] ? props.annexSwapOptions[0] : [],
+      //   options: annexSwapOptions,
+      //   value: annexSwapOptions[0] ? annexSwapOptions[0] : [],
       //   colspan: 12,
       //   label: 'Exchange',
       // },
@@ -236,8 +235,7 @@ export default function Form(props) {
     type: 'batch',
   });
   const annTokenContract = getANNTokenContract(chainId);
-  console.log('state', state.type)
-  const auctionContract = getAuctionContract('batch', chainId);
+  const auctionContract = getAuctionContract(state.type, chainId);
 
   useEffect(async () => {
     if (showModal) {
@@ -330,9 +328,9 @@ export default function Form(props) {
       e.preventDefault();
       setLoading(true);
       let formatedStateData = await getFormState();
-      const accountId = props.account;
-      const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
-      const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
+      const accountId = account;
+      // const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
+      // const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
       const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
       if (balanceOf > auctionThreshold) {
         // formatedStateData.sellAmount = enocodeParamToUint(
@@ -440,7 +438,7 @@ export default function Form(props) {
     try {
       setApproveANNToken({ status: false, isLoading: true, label: 'Loading...' });
       let auctionAddr = CONTRACT_ANNEX_AUCTION[chainId][state.type]['address'];
-      let annAllowance = await getTokenAllowance(
+      await getTokenAllowance(
         annTokenContract.methods,
         auctionAddr,
         auctionThreshold,
@@ -457,7 +455,7 @@ export default function Form(props) {
       let { auctionToken } = await getFormState();
       let auctionAddr = CONTRACT_ANNEX_AUCTION[chainId][state.type]['address'];
       const auctionTokenContract = getTokenContractWithDynamicAbi(auctionToken);
-      let auctionTokenAllowance = await getTokenAllowance(
+      await getTokenAllowance(
         auctionTokenContract.methods,
         auctionAddr,
         auctionThreshold,
@@ -470,7 +468,7 @@ export default function Form(props) {
   };
 
   const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
-    const accountId = props.account;
+    const accountId = account;
     let allowance = await methods.call(contractMethods.allowance, [accountId, spenderAddr]);
     if (allowance < threshold) {
       let maxValue = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
@@ -483,7 +481,6 @@ export default function Form(props) {
   const getFormState = async () => {
     let arr = state.inputs.concat(state.advanceInputs);
     let obj = {};
-
     let auctionToken = '';
     let auctionIndex = state.inputs.findIndex((x) => x.id === 'auctionToken');
     if (auctionIndex !== -1) {
@@ -707,7 +704,7 @@ export default function Form(props) {
         handleSubmit={(e) => handleSubmit(e)}
         onSetOpen={() => updateShowModal(true)}
         onCloseModal={() => updateShowModal(false)}
-        auctionType={props.activeTab}
+        auctionType={activeTab}
       />
     </Fragment>
   );

@@ -45,9 +45,7 @@ const ArrowDown = styled.button`
   }
 `;
 
-export default function DutchForm(props) {
-  const { chainId } = useActiveWeb3React();
-
+export default function DutchForm({ biddingTokenOptions, account, chainId, activeTab }) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [auctionThreshold, setAuctionThreshold] = useState('');
@@ -86,8 +84,8 @@ export default function DutchForm(props) {
         id: 'biddingToken',
         placeholder: 'Bidding token ',
         description: 'The token that will use to bid the auction.',
-        options: props.biddingTokenOptions,
-        value: props.biddingTokenOptions[0] ? props.biddingTokenOptions[0] : [],
+        options: biddingTokenOptions,
+        value: biddingTokenOptions[0] ? biddingTokenOptions[0] : [],
         colspan: 6,
         isValid: true,
       },
@@ -233,9 +231,9 @@ export default function DutchForm(props) {
     ],
     type: 'dutch',
   });
-  const annTokenContract = getANNTokenContract(props.chainId);
-  const auctionContract = getAuctionContract(state.type, props.chainId);
-  const dutchAuction = dutchAuctionContract(props.chainId);
+  const annTokenContract = getANNTokenContract(chainId);
+  const auctionContract = getAuctionContract(state.type, chainId);
+  const dutchAuction = dutchAuctionContract(chainId);
 
   useEffect(async () => {
     if (showModal) {
@@ -411,7 +409,7 @@ export default function DutchForm(props) {
         e.preventDefault();
         setLoading(true);
         let formatedStateData = await getFormState();
-        const accountId = props.account;
+        const accountId = account;
         const auctionTokenContract = getTokenContractWithDynamicAbi(formatedStateData.auctionToken);
         const auctionTokenDecimal = await methods.call(auctionTokenContract.methods.decimals, []);
         const balanceOf = await methods.call(annTokenContract.methods.balanceOf, [accountId]);
@@ -533,7 +531,7 @@ export default function DutchForm(props) {
   };
 
   const getTokenAllowance = async (contractMethods, spenderAddr, threshold) => {
-    const accountId = props.account;
+    const accountId = account;
     let allowance = await methods.call(contractMethods.allowance, [accountId, spenderAddr]);
     if (allowance < threshold) {
       let maxValue = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
@@ -771,7 +769,7 @@ export default function DutchForm(props) {
         handleSubmit={(e) => handleSubmit(e)}
         onSetOpen={() => updateShowModal(true)}
         onCloseModal={() => updateShowModal(false)}
-        auctionType={props.activeTab}
+        auctionType={activeTab}
       />
     </Fragment>
   );

@@ -8,7 +8,7 @@ import * as constants from '../../../utilities/constants';
 import { auctionCount } from './auctionCount'
 
 function Live(props) {
-  const { account, chainId } = useActiveWeb3React();
+  const { chainId } = useActiveWeb3React();
   const [activeTab, setActiveTab] = useState('batch');
   const [batchActive, setBatchActive] = useState(true);
   const [dutchActive, setDutchActive] = useState(false);
@@ -124,7 +124,6 @@ function Live(props) {
           className="auction-btn-wrapper flex justify-start items-center 
       mb-5 border-b border-solid border-primary"
         >
-          {/* <h2 className="text-white ml-5 text-4xl font-normal">Live Auctions</h2> */}
           <button
             onClick={(e) => {
               batchTab(e);

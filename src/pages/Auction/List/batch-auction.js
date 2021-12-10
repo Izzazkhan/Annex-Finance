@@ -9,22 +9,20 @@ import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from '../../../hooks';
 import * as constants from '../../../utilities/constants';
-import { restService } from 'utilities';
-// import { useAuction } from '../../../hooks/useAuction'
 import { convertExponentToNum } from '../../../utilities/convertExponentToNum'
+import NetworkCall from './networkCall'
+function BatchAuction({ auctionStatus, setBatchCount }) {
 
-function BatchAuction(props) {
-
-    const { account, chainId } = useActiveWeb3React();
+    const { chainId } = useActiveWeb3React();
 
     const currentTimeStamp = Math.floor(Date.now() / 1000);
 
     let auctionTime1, auctionTime2
-    if (props.auctionStatus === 'live') {
+    if (auctionStatus === 'live') {
         auctionTime1 = 'auctionEndDate_gt'
         auctionTime2 = 'auctionStartDate_lt'
     }
-    else if (props.auctionStatus === 'past') {
+    else if (auctionStatus === 'past') {
         auctionTime1 = 'auctionEndDate_lt'
         auctionTime2 = 'auctionStartDate_lt'
     }
@@ -95,43 +93,9 @@ function BatchAuction(props) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    useEffect(async () => {
-        try {
-            const response = await restService({
-                third_party: true,
-                api: process.env.REACT_APP_GET_All_AUCTIONS_API,
-                method: 'GET',
-                params: {}
-            })
-            console.log('DataWith API', response)
-            if (props.auctionStatus === 'live') {
-                const filteredData = response.data.data.filter(item =>
-                    new BigNumber(item.auctionEndDate).isGreaterThan(new BigNumber(currentTimeStamp))
-                    && new BigNumber(item.auctionStartDate).isLessThan(new BigNumber(currentTimeStamp)))
-                props.setBatchCount(filteredData.length)
-                setData(filteredData)
-            }
-            else if (props.auctionStatus === 'past') {
-                const filteredData = response.data.data.filter(item =>
-                    new BigNumber(item.auctionEndDate).isLessThan(new BigNumber(currentTimeStamp))
-                    && new BigNumber(item.auctionStartDate).isLessThan(new BigNumber(currentTimeStamp)))
-                props.setBatchCount(filteredData.length)
-                setData(filteredData)
-            }
-            else {
-                const filteredData = response.data.data.filter(item =>
-                    new BigNumber(item.auctionEndDate).isGreaterThan(new BigNumber(currentTimeStamp))
-                    && new BigNumber(item.auctionStartDate).isGreaterThan(new BigNumber(currentTimeStamp)))
-                props.setBatchCount(filteredData.length)
-                setData(filteredData)
-            }
-            setLoading(false)
-        } catch (error) {
-            setError('Error while loading data')
-            setLoading(false)
-        }
+    useEffect(() => {
+        NetworkCall(auctionStatus, setBatchCount, process.env.REACT_APP_GET_All_AUCTIONS_API, setData, setLoading, setError)
     }, [])
-
 
     useEffect(() => {
         try {
@@ -168,7 +132,7 @@ function BatchAuction(props) {
         }
     }, [])
 
-    const mapAuction = (data, props) => {
+    const mapAuction = (data) => {
         let auctionArray = [];
         data.forEach((element) => {
             let auctionDecimal = (element['auctioningToken']);
@@ -207,8 +171,8 @@ function BatchAuction(props) {
                 ...element,
                 chartType: 'block',
                 data: graphData,
-                status: props.auctionStatus === 'live' ? 'Live' : props.auctionStatus === 'past' ? 'Past' : 'Upcoming',
-                statusClass: props.auctionStatus === 'live' ? 'live' : props.auctionStatus === 'past' ? 'past' : 'upcoming',
+                status: auctionStatus === 'live' ? 'Live' : auctionStatus === 'past' ? 'Past' : 'Upcoming',
+                statusClass: auctionStatus === 'live' ? 'live' : auctionStatus === 'past' ? 'past' : 'upcoming',
                 dateLabel: 'Completion Date',
                 formatedAuctionDate,
                 minFundingThreshold,
@@ -220,7 +184,7 @@ function BatchAuction(props) {
 
     useEffect(() => {
         if (data && data.length > 0) {
-            const returnedAuction = mapAuction(data, props)
+            const returnedAuction = mapAuction(data)
             setAuction(returnedAuction);
             setLoading(false)
         }
@@ -231,8 +195,8 @@ function BatchAuction(props) {
 
     return (
         <div className="bg-fadeBlack rounded-2xl text-white text-xl font-bold p-6 mt-4">
-            <h2 className="text-white ml-5 text-4xl font-normal">{props.auctionStatus === 'live' ? 'Live' :
-                props.auctionStatus === 'past' ? 'Past' : 'Upcoming'} Auctions</h2>
+            <h2 className="text-white ml-5 text-4xl font-normal">{auctionStatus === 'live' ? 'Live' :
+                auctionStatus === 'past' ? 'Past' : 'Upcoming'} Auctions</h2>
             {loading ? (
                 <div className="flex items-center justify-center py-16 flex-grow bg-fadeBlack rounded-lg">
                     <Loading size={'48px'} margin={'0'} className={'text-primaryLight'} />

@@ -131,7 +131,6 @@ export default function CreateAuction(props) {
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
           <DutchForm
             biddingTokenOptions={biddingTokenOptions}
-            annexSwapOptions={annexSwapOptions}
             account={account}
             chainId={chainId}
             activeTab={activeTab}
@@ -143,7 +142,6 @@ export default function CreateAuction(props) {
           <div className="text-gray text-sm font-normal mt-2">Please fill in the form below</div>
           <FixedForm
             biddingTokenOptions={biddingTokenOptions}
-            annexSwapOptions={annexSwapOptions}
             account={account}
             chainId={chainId}
             activeTab={activeTab}

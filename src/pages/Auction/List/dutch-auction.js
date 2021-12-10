@@ -14,7 +14,7 @@ import {
     methods,
 } from '../../../utilities/ContractService';
 import { useActiveWeb3React } from '../../../hooks';
-import { APICall } from './APICall'
+import NetworkCall from './networkCall'
 
 function DutchAuction(props) {
     const { chainId } = useActiveWeb3React();
@@ -110,7 +110,7 @@ function DutchAuction(props) {
     }, [])
 
     useEffect(() => {
-        APICall(props.auctionStatus, props.setBatchCount, process.env.REACT_APP_GET_All_AUCTIONS_API, setData, setLoading, setError)
+        NetworkCall(props.auctionStatus, props.setBatchCount, process.env.REACT_APP_GET_All_AUCTIONS_API, setData, setLoading, setError)
     }, [])
 
     useEffect(async () => {
