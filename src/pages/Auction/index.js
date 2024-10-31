@@ -3,9 +3,9 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from '../../layouts/MainLayout/MainLayout';
 
-import Live from './List/Live';
-import Past from './List/Past';
-import Upcoming from './List/Upcoming';
+import Live from './List/buttonTabs';
+import Past from './List/buttonTabs';
+import Upcoming from './List/buttonTabs';
 import Detail from './Detail';
 import CreateAuction from './Create';
 
@@ -423,8 +423,7 @@ function Auction(props) {
   let pathname;
   if (props.location.pathname.includes('dutch')) {
     pathname = 'dutch-detail';
-  } else if (props.location.pathname.includes('fixed')
-  ) {
+  } else if (props.location.pathname.includes('fixed')) {
     pathname = 'fixed-detail';
   } else {
     pathname = 'batch-detail';

@@ -142,6 +142,6 @@
     "namor": "^2.0.2",
     "postcss": "^7.0.35",
     "prettier": "^2.2.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
   }
 }
